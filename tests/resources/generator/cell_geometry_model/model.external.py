@@ -20,9 +20,18 @@ class VariableType(Enum):
     EXTERNAL = 3
 
 
-VARIABLE_INFO = [
+CONSTANT_INFO = [
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
     {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC}
+]
+
+EXTERNAL_INFO = [
     {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
     {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL}
 ]

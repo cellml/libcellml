@@ -18,9 +18,15 @@ class VariableType(Enum):
     ALGEBRAIC = 2
 
 
-VARIABLE_INFO = [
+CONSTANT_INFO = [
+]
+
+COMPUTED_CONSTANT_INFO = [
     {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT}
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 

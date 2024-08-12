@@ -22,12 +22,18 @@ const VariableInfo STATE_INFO[] = {
     {"n", "dimensionless", "potassium_channel_n_gate", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"E_L", "millivolt", "leakage_current", CONSTANT},
     {"g_Na_max", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", CONSTANT},
+    {"E_Na", "millivolt", "sodium_channel", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
     {"i_Leak", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},

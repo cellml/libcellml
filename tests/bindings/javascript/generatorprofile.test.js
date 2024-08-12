@@ -810,17 +810,53 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationStateInfoString("something")
     expect(x.implementationStateInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceVariableInfoString.", () => {
+  test("Checking GeneratorProfile.interfaceConstantInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceVariableInfoString("something")
-    expect(x.interfaceVariableInfoString()).toBe("something")
+    x.setInterfaceConstantInfoString("something")
+    expect(x.interfaceConstantInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationVariableInfoString.", () => {
+  test("Checking GeneratorProfile.implementationConstantInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationVariableInfoString("something")
-    expect(x.implementationVariableInfoString()).toBe("something")
+    x.setImplementationConstantInfoString("something")
+    expect(x.implementationConstantInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.interfaceComputedConstantInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceComputedConstantInfoString("something")
+    expect(x.interfaceComputedConstantInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationComputedConstantInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationComputedConstantInfoString("something")
+    expect(x.implementationComputedConstantInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.interfaceAlgebraicInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceAlgebraicInfoString("something")
+    expect(x.interfaceAlgebraicInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationAlgebraicInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationAlgebraicInfoString("something")
+    expect(x.implementationAlgebraicInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.interfaceExternalInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceExternalInfoString("something")
+    expect(x.interfaceExternalInfoString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationExternalInfoString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationExternalInfoString("something")
+    expect(x.implementationExternalInfoString()).toBe("something")
   });
   test("Checking GeneratorProfile.variableInfoEntryString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

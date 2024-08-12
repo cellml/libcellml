@@ -20,7 +20,7 @@ class VariableType(Enum):
     EXTERNAL = 3
 
 
-VARIABLE_INFO = [
+CONSTANT_INFO = [
     {"name": "E", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
@@ -28,8 +28,17 @@ VARIABLE_INFO = [
     {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.ALGEBRAIC},
+    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
+    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.ALGEBRAIC}
+]
+
+EXTERNAL_INFO = [
     {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.EXTERNAL}
 ]
 

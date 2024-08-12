@@ -408,7 +408,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                    "[TYPE]", type);
 }
 
-void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
+void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
 {
     std::string code;
 
@@ -422,8 +422,21 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
         code += mProfile->interfaceStateInfoString();
     }
 
-    if (!mProfile->interfaceVariableInfoString().empty()) {
-        code += mProfile->interfaceVariableInfoString();
+    if (!mProfile->interfaceConstantInfoString().empty()) {
+        code += mProfile->interfaceConstantInfoString();
+    }
+
+    if (!mProfile->interfaceComputedConstantInfoString().empty()) {
+        code += mProfile->interfaceComputedConstantInfoString();
+    }
+
+    if (!mProfile->interfaceAlgebraicInfoString().empty()) {
+        code += mProfile->interfaceAlgebraicInfoString();
+    }
+
+    if (mModel->hasExternalVariables()
+        && !mProfile->interfaceExternalInfoString().empty()) {
+        code += mProfile->interfaceExternalInfoString();
     }
 
     if (!code.empty()) {
@@ -433,116 +446,74 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
     mCode += code;
 }
 
-void Generator::GeneratorImpl::addImplementationVoiInfoCode()
+void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::string &variableInfoString,
+                                                                   const std::string &variableTypeString,
+                                                                   const std::vector<AnalyserVariablePtr> &variables,
+                                                                   bool voiVariable)
 {
-    if (modelHasOdes()
-        && !mProfile->implementationVoiInfoString().empty()
+    if (!variableInfoString.empty()
         && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()) {
-        auto voiVariable = mModel->voi()->variable();
-        auto name = voiVariable->name();
-        auto units = voiVariable->units()->name();
-        auto component = owningComponent(voiVariable)->name();
-        auto type = mProfile->variableOfIntegrationVariableTypeString();
-
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationVoiInfoString(),
-                           "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationStateInfoCode()
-{
-    if (modelHasOdes()
-        && !mProfile->implementationStateInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->stateVariableTypeString().empty()
+        && !variableTypeString.empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
-        auto type = mProfile->stateVariableTypeString();
 
-        for (const auto &state : mModel->states()) {
+        for (const auto &variable : variables) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            auto stateVariable = state->variable();
+            auto variableVariable = variable->variable();
 
-            infoElementsCode += mProfile->indentString()
-                                + generateVariableInfoEntryCode(stateVariable->name(),
-                                                                stateVariable->units()->name(),
-                                                                owningComponent(stateVariable)->name(),
-                                                                type);
+            infoElementsCode += (voiVariable ? "" : mProfile->indentString())
+                                + generateVariableInfoEntryCode(variableVariable->name(),
+                                                                variableVariable->units()->name(),
+                                                                owningComponent(variableVariable)->name(),
+                                                                variableTypeString);
         }
 
-        infoElementsCode += "\n";
+        if (!voiVariable && !infoElementsCode.empty()) {
+            infoElementsCode += "\n";
+        }
 
         mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationStateInfoString(),
-                           "[CODE]", infoElementsCode);
+                 + replace(variableInfoString, "[CODE]", infoElementsCode);
     }
 }
 
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
-    if (!mProfile->implementationVariableInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->arrayElementSeparatorString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()
-        && !mProfile->stateVariableTypeString().empty()
-        && !mProfile->constantVariableTypeString().empty()
-        && !mProfile->computedConstantVariableTypeString().empty()
-        && !mProfile->algebraicVariableTypeString().empty()
-        && !mProfile->externalVariableTypeString().empty()) {
-        std::string infoElementsCode;
+    if (modelHasOdes()) {
+        std::vector<AnalyserVariablePtr> variables;
 
-        for (const auto &variable : variables(mModel)) {
-            if (!infoElementsCode.empty()) {
-                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
-            }
+        variables.push_back(mModel->voi());
 
-            std::string variableType;
+        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(),
+                                            mProfile->variableOfIntegrationVariableTypeString(),
+                                            variables, true);
+    }
 
-            switch (variable->type()) {
-            case AnalyserVariable::Type::CONSTANT:
-                variableType = mProfile->constantVariableTypeString();
+    if (modelHasOdes()) {
+        doAddImplementationVariableInfoCode(mProfile->implementationStateInfoString(),
+                                            mProfile->stateVariableTypeString(),
+                                            mModel->states(), false);
+    }
 
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
-                variableType = mProfile->computedConstantVariableTypeString();
+    doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(),
+                                        mProfile->constantVariableTypeString(),
+                                        mModel->constants(), false);
 
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
-                variableType = mProfile->algebraicVariableTypeString();
+    doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(),
+                                        mProfile->computedConstantVariableTypeString(),
+                                        mModel->computedConstants(), false);
 
-                break;
-            case AnalyserVariable::Type::EXTERNAL:
-                variableType = mProfile->externalVariableTypeString();
+    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicInfoString(),
+                                        mProfile->algebraicVariableTypeString(),
+                                        mModel->algebraic(), false);
 
-                break;
-            default: // Other types we don't care about.
-                break;
-            }
-
-            if (!variableType.empty()) {
-                auto variableVariable = variable->variable();
-
-                infoElementsCode += mProfile->indentString()
-                                    + replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                                                      "[NAME]", variableVariable->name()),
-                                                              "[UNITS]", variableVariable->units()->name()),
-                                                      "[COMPONENT]", owningComponent(variableVariable)->name()),
-                                              "[TYPE]", variableType);
-            }
-        }
-
-        if (!infoElementsCode.empty()) {
-            infoElementsCode += "\n";
-        }
-
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationVariableInfoString(),
-                           "[CODE]", infoElementsCode);
+    if (mModel->hasExternalVariables()) {
+        doAddImplementationVariableInfoCode(mProfile->implementationExternalInfoString(),
+                                            mProfile->externalVariableTypeString(),
+                                            mModel->externals(), false);
     }
 }
 
@@ -2057,10 +2028,10 @@ std::string Generator::interfaceCode() const
     mPimpl->addVariableTypeObjectCode();
     mPimpl->addVariableInfoObjectCode();
 
-    // Add code for the interface of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the interface of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addInterfaceVoiStateAndVariableInfoCode();
+    mPimpl->addInterfaceVariableInfoCode();
 
     // Add code for the interface to create and delete arrays.
 
@@ -2113,11 +2084,9 @@ std::string Generator::implementationCode() const
         mPimpl->addVariableInfoObjectCode();
     }
 
-    // Add code for the implementation of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the implementation of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addImplementationVoiInfoCode();
-    mPimpl->addImplementationStateInfoCode();
     mPimpl->addImplementationVariableInfoCode();
 
     // Add code for the arithmetic and trigonometric functions.

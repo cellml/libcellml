@@ -907,6 +907,42 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationStateInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationStateInfoString())
 
+    def test_implementation_constant_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const VariableInfo CONSTANT_INFO[] = {\n[CODE]};\n', g.implementationConstantInfoString())
+        g.setImplementationConstantInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationConstantInfoString())
+
+    def test_implementation_computed_constant_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const VariableInfo COMPUTED_CONSTANT_INFO[] = {\n[CODE]};\n', g.implementationComputedConstantInfoString())
+        g.setImplementationComputedConstantInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputedConstantInfoString())
+
+    def test_implementation_algebraic_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const VariableInfo ALGEBRAIC_INFO[] = {\n[CODE]};\n', g.implementationAlgebraicInfoString())
+        g.setImplementationAlgebraicInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationAlgebraicInfoString())
+
+    def test_implementation_external_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const VariableInfo EXTERNAL_INFO[] = {\n[CODE]};\n', g.implementationExternalInfoString())
+        g.setImplementationExternalInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationExternalInfoString())
+
     def test_implementation_constant_count_string(self):
         from libcellml import GeneratorProfile
 
@@ -942,16 +978,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n', g.implementationExternalCountString())
         g.setImplementationExternalCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationExternalCountString())
-
-    def test_implementation_variable_info_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('const VariableInfo VARIABLE_INFO[] = {\n[CODE]};\n',
-                         g.implementationVariableInfoString())
-        g.setImplementationVariableInfoString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVariableInfoString())
 
     def test_implementation_version_string(self):
         from libcellml import GeneratorProfile
@@ -1142,6 +1168,42 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setInterfaceStateInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceStateInfoString())
 
+    def test_interface_constant_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const VariableInfo CONSTANT_INFO[];\n', g.interfaceConstantInfoString())
+        g.setInterfaceConstantInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceConstantInfoString())
+
+    def test_interface_computed_constant_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const VariableInfo COMPUTED_CONSTANT_INFO[];\n', g.interfaceComputedConstantInfoString())
+        g.setInterfaceComputedConstantInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputedConstantInfoString())
+
+    def test_interface_algebraic_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const VariableInfo ALGEBRAIC_INFO[];\n', g.interfaceAlgebraicInfoString())
+        g.setInterfaceAlgebraicInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceAlgebraicInfoString())
+
+    def test_interface_external_info_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const VariableInfo EXTERNAL_INFO[];\n', g.interfaceExternalInfoString())
+        g.setInterfaceExternalInfoString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceExternalInfoString())
+
     def test_interface_constant_count_string(self):
         from libcellml import GeneratorProfile
 
@@ -1177,15 +1239,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('extern const size_t EXTERNAL_COUNT;\n', g.interfaceExternalCountString())
         g.setInterfaceExternalCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceExternalCountString())
-
-    def test_interface_variable_info_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('extern const VariableInfo VARIABLE_INFO[];\n', g.interfaceVariableInfoString())
-        g.setInterfaceVariableInfoString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceVariableInfoString())
 
     def test_interface_version_string(self):
         from libcellml import GeneratorProfile

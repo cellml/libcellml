@@ -23,18 +23,20 @@ class VariableType(Enum):
 
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
-STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
-]
+STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
 
-VARIABLE_INFO = [
+
+CONSTANT_INFO = [
     {"name": "m", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
     {"name": "n", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
     {"name": "o", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
     {"name": "p", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
     {"name": "q", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
     {"name": "r", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "s", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
+    {"name": "s", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
     {"name": "eqnEq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnEqCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnNeq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
@@ -234,7 +236,10 @@ VARIABLE_INFO = [
     {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
+]
+
+ALGEBRAIC_INFO = [
     {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
     {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]

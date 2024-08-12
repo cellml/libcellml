@@ -806,19 +806,57 @@ integration.";
 "Sets the string for the implementation of some information about the different states. To be useful, the string
 should contain the <CODE> tag, which will be replaced with some information about the different states.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceVariableInfoString
-"Returns the string for the interface of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceConstantInfoString
+"Returns the string for the interface of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceVariableInfoString
-"Sets the string for the interface of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceConstantInfoString
+"Sets the string for the interface of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationVariableInfoString
-"Returns the string for the implementation of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::implementationConstantInfoString
+"Returns the string for the implementation of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationVariableInfoString
-"Sets the string for the implementation of some information about the different variables. To be useful, the
-string should contain the <CODE> tag, which will be replaced with some information about the different
-variables.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationConstantInfoString
+"Sets the string for the implementation of some information about the different constants. To be useful, the string
+should contain the <CODE> tag, which will be replaced with some information about the different constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceComputedConstantInfoString
+"Returns the string for the interface of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputedConstantInfoString
+"Sets the string for the interface of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationComputedConstantInfoString
+"Returns the string for the implementation of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationComputedConstantInfoString
+"Sets the string for the implementation of some information about the different computed constants. To be useful, the string
+should contain the <CODE> tag, which will be replaced with some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceAlgebraicInfoString
+"Returns the string for the interface of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceAlgebraicInfoString
+"Sets the string for the interface of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationAlgebraicInfoString
+"Returns the string for the implementation of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationAlgebraicInfoString
+"Sets the string for the implementation of some information about the different algebraic variables. To be useful, the string
+should contain the <CODE> tag, which will be replaced with some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceExternalInfoString
+"Returns the string for the interface of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceExternalInfoString
+"Sets the string for the interface of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationExternalInfoString
+"Returns the string for the implementation of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationExternalInfoString
+"Sets the string for the implementation of some information about the different external variables. To be useful, the string
+should contain the <CODE> tag, which will be replaced with some information about the different external variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::variableInfoEntryString
 "Returns the string for an entry in an array for some information about a variable.";

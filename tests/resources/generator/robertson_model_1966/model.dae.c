@@ -20,10 +20,16 @@ const VariableInfo STATE_INFO[] = {
     {"y2", "dimensionless", "main", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"k1", "dimensionless", "main", CONSTANT},
     {"k3", "dimensionless", "main", CONSTANT},
-    {"k2", "dimensionless", "main", CONSTANT},
+    {"k2", "dimensionless", "main", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"y3", "dimensionless", "main", ALGEBRAIC},
     {"y2_scaled", "dimensionless", "main", ALGEBRAIC}
 };

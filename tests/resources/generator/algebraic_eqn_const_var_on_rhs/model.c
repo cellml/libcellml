@@ -12,9 +12,15 @@ const size_t CONSTANT_COUNT = 1;
 const size_t COMPUTED_CONSTANT_COUNT = 1;
 const size_t ALGEBRAIC_COUNT = 0;
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"a", "dimensionless", "my_algebraic_eqn", CONSTANT},
+const VariableInfo CONSTANT_INFO[] = {
+    {"a", "dimensionless", "my_algebraic_eqn", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 double * createVariablesArray()

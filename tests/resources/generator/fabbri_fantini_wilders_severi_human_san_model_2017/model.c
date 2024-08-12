@@ -51,7 +51,7 @@ const VariableInfo STATE_INFO[] = {
     {"a", "dimensionless", "i_KACh_a_gate", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"ACh", "millimolar", "Rate_modulation_experiments", CONSTANT},
     {"Iso_1_uM", "dimensionless", "Rate_modulation_experiments", CONSTANT},
     {"Nao", "millimolar", "Ionic_values", CONSTANT},
@@ -142,7 +142,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"g_Kr", "microS", "i_Kr", CONSTANT},
     {"g_Ks_", "microS", "i_Ks", CONSTANT},
     {"ACh_on", "dimensionless", "i_KACh", CONSTANT},
-    {"g_KACh", "microS", "i_KACh", CONSTANT},
+    {"g_KACh", "microS", "i_KACh", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"RTONF", "millivolt", "Membrane", COMPUTED_CONSTANT},
     {"E_K", "millivolt", "Ionic_values", COMPUTED_CONSTANT},
     {"V_i", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
@@ -167,7 +170,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"Iso_slope_dL", "dimensionless", "i_CaL_dL_gate", COMPUTED_CONSTANT},
     {"g_Ks", "microS", "i_Ks", COMPUTED_CONSTANT},
     {"Iso_shift", "millivolt", "i_Ks_n_gate", COMPUTED_CONSTANT},
-    {"alpha_a", "per_second", "i_KACh_a_gate", COMPUTED_CONSTANT},
+    {"alpha_a", "per_second", "i_KACh_a_gate", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"E_Na", "millivolt", "Ionic_values", ALGEBRAIC},
     {"Nai", "millimolar", "Nai_concentration", ALGEBRAIC},
     {"E_Ca", "millivolt", "Ionic_values", ALGEBRAIC},

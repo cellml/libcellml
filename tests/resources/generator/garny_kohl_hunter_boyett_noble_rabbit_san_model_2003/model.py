@@ -23,8 +23,7 @@ class VariableType(Enum):
 
 VOI_INFO = {"name": "time", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
-STATE_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE},
+STATE_INFO =     {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE},
     {"name": "m", "units": "dimensionless", "component": "sodium_current_m_gate", "type": VariableType.STATE},
     {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.STATE},
     {"name": "h2", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.STATE},
@@ -39,9 +38,9 @@ STATE_INFO = [
     {"name": "P_as", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate", "type": VariableType.STATE},
     {"name": "xs", "units": "dimensionless", "component": "slow_delayed_rectifying_potassium_current_xs_gate", "type": VariableType.STATE},
     {"name": "y", "units": "dimensionless", "component": "hyperpolarisation_activated_current_y_gate", "type": VariableType.STATE}
-]
 
-VARIABLE_INFO = [
+
+CONSTANT_INFO = [
     {"name": "dCell", "units": "dimensionless", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "Version", "units": "dimensionless", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "FCellConstant", "units": "dimensionless", "component": "membrane", "type": VariableType.CONSTANT},
@@ -151,7 +150,10 @@ VARIABLE_INFO = [
     {"name": "g_f_K_Centre_1DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
     {"name": "g_f_K_Periphery_1DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
     {"name": "g_f_K_Centre_0DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
-    {"name": "g_f_K_Periphery_0DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
+    {"name": "g_f_K_Periphery_0DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
     {"name": "FCell", "units": "dimensionless", "component": "membrane", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "Cm", "units": "microF", "component": "membrane", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_Ca_p", "units": "nanoA", "component": "persistent_calcium_current", "type": VariableType.COMPUTED_CONSTANT},
@@ -174,7 +176,10 @@ VARIABLE_INFO = [
     {"name": "tau_P_i", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_K_s", "units": "microS", "component": "slow_delayed_rectifying_potassium_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_f_Na", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT}
+]
+
+ALGEBRAIC_INFO = [
     {"name": "i_Na", "units": "nanoA", "component": "sodium_current", "type": VariableType.ALGEBRAIC},
     {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump", "type": VariableType.ALGEBRAIC},
     {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger", "type": VariableType.ALGEBRAIC},

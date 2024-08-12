@@ -23,11 +23,17 @@ const VariableInfo STATE_INFO[] = {
     {"n", "dimensionless", "potassium_channel_n_gate", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
+    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
@@ -39,7 +45,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
+};
+
+const VariableInfo EXTERNAL_INFO[] = {
     {"E_R", "millivolt", "membrane", EXTERNAL},
     {"E_K", "millivolt", "potassium_channel", EXTERNAL}
 };

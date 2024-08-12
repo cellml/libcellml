@@ -20,8 +20,17 @@ class VariableType(Enum):
     EXTERNAL = 3
 
 
-VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC},
+CONSTANT_INFO = [
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC}
+]
+
+EXTERNAL_INFO = [
     {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL}
 ]
 

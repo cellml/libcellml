@@ -18,11 +18,17 @@ class VariableType(Enum):
     ALGEBRAIC = 2
 
 
-VARIABLE_INFO = [
+CONSTANT_INFO = [
     {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
     {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT}
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 

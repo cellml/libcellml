@@ -20,12 +20,18 @@ const VariableInfo STATE_INFO[] = {
     {"v_3", "C_per_s", "main", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"v_in", "C_per_s", "main", CONSTANT},
     {"v_out", "C_per_s", "main", CONSTANT},
     {"C", "C2_per_J", "main", CONSTANT},
     {"R", "Js_per_C2", "main", CONSTANT},
-    {"L", "Js2_per_C2", "main", CONSTANT},
+    {"L", "Js2_per_C2", "main", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"v_1", "C_per_s", "main", ALGEBRAIC},
     {"v_2", "C_per_s", "main", ALGEBRAIC},
     {"u_1", "J_per_C", "main", ALGEBRAIC},

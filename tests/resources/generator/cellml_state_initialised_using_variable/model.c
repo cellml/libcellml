@@ -19,8 +19,14 @@ const VariableInfo STATE_INFO[] = {
     {"x", "mV", "main", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"k", "mV", "constants", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 double * createStatesArray()

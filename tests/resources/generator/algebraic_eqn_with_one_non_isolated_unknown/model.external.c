@@ -13,10 +13,19 @@ const size_t COMPUTED_CONSTANT_COUNT = 3;
 const size_t ALGEBRAIC_COUNT = 0;
 const size_t EXTERNAL_COUNT = 1;
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"b", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
     {"c", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
-    {"d", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
+    {"d", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
+};
+
+const VariableInfo EXTERNAL_INFO[] = {
     {"a", "dimensionless", "my_algebraic_eqn", EXTERNAL}
 };
 

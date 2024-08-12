@@ -33,7 +33,7 @@ const VariableInfo STATE_INFO[] = {
     {"y", "dimensionless", "hyperpolarisation_activated_current_y_gate", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"dCell", "dimensionless", "membrane", CONSTANT},
     {"Version", "dimensionless", "membrane", CONSTANT},
     {"FCellConstant", "dimensionless", "membrane", CONSTANT},
@@ -143,7 +143,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"g_f_K_Centre_1DCapable", "microS", "hyperpolarisation_activated_current", CONSTANT},
     {"g_f_K_Periphery_1DCapable", "microS", "hyperpolarisation_activated_current", CONSTANT},
     {"g_f_K_Centre_0DCapable", "microS", "hyperpolarisation_activated_current", CONSTANT},
-    {"g_f_K_Periphery_0DCapable", "microS", "hyperpolarisation_activated_current", CONSTANT},
+    {"g_f_K_Periphery_0DCapable", "microS", "hyperpolarisation_activated_current", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"FCell", "dimensionless", "membrane", COMPUTED_CONSTANT},
     {"Cm", "microF", "membrane", COMPUTED_CONSTANT},
     {"i_Ca_p", "nanoA", "persistent_calcium_current", COMPUTED_CONSTANT},
@@ -166,7 +169,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"tau_P_i", "second", "rapid_delayed_rectifying_potassium_current_P_i_gate", COMPUTED_CONSTANT},
     {"g_K_s", "microS", "slow_delayed_rectifying_potassium_current", COMPUTED_CONSTANT},
     {"g_f_Na", "microS", "hyperpolarisation_activated_current", COMPUTED_CONSTANT},
-    {"g_f_K", "microS", "hyperpolarisation_activated_current", COMPUTED_CONSTANT},
+    {"g_f_K", "microS", "hyperpolarisation_activated_current", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"i_Na", "nanoA", "sodium_current", ALGEBRAIC},
     {"i_p", "nanoA", "sodium_potassium_pump", ALGEBRAIC},
     {"i_NaCa", "nanoA", "sodium_calcium_exchanger", ALGEBRAIC},

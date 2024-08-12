@@ -216,8 +216,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceStateInfoString;
     std::string mImplementationStateInfoString;
 
-    std::string mInterfaceVariableInfoString;
-    std::string mImplementationVariableInfoString;
+    std::string mInterfaceConstantInfoString;
+    std::string mImplementationConstantInfoString;
+
+    std::string mInterfaceComputedConstantInfoString;
+    std::string mImplementationComputedConstantInfoString;
+
+    std::string mInterfaceAlgebraicInfoString;
+    std::string mImplementationAlgebraicInfoString;
+
+    std::string mInterfaceExternalInfoString;
+    std::string mImplementationExternalInfoString;
 
     std::string mVariableInfoEntryString;
 
@@ -577,8 +586,23 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                          "[CODE]"
                                          "};\n";
 
-        mInterfaceVariableInfoString = "extern const VariableInfo VARIABLE_INFO[];\n";
-        mImplementationVariableInfoString = "const VariableInfo VARIABLE_INFO[] = {\n"
+        mInterfaceConstantInfoString = "extern const VariableInfo CONSTANT_INFO[];\n";
+        mImplementationConstantInfoString = "const VariableInfo CONSTANT_INFO[] = {\n"
+                                            "[CODE]"
+                                            "};\n";
+
+        mInterfaceComputedConstantInfoString = "extern const VariableInfo COMPUTED_CONSTANT_INFO[];\n";
+        mImplementationComputedConstantInfoString = "const VariableInfo COMPUTED_CONSTANT_INFO[] = {\n"
+                                                    "[CODE]"
+                                                    "};\n";
+
+        mInterfaceAlgebraicInfoString = "extern const VariableInfo ALGEBRAIC_INFO[];\n";
+        mImplementationAlgebraicInfoString = "const VariableInfo ALGEBRAIC_INFO[] = {\n"
+                                             "[CODE]"
+                                             "};\n";
+
+        mInterfaceExternalInfoString = "extern const VariableInfo EXTERNAL_INFO[];\n";
+        mImplementationExternalInfoString = "const VariableInfo EXTERNAL_INFO[] = {\n"
                                             "[CODE]"
                                             "};\n";
 
@@ -1012,12 +1036,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationVoiInfoString = "VOI_INFO = [CODE]\n";
 
         mInterfaceStateInfoString = "";
-        mImplementationStateInfoString = "STATE_INFO = [\n"
-                                         "[CODE]"
-                                         "]\n";
+        mImplementationStateInfoString = "STATE_INFO = [CODE]\n";
 
-        mInterfaceVariableInfoString = "";
-        mImplementationVariableInfoString = "VARIABLE_INFO = [\n"
+        mInterfaceConstantInfoString = "";
+        mImplementationConstantInfoString = "CONSTANT_INFO = [\n"
+                                            "[CODE]"
+                                            "]\n";
+
+        mInterfaceComputedConstantInfoString = "";
+        mImplementationComputedConstantInfoString = "COMPUTED_CONSTANT_INFO = [\n"
+                                                    "[CODE]"
+                                                    "]\n";
+
+        mInterfaceAlgebraicInfoString = "";
+        mImplementationAlgebraicInfoString = "ALGEBRAIC_INFO = [\n"
+                                             "[CODE]"
+                                             "]\n";
+
+        mInterfaceExternalInfoString = "";
+        mImplementationExternalInfoString = "EXTERNAL_INFO = [\n"
                                             "[CODE]"
                                             "]\n";
 
@@ -2510,24 +2547,84 @@ void GeneratorProfile::setImplementationStateInfoString(const std::string &imple
     mPimpl->mImplementationStateInfoString = implementationStateInfoString;
 }
 
-std::string GeneratorProfile::interfaceVariableInfoString() const
+std::string GeneratorProfile::interfaceConstantInfoString() const
 {
-    return mPimpl->mInterfaceVariableInfoString;
+    return mPimpl->mInterfaceConstantInfoString;
 }
 
-void GeneratorProfile::setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString)
+void GeneratorProfile::setInterfaceConstantInfoString(const std::string &interfaceConstantInfoString)
 {
-    mPimpl->mInterfaceVariableInfoString = interfaceVariableInfoString;
+    mPimpl->mInterfaceConstantInfoString = interfaceConstantInfoString;
 }
 
-std::string GeneratorProfile::implementationVariableInfoString() const
+std::string GeneratorProfile::implementationConstantInfoString() const
 {
-    return mPimpl->mImplementationVariableInfoString;
+    return mPimpl->mImplementationConstantInfoString;
 }
 
-void GeneratorProfile::setImplementationVariableInfoString(const std::string &implementationVariableInfoString)
+void GeneratorProfile::setImplementationConstantInfoString(const std::string &implementationConstantInfoString)
 {
-    mPimpl->mImplementationVariableInfoString = implementationVariableInfoString;
+    mPimpl->mImplementationConstantInfoString = implementationConstantInfoString;
+}
+
+std::string GeneratorProfile::interfaceComputedConstantInfoString() const
+{
+    return mPimpl->mInterfaceComputedConstantInfoString;
+}
+
+void GeneratorProfile::setInterfaceComputedConstantInfoString(const std::string &interfaceComputedConstantInfoString)
+{
+    mPimpl->mInterfaceComputedConstantInfoString = interfaceComputedConstantInfoString;
+}
+
+std::string GeneratorProfile::implementationComputedConstantInfoString() const
+{
+    return mPimpl->mImplementationComputedConstantInfoString;
+}
+
+void GeneratorProfile::setImplementationComputedConstantInfoString(const std::string &implementationComputedConstantInfoString)
+{
+    mPimpl->mImplementationComputedConstantInfoString = implementationComputedConstantInfoString;
+}
+
+std::string GeneratorProfile::interfaceAlgebraicInfoString() const
+{
+    return mPimpl->mInterfaceAlgebraicInfoString;
+}
+
+void GeneratorProfile::setInterfaceAlgebraicInfoString(const std::string &interfaceAlgebraicInfoString)
+{
+    mPimpl->mInterfaceAlgebraicInfoString = interfaceAlgebraicInfoString;
+}
+
+std::string GeneratorProfile::implementationAlgebraicInfoString() const
+{
+    return mPimpl->mImplementationAlgebraicInfoString;
+}
+
+void GeneratorProfile::setImplementationAlgebraicInfoString(const std::string &implementationAlgebraicInfoString)
+{
+    mPimpl->mImplementationAlgebraicInfoString = implementationAlgebraicInfoString;
+}
+
+std::string GeneratorProfile::interfaceExternalInfoString() const
+{
+    return mPimpl->mInterfaceExternalInfoString;
+}
+
+void GeneratorProfile::setInterfaceExternalInfoString(const std::string &interfaceExternalInfoString)
+{
+    mPimpl->mInterfaceExternalInfoString = interfaceExternalInfoString;
+}
+
+std::string GeneratorProfile::implementationExternalInfoString() const
+{
+    return mPimpl->mImplementationExternalInfoString;
+}
+
+void GeneratorProfile::setImplementationExternalInfoString(const std::string &implementationExternalInfoString)
+{
+    mPimpl->mImplementationExternalInfoString = implementationExternalInfoString;
 }
 
 std::string GeneratorProfile::variableInfoEntryString() const

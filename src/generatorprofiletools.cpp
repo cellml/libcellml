@@ -474,8 +474,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceStateInfoString()
                        + generatorProfile->implementationStateInfoString();
 
-    profileContents += generatorProfile->interfaceVariableInfoString()
-                       + generatorProfile->implementationVariableInfoString();
+    profileContents += generatorProfile->interfaceConstantInfoString()
+                       + generatorProfile->implementationConstantInfoString();
+
+    profileContents += generatorProfile->interfaceComputedConstantInfoString()
+                       + generatorProfile->implementationComputedConstantInfoString();
+
+    profileContents += generatorProfile->interfaceAlgebraicInfoString()
+                       + generatorProfile->implementationAlgebraicInfoString();
+
+    profileContents += generatorProfile->interfaceExternalInfoString()
+                       + generatorProfile->implementationExternalInfoString();
 
     profileContents += generatorProfile->variableInfoEntryString();
 

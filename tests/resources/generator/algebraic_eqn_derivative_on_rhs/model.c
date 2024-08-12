@@ -19,8 +19,14 @@ const VariableInfo STATE_INFO[] = {
     {"v", "dimensionless", "my_ode", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"a", "per_s", "my_ode", COMPUTED_CONSTANT},
+const VariableInfo CONSTANT_INFO[] = {
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"a", "per_s", "my_ode", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"x", "per_s", "my_algebraic_eqn", ALGEBRAIC}
 };
 
