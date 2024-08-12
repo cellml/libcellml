@@ -12,11 +12,17 @@ const size_t CONSTANT_COUNT = 2;
 const size_t COMPUTED_CONSTANT_COUNT = 2;
 const size_t ALGEBRAIC_COUNT = 0;
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"L", "centimeter", "cell_geometry", CONSTANT},
-    {"rad", "centimeter", "cell_geometry", CONSTANT},
+    {"rad", "centimeter", "cell_geometry", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"vcell", "microlitre", "cell_geometry", COMPUTED_CONSTANT},
     {"vss", "microlitre", "cell_geometry", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 double * createVariablesArray()

@@ -18,10 +18,16 @@ class VariableType(Enum):
     ALGEBRAIC = 2
 
 
-VARIABLE_INFO = [
-    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT},
+CONSTANT_INFO = [
+    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
     {"name": "x", "units": "mM", "component": "main", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "y", "units": "M", "component": "main", "type": VariableType.COMPUTED_CONSTANT}
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 

@@ -26,7 +26,10 @@ typedef struct {
     VariableType type;
 } VariableInfo;
 
-extern const VariableInfo VARIABLE_INFO[];
+extern const VariableInfo CONSTANT_INFO[];
+extern const VariableInfo COMPUTED_CONSTANT_INFO[];
+extern const VariableInfo ALGEBRAIC_INFO[];
+extern const VariableInfo EXTERNAL_INFO[];
 
 double * createVariablesArray();
 void deleteArray(double *array);

@@ -13,7 +13,16 @@ const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 0;
 const size_t EXTERNAL_COUNT = 3;
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
+};
+
+const VariableInfo EXTERNAL_INFO[] = {
     {"x", "dimensionless", "my_algebraic_system", EXTERNAL},
     {"y", "dimensionless", "my_algebraic_system", EXTERNAL},
     {"z", "dimensionless", "my_algebraic_system", EXTERNAL}

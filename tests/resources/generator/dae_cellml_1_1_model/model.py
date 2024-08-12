@@ -23,17 +23,22 @@ class VariableType(Enum):
 
 VOI_INFO = {"name": "t", "units": "second", "component": "main", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
-STATE_INFO = [
-    {"name": "q_1", "units": "coulomb", "component": "main", "type": VariableType.STATE},
+STATE_INFO =     {"name": "q_1", "units": "coulomb", "component": "main", "type": VariableType.STATE},
     {"name": "v_3", "units": "C_per_s", "component": "main", "type": VariableType.STATE}
-]
 
-VARIABLE_INFO = [
+
+CONSTANT_INFO = [
     {"name": "v_in", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
     {"name": "v_out", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
     {"name": "C", "units": "C2_per_J", "component": "main", "type": VariableType.CONSTANT},
     {"name": "R", "units": "Js_per_C2", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT},
+    {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT}
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
     {"name": "v_1", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "v_2", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},

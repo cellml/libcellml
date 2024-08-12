@@ -20,7 +20,13 @@ const VariableInfo STATE_INFO[] = {
     {"x", "mM", "circle_x", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"local_complex_maths", "mM", "circle_sibling", ALGEBRAIC},
     {"two_x", "milli_mole", "circle_x_sibling", ALGEBRAIC}
 };

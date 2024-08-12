@@ -2948,53 +2948,203 @@ public:
 
     /**
      * @brief Get the @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      *
      * Return the @c std::string for the interface of some information about the
-     * different variables.
+     * different constants.
      *
      * @return The @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      */
-    std::string interfaceVariableInfoString() const;
+    std::string interfaceConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      *
      * Set the @c std::string for the interface of some information about the
-     * different variables.
+     * different constants.
      *
-     * @param interfaceVariableInfoString The @c std::string to use for the
-     * interface of some information about the different variables.
+     * @param interfaceConstantInfoString The @c std::string to use for the
+     * interface of some information about the different constants.
      */
-    void setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString);
+    void setInterfaceConstantInfoString(const std::string &interfaceConstantInfoString);
 
     /**
      * @brief Get the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * Return the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * @return The @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      */
-    std::string implementationVariableInfoString() const;
+    std::string implementationConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * Set the @c std::string for the implementation of some information about
-     * the different variables. To be useful, the string should contain the
-     * [CODE] tag, which will be replaced with some information about the
-     * different variables.
+     * the different constants. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * constants.
      *
-     * @param implementationVariableInfoString The @c std::string to use for the
-     * implementation of some information about the different variables.
+     * @param implementationConstantInfoString The @c std::string to use for the
+     * implementation of some information about the different constants.
      */
-    void setImplementationVariableInfoString(const std::string &implementationVariableInfoString);
+    void setImplementationConstantInfoString(const std::string &implementationConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different computed constants.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different computed constants.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different computed constants.
+     */
+    std::string interfaceComputedConstantInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different computed constants.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different computed constants.
+     *
+     * @param interfaceComputedConstantInfoString The @c std::string to use for the
+     * interface of some information about the different computed constants.
+     */
+    void setInterfaceComputedConstantInfoString(const std::string &interfaceComputedConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different computed constants.
+     */
+    std::string implementationComputedConstantInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different computed constants. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * computed constants.
+     *
+     * @param implementationComputedConstantInfoString The @c std::string to use for the
+     * implementation of some information about the different computed constants.
+     */
+    void setImplementationComputedConstantInfoString(const std::string &implementationComputedConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different algebraic variables.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different algebraic variables.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different algebraic variables.
+     */
+    std::string interfaceAlgebraicInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different algebraic variables.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different algebraic variables.
+     *
+     * @param interfaceAlgebraicInfoString The @c std::string to use for the
+     * interface of some information about the different algebraic variables.
+     */
+    void setInterfaceAlgebraicInfoString(const std::string &interfaceAlgebraicInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     */
+    std::string implementationAlgebraicInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different algebraic variables. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * algebraic variables.
+     *
+     * @param implementationAlgebraicInfoString The @c std::string to use for the
+     * implementation of some information about the different algebraic variables.
+     */
+    void setImplementationAlgebraicInfoString(const std::string &implementationAlgebraicInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different external variables.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different external variables.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different external variables.
+     */
+    std::string interfaceExternalInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different external variables.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different external variables.
+     *
+     * @param interfaceExternalInfoString The @c std::string to use for the
+     * interface of some information about the different external variables.
+     */
+    void setInterfaceExternalInfoString(const std::string &interfaceExternalInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different external variables.
+     */
+    std::string implementationExternalInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different external variables. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * external variables.
+     *
+     * @param implementationExternalInfoString The @c std::string to use for the
+     * implementation of some information about the different external variables.
+     */
+    void setImplementationExternalInfoString(const std::string &implementationExternalInfoString);
 
     /**
      * @brief Get the @c std::string for an entry in an array for some

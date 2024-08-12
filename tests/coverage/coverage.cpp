@@ -736,7 +736,13 @@ TEST(Coverage, generator)
 
     profile->setImplementationStateInfoString("");
 
-    profile->setImplementationVariableInfoString("");
+    profile->setImplementationConstantInfoString("");
+
+    profile->setImplementationComputedConstantInfoString("");
+
+    profile->setImplementationAlgebraicInfoString("");
+
+    profile->setImplementationExternalInfoString("");
 
     profile->setVariableInfoEntryString("");
 
@@ -823,8 +829,17 @@ TEST(Coverage, generator)
     profile->setInterfaceStateInfoString("");
     profile->setImplementationStateInfoString("");
 
-    profile->setInterfaceVariableInfoString("");
-    profile->setImplementationVariableInfoString("");
+    profile->setInterfaceConstantInfoString("");
+    profile->setImplementationConstantInfoString("");
+
+    profile->setInterfaceComputedConstantInfoString("");
+    profile->setImplementationComputedConstantInfoString("");
+
+    profile->setInterfaceAlgebraicInfoString("");
+    profile->setImplementationAlgebraicInfoString("");
+
+    profile->setInterfaceExternalInfoString("");
+    profile->setImplementationExternalInfoString("");
 
     profile->setVariableInfoEntryString("");
 

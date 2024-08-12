@@ -19,8 +19,14 @@ const VariableInfo STATE_INFO[] = {
     {"v", "dimensionless", "my_component", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"a", "per_s", "my_component", COMPUTED_CONSTANT},
+const VariableInfo CONSTANT_INFO[] = {
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"a", "per_s", "my_component", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"x", "per_s", "my_component", ALGEBRAIC}
 };
 

@@ -20,8 +20,14 @@ const VariableInfo STATE_INFO[] = {
     {"y", "dimensionless", "my_y_ode", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"epsilon", "dimensionless", "my_y_ode", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 double * createStatesArray()

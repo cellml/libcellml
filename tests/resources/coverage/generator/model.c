@@ -19,14 +19,17 @@ const VariableInfo STATE_INFO[] = {
     {"x", "dimensionless", "my_component", STATE}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
+const VariableInfo CONSTANT_INFO[] = {
     {"m", "dimensionless", "my_component", CONSTANT},
     {"n", "dimensionless", "my_component", CONSTANT},
     {"o", "dimensionless", "my_component", CONSTANT},
     {"p", "dimensionless", "my_component", CONSTANT},
     {"q", "dimensionless", "my_component", CONSTANT},
     {"r", "dimensionless", "my_component", CONSTANT},
-    {"s", "dimensionless", "my_component", CONSTANT},
+    {"s", "dimensionless", "my_component", CONSTANT}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"eqnEq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnEqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -226,7 +229,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnComputedConstant1", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnComputedConstant2", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnComputedConstant2", "dimensionless", "my_component", COMPUTED_CONSTANT}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
     {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC}
 };

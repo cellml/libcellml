@@ -23,13 +23,18 @@ class VariableType(Enum):
 
 VOI_INFO = {"name": "t", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
-STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_x_ode", "type": VariableType.STATE},
+STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_x_ode", "type": VariableType.STATE},
     {"name": "y", "units": "dimensionless", "component": "my_y_ode", "type": VariableType.STATE}
+
+
+CONSTANT_INFO = [
+    {"name": "epsilon", "units": "dimensionless", "component": "my_y_ode", "type": VariableType.CONSTANT}
 ]
 
-VARIABLE_INFO = [
-    {"name": "epsilon", "units": "dimensionless", "component": "my_y_ode", "type": VariableType.CONSTANT}
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 

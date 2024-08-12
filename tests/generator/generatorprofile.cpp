@@ -346,11 +346,29 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "};\n",
               generatorProfile->implementationStateInfoString());
 
-    EXPECT_EQ("extern const VariableInfo VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
-    EXPECT_EQ("const VariableInfo VARIABLE_INFO[] = {\n"
+    EXPECT_EQ("extern const VariableInfo CONSTANT_INFO[];\n", generatorProfile->interfaceConstantInfoString());
+    EXPECT_EQ("const VariableInfo CONSTANT_INFO[] = {\n"
               "[CODE]"
               "};\n",
-              generatorProfile->implementationVariableInfoString());
+              generatorProfile->implementationConstantInfoString());
+
+    EXPECT_EQ("extern const VariableInfo COMPUTED_CONSTANT_INFO[];\n", generatorProfile->interfaceComputedConstantInfoString());
+    EXPECT_EQ("const VariableInfo COMPUTED_CONSTANT_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationComputedConstantInfoString());
+
+    EXPECT_EQ("extern const VariableInfo ALGEBRAIC_INFO[];\n", generatorProfile->interfaceAlgebraicInfoString());
+    EXPECT_EQ("const VariableInfo ALGEBRAIC_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationAlgebraicInfoString());
+
+    EXPECT_EQ("extern const VariableInfo EXTERNAL_INFO[];\n", generatorProfile->interfaceExternalInfoString());
+    EXPECT_EQ("const VariableInfo EXTERNAL_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationExternalInfoString());
 
     EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}", generatorProfile->variableInfoEntryString());
 
@@ -908,8 +926,17 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceStateInfoString(value);
     generatorProfile->setImplementationStateInfoString(value);
 
-    generatorProfile->setInterfaceVariableInfoString(value);
-    generatorProfile->setImplementationVariableInfoString(value);
+    generatorProfile->setInterfaceConstantInfoString(value);
+    generatorProfile->setImplementationConstantInfoString(value);
+
+    generatorProfile->setInterfaceComputedConstantInfoString(value);
+    generatorProfile->setImplementationComputedConstantInfoString(value);
+
+    generatorProfile->setInterfaceAlgebraicInfoString(value);
+    generatorProfile->setImplementationAlgebraicInfoString(value);
+
+    generatorProfile->setInterfaceExternalInfoString(value);
+    generatorProfile->setImplementationExternalInfoString(value);
 
     generatorProfile->setVariableInfoEntryString(value);
 
@@ -1048,8 +1075,17 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceStateInfoString());
     EXPECT_EQ(value, generatorProfile->implementationStateInfoString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceVariableInfoString());
-    EXPECT_EQ(value, generatorProfile->implementationVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->interfaceConstantInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationConstantInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputedConstantInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationComputedConstantInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAlgebraicInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationAlgebraicInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceExternalInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationExternalInfoString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
 
