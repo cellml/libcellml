@@ -12,33 +12,24 @@ CONSTANT_COUNT = 3
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 2
 
+VOI_INFO = {"name": "t", "units": "dimensionless", "component": "main"}
 
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "t", "units": "dimensionless", "component": "main", "type": VariableType.VARIABLE_OF_INTEGRATION}
-
-STATE_INFO =     {"name": "y1", "units": "dimensionless", "component": "main", "type": VariableType.STATE},
-    {"name": "y2", "units": "dimensionless", "component": "main", "type": VariableType.STATE}
+STATE_INFO =     {"name": "y1", "units": "dimensionless", "component": "main"},
+    {"name": "y2", "units": "dimensionless", "component": "main"}
 
 
 CONSTANT_INFO = [
-    {"name": "k1", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "k3", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "k2", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT}
+    {"name": "k1", "units": "dimensionless", "component": "main"},
+    {"name": "k3", "units": "dimensionless", "component": "main"},
+    {"name": "k2", "units": "dimensionless", "component": "main"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "y3", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "y2_scaled", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC}
+    {"name": "y3", "units": "dimensionless", "component": "main"},
+    {"name": "y2_scaled", "units": "dimensionless", "component": "main"}
 ]
 
 

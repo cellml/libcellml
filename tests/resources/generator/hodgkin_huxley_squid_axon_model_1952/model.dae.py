@@ -12,48 +12,39 @@ CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 3
 ALGEBRAIC_COUNT = 10
 
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
-
-STATE_INFO =     {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE},
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.STATE},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE}
+STATE_INFO =     {"name": "V", "units": "millivolt", "component": "membrane"},
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
 
 
 CONSTANT_INFO = [
-    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT}
+    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane"},
+    {"name": "E_R", "units": "millivolt", "component": "membrane"},
+    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current"},
+    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel"},
+    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "E_L", "units": "millivolt", "component": "leakage_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "E_L", "units": "millivolt", "component": "leakage_current"},
+    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel"},
+    {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
-    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
-    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
-    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
+    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane"},
+    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current"},
+    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
+    {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
+    {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
+    {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
+    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"},
+    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
 

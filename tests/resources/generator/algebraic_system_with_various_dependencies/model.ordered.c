@@ -13,18 +13,18 @@ const size_t COMPUTED_CONSTANT_COUNT = 1;
 const size_t ALGEBRAIC_COUNT = 3;
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system", CONSTANT},
-    {"y", "dimensionless", "my_algebraic_system", CONSTANT}
+    {"x", "dimensionless", "my_algebraic_system"},
+    {"y", "dimensionless", "my_algebraic_system"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT}
+    {"a", "dimensionless", "my_algebraic_system"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"c", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"b", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"d", "dimensionless", "my_algebraic_system", ALGEBRAIC}
+    {"c", "dimensionless", "my_algebraic_system"},
+    {"b", "dimensionless", "my_algebraic_system"},
+    {"d", "dimensionless", "my_algebraic_system"}
 };
 
 double * createVariablesArray()

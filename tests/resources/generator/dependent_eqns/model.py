@@ -12,18 +12,9 @@ CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 2
 
+VOI_INFO = {"name": "time", "units": "second", "component": "my_component"}
 
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "time", "units": "second", "component": "my_component", "type": VariableType.VARIABLE_OF_INTEGRATION}
-
-STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
+STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_component"}
 
 
 CONSTANT_INFO = [
@@ -33,8 +24,8 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "a", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "b", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC}
+    {"name": "a", "units": "second", "component": "my_component"},
+    {"name": "b", "units": "second", "component": "my_component"}
 ]
 
 

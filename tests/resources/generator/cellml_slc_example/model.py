@@ -11,27 +11,20 @@ CONSTANT_COUNT = 9
 COMPUTED_CONSTANT_COUNT = 1
 ALGEBRAIC_COUNT = 0
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-
-
 CONSTANT_INFO = [
-    {"name": "E", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT}
+    {"name": "E", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
 ]
 
 ALGEBRAIC_INFO = [

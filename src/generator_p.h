@@ -82,20 +82,17 @@ struct Generator::GeneratorImpl
 
     void addStateAndVariableCountCode(bool interface = false);
 
-    void addVariableTypeObjectCode();
-
     std::string generateVariableInfoObjectCode(const std::string &objectString) const;
 
     void addVariableInfoObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component,
-                                              const std::string &type) const;
+                                              const std::string &component) const;
 
     void addInterfaceVariableInfoCode();
 
-    void doAddImplementationVariableInfoCode(const std::string &variableInfoString, const std::string &variableTypeString,
+    void doAddImplementationVariableInfoCode(const std::string &variableInfoString,
                                              const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
     void addImplementationVariableInfoCode();
 

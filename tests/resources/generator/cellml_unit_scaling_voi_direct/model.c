@@ -13,11 +13,11 @@ const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 0;
 
-const VariableInfo VOI_INFO = {"t", "ms", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "main", STATE},
-    {"y", "dimensionless", "main", STATE}
+    {"x", "dimensionless", "main"},
+    {"y", "dimensionless", "main"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {

@@ -11,26 +11,19 @@ CONSTANT_COUNT = 2
 COMPUTED_CONSTANT_COUNT = 1
 ALGEBRAIC_COUNT = 3
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-
-
 CONSTANT_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.CONSTANT},
-    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.CONSTANT}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
-    {"name": "b", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
-    {"name": "c", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC}
+    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "b", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "c", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 

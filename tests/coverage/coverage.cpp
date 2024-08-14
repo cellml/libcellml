@@ -718,18 +718,6 @@ TEST(Coverage, generator)
     profile->setImplementationAlgebraicCountString("");
     profile->setImplementationExternalCountString("");
 
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
-
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
-
     profile->setVariableInfoObjectString("");
 
     profile->setImplementationVoiInfoString("");
@@ -808,18 +796,6 @@ TEST(Coverage, generator)
 
     profile->setInterfaceExternalCountString("");
     profile->setImplementationExternalCountString("");
-
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
-
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
 
@@ -926,32 +902,6 @@ TEST(Coverage, generator)
     profile->setFindRootCallString(true, "");
     profile->setNlaSolveCallString(false, "");
     profile->setNlaSolveCallString(true, "");
-    profile->setVariableOfIntegrationVariableTypeString("");
-
-    generator->implementationCode();
-
-    profile->setStateVariableTypeString("");
-    profile->setVariableOfIntegrationVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setConstantVariableTypeString("");
-    profile->setStateVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setComputedConstantVariableTypeString("");
-    profile->setConstantVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setComputedConstantVariableTypeString("xxx");
-    profile->setAlgebraicVariableTypeString("");
-
-    generator->implementationCode();
-
-    profile->setAlgebraicVariableTypeString("xxx");
-    profile->setExternalVariableTypeString("");
 
     generator->implementationCode();
 

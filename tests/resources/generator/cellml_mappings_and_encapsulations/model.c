@@ -13,11 +13,11 @@ const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 2;
 
-const VariableInfo VOI_INFO = {"t", "ms", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"y", "mM", "circle_y_implementation", STATE},
-    {"x", "mM", "circle_x", STATE}
+    {"y", "mM", "circle_y_implementation"},
+    {"x", "mM", "circle_x"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
@@ -27,8 +27,8 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"local_complex_maths", "mM", "circle_sibling", ALGEBRAIC},
-    {"two_x", "milli_mole", "circle_x_sibling", ALGEBRAIC}
+    {"local_complex_maths", "mM", "circle_sibling"},
+    {"two_x", "milli_mole", "circle_x_sibling"}
 };
 
 double * createStatesArray()

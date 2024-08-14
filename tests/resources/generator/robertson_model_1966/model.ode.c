@@ -13,25 +13,25 @@ const size_t CONSTANT_COUNT = 3;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 1;
 
-const VariableInfo VOI_INFO = {"t", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "dimensionless", "main"};
 
 const VariableInfo STATE_INFO[] = {
-    {"y1", "dimensionless", "main", STATE},
-    {"y3", "dimensionless", "main", STATE},
-    {"y2", "dimensionless", "main", STATE}
+    {"y1", "dimensionless", "main"},
+    {"y3", "dimensionless", "main"},
+    {"y2", "dimensionless", "main"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"k1", "dimensionless", "main", CONSTANT},
-    {"k3", "dimensionless", "main", CONSTANT},
-    {"k2", "dimensionless", "main", CONSTANT}
+    {"k1", "dimensionless", "main"},
+    {"k3", "dimensionless", "main"},
+    {"k2", "dimensionless", "main"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"y2_scaled", "dimensionless", "main", ALGEBRAIC}
+    {"y2_scaled", "dimensionless", "main"}
 };
 
 double * createStatesArray()

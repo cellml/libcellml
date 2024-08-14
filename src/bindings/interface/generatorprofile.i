@@ -729,48 +729,6 @@ the <ALGEBRAIC_COUNT> tag, which will be replaced with the number of states in t
 "Sets the string for the implementation of the external count constant. To be useful, the string should contain
 the <EXTERNAL_COUNT> tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
-"Returns the string for the data structure for the variable type object.";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
-"Sets the string for the data structure for the variable type object.";
-
-%feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
-"Returns the string for the name of the variable of integration variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableOfIntegrationVariableTypeString
-"Sets the string for the name of the variable of integration variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::stateVariableTypeString
-"Returns the string for the name of the state variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setStateVariableTypeString
-"Sets the string for the name of the state variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::constantVariableTypeString
-"Returns the string for the name of the constant variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setConstantVariableTypeString
-"Sets the string for the name of the constant variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::computedConstantVariableTypeString
-"Returns the string for the name of the computed constant variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setComputedConstantVariableTypeString
-"Sets the string for the name of the computed constant variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::algebraicVariableTypeString
-"Returns the string for the name of the algebraic variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setAlgebraicVariableTypeString
-"Sets the string for the name of the algebraic variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::externalVariableTypeString
-"Returns the string for the name of the external variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableTypeString
-"Sets the string for the name of the external variable type.";
-
 %feature("docstring") libcellml::GeneratorProfile::variableInfoObjectString
 "Returns the string for the data structure for the variable information object.";
 

@@ -196,18 +196,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceExternalCountString;
     std::string mImplementationExternalCountString;
 
-    std::string mVariableTypeObjectFamWoevString;
-    std::string mVariableTypeObjectFamWevString;
-    std::string mVariableTypeObjectFdmWoevString;
-    std::string mVariableTypeObjectFdmWevString;
-
-    std::string mVariableOfIntegrationVariableTypeString;
-    std::string mStateVariableTypeString;
-    std::string mConstantVariableTypeString;
-    std::string mComputedConstantVariableTypeString;
-    std::string mAlgebraicVariableTypeString;
-    std::string mExternalVariableTypeString;
-
     std::string mVariableInfoObjectString;
 
     std::string mInterfaceVoiInfoString;
@@ -537,45 +525,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceExternalCountString = "extern const size_t EXTERNAL_COUNT;\n";
         mImplementationExternalCountString = "const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n";
 
-        mVariableTypeObjectFamWoevString = "typedef enum {\n"
-                                           "    CONSTANT,\n"
-                                           "    COMPUTED_CONSTANT,\n"
-                                           "    ALGEBRAIC\n"
-                                           "} VariableType;\n";
-        mVariableTypeObjectFamWevString = "typedef enum {\n"
-                                          "    CONSTANT,\n"
-                                          "    COMPUTED_CONSTANT,\n"
-                                          "    ALGEBRAIC,\n"
-                                          "    EXTERNAL\n"
-                                          "} VariableType;\n";
-        mVariableTypeObjectFdmWoevString = "typedef enum {\n"
-                                           "    VARIABLE_OF_INTEGRATION,\n"
-                                           "    STATE,\n"
-                                           "    CONSTANT,\n"
-                                           "    COMPUTED_CONSTANT,\n"
-                                           "    ALGEBRAIC\n"
-                                           "} VariableType;\n";
-        mVariableTypeObjectFdmWevString = "typedef enum {\n"
-                                          "    VARIABLE_OF_INTEGRATION,\n"
-                                          "    STATE,\n"
-                                          "    CONSTANT,\n"
-                                          "    COMPUTED_CONSTANT,\n"
-                                          "    ALGEBRAIC,\n"
-                                          "    EXTERNAL\n"
-                                          "} VariableType;\n";
-
-        mVariableOfIntegrationVariableTypeString = "VARIABLE_OF_INTEGRATION";
-        mStateVariableTypeString = "STATE";
-        mConstantVariableTypeString = "CONSTANT";
-        mComputedConstantVariableTypeString = "COMPUTED_CONSTANT";
-        mAlgebraicVariableTypeString = "ALGEBRAIC";
-        mExternalVariableTypeString = "EXTERNAL";
-
         mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[[NAME_SIZE]];\n"
                                     "    char units[[UNITS_SIZE]];\n"
                                     "    char component[[COMPONENT_SIZE]];\n"
-                                    "    VariableType type;\n"
                                     "} VariableInfo;\n";
 
         mInterfaceVoiInfoString = "extern const VariableInfo VOI_INFO;\n";
@@ -606,7 +559,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "[CODE]"
                                             "};\n";
 
-        mVariableInfoEntryString = "{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}";
+        mVariableInfoEntryString = "{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\"}";
 
         mVoiString = "voi";
 
@@ -992,44 +945,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceExternalCountString = "";
         mImplementationExternalCountString = "EXTERNAL_COUNT = [EXTERNAL_COUNT]\n";
 
-        mVariableTypeObjectFamWoevString = "\n"
-                                           "class VariableType(Enum):\n"
-                                           "    CONSTANT = 0\n"
-                                           "    COMPUTED_CONSTANT = 1\n"
-                                           "    ALGEBRAIC = 2\n"
-                                           "\n";
-        mVariableTypeObjectFamWevString = "\n"
-                                          "class VariableType(Enum):\n"
-                                          "    CONSTANT = 0\n"
-                                          "    COMPUTED_CONSTANT = 1\n"
-                                          "    ALGEBRAIC = 2\n"
-                                          "    EXTERNAL = 3\n"
-                                          "\n";
-        mVariableTypeObjectFdmWoevString = "\n"
-                                           "class VariableType(Enum):\n"
-                                           "    VARIABLE_OF_INTEGRATION = 0\n"
-                                           "    STATE = 1\n"
-                                           "    CONSTANT = 2\n"
-                                           "    COMPUTED_CONSTANT = 3\n"
-                                           "    ALGEBRAIC = 4\n"
-                                           "\n";
-        mVariableTypeObjectFdmWevString = "\n"
-                                          "class VariableType(Enum):\n"
-                                          "    VARIABLE_OF_INTEGRATION = 0\n"
-                                          "    STATE = 1\n"
-                                          "    CONSTANT = 2\n"
-                                          "    COMPUTED_CONSTANT = 3\n"
-                                          "    ALGEBRAIC = 4\n"
-                                          "    EXTERNAL = 5\n"
-                                          "\n";
-
-        mVariableOfIntegrationVariableTypeString = "VariableType.VARIABLE_OF_INTEGRATION";
-        mStateVariableTypeString = "VariableType.STATE";
-        mConstantVariableTypeString = "VariableType.CONSTANT";
-        mComputedConstantVariableTypeString = "VariableType.COMPUTED_CONSTANT";
-        mAlgebraicVariableTypeString = "VariableType.ALGEBRAIC";
-        mExternalVariableTypeString = "VariableType.EXTERNAL";
-
         mVariableInfoObjectString = "";
 
         mInterfaceVoiInfoString = "";
@@ -1058,7 +973,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "[CODE]"
                                             "]\n";
 
-        mVariableInfoEntryString = "{\"name\": \"[NAME]\", \"units\": \"[UNITS]\", \"component\": \"[COMPONENT]\", \"type\": [TYPE]}";
+        mVariableInfoEntryString = "{\"name\": \"[NAME]\", \"units\": \"[UNITS]\", \"component\": \"[COMPONENT]\"}";
 
         mVoiString = "voi";
 
@@ -2398,103 +2313,6 @@ std::string GeneratorProfile::implementationExternalCountString() const
 void GeneratorProfile::setImplementationExternalCountString(const std::string &implementationExternalCountString)
 {
     mPimpl->mImplementationExternalCountString = implementationExternalCountString;
-}
-
-std::string GeneratorProfile::variableTypeObjectString(bool forDifferentialModel,
-                                                       bool withExternalVariables) const
-{
-    if (forDifferentialModel) {
-        if (withExternalVariables) {
-            return mPimpl->mVariableTypeObjectFdmWevString;
-        }
-
-        return mPimpl->mVariableTypeObjectFdmWoevString;
-    }
-
-    if (withExternalVariables) {
-        return mPimpl->mVariableTypeObjectFamWevString;
-    }
-
-    return mPimpl->mVariableTypeObjectFamWoevString;
-}
-
-void GeneratorProfile::setVariableTypeObjectString(bool forDifferentialModel,
-                                                   bool withExternalVariables,
-                                                   const std::string &variableTypeObjectString)
-{
-    if (forDifferentialModel) {
-        if (withExternalVariables) {
-            mPimpl->mVariableTypeObjectFdmWevString = variableTypeObjectString;
-        } else {
-            mPimpl->mVariableTypeObjectFdmWoevString = variableTypeObjectString;
-        }
-    } else {
-        if (withExternalVariables) {
-            mPimpl->mVariableTypeObjectFamWevString = variableTypeObjectString;
-        } else {
-            mPimpl->mVariableTypeObjectFamWoevString = variableTypeObjectString;
-        }
-    }
-}
-
-std::string GeneratorProfile::variableOfIntegrationVariableTypeString() const
-{
-    return mPimpl->mVariableOfIntegrationVariableTypeString;
-}
-
-void GeneratorProfile::setVariableOfIntegrationVariableTypeString(const std::string &variableOfIntegrationVariableTypeString)
-{
-    mPimpl->mVariableOfIntegrationVariableTypeString = variableOfIntegrationVariableTypeString;
-}
-
-std::string GeneratorProfile::stateVariableTypeString() const
-{
-    return mPimpl->mStateVariableTypeString;
-}
-
-void GeneratorProfile::setStateVariableTypeString(const std::string &stateVariableTypeString)
-{
-    mPimpl->mStateVariableTypeString = stateVariableTypeString;
-}
-
-std::string GeneratorProfile::constantVariableTypeString() const
-{
-    return mPimpl->mConstantVariableTypeString;
-}
-
-void GeneratorProfile::setConstantVariableTypeString(const std::string &constantVariableTypeString)
-{
-    mPimpl->mConstantVariableTypeString = constantVariableTypeString;
-}
-
-std::string GeneratorProfile::computedConstantVariableTypeString() const
-{
-    return mPimpl->mComputedConstantVariableTypeString;
-}
-
-void GeneratorProfile::setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString)
-{
-    mPimpl->mComputedConstantVariableTypeString = computedConstantVariableTypeString;
-}
-
-std::string GeneratorProfile::algebraicVariableTypeString() const
-{
-    return mPimpl->mAlgebraicVariableTypeString;
-}
-
-void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
-{
-    mPimpl->mAlgebraicVariableTypeString = algebraicVariableTypeString;
-}
-
-std::string GeneratorProfile::externalVariableTypeString() const
-{
-    return mPimpl->mExternalVariableTypeString;
-}
-
-void GeneratorProfile::setExternalVariableTypeString(const std::string &externalVariableTypeString)
-{
-    mPimpl->mExternalVariableTypeString = externalVariableTypeString;
 }
 
 std::string GeneratorProfile::variableInfoObjectString() const

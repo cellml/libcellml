@@ -19,9 +19,9 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"y", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"z", "dimensionless", "my_algebraic_system", ALGEBRAIC}
+    {"x", "dimensionless", "my_algebraic_system"},
+    {"y", "dimensionless", "my_algebraic_system"},
+    {"z", "dimensionless", "my_algebraic_system"}
 };
 
 double * createVariablesArray()

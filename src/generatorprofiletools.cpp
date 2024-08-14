@@ -454,18 +454,6 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceExternalCountString()
                        + generatorProfile->implementationExternalCountString();
 
-    profileContents += generatorProfile->variableTypeObjectString(false, false);
-    profileContents += generatorProfile->variableTypeObjectString(false, true);
-    profileContents += generatorProfile->variableTypeObjectString(true, false);
-    profileContents += generatorProfile->variableTypeObjectString(true, true);
-
-    profileContents += generatorProfile->variableOfIntegrationVariableTypeString()
-                       + generatorProfile->stateVariableTypeString()
-                       + generatorProfile->constantVariableTypeString()
-                       + generatorProfile->computedConstantVariableTypeString()
-                       + generatorProfile->algebraicVariableTypeString()
-                       + generatorProfile->externalVariableTypeString();
-
     profileContents += generatorProfile->variableInfoObjectString();
 
     profileContents += generatorProfile->interfaceVoiInfoString()
