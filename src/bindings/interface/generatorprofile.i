@@ -938,19 +938,61 @@ tag, which will be replaced with some code to create the states array.";
 "Sets the string for the implementation to create the states array. To be useful, the string should contain the
 <CODE> tag, which will be replaced with some code to create the states array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceCreateVariablesArrayMethodString
-"Returns the string for the interface to create variables array.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateConstantsArrayMethodString
+"Returns the string for the interface to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateVariablesArrayMethodString
-"Sets the string for the interface to create variables array. To be useful, the string should contain the <CODE>
-tag, which will be replaced with some code to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateConstantsArrayMethodString
+"Sets the string for the interface to create the constants array. To be useful, the string should contain the <CODE>
+tag, which will be replaced with some code to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationCreateVariablesArrayMethodString
-"Returns the string for the implementation to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateConstantsArrayMethodString
+"Returns the string for the implementation to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateVariablesArrayMethodString
-"Sets the string for the implementation to create the variables array. To be useful, the string should contain the
-<CODE> tag, which will be replaced with some code to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateConstantsArrayMethodString
+"Sets the string for the implementation to create the constants array. To be useful, the string should contain the
+<CODE> tag, which will be replaced with some code to create the constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateComputedConstantsArrayMethodString
+"Returns the string for the interface to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateComputedConstantsArrayMethodString
+"Sets the string for the interface to create the computed constants array. To be useful, the string should contain the <CODE>
+tag, which will be replaced with some code to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateComputedConstantsArrayMethodString
+"Returns the string for the implementation to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateComputedConstantsArrayMethodString
+"Sets the string for the implementation to create the computed constants array. To be useful, the string should contain the
+<CODE> tag, which will be replaced with some code to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateAlgebraicArrayMethodString
+"Returns the string for the interface to create the algebraic array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateAlgebraicArrayMethodString
+"Sets the string for the interface to create the algebraic array. To be useful, the string should contain the <CODE>
+tag, which will be replaced with some code to create the algebraic array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateAlgebraicArrayMethodString
+"Returns the string for the implementation to create the algebraic array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateAlgebraicArrayMethodString
+"Sets the string for the implementation to create the algebraic array. To be useful, the string should contain the
+<CODE> tag, which will be replaced with some code to create the algebraic array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateExternalsArrayMethodString
+"Returns the string for the interface to create the externals array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateExternalsArrayMethodString
+"Sets the string for the interface to create the externals array. To be useful, the string should contain the <CODE>
+tag, which will be replaced with some code to create the externals array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateExternalsArrayMethodString
+"Returns the string for the implementation to create the externals array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateExternalsArrayMethodString
+"Sets the string for the implementation to create the externals array. To be useful, the string should contain the
+<CODE> tag, which will be replaced with some code to create the externals array.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceDeleteArrayMethodString
 "Returns the string for the interface to delete an array.";

@@ -648,12 +648,26 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
         code += mProfile->interfaceCreateStatesArrayMethodString();
     }
 
-    if (!mProfile->interfaceCreateVariablesArrayMethodString().empty()) {
-        code += mProfile->interfaceCreateVariablesArrayMethodString();
+    if (!mProfile->interfaceCreateConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateComputedConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateAlgebraicArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateAlgebraicArrayMethodString();
+    }
+
+    if (mModel->hasExternalVariables()
+        && !mProfile->interfaceCreateExternalsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateExternalsArrayMethodString();
     }
 
     if (!mProfile->interfaceDeleteArrayMethodString().empty()) {
-        code += mProfile->interfaceDeleteArrayMethodString();
+        code += "\n"
+                + mProfile->interfaceDeleteArrayMethodString();
     }
 
     if (!code.empty()) {
@@ -661,6 +675,41 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
     }
 
     mCode += code;
+}
+
+void Generator::GeneratorImpl::addImplementationCreateDeleteArrayMethodsCode()
+{
+    if (modelHasOdes()
+        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateStatesArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateComputedConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateAlgebraicArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateAlgebraicArrayMethodString();
+    }
+
+    if (mModel->hasExternalVariables()
+        && !mProfile->implementationCreateExternalsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateExternalsArrayMethodString();
+    }
+
+    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationDeleteArrayMethodString();
+    }
 }
 
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
@@ -672,31 +721,6 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
             mCode += "\n"
                      + externalVariableMethodTypeDefinitionString;
         }
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
-{
-    if (modelHasOdes()
-        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateStatesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
-{
-    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateVariablesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
-{
-    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationDeleteArrayMethodString();
     }
 }
 
@@ -2066,9 +2090,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateStatesArrayMethodCode();
-    mPimpl->addImplementationCreateVariablesArrayMethodCode();
-    mPimpl->addImplementationDeleteArrayMethodCode();
+    mPimpl->addImplementationCreateDeleteArrayMethodsCode();
 
     // Add code for the NLA solver.
 

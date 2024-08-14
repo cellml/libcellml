@@ -507,8 +507,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceCreateStatesArrayMethodString()
                        + generatorProfile->implementationCreateStatesArrayMethodString();
 
-    profileContents += generatorProfile->interfaceCreateVariablesArrayMethodString()
-                       + generatorProfile->implementationCreateVariablesArrayMethodString();
+    profileContents += generatorProfile->interfaceCreateConstantsArrayMethodString()
+                       + generatorProfile->implementationCreateConstantsArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateComputedConstantsArrayMethodString()
+                       + generatorProfile->implementationCreateComputedConstantsArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateAlgebraicArrayMethodString()
+                       + generatorProfile->implementationCreateAlgebraicArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateExternalsArrayMethodString()
+                       + generatorProfile->implementationCreateExternalsArrayMethodString();
 
     profileContents += generatorProfile->interfaceDeleteArrayMethodString()
                        + generatorProfile->implementationDeleteArrayMethodString();

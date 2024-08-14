@@ -347,20 +347,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
     EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
 
-    EXPECT_EQ("double * createStatesArray();\n",
-              generatorProfile->interfaceCreateStatesArrayMethodString());
-    EXPECT_EQ("double * createStatesArray()\n"
-              "{\n"
-              "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
-              "\n"
-              "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
-              "        res[i] = NAN;\n"
-              "    }\n"
-              "\n"
-              "    return res;\n"
-              "}\n",
-              generatorProfile->implementationCreateStatesArrayMethodString());
-
     EXPECT_EQ("typedef struct {\n"
               "    double *variables;\n"
               "} RootFindingInfo;\n",
@@ -421,19 +407,75 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("f",
               generatorProfile->fArrayString());
 
-    EXPECT_EQ("double * createVariablesArray();\n",
-              generatorProfile->interfaceCreateVariablesArrayMethodString());
-    EXPECT_EQ("double * createVariablesArray()\n"
+    EXPECT_EQ("double * createStatesArray();\n",
+              generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ("double * createStatesArray()\n"
               "{\n"
-              "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+              "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
               "\n"
-              "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+              "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
               "        res[i] = NAN;\n"
               "    }\n"
               "\n"
               "    return res;\n"
               "}\n",
-              generatorProfile->implementationCreateVariablesArrayMethodString());
+              generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ("double * createConstantsArray();\n",
+              generatorProfile->interfaceCreateConstantsArrayMethodString());
+    EXPECT_EQ("double * createConstantsArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateConstantsArrayMethodString());
+
+    EXPECT_EQ("double * createComputedConstantsArray();\n",
+              generatorProfile->interfaceCreateComputedConstantsArrayMethodString());
+    EXPECT_EQ("double * createComputedConstantsArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateComputedConstantsArrayMethodString());
+
+    EXPECT_EQ("double * createAlgebraicArray();\n",
+              generatorProfile->interfaceCreateAlgebraicArrayMethodString());
+    EXPECT_EQ("double * createAlgebraicArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateAlgebraicArrayMethodString());
+
+    EXPECT_EQ("double * createExternalsArray();\n",
+              generatorProfile->interfaceCreateExternalsArrayMethodString());
+    EXPECT_EQ("double * createExternalsArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateExternalsArrayMethodString());
 
     EXPECT_EQ("void deleteArray(double *array);\n",
               generatorProfile->interfaceDeleteArrayMethodString());
@@ -903,9 +945,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setExternalVariableMethodCallString(false, value);
     generatorProfile->setExternalVariableMethodCallString(true, value);
 
-    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
-    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
-
     generatorProfile->setRootFindingInfoObjectString(false, value);
     generatorProfile->setRootFindingInfoObjectString(true, value);
     generatorProfile->setExternNlaSolveMethodString(value);
@@ -920,8 +959,20 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setUArrayString(value);
     generatorProfile->setFArrayString(value);
 
-    generatorProfile->setInterfaceCreateVariablesArrayMethodString(value);
-    generatorProfile->setImplementationCreateVariablesArrayMethodString(value);
+    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
+    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateConstantsArrayMethodString(value);
+    generatorProfile->setImplementationCreateConstantsArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateComputedConstantsArrayMethodString(value);
+    generatorProfile->setImplementationCreateComputedConstantsArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateAlgebraicArrayMethodString(value);
+    generatorProfile->setImplementationCreateAlgebraicArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateExternalsArrayMethodString(value);
+    generatorProfile->setImplementationCreateExternalsArrayMethodString(value);
 
     generatorProfile->setInterfaceDeleteArrayMethodString(value);
     generatorProfile->setImplementationDeleteArrayMethodString(value);
@@ -1040,9 +1091,6 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(false));
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(true));
 
-    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
-
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(false));
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true));
     EXPECT_EQ(value, generatorProfile->externNlaSolveMethodString());
@@ -1057,8 +1105,20 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->uArrayString());
     EXPECT_EQ(value, generatorProfile->fArrayString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceCreateVariablesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationCreateVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateConstantsArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateConstantsArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateComputedConstantsArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateComputedConstantsArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateAlgebraicArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateAlgebraicArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateExternalsArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateExternalsArrayMethodString());
 
     EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());

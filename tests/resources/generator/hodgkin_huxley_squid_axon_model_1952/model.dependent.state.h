@@ -27,7 +27,11 @@ extern const VariableInfo ALGEBRAIC_INFO[];
 extern const VariableInfo EXTERNAL_INFO[];
 
 double * createStatesArray();
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicArray();
+double * createExternalsArray();
+
 void deleteArray(double *array);
 
 typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);

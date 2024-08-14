@@ -23,8 +23,16 @@ ALGEBRAIC_INFO = [
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
+
+
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
 
 
 def initialise_variables(constants):

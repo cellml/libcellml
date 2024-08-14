@@ -769,16 +769,49 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationCreateStatesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateStatesArrayMethodString())
 
-    def test_implementation_create_variables_array_method_string(self):
+    def test_implementation_create_constants_array_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double * createVariablesArray()\n{\n    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
-            g.implementationCreateVariablesArrayMethodString())
-        g.setImplementationCreateVariablesArrayMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateVariablesArrayMethodString())
+            'double * createConstantsArray()\n{\n    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
+            g.implementationCreateConstantsArrayMethodString())
+        g.setImplementationCreateConstantsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateConstantsArrayMethodString())
+
+    def test_implementation_create_computed_constants_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual(
+            'double * createComputedConstantsArray()\n{\n    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
+            g.implementationCreateComputedConstantsArrayMethodString())
+        g.setImplementationCreateComputedConstantsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateComputedConstantsArrayMethodString())
+
+    def test_implementation_create_algebraic_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual(
+            'double * createAlgebraicArray()\n{\n    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
+            g.implementationCreateAlgebraicArrayMethodString())
+        g.setImplementationCreateAlgebraicArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateAlgebraicArrayMethodString())
+
+    def test_implementation_create_externals_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual(
+            'double * createExternalsArray()\n{\n    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
+            g.implementationCreateExternalsArrayMethodString())
+        g.setImplementationCreateExternalsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateExternalsArrayMethodString())
 
     def test_implementation_delete_array_method_string(self):
         from libcellml import GeneratorProfile
@@ -1026,14 +1059,41 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setInterfaceCreateStatesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateStatesArrayMethodString())
 
-    def test_interface_create_variables_array_method_string(self):
+    def test_interface_create_constants_array_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('double * createVariablesArray();\n', g.interfaceCreateVariablesArrayMethodString())
-        g.setInterfaceCreateVariablesArrayMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateVariablesArrayMethodString())
+        self.assertEqual('double * createConstantsArray();\n', g.interfaceCreateConstantsArrayMethodString())
+        g.setInterfaceCreateConstantsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateConstantsArrayMethodString())
+
+    def test_interface_create_computed_constants_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('double * createComputedConstantsArray();\n', g.interfaceCreateComputedConstantsArrayMethodString())
+        g.setInterfaceCreateComputedConstantsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateComputedConstantsArrayMethodString())
+
+    def test_interface_create_algebraic_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('double * createAlgebraicArray();\n', g.interfaceCreateAlgebraicArrayMethodString())
+        g.setInterfaceCreateAlgebraicArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateAlgebraicArrayMethodString())
+
+    def test_interface_create_externals_array_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('double * createExternalsArray();\n', g.interfaceCreateExternalsArrayMethodString())
+        g.setInterfaceCreateExternalsArrayMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceCreateExternalsArrayMethodString())
 
     def test_interface_delete_array_method_string(self):
         from libcellml import GeneratorProfile

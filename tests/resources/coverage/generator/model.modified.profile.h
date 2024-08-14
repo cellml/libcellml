@@ -25,7 +25,10 @@ extern const VariableInfo COMPUTED_CONSTANT_INFO[];
 extern const VariableInfo ALGEBRAIC_INFO[];
 
 double * createStatesVector();
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicArray();
+
 void deleteArray(double *array);
 
 void initialiseVariables(double *states, double *rates, double *constants);

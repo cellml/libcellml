@@ -100,10 +100,9 @@ struct Generator::GeneratorImpl
     void addTrigonometricFunctionsCode();
 
     void addInterfaceCreateDeleteArrayMethodsCode();
+    void addImplementationCreateDeleteArrayMethodsCode();
+
     void addExternalVariableMethodTypeDefinitionCode();
-    void addImplementationCreateStatesArrayMethodCode();
-    void addImplementationCreateVariablesArrayMethodCode();
-    void addImplementationDeleteArrayMethodCode();
 
     void addRootFindingInfoObjectCode();
     void addExternNlaSolveMethodCode();

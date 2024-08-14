@@ -354,12 +354,48 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                        "    return res;\n"
                                                        "}\n";
 
-        mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
-        mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
+        mInterfaceCreateConstantsArrayMethodString = "double * createConstantsArray();\n";
+        mImplementationCreateConstantsArrayMethodString = "double * createConstantsArray()\n"
                                                           "{\n"
-                                                          "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));\n"
                                                           "\n"
-                                                          "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+                                                          "    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {\n"
+                                                          "        res[i] = NAN;\n"
+                                                          "    }\n"
+                                                          "\n"
+                                                          "    return res;\n"
+                                                          "}\n";
+
+        mInterfaceCreateComputedConstantsArrayMethodString = "double * createComputedConstantsArray();\n";
+        mImplementationCreateComputedConstantsArrayMethodString = "double * createComputedConstantsArray()\n"
+                                                                  "{\n"
+                                                                  "    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));\n"
+                                                                  "\n"
+                                                                  "    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {\n"
+                                                                  "        res[i] = NAN;\n"
+                                                                  "    }\n"
+                                                                  "\n"
+                                                                  "    return res;\n"
+                                                                  "}\n";
+
+        mInterfaceCreateAlgebraicArrayMethodString = "double * createAlgebraicArray();\n";
+        mImplementationCreateAlgebraicArrayMethodString = "double * createAlgebraicArray()\n"
+                                                          "{\n"
+                                                          "    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));\n"
+                                                          "\n"
+                                                          "    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {\n"
+                                                          "        res[i] = NAN;\n"
+                                                          "    }\n"
+                                                          "\n"
+                                                          "    return res;\n"
+                                                          "}\n";
+
+        mInterfaceCreateExternalsArrayMethodString = "double * createExternalsArray();\n";
+        mImplementationCreateExternalsArrayMethodString = "double * createExternalsArray()\n"
+                                                          "{\n"
+                                                          "    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));\n"
+                                                          "\n"
+                                                          "    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {\n"
                                                           "        res[i] = NAN;\n"
                                                           "    }\n"
                                                           "\n"
@@ -749,10 +785,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                        "def create_states_array():\n"
                                                        "    return [nan]*STATE_COUNT\n";
 
-        mInterfaceCreateVariablesArrayMethodString = "";
-        mImplementationCreateVariablesArrayMethodString = "\n"
-                                                          "def create_variables_array():\n"
-                                                          "    return [nan]*VARIABLE_COUNT\n";
+        mInterfaceCreateConstantsArrayMethodString = "";
+        mImplementationCreateConstantsArrayMethodString = "\n"
+                                                          "def create_constants_array():\n"
+                                                          "    return [nan]*CONSTANT_COUNT\n";
+
+        mInterfaceCreateComputedConstantsArrayMethodString = "";
+        mImplementationCreateComputedConstantsArrayMethodString = "\n"
+                                                                  "def create_computed_constants_array():\n"
+                                                                  "    return [nan]*COMPUTED_CONSTANT_COUNT\n";
+
+        mInterfaceCreateAlgebraicArrayMethodString = "";
+        mImplementationCreateAlgebraicArrayMethodString = "\n"
+                                                          "def create_algebraic_array():\n"
+                                                          "    return [nan]*ALGEBRAIC_COUNT\n";
+
+        mInterfaceCreateExternalsArrayMethodString = "";
+        mImplementationCreateExternalsArrayMethodString = "\n"
+                                                          "def create_externals_array():\n"
+                                                          "    return [nan]*EXTERNAL_COUNT\n";
 
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
@@ -2418,24 +2469,84 @@ void GeneratorProfile::setImplementationCreateStatesArrayMethodString(const std:
     mPimpl->mImplementationCreateStatesArrayMethodString = implementationCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceCreateVariablesArrayMethodString() const
+std::string GeneratorProfile::interfaceCreateConstantsArrayMethodString() const
 {
-    return mPimpl->mInterfaceCreateVariablesArrayMethodString;
+    return mPimpl->mInterfaceCreateConstantsArrayMethodString;
 }
 
-void GeneratorProfile::setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString)
+void GeneratorProfile::setInterfaceCreateConstantsArrayMethodString(const std::string &interfaceCreateConstantsArrayMethodString)
 {
-    mPimpl->mInterfaceCreateVariablesArrayMethodString = interfaceCreateVariablesArrayMethodString;
+    mPimpl->mInterfaceCreateConstantsArrayMethodString = interfaceCreateConstantsArrayMethodString;
 }
 
-std::string GeneratorProfile::implementationCreateVariablesArrayMethodString() const
+std::string GeneratorProfile::implementationCreateConstantsArrayMethodString() const
 {
-    return mPimpl->mImplementationCreateVariablesArrayMethodString;
+    return mPimpl->mImplementationCreateConstantsArrayMethodString;
 }
 
-void GeneratorProfile::setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString)
+void GeneratorProfile::setImplementationCreateConstantsArrayMethodString(const std::string &implementationCreateConstantsArrayMethodString)
 {
-    mPimpl->mImplementationCreateVariablesArrayMethodString = implementationCreateVariablesArrayMethodString;
+    mPimpl->mImplementationCreateConstantsArrayMethodString = implementationCreateConstantsArrayMethodString;
+}
+
+std::string GeneratorProfile::interfaceCreateComputedConstantsArrayMethodString() const
+{
+    return mPimpl->mInterfaceCreateComputedConstantsArrayMethodString;
+}
+
+void GeneratorProfile::setInterfaceCreateComputedConstantsArrayMethodString(const std::string &interfaceCreateComputedConstantsArrayMethodString)
+{
+    mPimpl->mInterfaceCreateComputedConstantsArrayMethodString = interfaceCreateComputedConstantsArrayMethodString;
+}
+
+std::string GeneratorProfile::implementationCreateComputedConstantsArrayMethodString() const
+{
+    return mPimpl->mImplementationCreateComputedConstantsArrayMethodString;
+}
+
+void GeneratorProfile::setImplementationCreateComputedConstantsArrayMethodString(const std::string &implementationCreateComputedConstantsArrayMethodString)
+{
+    mPimpl->mImplementationCreateComputedConstantsArrayMethodString = implementationCreateComputedConstantsArrayMethodString;
+}
+
+std::string GeneratorProfile::interfaceCreateAlgebraicArrayMethodString() const
+{
+    return mPimpl->mInterfaceCreateAlgebraicArrayMethodString;
+}
+
+void GeneratorProfile::setInterfaceCreateAlgebraicArrayMethodString(const std::string &interfaceCreateAlgebraicArrayMethodString)
+{
+    mPimpl->mInterfaceCreateAlgebraicArrayMethodString = interfaceCreateAlgebraicArrayMethodString;
+}
+
+std::string GeneratorProfile::implementationCreateAlgebraicArrayMethodString() const
+{
+    return mPimpl->mImplementationCreateAlgebraicArrayMethodString;
+}
+
+void GeneratorProfile::setImplementationCreateAlgebraicArrayMethodString(const std::string &implementationCreateAlgebraicArrayMethodString)
+{
+    mPimpl->mImplementationCreateAlgebraicArrayMethodString = implementationCreateAlgebraicArrayMethodString;
+}
+
+std::string GeneratorProfile::interfaceCreateExternalsArrayMethodString() const
+{
+    return mPimpl->mInterfaceCreateExternalsArrayMethodString;
+}
+
+void GeneratorProfile::setInterfaceCreateExternalsArrayMethodString(const std::string &interfaceCreateExternalsArrayMethodString)
+{
+    mPimpl->mInterfaceCreateExternalsArrayMethodString = interfaceCreateExternalsArrayMethodString;
+}
+
+std::string GeneratorProfile::implementationCreateExternalsArrayMethodString() const
+{
+    return mPimpl->mImplementationCreateExternalsArrayMethodString;
+}
+
+void GeneratorProfile::setImplementationCreateExternalsArrayMethodString(const std::string &implementationCreateExternalsArrayMethodString)
+{
+    mPimpl->mImplementationCreateExternalsArrayMethodString = implementationCreateExternalsArrayMethodString;
 }
 
 std::string GeneratorProfile::interfaceDeleteArrayMethodString() const
