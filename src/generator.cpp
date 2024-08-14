@@ -390,9 +390,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                                                                     const std::string &component) const
 {
     return replace(replace(replace(mProfile->variableInfoEntryString(),
-                                           "[NAME]", name),
-                                   "[UNITS]", units),
-                           "[COMPONENT]", component);
+                                   "[NAME]", name),
+                           "[UNITS]", units),
+                   "[COMPONENT]", component);
 }
 
 void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
