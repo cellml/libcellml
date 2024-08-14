@@ -3447,49 +3447,180 @@ public:
     void setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the interface to create variables
+     * @brief Get the @c std::string for the interface to create the constants
      * array.
      *
-     * Return the @c std::string for the interface to create variables array.
+     * Return the @c std::string for the interface to create the constants array.
      *
-     * @return The @c std::string for the interface to create variables array.
+     * @return The @c std::string for the interface to create the constants array.
      */
-    std::string interfaceCreateVariablesArrayMethodString() const;
+    std::string interfaceCreateConstantsArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the interface to create variables
+     * @brief Set the @c std::string for the interface to create the constants
      * array.
      *
-     * Set the @c std::string for the interface to create variables array.
+     * Set the @c std::string for the interface to create the constants array.
      *
-     * @param interfaceCreateVariablesArrayMethodString The @c std::string to
-     * use for the interface to create variables array.
+     * @param interfaceCreateConstantsArrayMethodString The @c std::string to use
+     * for the interface to create the constants array.
      */
-    void setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString);
+    void setInterfaceCreateConstantsArrayMethodString(const std::string &interfaceCreateConstantsArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the implementation to create the
-     * variables array.
-     *
-     * Return the @c std::string for the implementation to create the variables
+     * @brief Get the @c std::string for the implementation to create the constants
      * array.
      *
-     * @return The @c std::string for the implementation to create the variables
+     * Return the @c std::string for the implementation to create the constants
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the constants
      * array.
      */
-    std::string implementationCreateVariablesArrayMethodString() const;
+    std::string implementationCreateConstantsArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the implementation to create the
-     * variables array.
-     *
-     * Set the @c std::string for the implementation to create the variables
+     * @brief Set the @c std::string for the implementation to create the constants
      * array.
      *
-     * @param implementationCreateVariablesArrayMethodString The @c std::string
-     * to use for the implementation to create the variables array.
+     * Set the @c std::string for the implementation to create the constants array.
+     *
+     * @param implementationCreateConstantsArrayMethodString The @c std::string to
+     * use for the implementation to create the constants array.
      */
-    void setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString);
+    void setImplementationCreateConstantsArrayMethodString(const std::string &implementationCreateConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the computed constants
+     * array.
+     *
+     * Return the @c std::string for the interface to create the computed constants array.
+     *
+     * @return The @c std::string for the interface to create the computed constants array.
+     */
+    std::string interfaceCreateComputedConstantsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the computed constants
+     * array.
+     *
+     * Set the @c std::string for the interface to create the computed constants array.
+     *
+     * @param interfaceCreateComputedConstantsArrayMethodString The @c std::string to use
+     * for the interface to create the computed constants array.
+     */
+    void setInterfaceCreateComputedConstantsArrayMethodString(const std::string &interfaceCreateComputedConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the computed constants
+     * array.
+     */
+    std::string implementationCreateComputedConstantsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the computed constants array.
+     *
+     * @param implementationCreateComputedConstantsArrayMethodString The @c std::string to
+     * use for the implementation to create the computed constants array.
+     */
+    void setImplementationCreateComputedConstantsArrayMethodString(const std::string &implementationCreateComputedConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the algebraic variables
+     * array.
+     *
+     * Return the @c std::string for the interface to create the algebraic variables array.
+     *
+     * @return The @c std::string for the interface to create the algebraic variables array.
+     */
+    std::string interfaceCreateAlgebraicArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the algebraic variables
+     * array.
+     *
+     * Set the @c std::string for the interface to create the algebraic variables array.
+     *
+     * @param interfaceCreateAlgebraicArrayMethodString The @c std::string to use
+     * for the interface to create the algebraic variables array.
+     */
+    void setInterfaceCreateAlgebraicArrayMethodString(const std::string &interfaceCreateAlgebraicArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the algebraic variables
+     * array.
+     */
+    std::string implementationCreateAlgebraicArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the algebraic variables array.
+     *
+     * @param implementationCreateAlgebraicArrayMethodString The @c std::string to
+     * use for the implementation to create the algebraic variables array.
+     */
+    void setImplementationCreateAlgebraicArrayMethodString(const std::string &implementationCreateAlgebraicArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the external variables
+     * array.
+     *
+     * Return the @c std::string for the interface to create the external variables array.
+     *
+     * @return The @c std::string for the interface to create the external variables array.
+     */
+    std::string interfaceCreateExternalsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the external variables
+     * array.
+     *
+     * Set the @c std::string for the interface to create the external variables array.
+     *
+     * @param interfaceCreateExternalsArrayMethodString The @c std::string to use
+     * for the interface to create the external variables array.
+     */
+    void setInterfaceCreateExternalsArrayMethodString(const std::string &interfaceCreateExternalsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the external variables
+     * array.
+     */
+    std::string implementationCreateExternalsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the external variables array.
+     *
+     * @param implementationCreateExternalsArrayMethodString The @c std::string to
+     * use for the implementation to create the external variables array.
+     */
+    void setImplementationCreateExternalsArrayMethodString(const std::string &implementationCreateExternalsArrayMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to delete an array.

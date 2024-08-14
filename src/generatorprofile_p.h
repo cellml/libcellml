@@ -241,8 +241,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
-    std::string mInterfaceCreateVariablesArrayMethodString;
-    std::string mImplementationCreateVariablesArrayMethodString;
+    std::string mInterfaceCreateConstantsArrayMethodString;
+    std::string mImplementationCreateConstantsArrayMethodString;
+
+    std::string mInterfaceCreateComputedConstantsArrayMethodString;
+    std::string mImplementationCreateComputedConstantsArrayMethodString;
+
+    std::string mInterfaceCreateAlgebraicArrayMethodString;
+    std::string mImplementationCreateAlgebraicArrayMethodString;
+
+    std::string mInterfaceCreateExternalsArrayMethodString;
+    std::string mImplementationCreateExternalsArrayMethodString;
 
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;

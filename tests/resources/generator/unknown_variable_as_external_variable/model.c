@@ -35,11 +35,44 @@ const VariableInfo EXTERNAL_INFO[] = {
     {"P_3", "per_fmol_sec3", "SLC_template3_ss"}
 };
 
-double * createVariablesArray()
+double * createConstantsArray()
 {
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createExternalsArray()
+{
+    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {
         res[i] = NAN;
     }
 

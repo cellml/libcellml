@@ -736,7 +736,13 @@ TEST(Coverage, generator)
 
     profile->setImplementationCreateStatesArrayMethodString("");
 
-    profile->setImplementationCreateVariablesArrayMethodString("");
+    profile->setImplementationCreateConstantsArrayMethodString("");
+
+    profile->setImplementationCreateComputedConstantsArrayMethodString("");
+
+    profile->setImplementationCreateAlgebraicArrayMethodString("");
+
+    profile->setImplementationCreateExternalsArrayMethodString("");
 
     profile->setImplementationDeleteArrayMethodString("");
 

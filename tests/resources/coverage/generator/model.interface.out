@@ -5,7 +5,10 @@
 #include <stddef.h>
 
 double * createStatesArray();
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicArray();
+
 void deleteArray(double *array);
 
 void initialiseVariables(double *states, double *rates, double *constants);

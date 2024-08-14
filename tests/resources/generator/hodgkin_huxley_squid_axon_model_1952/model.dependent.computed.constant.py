@@ -68,8 +68,20 @@ def create_states_array():
     return [nan]*STATE_COUNT
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
+
+
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
+
+
+def create_externals_array():
+    return [nan]*EXTERNAL_COUNT
 
 
 def initialise_variables(voi, states, rates, constants, external_variable):
