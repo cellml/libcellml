@@ -13,39 +13,39 @@ const size_t CONSTANT_COUNT = 5;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 12;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"V", "millivolt", "membrane", STATE},
-    {"m", "dimensionless", "sodium_channel_m_gate", STATE},
-    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
-    {"n", "dimensionless", "potassium_channel_n_gate", STATE}
+    {"V", "millivolt", "membrane"},
+    {"m", "dimensionless", "sodium_channel_m_gate"},
+    {"h", "dimensionless", "sodium_channel_h_gate"},
+    {"n", "dimensionless", "potassium_channel_n_gate"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"E_L", "millivolt", "leakage_current", CONSTANT},
-    {"g_Na_max", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", CONSTANT}
+    {"Cm", "microF_per_cm2", "membrane"},
+    {"g_L", "milliS_per_cm2", "leakage_current"},
+    {"E_L", "millivolt", "leakage_current"},
+    {"g_Na_max", "milliS_per_cm2", "sodium_channel"},
+    {"E_Na", "millivolt", "sodium_channel"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
-    {"i_Leak", "microA_per_cm2", "leakage_current", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", ALGEBRAIC},
-    {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
-    {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
-    {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"g_K1", "milliS_per_cm2", "potassium_channel", ALGEBRAIC},
-    {"g_K2", "milliS_per_cm2", "potassium_channel", ALGEBRAIC},
-    {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
+    {"i_Na", "microA_per_cm2", "sodium_channel"},
+    {"i_Leak", "microA_per_cm2", "leakage_current"},
+    {"i_K", "microA_per_cm2", "potassium_channel"},
+    {"g_Na", "milliS_per_cm2", "sodium_channel"},
+    {"alpha_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"beta_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"alpha_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"beta_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"g_K1", "milliS_per_cm2", "potassium_channel"},
+    {"g_K2", "milliS_per_cm2", "potassium_channel"},
+    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"},
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
 double * createStatesArray()

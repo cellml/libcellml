@@ -20,13 +20,13 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"vcell", "microlitre", "cell_geometry", ALGEBRAIC},
-    {"vss", "microlitre", "cell_geometry", ALGEBRAIC}
+    {"vcell", "microlitre", "cell_geometry"},
+    {"vss", "microlitre", "cell_geometry"}
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"L", "centimeter", "cell_geometry", EXTERNAL},
-    {"rad", "centimeter", "cell_geometry", EXTERNAL}
+    {"L", "centimeter", "cell_geometry"},
+    {"rad", "centimeter", "cell_geometry"}
 };
 
 double * createVariablesArray()

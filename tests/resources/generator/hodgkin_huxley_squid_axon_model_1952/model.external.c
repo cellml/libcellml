@@ -14,43 +14,43 @@ const size_t COMPUTED_CONSTANT_COUNT = 3;
 const size_t ALGEBRAIC_COUNT = 8;
 const size_t EXTERNAL_COUNT = 3;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
-    {"m", "dimensionless", "sodium_channel_m_gate", STATE},
-    {"n", "dimensionless", "potassium_channel_n_gate", STATE}
+    {"h", "dimensionless", "sodium_channel_h_gate"},
+    {"m", "dimensionless", "sodium_channel_m_gate"},
+    {"n", "dimensionless", "potassium_channel_n_gate"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"E_R", "millivolt", "membrane", CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT}
+    {"Cm", "microF_per_cm2", "membrane"},
+    {"E_R", "millivolt", "membrane"},
+    {"g_L", "milliS_per_cm2", "leakage_current"},
+    {"g_Na", "milliS_per_cm2", "sodium_channel"},
+    {"g_K", "milliS_per_cm2", "potassium_channel"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
-    {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT}
+    {"E_L", "millivolt", "leakage_current"},
+    {"E_Na", "millivolt", "sodium_channel"},
+    {"E_K", "millivolt", "potassium_channel"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
-    {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
-    {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
-    {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
+    {"i_Stim", "microA_per_cm2", "membrane"},
+    {"i_L", "microA_per_cm2", "leakage_current"},
+    {"i_K", "microA_per_cm2", "potassium_channel"},
+    {"alpha_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"beta_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"alpha_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"beta_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"V", "millivolt", "membrane", EXTERNAL},
-    {"i_Na", "microA_per_cm2", "sodium_channel", EXTERNAL},
-    {"alpha_n", "per_millisecond", "potassium_channel_n_gate", EXTERNAL}
+    {"V", "millivolt", "membrane"},
+    {"i_Na", "microA_per_cm2", "sodium_channel"},
+    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
 double * createStatesArray()

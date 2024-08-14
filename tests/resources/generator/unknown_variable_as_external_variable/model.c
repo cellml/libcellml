@@ -14,25 +14,25 @@ const size_t ALGEBRAIC_COUNT = 1;
 const size_t EXTERNAL_COUNT = 1;
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"E", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_0", "per_fmol_sec4", "SLC_template3_ss", CONSTANT},
-    {"q_Ao", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_1", "per_fmol_sec4", "SLC_template3_ss", CONSTANT},
-    {"q_Ai", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_2", "per_fmol_sec3", "SLC_template3_ss", CONSTANT},
-    {"P_5", "per_sec3", "SLC_template3_ss", CONSTANT},
-    {"P_4", "per_fmol2_sec3", "SLC_template3_ss", CONSTANT}
+    {"E", "fmol", "SLC_template3_ss"},
+    {"P_0", "per_fmol_sec4", "SLC_template3_ss"},
+    {"q_Ao", "fmol", "SLC_template3_ss"},
+    {"P_1", "per_fmol_sec4", "SLC_template3_ss"},
+    {"q_Ai", "fmol", "SLC_template3_ss"},
+    {"P_2", "per_fmol_sec3", "SLC_template3_ss"},
+    {"P_5", "per_sec3", "SLC_template3_ss"},
+    {"P_4", "per_fmol2_sec3", "SLC_template3_ss"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC}
+    {"v", "fmol_per_sec", "SLC_template3_ss"}
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"P_3", "per_fmol_sec3", "SLC_template3_ss", EXTERNAL}
+    {"P_3", "per_fmol_sec3", "SLC_template3_ss"}
 };
 
 double * createVariablesArray()

@@ -16,8 +16,8 @@ const VariableInfo CONSTANT_INFO[] = {
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
-    {"a", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
+    {"x", "dimensionless", "my_algebraic_eqn"},
+    {"a", "dimensionless", "my_algebraic_eqn"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {

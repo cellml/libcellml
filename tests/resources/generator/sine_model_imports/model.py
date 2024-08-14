@@ -12,37 +12,28 @@ CONSTANT_COUNT = 2
 COMPUTED_CONSTANT_COUNT = 5
 ALGEBRAIC_COUNT = 3
 
+VOI_INFO = {"name": "x", "units": "dimensionless", "component": "main"}
 
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "x", "units": "dimensionless", "component": "main", "type": VariableType.VARIABLE_OF_INTEGRATION}
-
-STATE_INFO =     {"name": "sin", "units": "dimensionless", "component": "deriv_approx_sin", "type": VariableType.STATE}
+STATE_INFO =     {"name": "sin", "units": "dimensionless", "component": "deriv_approx_sin"}
 
 
 CONSTANT_INFO = [
-    {"name": "deriv_approx_initial_value", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "C", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT}
+    {"name": "deriv_approx_initial_value", "units": "dimensionless", "component": "main"},
+    {"name": "C", "units": "dimensionless", "component": "main"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "k2_oPi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "k2Pi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "kPi_2", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "kPi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "kPi_32", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "k2_oPi", "units": "dimensionless", "component": "parabolic_approx_sin"},
+    {"name": "k2Pi", "units": "dimensionless", "component": "parabolic_approx_sin"},
+    {"name": "kPi_2", "units": "dimensionless", "component": "parabolic_approx_sin"},
+    {"name": "kPi", "units": "dimensionless", "component": "parabolic_approx_sin"},
+    {"name": "kPi_32", "units": "dimensionless", "component": "parabolic_approx_sin"}
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "sin", "units": "dimensionless", "component": "actual_sin", "type": VariableType.ALGEBRAIC},
-    {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.ALGEBRAIC},
-    {"name": "z", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.ALGEBRAIC}
+    {"name": "sin", "units": "dimensionless", "component": "actual_sin"},
+    {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin"},
+    {"name": "z", "units": "dimensionless", "component": "parabolic_approx_sin"}
 ]
 
 

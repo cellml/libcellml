@@ -13,13 +13,13 @@ const size_t COMPUTED_CONSTANT_COUNT = 2;
 const size_t ALGEBRAIC_COUNT = 0;
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"L", "centimeter", "cell_geometry", CONSTANT},
-    {"rad", "centimeter", "cell_geometry", CONSTANT}
+    {"L", "centimeter", "cell_geometry"},
+    {"rad", "centimeter", "cell_geometry"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"vcell", "microlitre", "cell_geometry", COMPUTED_CONSTANT},
-    {"vss", "microlitre", "cell_geometry", COMPUTED_CONSTANT}
+    {"vcell", "microlitre", "cell_geometry"},
+    {"vss", "microlitre", "cell_geometry"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {

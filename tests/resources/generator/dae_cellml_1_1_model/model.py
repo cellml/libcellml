@@ -12,38 +12,29 @@ CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 5
 
+VOI_INFO = {"name": "t", "units": "second", "component": "main"}
 
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "t", "units": "second", "component": "main", "type": VariableType.VARIABLE_OF_INTEGRATION}
-
-STATE_INFO =     {"name": "q_1", "units": "coulomb", "component": "main", "type": VariableType.STATE},
-    {"name": "v_3", "units": "C_per_s", "component": "main", "type": VariableType.STATE}
+STATE_INFO =     {"name": "q_1", "units": "coulomb", "component": "main"},
+    {"name": "v_3", "units": "C_per_s", "component": "main"}
 
 
 CONSTANT_INFO = [
-    {"name": "v_in", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "v_out", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "C", "units": "C2_per_J", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "R", "units": "Js_per_C2", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT}
+    {"name": "v_in", "units": "C_per_s", "component": "main"},
+    {"name": "v_out", "units": "C_per_s", "component": "main"},
+    {"name": "C", "units": "C2_per_J", "component": "main"},
+    {"name": "R", "units": "Js_per_C2", "component": "main"},
+    {"name": "L", "units": "Js2_per_C2", "component": "main"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "v_1", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "v_2", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_2", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_3", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC}
+    {"name": "v_1", "units": "C_per_s", "component": "main"},
+    {"name": "v_2", "units": "C_per_s", "component": "main"},
+    {"name": "u_1", "units": "J_per_C", "component": "main"},
+    {"name": "u_2", "units": "J_per_C", "component": "main"},
+    {"name": "u_3", "units": "J_per_C", "component": "main"}
 ]
 
 

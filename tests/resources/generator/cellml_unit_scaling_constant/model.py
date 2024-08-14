@@ -11,20 +11,13 @@ CONSTANT_COUNT = 1
 COMPUTED_CONSTANT_COUNT = 2
 ALGEBRAIC_COUNT = 0
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-
-
 CONSTANT_INFO = [
-    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT}
+    {"name": "k", "units": "mM", "component": "constants"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "x", "units": "mM", "component": "main", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "y", "units": "M", "component": "main", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "x", "units": "mM", "component": "main"},
+    {"name": "y", "units": "M", "component": "main"}
 ]
 
 ALGEBRAIC_INFO = [

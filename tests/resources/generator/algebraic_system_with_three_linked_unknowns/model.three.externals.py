@@ -12,14 +12,6 @@ COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 0
 EXTERNAL_COUNT = 3
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
-
-
 CONSTANT_INFO = [
 ]
 
@@ -30,9 +22,9 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
-    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 

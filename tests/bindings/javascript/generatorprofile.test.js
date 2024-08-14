@@ -732,54 +732,6 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationExternalCountString("something")
     expect(x.implementationExternalCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variableTypeObjectString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setVariableTypeObjectString(false, false, "something")
-    expect(x.variableTypeObjectString(false, false)).toBe("something")
-    x.setVariableTypeObjectString(false, true, "something")
-    expect(x.variableTypeObjectString(false, true)).toBe("something")
-    x.setVariableTypeObjectString(true, false, "something")
-    expect(x.variableTypeObjectString(true, false)).toBe("something")
-    x.setVariableTypeObjectString(true, true, "something")
-    expect(x.variableTypeObjectString(true, true)).toBe("something")
-  });
-  test("Checking GeneratorProfile.variableOfIntegrationVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setVariableOfIntegrationVariableTypeString("something")
-    expect(x.variableOfIntegrationVariableTypeString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.stateVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setStateVariableTypeString("something")
-    expect(x.stateVariableTypeString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.constantVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setConstantVariableTypeString("something")
-    expect(x.constantVariableTypeString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.computedConstantVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setComputedConstantVariableTypeString("something")
-    expect(x.computedConstantVariableTypeString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.algebraicVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setAlgebraicVariableTypeString("something")
-    expect(x.algebraicVariableTypeString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.externalVariableTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setExternalVariableTypeString("something")
-    expect(x.externalVariableTypeString()).toBe("something")
-  });
   test("Checking GeneratorProfile.variableInfoObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 

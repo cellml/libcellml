@@ -13,29 +13,29 @@ const size_t CONSTANT_COUNT = 2;
 const size_t COMPUTED_CONSTANT_COUNT = 5;
 const size_t ALGEBRAIC_COUNT = 3;
 
-const VariableInfo VOI_INFO = {"x", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"x", "dimensionless", "main"};
 
 const VariableInfo STATE_INFO[] = {
-    {"sin", "dimensionless", "deriv_approx_sin", STATE}
+    {"sin", "dimensionless", "deriv_approx_sin"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
-    {"C", "dimensionless", "main", CONSTANT}
+    {"deriv_approx_initial_value", "dimensionless", "main"},
+    {"C", "dimensionless", "main"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"k2_oPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"k2Pi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT}
+    {"k2_oPi", "dimensionless", "parabolic_approx_sin"},
+    {"k2Pi", "dimensionless", "parabolic_approx_sin"},
+    {"kPi_2", "dimensionless", "parabolic_approx_sin"},
+    {"kPi", "dimensionless", "parabolic_approx_sin"},
+    {"kPi_32", "dimensionless", "parabolic_approx_sin"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
-    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
-    {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
+    {"sin", "dimensionless", "actual_sin"},
+    {"sin", "dimensionless", "parabolic_approx_sin"},
+    {"z", "dimensionless", "parabolic_approx_sin"}
 };
 
 double * createStatesArray()

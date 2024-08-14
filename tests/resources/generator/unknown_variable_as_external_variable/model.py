@@ -12,34 +12,26 @@ COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 1
 EXTERNAL_COUNT = 1
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
-
-
 CONSTANT_INFO = [
-    {"name": "E", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT}
+    {"name": "E", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.ALGEBRAIC}
+    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
 ]
 
 EXTERNAL_INFO = [
-    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.EXTERNAL}
+    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss"}
 ]
 
 

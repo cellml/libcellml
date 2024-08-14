@@ -12,14 +12,6 @@ COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 2
 EXTERNAL_COUNT = 2
 
-
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
-
-
 CONSTANT_INFO = [
 ]
 
@@ -27,13 +19,13 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC}
+    {"name": "vcell", "units": "microlitre", "component": "cell_geometry"},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry"}
 ]
 
 EXTERNAL_INFO = [
-    {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL}
+    {"name": "L", "units": "centimeter", "component": "cell_geometry"},
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry"}
 ]
 
 

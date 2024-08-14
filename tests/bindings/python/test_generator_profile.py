@@ -214,24 +214,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setAcschString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.acschString())
 
-    def test_algebraic_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('ALGEBRAIC', g.algebraicVariableTypeString())
-        g.setAlgebraicVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.algebraicVariableTypeString())
-
-    def test_external_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('EXTERNAL', g.externalVariableTypeString())
-        g.setExternalVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableTypeString())
-
     def test_and_function_string(self):
         from libcellml import GeneratorProfile
 
@@ -396,15 +378,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setCommonLogarithmString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.commonLogarithmString())
 
-    def test_computed_constant_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('COMPUTED_CONSTANT', g.computedConstantVariableTypeString())
-        g.setComputedConstantVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.computedConstantVariableTypeString())
-
     def test_conditional_operator_else_string(self):
         from libcellml import GeneratorProfile
 
@@ -422,33 +395,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('([CONDITION])?[IF_STATEMENT]', g.conditionalOperatorIfString())
         g.setConditionalOperatorIfString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.conditionalOperatorIfString())
-
-    def test_variable_of_integration_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('VARIABLE_OF_INTEGRATION', g.variableOfIntegrationVariableTypeString())
-        g.setVariableOfIntegrationVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableOfIntegrationVariableTypeString())
-
-    def test_state_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('STATE', g.stateVariableTypeString())
-        g.setStateVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.stateVariableTypeString())
-
-    def test_constant_variable_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('CONSTANT', g.constantVariableTypeString())
-        g.setConstantVariableTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.constantVariableTypeString())
 
     def test_cos_string(self):
         from libcellml import GeneratorProfile
@@ -1634,7 +1580,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('{"[NAME]", "[UNITS]", "[COMPONENT]", [TYPE]}', g.variableInfoEntryString())
+        self.assertEqual('{"[NAME]", "[UNITS]", "[COMPONENT]"}', g.variableInfoEntryString())
         g.setVariableInfoEntryString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoEntryString())
 
@@ -1644,39 +1590,10 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef struct {\n    char name[[NAME_SIZE]];\n    char units[[UNITS_SIZE]];\n    char component[[COMPONENT_SIZE]];\n    VariableType type;\n} VariableInfo;\n',
+            'typedef struct {\n    char name[[NAME_SIZE]];\n    char units[[UNITS_SIZE]];\n    char component[[COMPONENT_SIZE]];\n} VariableInfo;\n',
             g.variableInfoObjectString())
         g.setVariableInfoObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoObjectString())
-
-    def test_variable_type_object_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual(
-            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
-            g.variableTypeObjectString(False, False))
-        g.setVariableTypeObjectString(False, False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, False))
-
-        self.assertEqual(
-            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
-            g.variableTypeObjectString(False, True))
-        g.setVariableTypeObjectString(False, True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, True))
-
-        self.assertEqual(
-            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
-            g.variableTypeObjectString(True, False))
-        g.setVariableTypeObjectString(True, False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, False))
-
-        self.assertEqual(
-            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
-            g.variableTypeObjectString(True, True))
-        g.setVariableTypeObjectString(True, True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, True))
 
     def test_constants_array_string(self):
         from libcellml import GeneratorProfile

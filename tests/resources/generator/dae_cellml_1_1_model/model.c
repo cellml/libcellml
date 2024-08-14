@@ -13,30 +13,30 @@ const size_t CONSTANT_COUNT = 5;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 5;
 
-const VariableInfo VOI_INFO = {"t", "second", "main", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "second", "main"};
 
 const VariableInfo STATE_INFO[] = {
-    {"q_1", "coulomb", "main", STATE},
-    {"v_3", "C_per_s", "main", STATE}
+    {"q_1", "coulomb", "main"},
+    {"v_3", "C_per_s", "main"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"v_in", "C_per_s", "main", CONSTANT},
-    {"v_out", "C_per_s", "main", CONSTANT},
-    {"C", "C2_per_J", "main", CONSTANT},
-    {"R", "Js_per_C2", "main", CONSTANT},
-    {"L", "Js2_per_C2", "main", CONSTANT}
+    {"v_in", "C_per_s", "main"},
+    {"v_out", "C_per_s", "main"},
+    {"C", "C2_per_J", "main"},
+    {"R", "Js_per_C2", "main"},
+    {"L", "Js2_per_C2", "main"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"v_1", "C_per_s", "main", ALGEBRAIC},
-    {"v_2", "C_per_s", "main", ALGEBRAIC},
-    {"u_1", "J_per_C", "main", ALGEBRAIC},
-    {"u_2", "J_per_C", "main", ALGEBRAIC},
-    {"u_3", "J_per_C", "main", ALGEBRAIC}
+    {"v_1", "C_per_s", "main"},
+    {"v_2", "C_per_s", "main"},
+    {"u_1", "J_per_C", "main"},
+    {"u_2", "J_per_C", "main"},
+    {"u_3", "J_per_C", "main"}
 };
 
 double * createStatesArray()

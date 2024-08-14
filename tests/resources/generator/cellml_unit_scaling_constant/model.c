@@ -13,12 +13,12 @@ const size_t COMPUTED_CONSTANT_COUNT = 2;
 const size_t ALGEBRAIC_COUNT = 0;
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"k", "mM", "constants", CONSTANT}
+    {"k", "mM", "constants"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"x", "mM", "main", COMPUTED_CONSTANT},
-    {"y", "M", "main", COMPUTED_CONSTANT}
+    {"x", "mM", "main"},
+    {"y", "M", "main"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {

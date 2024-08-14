@@ -12,18 +12,10 @@ extern const size_t COMPUTED_CONSTANT_COUNT;
 extern const size_t ALGEBRAIC_COUNT;
 extern const size_t EXTERNAL_COUNT;
 
-typedef enum {
-    CONSTANT,
-    COMPUTED_CONSTANT,
-    ALGEBRAIC,
-    EXTERNAL
-} VariableType;
-
 typedef struct {
     char name[2];
     char units[14];
     char component[17];
-    VariableType type;
 } VariableInfo;
 
 extern const VariableInfo CONSTANT_INFO[];
