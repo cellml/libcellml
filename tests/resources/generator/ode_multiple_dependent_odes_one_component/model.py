@@ -14,9 +14,10 @@ ALGEBRAIC_COUNT = 0
 
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
-STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_component"},
+STATE_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_component"},
     {"name": "y", "units": "dimensionless", "component": "my_component"}
-
+]
 
 CONSTANT_INFO = [
     {"name": "epsilon", "units": "dimensionless", "component": "my_component"}

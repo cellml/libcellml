@@ -14,9 +14,10 @@ ALGEBRAIC_COUNT = 0
 
 VOI_INFO = {"name": "t", "units": "second", "component": "environment"}
 
-STATE_INFO =     {"name": "x", "units": "dimensionless", "component": "my_ode"},
+STATE_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_ode"},
     {"name": "y", "units": "dimensionless", "component": "my_ode"}
-
+]
 
 CONSTANT_INFO = [
 ]

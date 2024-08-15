@@ -707,7 +707,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationVoiInfoString = "VOI_INFO = [CODE]\n";
 
         mInterfaceStateInfoString = "";
-        mImplementationStateInfoString = "STATE_INFO = [CODE]\n";
+        mImplementationStateInfoString = "STATE_INFO = [\n"
+                                         "[CODE]"
+                                         "]\n";
 
         mInterfaceConstantInfoString = "";
         mImplementationConstantInfoString = "CONSTANT_INFO = [\n"
