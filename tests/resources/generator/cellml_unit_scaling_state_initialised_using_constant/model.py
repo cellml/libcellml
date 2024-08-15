@@ -44,7 +44,7 @@ def create_algebraic_array():
     return [nan]*ALGEBRAIC_COUNT
 
 
-def initialise_variables(states, rates, constants):
+def initialise_variables(states, rates, constants, algebraic):
     states[0] = 123.0
     states[1] = 0.001*789.0
 

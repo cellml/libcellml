@@ -408,26 +408,26 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants);\n";
-        mImplementationInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants)\n"
+        mInterfaceInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants, double *algebraic)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants);\n";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants)\n"
+        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
@@ -810,22 +810,22 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFamWoevString = "";
         mImplementationInitialiseVariablesMethodFamWoevString = "\n"
-                                                                "def initialise_variables(constants):\n"
+                                                                "def initialise_variables(constants, algebraic):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFamWevString = "";
         mImplementationInitialiseVariablesMethodFamWevString = "\n"
-                                                               "def initialise_variables(constants, external_variable):\n"
+                                                               "def initialise_variables(constants, algebraic, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWoevString = "";
         mImplementationInitialiseVariablesMethodFdmWoevString = "\n"
-                                                                "def initialise_variables(states, rates, constants):\n"
+                                                                "def initialise_variables(states, rates, constants, algebraic):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWevString = "";
         mImplementationInitialiseVariablesMethodFdmWevString = "\n"
-                                                               "def initialise_variables(voi, states, rates, constants, external_variable):\n"
+                                                               "def initialise_variables(voi, states, rates, constants, algebraic, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
