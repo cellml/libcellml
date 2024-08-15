@@ -75,12 +75,12 @@ def find_root_0(voi, states, rates, variables):
 
 
 def initialise_variables(states, rates, constants, algebraic):
+    states[0] = 1.0
+    states[1] = 0.0
     constants[0] = 0.04
     constants[1] = 1.0e4
     constants[2] = 3.0e7
     algebraic[0] = 0.0
-    states[0] = 1.0
-    states[1] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):

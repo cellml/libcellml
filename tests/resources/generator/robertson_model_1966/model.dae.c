@@ -119,12 +119,12 @@ void findRoot0(double voi, double *states, double *rates, double *variables)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)
 {
+    states[0] = 1.0;
+    states[1] = 0.0;
     constants[0] = 0.04;
     constants[1] = 1.0e4;
     constants[2] = 3.0e7;
     algebraic[0] = 0.0;
-    states[0] = 1.0;
-    states[1] = 0.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

@@ -438,6 +438,14 @@ def find_root_16(voi, states, rates, variables):
 
 
 def initialise_variables(states, rates, constants, algebraic):
+    states[0] = 0.0
+    states[1] = 0.6
+    states[2] = 0.05
+    states[3] = 0.325
+    rates[0] = 0.0
+    rates[1] = 0.0
+    rates[2] = 0.0
+    rates[3] = 0.0
     constants[0] = 1.0
     constants[1] = 0.0
     constants[2] = 0.3
@@ -456,14 +464,6 @@ def initialise_variables(states, rates, constants, algebraic):
     algebraic[7] = 0.0
     algebraic[8] = 0.0
     algebraic[9] = 0.0
-    states[0] = 0.0
-    states[1] = 0.6
-    states[2] = 0.05
-    states[3] = 0.325
-    rates[0] = 0.0
-    rates[1] = 0.0
-    rates[2] = 0.0
-    rates[3] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):

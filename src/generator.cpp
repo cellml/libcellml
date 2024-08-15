@@ -1807,6 +1807,23 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                                                                                                                  mModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
+        // Initialise our states.
+
+        std::string methodBody;
+
+        for (const auto &state : mModel->states()) {
+            methodBody += generateInitialisationCode(state);
+        }
+
+        // Use an initial guess of zero for rates computed using an NLA system
+        // (see the note below).
+
+        for (const auto &state : mModel->states()) {
+            if (state->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                methodBody += generateZeroInitialisationCode(state);
+            }
+        }
+
         // Initialise our constants and our algebraic variables that have an
         // initial value. Also use an initial guess of zero for computed
         // constants and algebraic variables computed using an NLA system.
@@ -1816,8 +1833,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         //       to be computed using an NLA system for which we need an initial
         //       guess. We use an initial guess of zero, which is fine since
         //       such an NLA system has only one solution.
-
-        std::string methodBody;
 
         for (const auto &variable : variables(mModel)) {
             switch (variable->type()) {
@@ -1846,21 +1861,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         for (const auto &equation : equations) {
             if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
-            }
-        }
-
-        // Initialise our states.
-
-        for (const auto &state : mModel->states()) {
-            methodBody += generateInitialisationCode(state);
-        }
-
-        // Use an initial guess of zero for rates computed using an NLA system
-        // (see the note above).
-
-        for (const auto &state : mModel->states()) {
-            if (state->equation(0)->type() == AnalyserEquation::Type::NLA) {
-                methodBody += generateZeroInitialisationCode(state);
             }
         }
 

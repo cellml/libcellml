@@ -518,6 +518,14 @@ void findRoot16(double voi, double *states, double *rates, double *variables)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)
 {
+    states[0] = 0.0;
+    states[1] = 0.6;
+    states[2] = 0.05;
+    states[3] = 0.325;
+    rates[0] = 0.0;
+    rates[1] = 0.0;
+    rates[2] = 0.0;
+    rates[3] = 0.0;
     constants[0] = 1.0;
     constants[1] = 0.0;
     constants[2] = 0.3;
@@ -536,14 +544,6 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     algebraic[7] = 0.0;
     algebraic[8] = 0.0;
     algebraic[9] = 0.0;
-    states[0] = 0.0;
-    states[1] = 0.6;
-    states[2] = 0.05;
-    states[3] = 0.325;
-    rates[0] = 0.0;
-    rates[1] = 0.0;
-    rates[2] = 0.0;
-    rates[3] = 0.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
