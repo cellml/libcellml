@@ -15,9 +15,10 @@ EXTERNAL_COUNT = 2
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
-STATE_INFO =     {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
+STATE_INFO = [
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
     {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
-
+]
 
 CONSTANT_INFO = [
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane"},

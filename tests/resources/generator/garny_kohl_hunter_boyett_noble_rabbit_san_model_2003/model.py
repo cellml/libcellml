@@ -14,7 +14,8 @@ ALGEBRAIC_COUNT = 52
 
 VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
 
-STATE_INFO =     {"name": "V", "units": "millivolt", "component": "membrane"},
+STATE_INFO = [
+    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "m", "units": "dimensionless", "component": "sodium_current_m_gate"},
     {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "h2", "units": "dimensionless", "component": "sodium_current_h_gate"},
@@ -29,7 +30,7 @@ STATE_INFO =     {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "P_as", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
     {"name": "xs", "units": "dimensionless", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
     {"name": "y", "units": "dimensionless", "component": "hyperpolarisation_activated_current_y_gate"}
-
+]
 
 CONSTANT_INFO = [
     {"name": "dCell", "units": "dimensionless", "component": "membrane"},

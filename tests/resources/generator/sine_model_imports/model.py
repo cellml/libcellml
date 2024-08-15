@@ -14,8 +14,9 @@ ALGEBRAIC_COUNT = 3
 
 VOI_INFO = {"name": "x", "units": "dimensionless", "component": "main"}
 
-STATE_INFO =     {"name": "sin", "units": "dimensionless", "component": "deriv_approx_sin"}
-
+STATE_INFO = [
+    {"name": "sin", "units": "dimensionless", "component": "deriv_approx_sin"}
+]
 
 CONSTANT_INFO = [
     {"name": "deriv_approx_initial_value", "units": "dimensionless", "component": "main"},

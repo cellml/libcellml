@@ -14,7 +14,8 @@ ALGEBRAIC_COUNT = 101
 
 VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
 
-STATE_INFO =     {"name": "Ca_sub", "units": "millimolar", "component": "Ca_dynamics"},
+STATE_INFO = [
+    {"name": "Ca_sub", "units": "millimolar", "component": "Ca_dynamics"},
     {"name": "Nai_", "units": "millimolar", "component": "Nai_concentration"},
     {"name": "Ca_jsr", "units": "millimolar", "component": "Ca_dynamics"},
     {"name": "O", "units": "dimensionless", "component": "Ca_SR_release"},
@@ -47,7 +48,7 @@ STATE_INFO =     {"name": "Ca_sub", "units": "millimolar", "component": "Ca_dyna
     {"name": "paS", "units": "dimensionless", "component": "i_Kr_pa_gate"},
     {"name": "n", "units": "dimensionless", "component": "i_Ks_n_gate"},
     {"name": "a", "units": "dimensionless", "component": "i_KACh_a_gate"}
-
+]
 
 CONSTANT_INFO = [
     {"name": "ACh", "units": "millimolar", "component": "Rate_modulation_experiments"},
