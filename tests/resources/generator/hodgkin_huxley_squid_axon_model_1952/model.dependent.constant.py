@@ -84,7 +84,7 @@ def create_externals_array():
     return [nan]*EXTERNAL_COUNT
 
 
-def initialise_variables(voi, states, rates, constants, external_variable):
+def initialise_variables(voi, states, rates, constants, algebraic, external_variable):
     constants[0] = 0.0
     constants[1] = 0.3
     constants[2] = 36.0

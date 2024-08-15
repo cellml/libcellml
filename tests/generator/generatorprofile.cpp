@@ -485,33 +485,33 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initialiseVariables(double *constants);\n",
+    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(false, false));
-    EXPECT_EQ("void initialiseVariables(double *constants)\n"
+    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(false, false));
 
-    EXPECT_EQ("void initialiseVariables(double *constants, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(false, true));
-    EXPECT_EQ("void initialiseVariables(double *constants, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(false, true));
 
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants);\n",
+    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants, double *algebraic);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(true, false));
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants)\n"
+    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(true, false));
 
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(true, true));
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
