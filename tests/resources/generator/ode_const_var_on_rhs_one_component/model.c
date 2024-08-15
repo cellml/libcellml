@@ -80,8 +80,8 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)
 {
-    constants[0] = 1.0;
     states[0] = 1.0;
+    constants[0] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

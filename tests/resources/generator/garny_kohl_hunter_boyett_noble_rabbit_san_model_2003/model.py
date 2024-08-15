@@ -252,6 +252,21 @@ def create_algebraic_array():
 
 
 def initialise_variables(states, rates, constants, algebraic):
+    states[0] = -39.013558536
+    states[1] = 0.092361701692
+    states[2] = 0.015905380261
+    states[3] = 0.01445216109
+    states[4] = 0.48779845203
+    states[5] = 0.04804900895
+    states[6] = 0.038968420558
+    states[7] = 0.42074047435
+    states[8] = 0.064402950262
+    states[9] = 0.29760539675
+    states[10] = 0.87993375273
+    states[11] = 0.13034201158
+    states[12] = 0.46960956028
+    states[13] = 0.082293827208
+    states[14] = 0.03889291759
     constants[0] = 0.0
     constants[1] = 1.0
     constants[2] = 1.0309347
@@ -362,21 +377,6 @@ def initialise_variables(states, rates, constants, algebraic):
     constants[107] = 0.0055
     constants[108] = 0.0005465
     constants[109] = 0.006875
-    states[0] = -39.013558536
-    states[1] = 0.092361701692
-    states[2] = 0.015905380261
-    states[3] = 0.01445216109
-    states[4] = 0.48779845203
-    states[5] = 0.04804900895
-    states[6] = 0.038968420558
-    states[7] = 0.42074047435
-    states[8] = 0.064402950262
-    states[9] = 0.29760539675
-    states[10] = 0.87993375273
-    states[11] = 0.13034201158
-    states[12] = 0.46960956028
-    states[13] = 0.082293827208
-    states[14] = 0.03889291759
 
 
 def compute_computed_constants(constants, computed_constants):

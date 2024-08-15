@@ -314,6 +314,39 @@ def create_algebraic_array():
 
 
 def initialise_variables(states, rates, constants, algebraic):
+    states[0] = 6.226104e-5
+    states[1] = 5.0
+    states[2] = 0.409551
+    states[3] = 6.181512e-9
+    states[4] = 0.9308
+    states[5] = 0.069199
+    states[6] = 4.595622e-10
+    states[7] = 9.15641e-6
+    states[8] = 0.435148
+    states[9] = 0.017929
+    states[10] = 0.259947
+    states[11] = 0.653777
+    states[12] = 0.217311
+    states[13] = 0.158521
+    states[14] = 0.138975
+    states[15] = -47.787168
+    states[16] = 0.009508
+    states[17] = 0.003058
+    states[18] = 0.447724
+    states[19] = 0.845304
+    states[20] = 0.011845
+    states[21] = 0.844449
+    states[22] = 0.846702
+    states[23] = 0.001921
+    states[24] = 0.020484
+    states[25] = 0.268909
+    states[26] = 0.014523
+    states[27] = 0.430836
+    states[28] = 0.709051
+    states[29] = 0.011068
+    states[30] = 0.283185
+    states[31] = 0.1162
+    states[32] = 0.00277
     constants[0] = 0.0
     constants[1] = 0.0
     constants[2] = 140.0
@@ -405,39 +438,6 @@ def initialise_variables(states, rates, constants, algebraic):
     constants[88] = 0.00065
     constants[89] = 1.0
     constants[90] = 0.00345
-    states[0] = 6.226104e-5
-    states[1] = 5.0
-    states[2] = 0.409551
-    states[3] = 6.181512e-9
-    states[4] = 0.9308
-    states[5] = 0.069199
-    states[6] = 4.595622e-10
-    states[7] = 9.15641e-6
-    states[8] = 0.435148
-    states[9] = 0.017929
-    states[10] = 0.259947
-    states[11] = 0.653777
-    states[12] = 0.217311
-    states[13] = 0.158521
-    states[14] = 0.138975
-    states[15] = -47.787168
-    states[16] = 0.009508
-    states[17] = 0.003058
-    states[18] = 0.447724
-    states[19] = 0.845304
-    states[20] = 0.011845
-    states[21] = 0.844449
-    states[22] = 0.846702
-    states[23] = 0.001921
-    states[24] = 0.020484
-    states[25] = 0.268909
-    states[26] = 0.014523
-    states[27] = 0.430836
-    states[28] = 0.709051
-    states[29] = 0.011068
-    states[30] = 0.283185
-    states[31] = 0.1162
-    states[32] = 0.00277
 
 
 def compute_computed_constants(constants, computed_constants):

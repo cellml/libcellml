@@ -86,14 +86,14 @@ def create_externals_array():
 
 
 def initialise_variables(voi, states, rates, constants, algebraic, external_variable):
+    states[0] = 0.6
+    states[1] = 0.05
+    states[2] = 0.325
     constants[0] = 1.0
     constants[1] = 0.0
     constants[2] = 0.3
     constants[3] = 120.0
     constants[4] = 36.0
-    states[0] = 0.6
-    states[1] = 0.05
-    states[2] = 0.325
     algebraic[1] = external_variable(voi, states, rates, variables, 1)
     algebraic[9] = external_variable(voi, states, rates, variables, 9)
     algebraic[4] = external_variable(voi, states, rates, variables, 4)

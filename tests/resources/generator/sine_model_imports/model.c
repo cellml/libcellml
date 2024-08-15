@@ -89,6 +89,7 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)
 {
+    states[0] = constants[0];
     constants[0] = 0.0;
     constants[1] = 0.75;
     computedConstants[0] = 2.0/3.14159265358979;
@@ -96,7 +97,6 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     computedConstants[2] = 3.14159265358979/2.0;
     computedConstants[3] = 3.14159265358979;
     computedConstants[4] = 3.0*3.14159265358979/2.0;
-    states[0] = constants[0];
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

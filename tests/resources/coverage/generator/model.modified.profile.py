@@ -384,6 +384,7 @@ def find_root_0(voi, states, rates, variables):
 
 
 def initialise_variables(states, rates, constants, algebraic):
+    states[0] = 0.0
     constants[0] = 1.0
     constants[1] = 2.0
     constants[2] = 3.0
@@ -405,7 +406,6 @@ def initialise_variables(states, rates, constants, algebraic):
     computed_constants[187] = nan
     computed_constants[198] = 1.0
     computed_constants[199] = 3.0
-    states[0] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):
