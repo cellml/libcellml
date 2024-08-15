@@ -417,18 +417,6 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     constants[6] = 7.0;
     algebraic[0] = 1.0;
     algebraic[1] = 2.0;
-    computedConstants[177] = 123.0;
-    computedConstants[178] = 123.456789;
-    computedConstants[179] = 123.0e99;
-    computedConstants[180] = 123.456789e99;
-    computedConstants[182] = 1.0;
-    computedConstants[183] = 0.0;
-    computedConstants[184] = 2.71828182845905;
-    computedConstants[185] = 3.14159265358979;
-    computedConstants[186] = INFINITY;
-    computedConstants[187] = NAN;
-    computedConstants[198] = 1.0;
-    computedConstants[199] = 3.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -610,7 +598,17 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[174] = (constants[0] > constants[1])?constants[0]:(constants[2] > constants[3])?constants[2]:(constants[4] > constants[5])?constants[4]:NAN;
     computedConstants[175] = (constants[0] > constants[1])?constants[0]:(constants[2] > constants[3])?constants[2]:(constants[4] > constants[5])?constants[4]:constants[6];
     computedConstants[176] = 123.0+((constants[0] > constants[1])?constants[0]:NAN);
+    computedConstants[177] = 123.0;
+    computedConstants[178] = 123.456789;
+    computedConstants[179] = 123.0e99;
+    computedConstants[180] = 123.456789e99;
     computedConstants[181] = constants[0];
+    computedConstants[182] = 1.0;
+    computedConstants[183] = 0.0;
+    computedConstants[184] = 2.71828182845905;
+    computedConstants[185] = 3.14159265358979;
+    computedConstants[186] = INFINITY;
+    computedConstants[187] = NAN;
     computedConstants[188] = (constants[0] && constants[1])+((constants[2] > constants[3])?constants[1]:NAN)+constants[4]+(constants[5] && constants[6]);
     computedConstants[189] = (constants[0] && constants[1])-(((constants[2] > constants[3])?constants[1]:NAN)-(constants[4]-((constants[2] > constants[3])?constants[1]:NAN)))-(constants[5] && constants[6]);
     computedConstants[190] = (constants[0] && constants[1])*((constants[2] > constants[3])?constants[1]:NAN)*constants[4]*((constants[2] > constants[3])?constants[1]:NAN)*(constants[5] && constants[6]);
@@ -621,6 +619,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[195] = pow(constants[0] && constants[1], pow((constants[2] > constants[3])?constants[1]:NAN, pow(pow(constants[4], (constants[2] > constants[3])?constants[1]:NAN), constants[0] && constants[1])));
     computedConstants[196] = pow(pow(pow(constants[0] && constants[1], 1.0/pow((constants[2] > constants[3])?constants[1]:NAN, 1.0/constants[4])), 1.0/((constants[2] > constants[3])?constants[1]:NAN)), 1.0/(constants[0] && constants[1]));
     computedConstants[197] = -(constants[0] && constants[1])+-((constants[2] > constants[3])?constants[1]:NAN);
+    computedConstants[198] = 1.0;
+    computedConstants[199] = 3.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)

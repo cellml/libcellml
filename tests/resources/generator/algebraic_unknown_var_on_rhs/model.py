@@ -36,10 +36,11 @@ def create_algebraic_array():
 
 
 def initialise_variables(constants, algebraic):
-    computed_constants[0] = 1.0
+    pass
 
 
 def compute_computed_constants(constants, computed_constants):
+    computed_constants[0] = 1.0
     computed_constants[1] = computed_constants[0]
 
 

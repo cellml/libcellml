@@ -60,13 +60,12 @@ def find_root_0(variables):
 
 def initialise_variables(constants, algebraic):
     algebraic[0] = 1.0
-    computed_constants[0] = 3.0
-    computed_constants[1] = 5.0
-    computed_constants[2] = 7.0
 
 
 def compute_computed_constants(constants, computed_constants):
-    pass
+    computed_constants[0] = 3.0
+    computed_constants[1] = 5.0
+    computed_constants[2] = 7.0
 
 
 def compute_variables(constants, computed_constants, algebraic):

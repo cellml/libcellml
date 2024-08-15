@@ -46,14 +46,13 @@ def create_externals_array():
 
 
 def initialise_variables(constants, algebraic, external_variable):
-    computed_constants[0] = 3.0
-    computed_constants[1] = 5.0
-    computed_constants[2] = 7.0
     algebraic[0] = external_variable(variables, 0)
 
 
 def compute_computed_constants(constants, computed_constants):
-    pass
+    computed_constants[0] = 3.0
+    computed_constants[1] = 5.0
+    computed_constants[2] = 7.0
 
 
 def compute_variables(constants, computed_constants, algebraic, external_variable):
