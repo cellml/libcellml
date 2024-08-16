@@ -56,9 +56,9 @@ struct AnalyserInternalVariable
         OVERCONSTRAINED
     };
 
-    size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
-    bool mIsExternal = false;
+    bool mIsKnownStateVariable = false;
+    bool mIsExternalVariable = false;
 
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
@@ -71,7 +71,7 @@ struct AnalyserInternalVariable
 
     void makeVoi();
     void makeState();
-    void makeConstant(size_t &index);
+    void makeConstant();
 };
 
 struct AnalyserInternalEquation
@@ -95,7 +95,7 @@ struct AnalyserInternalEquation
     ComponentPtr mComponent;
 
     AnalyserInternalVariablePtrs mVariables;
-    AnalyserInternalVariablePtrs mOdeVariables;
+    AnalyserInternalVariablePtrs mStateVariables;
     AnalyserInternalVariablePtrs mAllVariables;
     AnalyserInternalVariablePtrs mUnknownVariables;
 
@@ -109,10 +109,10 @@ struct AnalyserInternalEquation
     static AnalyserInternalEquationPtr create(const AnalyserInternalVariablePtr &variable);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
-    void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
+    void addStateVariable(const AnalyserInternalVariablePtr &stateVariable);
 
     static bool isKnownVariable(const AnalyserInternalVariablePtr &variable);
-    static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
+    static bool isKnownStateVariable(const AnalyserInternalVariablePtr &stateVariable);
 
     static bool hasKnownVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasKnownVariables();
@@ -127,7 +127,7 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &computedConstantIndex, size_t &algebraicIndex, bool checkNlaSystems);
+    bool check(const AnalyserModelPtr &model, bool checkNlaSystems);
 };
 
 /**
