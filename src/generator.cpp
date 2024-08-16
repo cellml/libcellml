@@ -1830,15 +1830,12 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
-        // Initialise our constants and our algebraic variables that have an
-        // initial value. Also use an initial guess of zero for computed
-        // constants and algebraic variables computed using an NLA system.
-        // Note: a variable which is the only unknown in an equation, but which
-        //       is not on its own on either the LHS or RHS of that equation
-        //       (e.g., x = y+z with x and y known and z unknown) is (currently)
-        //       to be computed using an NLA system for which we need an initial
-        //       guess. We use an initial guess of zero, which is fine since
-        //       such an NLA system has only one solution.
+        // Initialise our constants and our algebraic variables that have an initial value. Also use an initial guess of
+        // zero for algebraic variables computed using an NLA system.
+        // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or
+        //       RHS of that equation (e.g., x = y+z with x and y known and z unknown) is (currently) to be computed
+        //       using an NLA system for which we need an initial guess. We use an initial guess of zero, which is fine
+        //       since such an NLA system has only one solution.
 
         for (const auto &variable : variables(mModel)) {
             switch (variable->type()) {
@@ -1846,7 +1843,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                 methodBody += generateInitialisationCode(variable);
 
                 break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
             case AnalyserVariable::Type::ALGEBRAIC:
                 if (variable->initialisingVariable() != nullptr) {
                     methodBody += generateInitialisationCode(variable);

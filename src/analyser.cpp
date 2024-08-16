@@ -3062,6 +3062,66 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         v2aeMappings.emplace(internalEquation->mUnknownVariables.front()->mVariable, equation);
     }
 
+    // Start making our internal equations available through our API.
+    // Note: start because we need to determine the type of our equations before we can make our internal variables
+    //       available through our API.
+
+    std::map<AnalyserInternalEquationPtr, AnalyserEquation::Type> aie2aetMappings;
+
+    for (const auto &internalEquation : mInternalEquations) {
+        // Determine whether the equation is an external one.
+
+        auto externalEquation = true;
+
+        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            if (!unknownVariable->mIsExternal) {
+                externalEquation = false;
+
+                break;
+            }
+        }
+
+        // Determine and keep track of the type of the equation.
+
+        AnalyserEquation::Type type;
+
+        if (externalEquation) {
+            type = AnalyserEquation::Type::EXTERNAL;
+        } else {
+            switch (internalEquation->mType) {
+            case AnalyserInternalEquation::Type::TRUE_CONSTANT:
+                type = AnalyserEquation::Type::TRUE_CONSTANT;
+
+                break;
+            case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT:
+                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+
+                break;
+            case AnalyserInternalEquation::Type::ODE:
+                type = AnalyserEquation::Type::ODE;
+
+                break;
+            case AnalyserInternalEquation::Type::NLA:
+                type = AnalyserEquation::Type::NLA;
+
+                break;
+            case AnalyserInternalEquation::Type::ALGEBRAIC:
+                type = AnalyserEquation::Type::ALGEBRAIC;
+
+                break;
+            default: // AnalyserEquation::Type::UNKNOWN.
+                // The equation type is unknown, which means that it is a dummy
+                // equation for a true (i.e. non-computed) constant (so that it
+                // could have been marked as an external variable), so we skip
+                // it since the constant wasn't marked as an external variable.
+
+                continue;
+            }
+        }
+
+        aie2aetMappings.emplace(internalEquation, type);
+    }
+
     // Make our internal variables available through our API.
 
     std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
@@ -3106,16 +3166,31 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         }
 
-        // Populate and keep track of the state/variable.
+        // Retrieve the equations used to compute the variable.
 
-        auto variable = AnalyserVariable::AnalyserVariableImpl::create();
         AnalyserEquationPtrs equations;
+        auto nlaEquation = false;
 
         for (const auto &internalEquation : mInternalEquations) {
             if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
                 equations.push_back(aie2aeMappings[internalEquation]);
+
+                if ((aie2aetMappings.find(internalEquation) != aie2aetMappings.end())
+                    && (aie2aetMappings[internalEquation] == AnalyserEquation::Type::NLA)) {
+                    nlaEquation = true;
+                }
             }
         }
+
+        // Correct the type of the variable if it is a computed constant that is computed using an NLA equation.
+
+        if ((type == AnalyserVariable::Type::COMPUTED_CONSTANT) && nlaEquation) {
+            type = AnalyserVariable::Type::ALGEBRAIC;
+        }
+
+        // Populate and keep track of the state/variable.
+
+        auto variable = AnalyserVariable::AnalyserVariableImpl::create();
 
         variable->mPimpl->populate(type,
                                    (type == AnalyserVariable::Type::STATE) ?
@@ -3162,57 +3237,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Make our internal equations available through our API.
+    // Finish making our internal equations available through our API.
 
     for (const auto &internalEquation : mInternalEquations) {
-        // Determine whether the equation is an external one.
+        // Make sure that the type of the equation is known.
 
-        auto externalEquation = true;
-
-        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-            if (aiv2avMappings[unknownVariable]->type() != AnalyserVariable::Type::EXTERNAL) {
-                externalEquation = false;
-
-                break;
-            }
-        }
-
-        // Determine the type of the equation.
-
-        AnalyserEquation::Type type;
-
-        if (externalEquation) {
-            type = AnalyserEquation::Type::EXTERNAL;
-        } else {
-            switch (internalEquation->mType) {
-            case AnalyserInternalEquation::Type::TRUE_CONSTANT:
-                type = AnalyserEquation::Type::TRUE_CONSTANT;
-
-                break;
-            case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT:
-                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-
-                break;
-            case AnalyserInternalEquation::Type::ODE:
-                type = AnalyserEquation::Type::ODE;
-
-                break;
-            case AnalyserInternalEquation::Type::NLA:
-                type = AnalyserEquation::Type::NLA;
-
-                break;
-            case AnalyserInternalEquation::Type::ALGEBRAIC:
-                type = AnalyserEquation::Type::ALGEBRAIC;
-
-                break;
-            default: // AnalyserEquation::Type::UNKNOWN.
-                // The equation type is unknown, which means that it is a dummy
-                // equation for a true (i.e. non-computed) constant (so that it
-                // could have been marked as an external variable), so we skip
-                // it since the constant wasn't marked as an external variable.
-
-                continue;
-            }
+        if (aie2aetMappings.find(internalEquation) == aie2aetMappings.end()) {
+            continue;
         }
 
         // Scale our internal equation's AST to take into account the fact that
@@ -3222,6 +3253,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         scaleEquationAst(internalEquation->mAst);
 
         // Manipulate the equation, if needed.
+
+        auto type = aie2aetMappings[internalEquation];
 
         switch (type) {
         case AnalyserEquation::Type::NLA:

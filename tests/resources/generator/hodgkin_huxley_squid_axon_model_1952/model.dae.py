@@ -9,8 +9,8 @@ LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 4
 CONSTANT_COUNT = 5
-COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 10
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 13
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -30,9 +30,6 @@ CONSTANT_INFO = [
 ]
 
 COMPUTED_CONSTANT_INFO = [
-    {"name": "E_L", "units": "millivolt", "component": "leakage_current"},
-    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel"},
-    {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
 ALGEBRAIC_INFO = [
@@ -40,10 +37,13 @@ ALGEBRAIC_INFO = [
     {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current"},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "E_L", "units": "millivolt", "component": "leakage_current"},
+    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel"},
     {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
     {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
     {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
     {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
+    {"name": "E_K", "units": "millivolt", "component": "potassium_channel"},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"},
     {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
@@ -128,19 +128,19 @@ def objective_function_2(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    computed_constants[0] = u[0]
+    algebraic[4] = u[0]
 
-    f[0] = computed_constants[0]-(constants[1]-10.613)-0.0
+    f[0] = algebraic[4]-(constants[1]-10.613)-0.0
 
 
 def find_root_2(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = external[0]
+    u[0] = algebraic[4]
 
     u = nla_solve(objective_function_2, u, 1, [voi, states, rates, variables])
 
-    external[0] = u[0]
+    algebraic[4] = u[0]
 
 
 def objective_function_3(u, f, data):
@@ -151,7 +151,7 @@ def objective_function_3(u, f, data):
 
     algebraic[1] = u[0]
 
-    f[0] = algebraic[1]-constants[2]*(states[0]-computed_constants[0])-0.0
+    f[0] = algebraic[1]-constants[2]*(states[0]-algebraic[4])-0.0
 
 
 def find_root_3(voi, states, rates, variables):
@@ -170,19 +170,19 @@ def objective_function_4(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    computed_constants[1] = u[0]
+    algebraic[5] = u[0]
 
-    f[0] = computed_constants[1]-(constants[1]-115.0)-0.0
+    f[0] = algebraic[5]-(constants[1]-115.0)-0.0
 
 
 def find_root_4(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = external[1]
+    u[0] = algebraic[5]
 
     u = nla_solve(objective_function_4, u, 1, [voi, states, rates, variables])
 
-    external[1] = u[0]
+    algebraic[5] = u[0]
 
 
 def objective_function_5(u, f, data):
@@ -193,7 +193,7 @@ def objective_function_5(u, f, data):
 
     algebraic[3] = u[0]
 
-    f[0] = algebraic[3]-constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])-0.0
+    f[0] = algebraic[3]-constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5])-0.0
 
 
 def find_root_5(voi, states, rates, variables):
@@ -212,19 +212,19 @@ def objective_function_6(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[4] = u[0]
+    algebraic[6] = u[0]
 
-    f[0] = algebraic[4]-0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)-0.0
+    f[0] = algebraic[6]-0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)-0.0
 
 
 def find_root_6(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[4]
+    u[0] = algebraic[6]
 
     u = nla_solve(objective_function_6, u, 1, [voi, states, rates, variables])
 
-    algebraic[4] = u[0]
+    algebraic[6] = u[0]
 
 
 def objective_function_7(u, f, data):
@@ -233,19 +233,19 @@ def objective_function_7(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[5] = u[0]
+    algebraic[7] = u[0]
 
-    f[0] = algebraic[5]-4.0*exp(states[0]/18.0)-0.0
+    f[0] = algebraic[7]-4.0*exp(states[0]/18.0)-0.0
 
 
 def find_root_7(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[5]
+    u[0] = algebraic[7]
 
     u = nla_solve(objective_function_7, u, 1, [voi, states, rates, variables])
 
-    algebraic[5] = u[0]
+    algebraic[7] = u[0]
 
 
 def objective_function_8(u, f, data):
@@ -256,7 +256,7 @@ def objective_function_8(u, f, data):
 
     rates[2] = u[0]
 
-    f[0] = rates[2]-(algebraic[4]*(1.0-states[2])-algebraic[5]*states[2])-0.0
+    f[0] = rates[2]-(algebraic[6]*(1.0-states[2])-algebraic[7]*states[2])-0.0
 
 
 def find_root_8(voi, states, rates, variables):
@@ -275,19 +275,19 @@ def objective_function_9(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[6] = u[0]
+    algebraic[8] = u[0]
 
-    f[0] = algebraic[6]-0.07*exp(states[0]/20.0)-0.0
+    f[0] = algebraic[8]-0.07*exp(states[0]/20.0)-0.0
 
 
 def find_root_9(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[6]
+    u[0] = algebraic[8]
 
     u = nla_solve(objective_function_9, u, 1, [voi, states, rates, variables])
 
-    algebraic[6] = u[0]
+    algebraic[8] = u[0]
 
 
 def objective_function_10(u, f, data):
@@ -296,19 +296,19 @@ def objective_function_10(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[7] = u[0]
+    algebraic[9] = u[0]
 
-    f[0] = algebraic[7]-1.0/(exp((states[0]+30.0)/10.0)+1.0)-0.0
+    f[0] = algebraic[9]-1.0/(exp((states[0]+30.0)/10.0)+1.0)-0.0
 
 
 def find_root_10(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[7]
+    u[0] = algebraic[9]
 
     u = nla_solve(objective_function_10, u, 1, [voi, states, rates, variables])
 
-    algebraic[7] = u[0]
+    algebraic[9] = u[0]
 
 
 def objective_function_11(u, f, data):
@@ -319,7 +319,7 @@ def objective_function_11(u, f, data):
 
     rates[1] = u[0]
 
-    f[0] = rates[1]-(algebraic[6]*(1.0-states[1])-algebraic[7]*states[1])-0.0
+    f[0] = rates[1]-(algebraic[8]*(1.0-states[1])-algebraic[9]*states[1])-0.0
 
 
 def find_root_11(voi, states, rates, variables):
@@ -338,19 +338,19 @@ def objective_function_12(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    computed_constants[2] = u[0]
+    algebraic[10] = u[0]
 
-    f[0] = computed_constants[2]-(constants[1]+12.0)-0.0
+    f[0] = algebraic[10]-(constants[1]+12.0)-0.0
 
 
 def find_root_12(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = external[2]
+    u[0] = algebraic[10]
 
     u = nla_solve(objective_function_12, u, 1, [voi, states, rates, variables])
 
-    external[2] = u[0]
+    algebraic[10] = u[0]
 
 
 def objective_function_13(u, f, data):
@@ -361,7 +361,7 @@ def objective_function_13(u, f, data):
 
     algebraic[2] = u[0]
 
-    f[0] = algebraic[2]-constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])-0.0
+    f[0] = algebraic[2]-constants[4]*pow(states[3], 4.0)*(states[0]-algebraic[10])-0.0
 
 
 def find_root_13(voi, states, rates, variables):
@@ -380,19 +380,19 @@ def objective_function_14(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[8] = u[0]
+    algebraic[11] = u[0]
 
-    f[0] = algebraic[8]-0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)-0.0
+    f[0] = algebraic[11]-0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)-0.0
 
 
 def find_root_14(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[8]
+    u[0] = algebraic[11]
 
     u = nla_solve(objective_function_14, u, 1, [voi, states, rates, variables])
 
-    algebraic[8] = u[0]
+    algebraic[11] = u[0]
 
 
 def objective_function_15(u, f, data):
@@ -401,19 +401,19 @@ def objective_function_15(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    algebraic[9] = u[0]
+    algebraic[12] = u[0]
 
-    f[0] = algebraic[9]-0.125*exp(states[0]/80.0)-0.0
+    f[0] = algebraic[12]-0.125*exp(states[0]/80.0)-0.0
 
 
 def find_root_15(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[9]
+    u[0] = algebraic[12]
 
     u = nla_solve(objective_function_15, u, 1, [voi, states, rates, variables])
 
-    algebraic[9] = u[0]
+    algebraic[12] = u[0]
 
 
 def objective_function_16(u, f, data):
@@ -424,7 +424,7 @@ def objective_function_16(u, f, data):
 
     rates[3] = u[0]
 
-    f[0] = rates[3]-(algebraic[8]*(1.0-states[3])-algebraic[9]*states[3])-0.0
+    f[0] = rates[3]-(algebraic[11]*(1.0-states[3])-algebraic[12]*states[3])-0.0
 
 
 def find_root_16(voi, states, rates, variables):
@@ -451,9 +451,6 @@ def initialise_variables(voi, states, rates, constants, algebraic):
     constants[2] = 0.3
     constants[3] = 120.0
     constants[4] = 36.0
-    computed_constants[0] = 0.0
-    computed_constants[1] = 0.0
-    computed_constants[2] = 0.0
     algebraic[0] = 0.0
     algebraic[1] = 0.0
     algebraic[2] = 0.0
@@ -464,6 +461,9 @@ def initialise_variables(voi, states, rates, constants, algebraic):
     algebraic[7] = 0.0
     algebraic[8] = 0.0
     algebraic[9] = 0.0
+    algebraic[10] = 0.0
+    algebraic[11] = 0.0
+    algebraic[12] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):
