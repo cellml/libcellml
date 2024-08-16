@@ -915,6 +915,12 @@ describe("GeneratorProfile tests", () => {
     x.setAlgebraicArrayString("something")
     expect(x.algebraicArrayString()).toBe("something")
   });
+  test("Checking GeneratorProfile.externalArrayString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setExternalArrayString("something")
+    expect(x.externalArrayString()).toBe("something")
+  });
   test("Checking GeneratorProfile.externalVariableMethodTypeDefinitionString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 

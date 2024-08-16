@@ -94,7 +94,7 @@ def initialise_variables(voi, states, rates, constants, algebraic, external_vari
     constants[1] = 0.3
     constants[2] = 120.0
     constants[3] = 36.0
-    algebraic[4] = external_variable(voi, states, rates, variables, 4)
+    external[4] = external_variable(voi, states, rates, variables, 4)
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -105,11 +105,11 @@ def compute_computed_constants(constants, computed_constants):
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):
     algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    algebraic[4] = external_variable(voi, states, rates, variables, 4)
+    external[4] = external_variable(voi, states, rates, variables, 4)
     algebraic[1] = constants[1]*(states[0]-computed_constants[0])
     algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])
-    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/algebraic[4]
+    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/external[4]
     algebraic[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     algebraic[6] = 4.0*exp(states[0]/18.0)
     rates[2] = algebraic[5]*(1.0-states[2])-algebraic[6]*states[2]
@@ -131,4 +131,4 @@ def compute_variables(voi, states, rates, constants, computed_constants, algebra
     algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     algebraic[9] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
     algebraic[10] = 0.125*exp(states[0]/80.0)
-    algebraic[4] = external_variable(voi, states, rates, variables, 4)
+    external[4] = external_variable(voi, states, rates, variables, 4)

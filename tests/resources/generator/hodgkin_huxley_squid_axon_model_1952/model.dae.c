@@ -173,11 +173,11 @@ void findRoot2(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = algebraic[0];
+    u[0] = external[0];
 
     nlaSolve(objectiveFunction2, u, 1, &rfi);
 
-    algebraic[0] = u[0];
+    external[0] = u[0];
 }
 
 void objectiveFunction3(double *u, double *f, void *data)
@@ -221,11 +221,11 @@ void findRoot4(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = algebraic[1];
+    u[0] = external[1];
 
     nlaSolve(objectiveFunction4, u, 1, &rfi);
 
-    algebraic[1] = u[0];
+    external[1] = u[0];
 }
 
 void objectiveFunction5(double *u, double *f, void *data)
@@ -413,11 +413,11 @@ void findRoot12(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = algebraic[2];
+    u[0] = external[2];
 
     nlaSolve(objectiveFunction12, u, 1, &rfi);
 
-    algebraic[2] = u[0];
+    external[2] = u[0];
 }
 
 void objectiveFunction13(double *u, double *f, void *data)

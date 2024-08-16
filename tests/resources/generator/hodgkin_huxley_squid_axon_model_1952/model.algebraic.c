@@ -124,7 +124,7 @@ void initialiseVariables(double voi, double *states, double *rates, double *cons
     constants[2] = 0.3;
     constants[3] = 120.0;
     constants[4] = 36.0;
-    algebraic[0] = externalVariable(voi, states, rates, variables, 0);
+    external[0] = externalVariable(voi, states, rates, variables, 0);
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -136,11 +136,11 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    algebraic[0] = externalVariable(voi, states, rates, variables, 0);
+    external[0] = externalVariable(voi, states, rates, variables, 0);
     algebraic[1] = constants[2]*(states[0]-computedConstants[0]);
     algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
     algebraic[3] = constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computedConstants[1]);
-    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0];
+    rates[0] = -(-external[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0];
     algebraic[4] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     algebraic[5] = 4.0*exp(states[0]/18.0);
     rates[2] = algebraic[4]*(1.0-states[2])-algebraic[5]*states[2];
@@ -154,7 +154,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    algebraic[0] = externalVariable(voi, states, rates, variables, 0);
+    external[0] = externalVariable(voi, states, rates, variables, 0);
     algebraic[1] = constants[2]*(states[0]-computedConstants[0]);
     algebraic[3] = constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computedConstants[1]);
     algebraic[4] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);

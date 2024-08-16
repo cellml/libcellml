@@ -45,9 +45,9 @@ def create_externals_array():
 
 
 def initialise_variables(constants, algebraic, external_variable):
-    algebraic[0] = external_variable(variables, 0)
-    algebraic[1] = external_variable(variables, 1)
-    algebraic[2] = external_variable(variables, 2)
+    external[0] = external_variable(variables, 0)
+    external[1] = external_variable(variables, 1)
+    external[2] = external_variable(variables, 2)
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -55,6 +55,6 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_variables(constants, computed_constants, algebraic, external_variable):
-    algebraic[0] = external_variable(variables, 0)
-    algebraic[1] = external_variable(variables, 1)
-    algebraic[2] = external_variable(variables, 2)
+    external[0] = external_variable(variables, 0)
+    external[1] = external_variable(variables, 1)
+    external[2] = external_variable(variables, 2)

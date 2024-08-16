@@ -288,6 +288,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computedConstants";
         mAlgebraicArrayString = "algebraic";
+        mExternalArrayString = "external";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
@@ -740,6 +741,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computed_constants";
         mAlgebraicArrayString = "algebraic";
+        mExternalArrayString = "external";
 
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
@@ -2286,6 +2288,16 @@ std::string GeneratorProfile::algebraicArrayString() const
 void GeneratorProfile::setAlgebraicArrayString(const std::string &algebraicArrayString)
 {
     mPimpl->mAlgebraicArrayString = algebraicArrayString;
+}
+
+std::string GeneratorProfile::externalArrayString() const
+{
+    return mPimpl->mExternalArrayString;
+}
+
+void GeneratorProfile::setExternalArrayString(const std::string &externalArrayString)
+{
+    mPimpl->mExternalArrayString = externalArrayString;
 }
 
 std::string GeneratorProfile::externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const
