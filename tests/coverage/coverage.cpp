@@ -875,7 +875,6 @@ TEST(Coverage, generator)
     profile->setImplementationComputeComputedConstantsMethodString("");
     profile->setImplementationComputeRatesMethodString(true, "");
     profile->setImplementationHeaderString("[INTERFACE_FILE_NAME]");
-    profile->setImplementationInitialiseVariablesMethodString(true, true, "");
     profile->setInterfaceFileNameString("");
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");

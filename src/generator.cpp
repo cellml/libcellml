@@ -1776,8 +1776,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(modelHasOdes(),
-                                                                                                       mModel->hasExternalVariables());
+    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(modelHasOdes());
     std::string code;
 
     if (!interfaceInitialiseVariablesMethodString.empty()) {
@@ -1811,8 +1810,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes(),
-                                                                                                                 mModel->hasExternalVariables());
+    auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
         // Initialise our states.
@@ -1873,22 +1871,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             if ((equation->constantCount() == 1)
                 && (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT)) {
                 methodBody += generateEquationCode(equation, remainingEquations);
-            }
-        }
-
-        // Initialise our external variables.
-
-        if (mModel->hasExternalVariables()) {
-            std::vector<AnalyserEquationPtr> remainingExternalEquations;
-
-            std::copy_if(equations.begin(), equations.end(),
-                         std::back_inserter(remainingExternalEquations),
-                         [](const AnalyserEquationPtr &equation) { return equation->type() == AnalyserEquation::Type::EXTERNAL; });
-
-            for (const auto &equation : equations) {
-                if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
-                    methodBody += generateEquationCode(equation, remainingExternalEquations);
-                }
             }
         }
 

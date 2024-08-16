@@ -251,7 +251,7 @@ def create_algebraic_array():
     return [nan]*ALGEBRAIC_COUNT
 
 
-def initialise_variables(states, rates, constants, algebraic):
+def initialise_variables(voi, states, rates, constants, algebraic):
     states[0] = -39.013558536
     states[1] = 0.092361701692
     states[2] = 0.015905380261

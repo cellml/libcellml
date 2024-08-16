@@ -409,29 +409,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants, double *algebraic);\n";
-        mImplementationInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants, double *algebraic)\n"
-                                                                "{\n"
-                                                                "[CODE]"
-                                                                "}\n";
+        mInterfaceInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *algebraic)\n"
+                                                            "{\n"
+                                                            "[CODE]"
+                                                            "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable)\n"
-                                                               "{\n"
-                                                               "[CODE]"
-                                                               "}\n";
-
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants, double *algebraic);\n";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants, double *algebraic)\n"
-                                                                "{\n"
-                                                                "[CODE]"
-                                                                "}\n";
-
-        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable)\n"
-                                                               "{\n"
-                                                               "[CODE]"
-                                                               "}\n";
+        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic)\n"
+                                                            "{\n"
+                                                            "[CODE]"
+                                                            "}\n";
 
         mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
         mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
@@ -812,25 +800,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitialiseVariablesMethodFamWoevString = "";
-        mImplementationInitialiseVariablesMethodFamWoevString = "\n"
-                                                                "def initialise_variables(constants, algebraic):\n"
-                                                                "[CODE]";
+        mInterfaceInitialiseVariablesMethodFamString = "";
+        mImplementationInitialiseVariablesMethodFamString = "\n"
+                                                            "def initialise_variables(constants, algebraic):\n"
+                                                            "[CODE]";
 
-        mInterfaceInitialiseVariablesMethodFamWevString = "";
-        mImplementationInitialiseVariablesMethodFamWevString = "\n"
-                                                               "def initialise_variables(constants, algebraic, external_variable):\n"
-                                                               "[CODE]";
-
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "\n"
-                                                                "def initialise_variables(states, rates, constants, algebraic):\n"
-                                                                "[CODE]";
-
-        mInterfaceInitialiseVariablesMethodFdmWevString = "";
-        mImplementationInitialiseVariablesMethodFdmWevString = "\n"
-                                                               "def initialise_variables(voi, states, rates, constants, algebraic, external_variable):\n"
-                                                               "[CODE]";
+        mInterfaceInitialiseVariablesMethodFdmString = "";
+        mImplementationInitialiseVariablesMethodFdmString = "\n"
+                                                            "def initialise_variables(voi, states, rates, constants, algebraic):\n"
+                                                            "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
@@ -2583,77 +2561,41 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                       bool withExternalVariables) const
+std::string GeneratorProfile::interfaceInitialiseVariablesMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        if (withExternalVariables) {
-            return mPimpl->mInterfaceInitialiseVariablesMethodFdmWevString;
-        }
-
-        return mPimpl->mInterfaceInitialiseVariablesMethodFdmWoevString;
+        return mPimpl->mInterfaceInitialiseVariablesMethodFdmString;
     }
 
-    if (withExternalVariables) {
-        return mPimpl->mInterfaceInitialiseVariablesMethodFamWevString;
-    }
-
-    return mPimpl->mInterfaceInitialiseVariablesMethodFamWoevString;
+    return mPimpl->mInterfaceInitialiseVariablesMethodFamString;
 }
 
 void GeneratorProfile::setInterfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                   bool withExternalVariables,
                                                                    const std::string &interfaceInitialiseVariablesMethodString)
 {
     if (forDifferentialModel) {
-        if (withExternalVariables) {
-            mPimpl->mInterfaceInitialiseVariablesMethodFdmWevString = interfaceInitialiseVariablesMethodString;
-        } else {
-            mPimpl->mInterfaceInitialiseVariablesMethodFdmWoevString = interfaceInitialiseVariablesMethodString;
-        }
+        mPimpl->mInterfaceInitialiseVariablesMethodFdmString = interfaceInitialiseVariablesMethodString;
     } else {
-        if (withExternalVariables) {
-            mPimpl->mInterfaceInitialiseVariablesMethodFamWevString = interfaceInitialiseVariablesMethodString;
-        } else {
-            mPimpl->mInterfaceInitialiseVariablesMethodFamWoevString = interfaceInitialiseVariablesMethodString;
-        }
+        mPimpl->mInterfaceInitialiseVariablesMethodFamString = interfaceInitialiseVariablesMethodString;
     }
 }
 
-std::string GeneratorProfile::implementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                            bool withExternalVariables) const
+std::string GeneratorProfile::implementationInitialiseVariablesMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        if (withExternalVariables) {
-            return mPimpl->mImplementationInitialiseVariablesMethodFdmWevString;
-        }
-
-        return mPimpl->mImplementationInitialiseVariablesMethodFdmWoevString;
+        return mPimpl->mImplementationInitialiseVariablesMethodFdmString;
     }
 
-    if (withExternalVariables) {
-        return mPimpl->mImplementationInitialiseVariablesMethodFamWevString;
-    }
-
-    return mPimpl->mImplementationInitialiseVariablesMethodFamWoevString;
+    return mPimpl->mImplementationInitialiseVariablesMethodFamString;
 }
 
 void GeneratorProfile::setImplementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                        bool withExternalVariables,
                                                                         const std::string &implementationInitialiseVariablesMethodString)
 {
     if (forDifferentialModel) {
-        if (withExternalVariables) {
-            mPimpl->mImplementationInitialiseVariablesMethodFdmWevString = implementationInitialiseVariablesMethodString;
-        } else {
-            mPimpl->mImplementationInitialiseVariablesMethodFdmWoevString = implementationInitialiseVariablesMethodString;
-        }
+        mPimpl->mImplementationInitialiseVariablesMethodFdmString = implementationInitialiseVariablesMethodString;
     } else {
-        if (withExternalVariables) {
-            mPimpl->mImplementationInitialiseVariablesMethodFamWevString = implementationInitialiseVariablesMethodString;
-        } else {
-            mPimpl->mImplementationInitialiseVariablesMethodFamWoevString = implementationInitialiseVariablesMethodString;
-        }
+        mPimpl->mImplementationInitialiseVariablesMethodFamString = implementationInitialiseVariablesMethodString;
     }
 }
 

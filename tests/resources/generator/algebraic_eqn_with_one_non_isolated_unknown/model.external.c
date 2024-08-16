@@ -78,9 +78,8 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *constants, double *algebraic, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, double *algebraic)
 {
-    external[0] = externalVariable(variables, 0);
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
