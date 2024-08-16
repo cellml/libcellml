@@ -208,8 +208,7 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &constantIndex,
-               size_t &computedConstantIndex, size_t &algebraicIndex, bool checkNlaSystems);
+    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &computedConstantIndex, size_t &algebraicIndex, bool checkNlaSystems);
 };
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
@@ -322,9 +321,7 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
-                                     size_t &stateIndex, size_t &constantIndex,
-                                     size_t &computedConstantIndex, size_t &algebraicIndex,
-                                     bool checkNlaSystems)
+                                     size_t &stateIndex, size_t &computedConstantIndex, size_t &algebraicIndex, bool checkNlaSystems)
 {
     // Nothing to check if the equation has a known type.
 
@@ -439,8 +436,6 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
             case AnalyserInternalVariable::Type::ALGEBRAIC:
                 variable->mIndex = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
                                        ++stateIndex :
-                                   (variable->mType == AnalyserInternalVariable::Type::CONSTANT) ?
-                                       ++constantIndex :
                                    ((variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                                     || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) ?
                                        ++computedConstantIndex :
@@ -2766,8 +2761,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         relevantCheck = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            relevantCheck = internalEquation->check(mModel, stateIndex, constantIndex, computedConstantIndex,
-                                                    algebraicIndex, checkNlaSystems)
+            relevantCheck = internalEquation->check(mModel, stateIndex, computedConstantIndex, algebraicIndex, checkNlaSystems)
                             || relevantCheck;
         }
 
