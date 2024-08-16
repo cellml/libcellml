@@ -132,38 +132,38 @@ void computeComputedConstants(double *constants, double *computedConstants)
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
     algebraic[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    external[11] = externalVariable(voi, states, rates, variables, 11);
-    external[4] = externalVariable(voi, states, rates, variables, 4);
-    algebraic[5] = external[4]-10.613;
-    algebraic[1] = constants[1]*(states[0]-algebraic[5]);
-    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-external[11]);
-    algebraic[6] = external[4]-115.0;
-    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[6]);
+    external[1] = externalVariable(voi, states, rates, variables, 1);
+    external[0] = externalVariable(voi, states, rates, variables, 0);
+    algebraic[4] = external[0]-10.613;
+    algebraic[1] = constants[1]*(states[0]-algebraic[4]);
+    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-external[1]);
+    algebraic[5] = external[0]-115.0;
+    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5]);
     rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0];
-    algebraic[7] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    algebraic[8] = 4.0*exp(states[0]/18.0);
-    rates[2] = algebraic[7]*(1.0-states[2])-algebraic[8]*states[2];
-    algebraic[9] = 0.07*exp(states[0]/20.0);
-    algebraic[10] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
-    rates[1] = algebraic[9]*(1.0-states[1])-algebraic[10]*states[1];
-    algebraic[12] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
-    algebraic[13] = 0.125*exp(states[0]/80.0);
-    rates[3] = algebraic[12]*(1.0-states[3])-algebraic[13]*states[3];
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[7] = 4.0*exp(states[0]/18.0);
+    rates[2] = algebraic[6]*(1.0-states[2])-algebraic[7]*states[2];
+    algebraic[8] = 0.07*exp(states[0]/20.0);
+    algebraic[9] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    rates[1] = algebraic[8]*(1.0-states[1])-algebraic[9]*states[1];
+    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
+    algebraic[11] = 0.125*exp(states[0]/80.0);
+    rates[3] = algebraic[10]*(1.0-states[3])-algebraic[11]*states[3];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    external[11] = externalVariable(voi, states, rates, variables, 11);
-    external[4] = externalVariable(voi, states, rates, variables, 4);
-    algebraic[5] = external[4]-10.613;
-    algebraic[1] = constants[1]*(states[0]-algebraic[5]);
-    algebraic[6] = external[4]-115.0;
-    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[6]);
-    algebraic[7] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    algebraic[8] = 4.0*exp(states[0]/18.0);
-    algebraic[9] = 0.07*exp(states[0]/20.0);
-    algebraic[10] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
-    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-external[11]);
-    algebraic[12] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
-    algebraic[13] = 0.125*exp(states[0]/80.0);
+    external[1] = externalVariable(voi, states, rates, variables, 1);
+    external[0] = externalVariable(voi, states, rates, variables, 0);
+    algebraic[4] = external[0]-10.613;
+    algebraic[1] = constants[1]*(states[0]-algebraic[4]);
+    algebraic[5] = external[0]-115.0;
+    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5]);
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[7] = 4.0*exp(states[0]/18.0);
+    algebraic[8] = 0.07*exp(states[0]/20.0);
+    algebraic[9] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-external[1]);
+    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
+    algebraic[11] = 0.125*exp(states[0]/80.0);
 }
