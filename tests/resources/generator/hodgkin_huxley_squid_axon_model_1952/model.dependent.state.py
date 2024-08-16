@@ -102,21 +102,21 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):
-    external[1] = external_variable(voi, states, rates, variables, 1)
-    algebraic[8] = 0.07*exp(external[1]/20.0)
-    algebraic[9] = 1.0/(exp((external[1]+30.0)/10.0)+1.0)
-    rates[0] = algebraic[8]*(1.0-states[0])-algebraic[9]*states[0]
-    algebraic[10] = 0.01*(external[1]+10.0)/(exp((external[1]+10.0)/10.0)-1.0)
-    algebraic[11] = 0.125*exp(external[1]/80.0)
-    rates[1] = algebraic[10]*(1.0-states[1])-algebraic[11]*states[1]
+    external[0] = external_variable(voi, states, rates, variables, 0)
+    algebraic[6] = 0.07*exp(external[0]/20.0)
+    algebraic[7] = 1.0/(exp((external[0]+30.0)/10.0)+1.0)
+    rates[0] = algebraic[6]*(1.0-states[0])-algebraic[7]*states[0]
+    algebraic[8] = 0.01*(external[0]+10.0)/(exp((external[0]+10.0)/10.0)-1.0)
+    algebraic[9] = 0.125*exp(external[0]/80.0)
+    rates[1] = algebraic[8]*(1.0-states[1])-algebraic[9]*states[1]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):
     algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    external[0] = external_variable(voi, states, rates, variables, 0)
+    algebraic[1] = constants[2]*(external[0]-computed_constants[0])
     external[1] = external_variable(voi, states, rates, variables, 1)
-    algebraic[2] = constants[2]*(external[1]-computed_constants[0])
-    external[5] = external_variable(voi, states, rates, variables, 5)
-    algebraic[4] = constants[3]*pow(external[5], 3.0)*states[0]*(external[1]-computed_constants[1])
-    algebraic[6] = 0.1*(external[1]+25.0)/(exp((external[1]+25.0)/10.0)-1.0)
-    algebraic[7] = 4.0*exp(external[1]/18.0)
-    algebraic[3] = constants[4]*pow(states[1], 4.0)*(external[1]-computed_constants[2])
+    algebraic[3] = constants[3]*pow(external[1], 3.0)*states[0]*(external[0]-computed_constants[1])
+    algebraic[4] = 0.1*(external[0]+25.0)/(exp((external[0]+25.0)/10.0)-1.0)
+    algebraic[5] = 4.0*exp(external[0]/18.0)
+    algebraic[2] = constants[4]*pow(states[1], 4.0)*(external[0]-computed_constants[2])

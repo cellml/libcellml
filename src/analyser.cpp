@@ -3120,6 +3120,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
     std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
+    auto externalIndex = MAX_SIZE_T;
 
     stateIndex = MAX_SIZE_T;
     constantIndex = MAX_SIZE_T;
@@ -3193,7 +3194,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        ++constantIndex :
                                    (type == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
                                        ++computedConstantIndex :
-                                       ++algebraicIndex,
+                                   (type == AnalyserVariable::Type::ALGEBRAIC) ?
+                                       ++algebraicIndex :
+                                       ++externalIndex,
                                    (type == AnalyserVariable::Type::EXTERNAL) ?
                                        nullptr :
                                        internalVariable->mInitialisingVariable,
