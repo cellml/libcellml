@@ -3686,13 +3686,10 @@ public:
      *
      * @param forDifferentialModel Whether the interface to initialise variables
      * is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the interface to initialise
-     * variables is for a model with external variables.
      *
      * @return The @c std::string for the interface to initialise variables.
      */
-    std::string interfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                         bool withExternalVariables) const;
+    std::string interfaceInitialiseVariablesMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to initialise variables.
@@ -3701,13 +3698,10 @@ public:
      *
      * @param forDifferentialModel Whether the interface to initialise variables
      * is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the interface to initialise
-     * variables is for a model with external variables.
      * @param interfaceInitialiseVariablesMethodString The @c std::string to use
      * for the interface to initialise variables.
      */
     void setInterfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                     bool withExternalVariables,
                                                      const std::string &interfaceInitialiseVariablesMethodString);
 
     /**
@@ -3718,14 +3712,11 @@ public:
      *
      * @param forDifferentialModel Whether the implementation to initialise
      * variables is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the implementation to initialise
-     * variables is for a model with external variables.
      *
      * @return The @c std::string for the implementation to initialise
      * variables.
      */
-    std::string implementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                              bool withExternalVariables) const;
+    std::string implementationInitialiseVariablesMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise
@@ -3737,13 +3728,10 @@ public:
      *
      * @param forDifferentialModel Whether the implementation to initialise
      * variables is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the implementation to initialise
-     * variables is for a model with external variables.
      * @param implementationInitialiseVariablesMethodString The @c std::string
      * to use for the implementation to initialise variables.
      */
     void setImplementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                          bool withExternalVariables,
                                                           const std::string &implementationInitialiseVariablesMethodString);
 
     /**

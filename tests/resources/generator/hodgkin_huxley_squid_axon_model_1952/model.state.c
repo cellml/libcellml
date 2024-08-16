@@ -113,7 +113,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic, ExternalVariable externalVariable)
+void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic)
 {
     states[0] = 0.0;
     states[1] = 0.6;
@@ -123,7 +123,6 @@ void initialiseVariables(double voi, double *states, double *rates, double *cons
     constants[2] = 0.3;
     constants[3] = 120.0;
     constants[4] = 36.0;
-    external[4] = externalVariable(voi, states, rates, variables, 4);
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

@@ -523,17 +523,11 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceDeleteArrayMethodString()
                        + generatorProfile->implementationDeleteArrayMethodString();
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false, false)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(false, false);
+    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false)
+                       + generatorProfile->implementationInitialiseVariablesMethodString(false);
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false, true)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(false, true);
-
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true, false)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(true, false);
-
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true, true)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(true, true);
+    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true)
+                       + generatorProfile->implementationInitialiseVariablesMethodString(true);
 
     profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString()
                        + generatorProfile->implementationComputeComputedConstantsMethodString();
