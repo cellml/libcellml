@@ -1682,6 +1682,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setAlgebraicArrayString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.algebraicArrayString())
 
+    def test_external_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('external', g.externalArrayString())
+        g.setExternalArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalArrayString())
+
     def test_external_variable_method_type_definition_string(self):
         from libcellml import GeneratorProfile
 

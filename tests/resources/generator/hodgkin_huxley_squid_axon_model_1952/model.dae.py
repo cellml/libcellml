@@ -136,11 +136,11 @@ def objective_function_2(u, f, data):
 def find_root_2(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[0]
+    u[0] = external[0]
 
     u = nla_solve(objective_function_2, u, 1, [voi, states, rates, variables])
 
-    algebraic[0] = u[0]
+    external[0] = u[0]
 
 
 def objective_function_3(u, f, data):
@@ -178,11 +178,11 @@ def objective_function_4(u, f, data):
 def find_root_4(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[1]
+    u[0] = external[1]
 
     u = nla_solve(objective_function_4, u, 1, [voi, states, rates, variables])
 
-    algebraic[1] = u[0]
+    external[1] = u[0]
 
 
 def objective_function_5(u, f, data):
@@ -346,11 +346,11 @@ def objective_function_12(u, f, data):
 def find_root_12(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = algebraic[2]
+    u[0] = external[2]
 
     u = nla_solve(objective_function_12, u, 1, [voi, states, rates, variables])
 
-    algebraic[2] = u[0]
+    external[2] = u[0]
 
 
 def objective_function_13(u, f, data):

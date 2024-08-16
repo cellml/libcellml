@@ -860,6 +860,12 @@ and units of a variable respectively.";
 %feature("docstring") libcellml::GeneratorProfile::setAlgebraicArrayString
 "Sets the string for the name of the algebraic array.";
 
+%feature("docstring") libcellml::GeneratorProfile::externalArrayString
+"Returns the string for the name of the external array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setExternalArrayString
+"Sets the string for the name of the external array.";
+
 %feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString
 "Returns the string for the type definition of an external variable method.";
 

@@ -3123,6 +3123,25 @@ public:
     void setAlgebraicArrayString(const std::string &algebraicArrayString);
 
     /**
+     * @brief Get the @c std::string for the name of the external array.
+     *
+     * Return the @c std::string for the name of the external array.
+     *
+     * @return The @c std::string for the name of the external array.
+     */
+    std::string externalArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the external array.
+     *
+     * Set the @c std::string for the name of the external array.
+     *
+     * @param externalArrayString The @c std::string to use for the name of the
+     * external array.
+     */
+    void setExternalArrayString(const std::string &externalArrayString);
+
+    /**
      * @brief Get the @c std::string for the type definition of an external
      * variable method.
      *

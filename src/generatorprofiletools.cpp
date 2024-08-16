@@ -482,7 +482,8 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
                        + generatorProfile->ratesArrayString()
                        + generatorProfile->constantsArrayString()
                        + generatorProfile->computedConstantsArrayString()
-                       + generatorProfile->algebraicArrayString();
+                       + generatorProfile->algebraicArrayString()
+                       + generatorProfile->externalArrayString();
 
     profileContents += generatorProfile->externalVariableMethodTypeDefinitionString(false)
                        + generatorProfile->externalVariableMethodTypeDefinitionString(true);

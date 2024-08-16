@@ -62,7 +62,7 @@ describe("Generator tests", () => {
         g.setModel(a.model())
 
         const interface_lines = g.interfaceCode().split('\n')
-        expect(interface_lines.length).toBe(37)
+        expect(interface_lines.length).toBe(38)
 
         const implementation_lines = g.implementationCode().split('\n')
         expect(implementation_lines.length).toBe(97)

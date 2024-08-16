@@ -217,6 +217,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mConstantsArrayString;
     std::string mComputedConstantsArrayString;
     std::string mAlgebraicArrayString;
+    std::string mExternalArrayString;
 
     std::string mExternalVariableMethodTypeDefinitionFamString;
     std::string mExternalVariableMethodTypeDefinitionFdmString;
