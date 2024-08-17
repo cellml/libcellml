@@ -1813,11 +1813,26 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
     auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
-        // Initialise our states.
+        // Initialise our states (after, if needed, initialising the constant on which it depends).
 
         std::string methodBody;
+        auto constants = mModel->constants();
 
         for (const auto &state : mModel->states()) {
+            auto initialisingVariable = state->initialisingVariable();
+            auto initialValue = initialisingVariable->initialValue();
+
+            if (!isCellMLReal(initialValue)) {
+                auto constant = std::find_if(constants.begin(), constants.end(),
+                                             [=](const AnalyserVariablePtr &av) -> bool { return av->variable()->name() == initialValue; });
+
+                if (constant != constants.end()) {
+                    methodBody += generateInitialisationCode(*constant);
+
+                    constants.erase(constant);
+                }
+            }
+
             methodBody += generateInitialisationCode(state);
         }
 
@@ -1830,29 +1845,24 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
-        // Initialise our constants and our algebraic variables that have an initial value. Also use an initial guess of
-        // zero for algebraic variables computed using an NLA system.
+        // Initialise our constants.
+
+        for (const auto &constant : constants) {
+            methodBody += generateInitialisationCode(constant);
+        }
+
+        // Initialise our algebraic variables that have an initial value. Also use an initial guess of zero for
+        // algebraic variables computed using an NLA system.
         // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or
         //       RHS of that equation (e.g., x = y+z with x and y known and z unknown) is (currently) to be computed
         //       using an NLA system for which we need an initial guess. We use an initial guess of zero, which is fine
         //       since such an NLA system has only one solution.
 
-        for (const auto &variable : variables(mModel)) {
-            switch (variable->type()) {
-            case AnalyserVariable::Type::CONSTANT:
-                methodBody += generateInitialisationCode(variable);
-
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
-                if (variable->initialisingVariable() != nullptr) {
-                    methodBody += generateInitialisationCode(variable);
-                } else if (variable->equation(0)->type() == AnalyserEquation::Type::NLA) {
-                    methodBody += generateZeroInitialisationCode(variable);
-                }
-
-                break;
-            default: // Other types we don't care about.
-                break;
+        for (const auto &algebraic : mModel->algebraic()) {
+            if (algebraic->initialisingVariable() != nullptr) {
+                methodBody += generateInitialisationCode(algebraic);
+            } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                methodBody += generateZeroInitialisationCode(algebraic);
             }
         }
 
