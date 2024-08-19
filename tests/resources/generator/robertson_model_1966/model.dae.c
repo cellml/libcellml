@@ -87,7 +87,9 @@ typedef struct {
     double voi;
     double *states;
     double *rates;
-    double *variables;
+    double *constants;
+    double *computedConstants;
+    double *algebraic;
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
@@ -98,16 +100,18 @@ void objectiveFunction0(double *u, double *f, void *data)
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
     double *rates = ((RootFindingInfo *) data)->rates;
-    double *variables = ((RootFindingInfo *) data)->variables;
+    double *constants = ((RootFindingInfo *) data)->constants;
+    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
+    double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[0] = u[0];
 
     f[0] = 1.0-(states[0]+states[1]+algebraic[0]);
 }
 
-void findRoot0(double voi, double *states, double *rates, double *variables)
+void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    RootFindingInfo rfi = { voi, states, rates, variables };
+    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };
     double u[1];
 
     u[0] = algebraic[0];
@@ -133,13 +137,13 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    findRoot0(voi, states, rates, variables);
+    findRoot0(voi, states, rates, constants, computedConstants, algebraic);
     rates[0] = -constants[0]*states[0]+constants[1]*states[1]*algebraic[0];
     rates[1] = constants[0]*states[0]-constants[2]*pow(states[1], 2.0)-constants[1]*states[1]*algebraic[0];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    findRoot0(voi, states, rates, variables);
+    findRoot0(voi, states, rates, constants, computedConstants, algebraic);
     algebraic[1] = 10000.0*states[1];
 }

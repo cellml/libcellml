@@ -1708,11 +1708,11 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('typedef struct {\n    double *variables;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False))
+        self.assertEqual('typedef struct {\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False))
         g.setRootFindingInfoObjectString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(False))
 
-        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *variables;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True))
+        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True))
         g.setRootFindingInfoObjectString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(True))
 
@@ -1730,11 +1730,11 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('findRoot[INDEX](variables);\n', g.findRootCallString(False))
+        self.assertEqual('findRoot[INDEX](constants, computedConstants, algebraic);\n', g.findRootCallString(False))
         g.setFindRootCallString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(False))
 
-        self.assertEqual('findRoot[INDEX](voi, states, rates, variables);\n', g.findRootCallString(True))
+        self.assertEqual('findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n', g.findRootCallString(True))
         g.setFindRootCallString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(True))
 
@@ -1743,11 +1743,11 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void findRoot[INDEX](double *variables)\n{\n    RootFindingInfo rfi = { variables };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False))
+        self.assertEqual('void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False))
         g.setFindRootMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(False))
 
-        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n{\n    RootFindingInfo rfi = { voi, states, rates, variables };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True))
+        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True))
         g.setFindRootMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(True))
 
@@ -1769,11 +1769,11 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *variables = ((RootFindingInfo *) data)->variables;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False))
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False))
         g.setObjectiveFunctionMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(False))
 
-        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *variables = ((RootFindingInfo *) data)->variables;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True))
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True))
         g.setObjectiveFunctionMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(True))
 

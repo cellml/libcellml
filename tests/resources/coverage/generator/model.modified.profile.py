@@ -362,7 +362,9 @@ def objective_function_0(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
-    variables = data[3]
+    constants = data[3]
+    computed_constants = data[4]
+    algebraic = data[5]
 
     algebraic[0] = u[0]
     algebraic[1] = u[1]
@@ -371,13 +373,13 @@ def objective_function_0(u, f, data):
     f[1] = algebraic[0]-algebraic[1]-(computed_constants[198]+computed_constants[199])
 
 
-def find_root_0(voi, states, rates, variables):
+def find_root_0(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*2
 
     u[0] = algebraic[0]
     u[1] = algebraic[1]
 
-    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, variables])
+    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, constants, computed_constants, algebraic])
 
     algebraic[0] = u[0]
     algebraic[1] = u[1]
@@ -604,4 +606,4 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_0(voi, states, rates, variables)
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic)

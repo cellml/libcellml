@@ -64,7 +64,9 @@ void deleteArray(double *array)
 }
 
 typedef struct {
-    double *variables;
+    double *constants;
+    double *computedConstants;
+    double *algebraic;
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
@@ -72,16 +74,18 @@ extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
 
 void objectiveFunction0(double *u, double *f, void *data)
 {
-    double *variables = ((RootFindingInfo *) data)->variables;
+    double *constants = ((RootFindingInfo *) data)->constants;
+    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
+    double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[0] = u[0];
 
     f[0] = algebraic[0]+computedConstants[0]-(computedConstants[1]+computedConstants[2]);
 }
 
-void findRoot0(double *variables)
+void findRoot0(double *constants, double *computedConstants, double *algebraic)
 {
-    RootFindingInfo rfi = { variables };
+    RootFindingInfo rfi = { constants, computedConstants, algebraic };
     double u[1];
 
     u[0] = algebraic[0];
@@ -105,5 +109,5 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
-    findRoot0(variables);
+    findRoot0(constants, computedConstants, algebraic);
 }
