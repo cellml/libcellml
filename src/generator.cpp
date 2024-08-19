@@ -1851,6 +1851,17 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             methodBody += generateInitialisationCode(constant);
         }
 
+        // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
+        // initial value of 3).
+
+        auto equations = mModel->equations();
+
+        for (const auto &equation : equations) {
+            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
+                methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
         // Initialise our algebraic variables that have an initial value. Also use an initial guess of zero for
         // algebraic variables computed using an NLA system.
         // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or
@@ -1863,16 +1874,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                 methodBody += generateInitialisationCode(algebraic);
             } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
                 methodBody += generateZeroInitialisationCode(algebraic);
-            }
-        }
-
-        // Initialise our true constants.
-
-        auto equations = mModel->equations();
-
-        for (const auto &equation : equations) {
-            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
-                methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 

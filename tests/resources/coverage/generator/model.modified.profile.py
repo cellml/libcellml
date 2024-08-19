@@ -392,8 +392,6 @@ def initialise_variables(voi, states, rates, constants, algebraic):
     constants[4] = 5.0
     constants[5] = 6.0
     constants[6] = 7.0
-    algebraic[0] = 1.0
-    algebraic[1] = 2.0
     computed_constants[177] = 123.0
     computed_constants[178] = 123.456789
     computed_constants[179] = 123.0e99
@@ -406,6 +404,8 @@ def initialise_variables(voi, states, rates, constants, algebraic):
     computed_constants[187] = nan
     computed_constants[198] = 1.0
     computed_constants[199] = 3.0
+    algebraic[0] = 1.0
+    algebraic[1] = 2.0
 
 
 def compute_computed_constants(constants, computed_constants):
