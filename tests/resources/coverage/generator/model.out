@@ -126,8 +126,6 @@ void initialiseVariables(double voi, double *states, double *rates, double *cons
     constants[4] = 5.0;
     constants[5] = 6.0;
     constants[6] = 7.0;
-    algebraic[0] = 1.0;
-    algebraic[1] = 2.0;
     computedConstants[177] = 123.0;
     computedConstants[178] = 123.456789;
     computedConstants[179] = 123.0e99;
@@ -140,6 +138,8 @@ void initialiseVariables(double voi, double *states, double *rates, double *cons
     computedConstants[187] = NAN;
     computedConstants[198] = 1.0;
     computedConstants[199] = 3.0;
+    algebraic[0] = 1.0;
+    algebraic[1] = 2.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
