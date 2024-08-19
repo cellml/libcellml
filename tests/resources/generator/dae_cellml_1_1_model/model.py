@@ -100,7 +100,7 @@ def find_root_1(voi, states, rates, variables):
     algebraic[4] = u[0]
 
 
-def initialise_variables(voi, states, rates, constants, computed_constants, algebraic):
+def initialise_variables(states, rates, constants, computed_constants, algebraic):
     states[0] = 1.0
     states[1] = 0.0
     constants[0] = 1.0

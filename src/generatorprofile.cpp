@@ -415,8 +415,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -807,7 +807,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFdmString = "";
         mImplementationInitialiseVariablesMethodFdmString = "\n"
-                                                            "def initialise_variables(voi, states, rates, constants, computed_constants, algebraic):\n"
+                                                            "def initialise_variables(states, rates, constants, computed_constants, algebraic):\n"
                                                             "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
