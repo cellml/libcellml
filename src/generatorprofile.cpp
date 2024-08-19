@@ -409,14 +409,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *algebraic);\n";
-        mImplementationInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *algebraic)\n"
+        mInterfaceInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *computedConstants, double *algebraic)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic);\n";
-        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic)\n"
+        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -802,12 +802,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFamString = "";
         mImplementationInitialiseVariablesMethodFamString = "\n"
-                                                            "def initialise_variables(constants, algebraic):\n"
+                                                            "def initialise_variables(constants, computed_constants, algebraic):\n"
                                                             "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmString = "";
         mImplementationInitialiseVariablesMethodFdmString = "\n"
-                                                            "def initialise_variables(voi, states, rates, constants, algebraic):\n"
+                                                            "def initialise_variables(voi, states, rates, constants, computed_constants, algebraic):\n"
                                                             "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";

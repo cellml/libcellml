@@ -44,7 +44,7 @@ def create_externals_array():
     return [nan]*EXTERNAL_COUNT
 
 
-def initialise_variables(constants, algebraic):
+def initialise_variables(constants, computed_constants, algebraic):
     pass
 
 

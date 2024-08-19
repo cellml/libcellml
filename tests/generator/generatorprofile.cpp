@@ -486,17 +486,17 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic);\n",
+    EXPECT_EQ("void initialiseVariables(double *constants, double *computedConstants, double *algebraic);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(false));
-    EXPECT_EQ("void initialiseVariables(double *constants, double *algebraic)\n"
+    EXPECT_EQ("void initialiseVariables(double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(false));
 
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic);\n",
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(true));
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *algebraic)\n"
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
