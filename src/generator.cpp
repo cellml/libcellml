@@ -1866,16 +1866,12 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
-        // Initialise our (initialised) true constants.
-        // Note: this means that we don't initialise (computed) constants that are initialised using a true constant
-        //       through an equation (e.g., x = 3 rather than x with an initial value of 3), hence we test the number
-        //       of constants in the equation.
+        // Initialise our true constants.
 
         auto equations = mModel->equations();
 
         for (const auto &equation : equations) {
-            if ((equation->constantCount() == 1)
-                && (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT)) {
+            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
@@ -1889,17 +1885,10 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
-        // Initialise all our computed constants.
-        // Note: this means (computed) constants that are initialised using an equation that relies on constant
-        //       variables (e.g., x = a + b, with a and b being constants), as well as (computed) constants that are
-        //       initialised using a true constant through an equation (e.g., x = 3 rather than x with an initial value
-        //       of 3).
-
         std::string methodBody;
 
         for (const auto &equation : mModel->equations()) {
-            if ((equation->type() == AnalyserEquation::Type::TRUE_CONSTANT)
-                || (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)) {
+            if (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }

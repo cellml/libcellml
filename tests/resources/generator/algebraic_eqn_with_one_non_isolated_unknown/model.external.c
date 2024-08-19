@@ -80,13 +80,13 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *constants, double *algebraic)
 {
+    computedConstants[0] = 3.0;
+    computedConstants[1] = 5.0;
+    computedConstants[2] = 7.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[0] = 3.0;
-    computedConstants[1] = 5.0;
-    computedConstants[2] = 7.0;
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
