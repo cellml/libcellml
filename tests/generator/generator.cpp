@@ -412,16 +412,16 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     auto profile = generator->profile();
 
-    profile->setInterfaceFileNameString("model.three.externals.h");
+    profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.h", generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.c", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.py", generator->implementationCode());
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)

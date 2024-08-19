@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.5.0. */
 
-#include "model.three.externals.h"
+#include "model.external.h"
 
 #include <math.h>
 #include <stdlib.h>
