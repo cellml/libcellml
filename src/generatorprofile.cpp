@@ -290,11 +290,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAlgebraicArrayString = "algebraic";
         mExternalArrayString = "externals";
 
-        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, size_t index);\n";
 
-        mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, variables, [INDEX])";
+        mExternalVariableMethodCallFamString = "externalVariable(constants, computedConstants, algebraic, [INDEX])";
+        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, constants, computedConstants, algebraic, [INDEX])";
 
         mRootFindingInfoObjectFamString = "typedef struct {\n"
                                           "    double *constants;\n"
@@ -742,8 +742,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
 
-        mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, variables, [INDEX])";
+        mExternalVariableMethodCallFamString = "external_variable(constants, computed_constants, algebraic, [INDEX])";
+        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, constants, computed_constants, algebraic, [INDEX])";
 
         mRootFindingInfoObjectFamString = "";
         mRootFindingInfoObjectFdmString = "";

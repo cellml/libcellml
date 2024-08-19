@@ -342,11 +342,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("algebraic", generatorProfile->algebraicArrayString());
     EXPECT_EQ("externals", generatorProfile->externalArrayString());
 
-    EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
-    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
+    EXPECT_EQ("typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
+    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
 
-    EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
-    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
+    EXPECT_EQ("externalVariable(constants, computedConstants, algebraic, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
+    EXPECT_EQ("externalVariable(voi, states, rates, constants, computedConstants, algebraic, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
 
     EXPECT_EQ("typedef struct {\n"
               "    double *constants;\n"
