@@ -62,19 +62,21 @@ def objective_function_0(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
-    variables = data[3]
+    constants = data[3]
+    computed_constants = data[4]
+    algebraic = data[5]
 
     algebraic[0] = u[0]
 
     f[0] = constants[0]-(algebraic[0]+algebraic[1])
 
 
-def find_root_0(voi, states, rates, variables):
+def find_root_0(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
     u[0] = algebraic[0]
 
-    u = nla_solve(objective_function_0, u, 1, [voi, states, rates, variables])
+    u = nla_solve(objective_function_0, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
     algebraic[0] = u[0]
 
@@ -83,19 +85,21 @@ def objective_function_1(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
-    variables = data[3]
+    constants = data[3]
+    computed_constants = data[4]
+    algebraic = data[5]
 
     algebraic[4] = u[0]
 
     f[0] = algebraic[2]-(algebraic[3]+algebraic[4])
 
 
-def find_root_1(voi, states, rates, variables):
+def find_root_1(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
     u[0] = algebraic[4]
 
-    u = nla_solve(objective_function_1, u, 1, [voi, states, rates, variables])
+    u = nla_solve(objective_function_1, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
     algebraic[4] = u[0]
 
@@ -118,17 +122,17 @@ def compute_computed_constants(constants, computed_constants):
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     algebraic[1] = states[1]+constants[1]
-    find_root_0(voi, states, rates, variables)
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
     rates[0] = algebraic[0]
     algebraic[2] = states[0]/constants[2]
     algebraic[3] = constants[3]*algebraic[1]
-    find_root_1(voi, states, rates, variables)
+    find_root_1(voi, states, rates, constants, computed_constants, algebraic)
     rates[1] = algebraic[4]/constants[4]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     algebraic[1] = states[1]+constants[1]
-    find_root_0(voi, states, rates, variables)
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
     algebraic[2] = states[0]/constants[2]
     algebraic[3] = constants[3]*algebraic[1]
-    find_root_1(voi, states, rates, variables)
+    find_root_1(voi, states, rates, constants, computed_constants, algebraic)

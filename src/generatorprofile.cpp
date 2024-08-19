@@ -297,28 +297,32 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, variables, [INDEX])";
 
         mRootFindingInfoObjectFamString = "typedef struct {\n"
-                                          "    double *variables;\n"
+                                          "    double *constants;\n"
+                                          "    double *computedConstants;\n"
+                                          "    double *algebraic;\n"
                                           "} RootFindingInfo;\n";
         mRootFindingInfoObjectFdmString = "typedef struct {\n"
                                           "    double voi;\n"
                                           "    double *states;\n"
                                           "    double *rates;\n"
-                                          "    double *variables;\n"
+                                          "    double *constants;\n"
+                                          "    double *computedConstants;\n"
+                                          "    double *algebraic;\n"
                                           "} RootFindingInfo;\n";
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
                                       "                     double *u, size_t n, void *data);\n";
-        mFindRootCallFamString = "findRoot[INDEX](variables);\n";
-        mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, variables);\n";
-        mFindRootMethodFamString = "void findRoot[INDEX](double *variables)\n"
+        mFindRootCallFamString = "findRoot[INDEX](constants, computedConstants, algebraic);\n";
+        mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n";
+        mFindRootMethodFamString = "void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n"
                                    "{\n"
-                                   "    RootFindingInfo rfi = { variables };\n"
+                                   "    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n"
                                    "    double u[[SIZE]];\n"
                                    "\n"
                                    "[CODE]"
                                    "}\n";
-        mFindRootMethodFdmString = "void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n"
+        mFindRootMethodFdmString = "void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                    "{\n"
-                                   "    RootFindingInfo rfi = { voi, states, rates, variables };\n"
+                                   "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n"
                                    "    double u[[SIZE]];\n"
                                    "\n"
                                    "[CODE]"
@@ -327,7 +331,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mNlaSolveCallFdmString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
         mObjectiveFunctionMethodFamString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
                                             "{\n"
-                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                            "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                            "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
                                             "\n"
                                             "[CODE]"
                                             "}\n";
@@ -336,7 +342,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "    double voi = ((RootFindingInfo *) data)->voi;\n"
                                             "    double *states = ((RootFindingInfo *) data)->states;\n"
                                             "    double *rates = ((RootFindingInfo *) data)->rates;\n"
-                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                            "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                            "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
                                             "\n"
                                             "[CODE]"
                                             "}\n";
@@ -742,23 +750,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternNlaSolveMethodString = "\n"
                                       "from nlasolver import nla_solve"
                                       "\n";
-        mFindRootCallFamString = "find_root_[INDEX](variables)\n";
-        mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
+        mFindRootCallFamString = "find_root_[INDEX](constants, computed_constants, algebraic)\n";
+        mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic)\n";
         mFindRootMethodFamString = "\n"
-                                   "def find_root_[INDEX](variables):\n"
+                                   "def find_root_[INDEX](constants, computed_constants, algebraic):\n"
                                    "    u = [nan]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
         mFindRootMethodFdmString = "\n"
-                                   "def find_root_[INDEX](voi, states, rates, variables):\n"
+                                   "def find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic):\n"
                                    "    u = [nan]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
-        mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [variables])\n";
-        mNlaSolveCallFdmString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, variables])\n";
+        mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [constants, computed_constants, algebraic])\n";
+        mNlaSolveCallFdmString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, constants, computed_constants, algebraic])\n";
         mObjectiveFunctionMethodFamString = "\n"
                                             "def objective_function_[INDEX](u, f, data):\n"
-                                            "    variables = data[0]\n"
+                                            "    constants = data[0]\n"
+                                            "    computed_constants = data[1]\n"
+                                            "    algebraic = data[2]\n"
                                             "\n"
                                             "[CODE]";
         mObjectiveFunctionMethodFdmString = "\n"
@@ -766,7 +776,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "    voi = data[0]\n"
                                             "    states = data[1]\n"
                                             "    rates = data[2]\n"
-                                            "    variables = data[3]\n"
+                                            "    constants = data[3]\n"
+                                            "    computed_constants = data[4]\n"
+                                            "    algebraic = data[5]\n"
                                             "\n"
                                             "[CODE]";
         mUArrayString = "u";

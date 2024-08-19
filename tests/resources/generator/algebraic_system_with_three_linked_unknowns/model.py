@@ -40,7 +40,9 @@ from nlasolver import nla_solve
 
 
 def objective_function_0(u, f, data):
-    variables = data[0]
+    constants = data[0]
+    computed_constants = data[1]
+    algebraic = data[2]
 
     algebraic[0] = u[0]
     algebraic[1] = u[1]
@@ -51,14 +53,14 @@ def objective_function_0(u, f, data):
     f[2] = algebraic[0]-2.0*algebraic[1]+3.0*algebraic[2]-6.0
 
 
-def find_root_0(variables):
+def find_root_0(constants, computed_constants, algebraic):
     u = [nan]*3
 
     u[0] = algebraic[0]
     u[1] = algebraic[1]
     u[2] = algebraic[2]
 
-    u = nla_solve(objective_function_0, u, 3, [variables])
+    u = nla_solve(objective_function_0, u, 3, [constants, computed_constants, algebraic])
 
     algebraic[0] = u[0]
     algebraic[1] = u[1]
@@ -76,4 +78,4 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_variables(constants, computed_constants, algebraic):
-    find_root_0(variables)
+    find_root_0(constants, computed_constants, algebraic)

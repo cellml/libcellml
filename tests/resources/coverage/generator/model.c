@@ -371,7 +371,9 @@ typedef struct {
     double voi;
     double *states;
     double *rates;
-    double *variables;
+    double *constants;
+    double *computedConstants;
+    double *algebraic;
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
@@ -382,7 +384,9 @@ void objectiveFunction0(double *u, double *f, void *data)
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
     double *rates = ((RootFindingInfo *) data)->rates;
-    double *variables = ((RootFindingInfo *) data)->variables;
+    double *constants = ((RootFindingInfo *) data)->constants;
+    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
+    double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[0] = u[0];
     algebraic[1] = u[1];
@@ -391,9 +395,9 @@ void objectiveFunction0(double *u, double *f, void *data)
     f[1] = algebraic[0]-algebraic[1]-(computedConstants[198]+computedConstants[199]);
 }
 
-void findRoot0(double voi, double *states, double *rates, double *variables)
+void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    RootFindingInfo rfi = { voi, states, rates, variables };
+    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };
     double u[2];
 
     u[0] = algebraic[0];
@@ -630,5 +634,5 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    findRoot0(voi, states, rates, variables);
+    findRoot0(voi, states, rates, constants, computedConstants, algebraic);
 }

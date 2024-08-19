@@ -349,34 +349,38 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
 
     EXPECT_EQ("typedef struct {\n"
-              "    double *variables;\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraic;\n"
               "} RootFindingInfo;\n",
               generatorProfile->rootFindingInfoObjectString(false));
     EXPECT_EQ("typedef struct {\n"
               "    double voi;\n"
               "    double *states;\n"
               "    double *rates;\n"
-              "    double *variables;\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraic;\n"
               "} RootFindingInfo;\n",
               generatorProfile->rootFindingInfoObjectString(true));
     EXPECT_EQ("extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
               "                     double *u, size_t n, void *data);\n",
               generatorProfile->externNlaSolveMethodString());
-    EXPECT_EQ("findRoot[INDEX](variables);\n",
+    EXPECT_EQ("findRoot[INDEX](constants, computedConstants, algebraic);\n",
               generatorProfile->findRootCallString(false));
-    EXPECT_EQ("findRoot[INDEX](voi, states, rates, variables);\n",
+    EXPECT_EQ("findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n",
               generatorProfile->findRootCallString(true));
-    EXPECT_EQ("void findRoot[INDEX](double *variables)\n"
+    EXPECT_EQ("void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
-              "    RootFindingInfo rfi = { variables };\n"
+              "    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n"
               "    double u[[SIZE]];\n"
               "\n"
               "[CODE]"
               "}\n",
               generatorProfile->findRootMethodString(false));
-    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n"
+    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
-              "    RootFindingInfo rfi = { voi, states, rates, variables };\n"
+              "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n"
               "    double u[[SIZE]];\n"
               "\n"
               "[CODE]"
@@ -388,7 +392,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->nlaSolveCallString(true));
     EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
               "{\n"
-              "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
               "\n"
               "[CODE]"
               "}\n",
@@ -398,7 +404,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    double voi = ((RootFindingInfo *) data)->voi;\n"
               "    double *states = ((RootFindingInfo *) data)->states;\n"
               "    double *rates = ((RootFindingInfo *) data)->rates;\n"
-              "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
               "\n"
               "[CODE]"
               "}\n",
