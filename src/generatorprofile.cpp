@@ -288,7 +288,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computedConstants";
         mAlgebraicArrayString = "algebraic";
-        mExternalArrayString = "external";
+        mExternalArrayString = "externals";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
@@ -729,7 +729,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computed_constants";
         mAlgebraicArrayString = "algebraic";
-        mExternalArrayString = "external";
+        mExternalArrayString = "externals";
 
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";

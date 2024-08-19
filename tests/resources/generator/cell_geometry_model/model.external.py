@@ -54,7 +54,7 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_variables(constants, computed_constants, algebraic, external_variable):
-    external[0] = external_variable(variables, 0)
-    external[1] = external_variable(variables, 1)
-    algebraic[0] = 1000.0*3.14*external[1]*external[1]*external[0]
+    externals[0] = external_variable(variables, 0)
+    externals[1] = external_variable(variables, 1)
+    algebraic[0] = 1000.0*3.14*externals[1]*externals[1]*externals[0]
     algebraic[1] = 0.02*algebraic[0]

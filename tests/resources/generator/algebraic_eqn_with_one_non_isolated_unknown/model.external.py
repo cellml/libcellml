@@ -56,4 +56,4 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_variables(constants, computed_constants, algebraic, external_variable):
-    external[0] = external_variable(variables, 0)
+    externals[0] = external_variable(variables, 0)
