@@ -1821,16 +1821,29 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         for (const auto &state : mModel->states()) {
             auto initialisingVariable = state->initialisingVariable();
             auto initialValue = initialisingVariable->initialValue();
+            auto constant = constants.end();
 
-            if (!isCellMLReal(initialValue)) {
-                auto constant = std::find_if(constants.begin(), constants.end(),
-                                             [=](const AnalyserVariablePtr &av) -> bool { return av->variable()->name() == initialValue; });
+            while (!isCellMLReal(initialValue)) {
+                // The initial value references another variable, so look for it keeping in mind that its initial value may
+                // reference another variable, and so on.
 
-                if (constant != constants.end()) {
-                    methodBody += generateInitialisationCode(*constant);
+                auto initialisingComponent = owningComponent(initialisingVariable);
+                auto crtConstant = std::find_if(constants.begin(), constants.end(),
+                                                [=](const AnalyserVariablePtr &av) -> bool { return initialisingComponent->variable(initialValue)->hasEquivalentVariable(av->variable()); });
 
-                    constants.erase(constant);
+                if (crtConstant == constants.end()) {
+                    break;
                 }
+
+                constant = crtConstant;
+                initialisingVariable = (*constant)->variable();
+                initialValue = initialisingVariable->initialValue();
+            }
+
+            if (constant != constants.end()) {
+                methodBody += generateInitialisationCode(*constant);
+
+                constants.erase(constant);
             }
 
             methodBody += generateInitialisationCode(state);
