@@ -843,7 +843,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationInitialiseVariablesMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(True))
         g.setImplementationInitialiseVariablesMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True))
@@ -1122,7 +1122,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setInterfaceInitialiseVariablesMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n',
                          g.interfaceInitialiseVariablesMethodString(True))
         g.setInterfaceInitialiseVariablesMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True))

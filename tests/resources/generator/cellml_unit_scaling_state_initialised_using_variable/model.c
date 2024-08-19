@@ -80,7 +80,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     constants[0] = 123.0;
     states[0] = constants[0];
