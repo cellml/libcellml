@@ -1667,7 +1667,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('external', g.externalArrayString())
+        self.assertEqual('externals', g.externalArrayString())
         g.setExternalArrayString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalArrayString())
 

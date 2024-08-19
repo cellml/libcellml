@@ -340,7 +340,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("constants", generatorProfile->constantsArrayString());
     EXPECT_EQ("computedConstants", generatorProfile->computedConstantsArrayString());
     EXPECT_EQ("algebraic", generatorProfile->algebraicArrayString());
-    EXPECT_EQ("external", generatorProfile->externalArrayString());
+    EXPECT_EQ("externals", generatorProfile->externalArrayString());
 
     EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
     EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
