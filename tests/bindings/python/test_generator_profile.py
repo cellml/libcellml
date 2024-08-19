@@ -1677,13 +1677,13 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double *variables, size_t index);\n',
+            'typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, size_t index);\n',
             g.externalVariableMethodTypeDefinitionString(False))
         g.setExternalVariableMethodTypeDefinitionString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(False))
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n',
+            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, size_t index);\n',
             g.externalVariableMethodTypeDefinitionString(True))
         g.setExternalVariableMethodTypeDefinitionString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(True))
@@ -1693,12 +1693,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('externalVariable(variables, [INDEX])',
+        self.assertEqual('externalVariable(constants, computedConstants, algebraic, [INDEX])',
                          g.externalVariableMethodCallString(False))
         g.setExternalVariableMethodCallString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(False))
 
-        self.assertEqual('externalVariable(voi, states, rates, variables, [INDEX])',
+        self.assertEqual('externalVariable(voi, states, rates, constants, computedConstants, algebraic, [INDEX])',
                          g.externalVariableMethodCallString(True))
         g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
