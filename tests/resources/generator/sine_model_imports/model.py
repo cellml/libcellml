@@ -59,8 +59,8 @@ def create_algebraic_array():
 
 
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
-    states[0] = constants[0]
     constants[0] = 0.0
+    states[0] = constants[0]
     constants[1] = 0.75
     computed_constants[0] = 2.0/3.14159265358979
     computed_constants[1] = 2.0*3.14159265358979
