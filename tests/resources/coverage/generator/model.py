@@ -394,6 +394,18 @@ def initialise_variables(voi, states, rates, constants, algebraic):
     constants[6] = 7.0
     algebraic[0] = 1.0
     algebraic[1] = 2.0
+    computed_constants[177] = 123.0
+    computed_constants[178] = 123.456789
+    computed_constants[179] = 123.0e99
+    computed_constants[180] = 123.456789e99
+    computed_constants[182] = 1.0
+    computed_constants[183] = 0.0
+    computed_constants[184] = 2.71828182845905
+    computed_constants[185] = 3.14159265358979
+    computed_constants[186] = inf
+    computed_constants[187] = nan
+    computed_constants[198] = 1.0
+    computed_constants[199] = 3.0
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -574,17 +586,7 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[174] = constants[0] if gt_func(constants[0], constants[1]) else constants[2] if gt_func(constants[2], constants[3]) else constants[4] if gt_func(constants[4], constants[5]) else nan
     computed_constants[175] = constants[0] if gt_func(constants[0], constants[1]) else constants[2] if gt_func(constants[2], constants[3]) else constants[4] if gt_func(constants[4], constants[5]) else constants[6]
     computed_constants[176] = 123.0+(constants[0] if gt_func(constants[0], constants[1]) else nan)
-    computed_constants[177] = 123.0
-    computed_constants[178] = 123.456789
-    computed_constants[179] = 123.0e99
-    computed_constants[180] = 123.456789e99
     computed_constants[181] = constants[0]
-    computed_constants[182] = 1.0
-    computed_constants[183] = 0.0
-    computed_constants[184] = 2.71828182845905
-    computed_constants[185] = 3.14159265358979
-    computed_constants[186] = inf
-    computed_constants[187] = nan
     computed_constants[188] = and_func(constants[0], constants[1])+(constants[1] if gt_func(constants[2], constants[3]) else nan)+constants[4]+and_func(constants[5], constants[6])
     computed_constants[189] = and_func(constants[0], constants[1])-((constants[1] if gt_func(constants[2], constants[3]) else nan)-(constants[4]-(constants[1] if gt_func(constants[2], constants[3]) else nan)))-and_func(constants[5], constants[6])
     computed_constants[190] = and_func(constants[0], constants[1])*(constants[1] if gt_func(constants[2], constants[3]) else nan)*constants[4]*(constants[1] if gt_func(constants[2], constants[3]) else nan)*and_func(constants[5], constants[6])
@@ -595,8 +597,6 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[195] = pow(and_func(constants[0], constants[1]), pow(constants[1] if gt_func(constants[2], constants[3]) else nan, pow(pow(constants[4], constants[1] if gt_func(constants[2], constants[3]) else nan), and_func(constants[0], constants[1]))))
     computed_constants[196] = pow(pow(pow(and_func(constants[0], constants[1]), 1.0/pow(constants[1] if gt_func(constants[2], constants[3]) else nan, 1.0/constants[4])), 1.0/(constants[1] if gt_func(constants[2], constants[3]) else nan)), 1.0/and_func(constants[0], constants[1]))
     computed_constants[197] = -and_func(constants[0], constants[1])+-(constants[1] if gt_func(constants[2], constants[3]) else nan)
-    computed_constants[198] = 1.0
-    computed_constants[199] = 3.0
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):

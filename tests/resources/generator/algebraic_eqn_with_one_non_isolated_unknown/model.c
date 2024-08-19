@@ -94,13 +94,13 @@ void findRoot0(double *variables)
 void initialiseVariables(double *constants, double *algebraic)
 {
     algebraic[0] = 1.0;
+    computedConstants[0] = 3.0;
+    computedConstants[1] = 5.0;
+    computedConstants[2] = 7.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[0] = 3.0;
-    computedConstants[1] = 5.0;
-    computedConstants[2] = 7.0;
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)
