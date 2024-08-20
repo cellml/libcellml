@@ -96,16 +96,6 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
             Debug() << "\nNo states";
         }
 
-        if (eqn->constantCount() != 0) {
-            Debug() << "\nConstants:";
-
-            for (const auto &var : eqn->constants()) {
-                Debug() << " - " << var->variable()->name();
-            }
-        } else {
-            Debug() << "\nNo constants";
-        }
-
         if (eqn->computedConstantCount() != 0) {
             Debug() << "\nComputed constants:";
 

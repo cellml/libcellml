@@ -2243,8 +2243,7 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
 
         if ((dependency->type() == AnalyserEquation::Type::ODE)
             || ((dependency->type() == AnalyserEquation::Type::NLA)
-                && (dependency->stateCount() == 1)
-                && (dependency->state(0)->type() == AnalyserVariable::Type::STATE))
+                && (dependency->stateCount() == 1))
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -2862,31 +2861,31 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     for (const auto &internalVariable : mInternalVariables) {
         // Determine the type of the variable.
 
-        AnalyserVariable::Type type;
+        AnalyserVariable::Type variableType;
 
         if (internalVariable->mIsExternalVariable) {
-            type = AnalyserVariable::Type::EXTERNAL;
+            variableType = AnalyserVariable::Type::EXTERNAL;
         } else {
             switch (internalVariable->mType) {
             case AnalyserInternalVariable::Type::STATE:
-                type = AnalyserVariable::Type::STATE;
+                variableType = AnalyserVariable::Type::STATE;
 
                 break;
             case AnalyserInternalVariable::Type::CONSTANT:
-                type = AnalyserVariable::Type::CONSTANT;
+                variableType = AnalyserVariable::Type::CONSTANT;
 
                 break;
             case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
             case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-                type = AnalyserVariable::Type::COMPUTED_CONSTANT;
+                variableType = AnalyserVariable::Type::COMPUTED_CONSTANT;
 
                 break;
             case AnalyserInternalVariable::Type::ALGEBRAIC:
             case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
-                type = AnalyserVariable::Type::ALGEBRAIC;
+                variableType = AnalyserVariable::Type::ALGEBRAIC;
 
                 break;
-            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
+            default: // AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION.
                 // This is the variable of integration, so skip it.
 
                 continue;
@@ -2896,7 +2895,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Retrieve the equations used to compute the variable.
 
         AnalyserEquationPtrs equations;
-        auto nlaEquation = false;
+        auto isNlaEquation = false;
 
         for (const auto &internalEquation : mInternalEquations) {
             if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
@@ -2904,32 +2903,32 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 if ((aie2aetMappings.find(internalEquation) != aie2aetMappings.end())
                     && (aie2aetMappings[internalEquation] == AnalyserEquation::Type::NLA)) {
-                    nlaEquation = true;
+                    isNlaEquation = true;
                 }
             }
         }
 
         // Correct the type of the variable if it is a computed constant that is computed using an NLA equation.
 
-        if ((type == AnalyserVariable::Type::COMPUTED_CONSTANT) && nlaEquation) {
-            type = AnalyserVariable::Type::ALGEBRAIC;
+        if ((variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) && isNlaEquation) {
+            variableType = AnalyserVariable::Type::ALGEBRAIC;
         }
 
         // Populate and keep track of the state/variable.
 
         auto variable = AnalyserVariable::AnalyserVariableImpl::create();
 
-        variable->mPimpl->populate(type,
-                                   (type == AnalyserVariable::Type::STATE) ?
+        variable->mPimpl->populate(variableType,
+                                   (variableType == AnalyserVariable::Type::STATE) ?
                                        ++stateIndex :
-                                   (type == AnalyserVariable::Type::CONSTANT) ?
+                                   (variableType == AnalyserVariable::Type::CONSTANT) ?
                                        ++constantIndex :
-                                   (type == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                   (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
                                        ++computedConstantIndex :
-                                   (type == AnalyserVariable::Type::ALGEBRAIC) ?
+                                   (variableType == AnalyserVariable::Type::ALGEBRAIC) ?
                                        ++algebraicIndex :
                                        ++externalIndex,
-                                   (type == AnalyserVariable::Type::EXTERNAL) ?
+                                   (variableType == AnalyserVariable::Type::EXTERNAL) ?
                                        nullptr :
                                        internalVariable->mInitialisingVariable,
                                    internalVariable->mVariable,
@@ -2938,31 +2937,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         aiv2avMappings.emplace(internalVariable, variable);
         v2avMappings.emplace(internalVariable->mVariable, variable);
 
-        switch (type) {
-        case AnalyserVariable::Type::STATE:
+        if (variableType == AnalyserVariable::Type::STATE) {
             mModel->mPimpl->mStates.push_back(variable);
-
-            break;
-        case AnalyserVariable::Type::CONSTANT:
+        } else if (variableType == AnalyserVariable::Type::CONSTANT) {
             mModel->mPimpl->mConstants.push_back(variable);
-
-            break;
-        case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        } else if (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) {
             mModel->mPimpl->mComputedConstants.push_back(variable);
-
-            break;
-        case AnalyserVariable::Type::ALGEBRAIC:
+        } else if (variableType == AnalyserVariable::Type::ALGEBRAIC) {
             mModel->mPimpl->mAlgebraic.push_back(variable);
-
-            break;
-        case AnalyserVariable::Type::EXTERNAL:
+        } else { // AnalyserVariable::Type::EXTERNAL.
             mModel->mPimpl->mExternals.push_back(variable);
-
-            break;
-        default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
-            // This is the variable of integration, so skip it.
-
-            break;
         }
     }
 
@@ -2983,9 +2967,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Manipulate the equation, if needed.
 
-        auto type = aie2aetMappings[internalEquation];
+        auto equationType = aie2aetMappings[internalEquation];
 
-        switch (type) {
+        switch (equationType) {
         case AnalyserEquation::Type::NLA:
             // The equation is currently of the form LHS = RHS, but we want it
             // in the form LHS-RHS, so replace the equality element with a minus
@@ -3014,7 +2998,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         VariablePtrs variableDependencies;
 
-        if (type == AnalyserEquation::Type::EXTERNAL) {
+        if (equationType == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
                 for (const auto &dependency : unknownVariable->mDependencies) {
                     variableDependencies.push_back(dependency);
@@ -3052,40 +3036,28 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         auto equation = aie2aeMappings[internalEquation];
 
-        equation->mPimpl->mType = type;
-        equation->mPimpl->mAst = (type == AnalyserEquation::Type::EXTERNAL) ?
+        equation->mPimpl->mType = equationType;
+        equation->mPimpl->mAst = (equationType == AnalyserEquation::Type::EXTERNAL) ?
                                      nullptr :
                                      internalEquation->mAst;
         equation->mPimpl->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
 
         for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            // Keep track of the variable that the equation computes.
+            // Note: an unknown variable cannot be the variable of integration (since it cannot be computed) or a
+            //       constant (snce it is not computed but set), so no need to check for those.
+
             auto variable = aiv2avMappings[unknownVariable];
+            auto variableType = variable->type();
 
-            switch (variable->type()) {
-            case AnalyserVariable::Type::STATE:
+            if (variableType == AnalyserVariable::Type::STATE) {
                 equation->mPimpl->mStates.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::CONSTANT:
-                equation->mPimpl->mConstants.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
+            } else if (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) {
                 equation->mPimpl->mComputedConstants.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
+            } else if (variableType == AnalyserVariable::Type::ALGEBRAIC) {
                 equation->mPimpl->mAlgebraic.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::EXTERNAL:
+            } else { // AnalyserVariable::Type::EXTERNAL.
                 equation->mPimpl->mExternals.push_back(variable);
-
-                break;
-            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
-                // This is the variable of integration, which cannot be computed.
-
-                break;
             }
         }
 

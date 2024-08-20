@@ -157,25 +157,6 @@ AnalyserVariablePtr AnalyserEquation::state(size_t index) const
     return mPimpl->mStates[index];
 }
 
-size_t AnalyserEquation::constantCount() const
-{
-    return mPimpl->mConstants.size();
-}
-
-std::vector<AnalyserVariablePtr> AnalyserEquation::constants() const
-{
-    return mPimpl->mConstants;
-}
-
-AnalyserVariablePtr AnalyserEquation::constant(size_t index) const
-{
-    if (index >= mPimpl->mConstants.size()) {
-        return {};
-    }
-
-    return mPimpl->mConstants[index];
-}
-
 size_t AnalyserEquation::computedConstantCount() const
 {
     return mPimpl->mComputedConstants.size();

@@ -52,15 +52,6 @@
 %feature("docstring") libcellml::AnalyserEquation::state
 "Returns the state, at the given index, computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::constantCount
-"Returns the number of constants computed by this :class:`AnalyserEquation` object.";
-
-%feature("docstring") libcellml::AnalyserEquation::constants
-"Returns the constants computed by this :class:`AnalyserEquation` object.";
-
-%feature("docstring") libcellml::AnalyserEquation::constant
-"Returns the constant, at the given index, computed by this :class:`AnalyserEquation` object.";
-
 %feature("docstring") libcellml::AnalyserEquation::computedConstantCount
 "Returns the number of computed constants computed by this :class:`AnalyserEquation` object.";
 
