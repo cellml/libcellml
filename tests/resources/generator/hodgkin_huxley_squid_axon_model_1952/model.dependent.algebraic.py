@@ -103,9 +103,9 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[2] = constants[1]+12.0
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, 1)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, 0)
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
     algebraic[0] = constants[2]*(states[0]-computed_constants[0])
     algebraic[1] = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     algebraic[2] = constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])
@@ -120,9 +120,9 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic, 
     rates[3] = algebraic[7]*(1.0-states[3])-externals[1]*states[3]
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, 1)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, 0)
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
     algebraic[0] = constants[2]*(states[0]-computed_constants[0])
     algebraic[2] = constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])
     algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)

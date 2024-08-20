@@ -724,7 +724,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(False))
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            'void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n{\n[CODE]}\n',
             g.implementationComputeRatesMethodString(True))
         g.setImplementationComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(True))
@@ -741,7 +741,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, False))
 
         self.assertEqual(
-            'void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            'void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n{\n[CODE]}\n',
             g.implementationComputeVariablesMethodString(False, True))
         g.setImplementationComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, True))
@@ -753,7 +753,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, False))
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            'void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n{\n[CODE]}\n',
             g.implementationComputeVariablesMethodString(True, True))
         g.setImplementationComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, True))
@@ -1006,7 +1006,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(False))
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n',
+            'void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n',
             g.interfaceComputeRatesMethodString(True))
         g.setInterfaceComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(True))
@@ -1023,7 +1023,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, False))
 
         self.assertEqual(
-            'void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n',
+            'void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n',
             g.interfaceComputeVariablesMethodString(False, True))
         g.setInterfaceComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, True))
@@ -1035,7 +1035,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, False))
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n',
+            'void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n',
             g.interfaceComputeVariablesMethodString(True, True))
         g.setInterfaceComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, True))
@@ -1677,13 +1677,13 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, size_t index);\n',
+            'typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);\n',
             g.externalVariableMethodTypeDefinitionString(False))
         g.setExternalVariableMethodTypeDefinitionString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(False))
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, size_t index);\n',
+            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);\n',
             g.externalVariableMethodTypeDefinitionString(True))
         g.setExternalVariableMethodTypeDefinitionString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(True))
@@ -1693,12 +1693,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('externalVariable(constants, computedConstants, algebraic, [INDEX])',
+        self.assertEqual('externalVariable(constants, computedConstants, algebraic, externals, [INDEX])',
                          g.externalVariableMethodCallString(False))
         g.setExternalVariableMethodCallString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(False))
 
-        self.assertEqual('externalVariable(voi, states, rates, constants, computedConstants, algebraic, [INDEX])',
+        self.assertEqual('externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, [INDEX])',
                          g.externalVariableMethodCallString(True))
         g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
@@ -1708,13 +1708,21 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('typedef struct {\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False))
-        g.setRootFindingInfoObjectString(False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(False))
+        self.assertEqual('typedef struct {\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False, False))
+        g.setRootFindingInfoObjectString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(False, False))
 
-        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True))
-        g.setRootFindingInfoObjectString(True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(True))
+        self.assertEqual('typedef struct {\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n    double *externals;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False, True))
+        g.setRootFindingInfoObjectString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(False, True))
+
+        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True, False))
+        g.setRootFindingInfoObjectString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(True, False))
+
+        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *constants;\n    double *computedConstants;\n    double *algebraic;\n    double *externals;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True, True))
+        g.setRootFindingInfoObjectString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(True, True))
 
     def test_extern_nla_solve_method_string(self):
         from libcellml import GeneratorProfile

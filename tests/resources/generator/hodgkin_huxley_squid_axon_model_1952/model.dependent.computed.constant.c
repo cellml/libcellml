@@ -129,11 +129,11 @@ void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
     algebraic[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, 1);
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, 0);
+    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     algebraic[4] = externals[0]-10.613;
     algebraic[1] = constants[1]*(states[0]-algebraic[4]);
     algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-externals[1]);
@@ -151,10 +151,10 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     rates[3] = algebraic[10]*(1.0-states[3])-algebraic[11]*states[3];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, 1);
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, 0);
+    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     algebraic[4] = externals[0]-10.613;
     algebraic[1] = constants[1]*(states[0]-algebraic[4]);
     algebraic[5] = externals[0]-115.0;

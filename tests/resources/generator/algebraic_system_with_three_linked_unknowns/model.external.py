@@ -52,7 +52,7 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(constants, computed_constants, algebraic, external_variable):
-    externals[0] = external_variable(constants, computed_constants, algebraic, 0)
-    externals[1] = external_variable(constants, computed_constants, algebraic, 1)
-    externals[2] = external_variable(constants, computed_constants, algebraic, 2)
+def compute_variables(constants, computed_constants, algebraic, externals, external_variable):
+    externals[0] = external_variable(constants, computed_constants, algebraic, externals, 0)
+    externals[1] = external_variable(constants, computed_constants, algebraic, externals, 1)
+    externals[2] = external_variable(constants, computed_constants, algebraic, externals, 2)
