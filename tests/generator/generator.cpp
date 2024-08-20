@@ -1514,12 +1514,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     auto analyser = libcellml::Analyser::create();
     auto potassium_channel_n_gate_beta_n = model->component("potassium_channel_n_gate")->variable("beta_n");
-    auto membrane_i_Stime = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
+    auto membrane_i_Stim = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
 
-    membrane_i_Stime->addDependency(potassium_channel_n_gate_beta_n);
+    membrane_i_Stim->addDependency(potassium_channel_n_gate_beta_n);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n));
-    analyser->addExternalVariable(membrane_i_Stime);
+    analyser->addExternalVariable(membrane_i_Stim);
 
     analyser->analyseModel(model);
 
