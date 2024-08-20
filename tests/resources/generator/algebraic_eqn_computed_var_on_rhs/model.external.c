@@ -84,8 +84,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    externals[0] = externalVariable(constants, computedConstants, algebraic, 0);
+    externals[0] = externalVariable(constants, computedConstants, algebraic, externals, 0);
     algebraic[0] = externals[0];
 }

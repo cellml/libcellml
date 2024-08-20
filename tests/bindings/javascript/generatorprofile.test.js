@@ -819,11 +819,17 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.rootFindingInfoObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setRootFindingInfoObjectString(false, "something")
-    expect(x.rootFindingInfoObjectString(false)).toBe("something")
+    x.setRootFindingInfoObjectString(false, false, "something")
+    expect(x.rootFindingInfoObjectString(false, false)).toBe("something")
 
-    x.setRootFindingInfoObjectString(true, "something")
-    expect(x.rootFindingInfoObjectString(true)).toBe("something")
+    x.setRootFindingInfoObjectString(false, true, "something")
+    expect(x.rootFindingInfoObjectString(false, true)).toBe("something")
+
+    x.setRootFindingInfoObjectString(true, false, "something")
+    expect(x.rootFindingInfoObjectString(true, false)).toBe("something")
+
+    x.setRootFindingInfoObjectString(true, true, "something")
+    expect(x.rootFindingInfoObjectString(true, true)).toBe("something")
   });
   test("Checking GeneratorProfile.externNlaSolveMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

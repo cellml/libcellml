@@ -3212,11 +3212,14 @@ public:
      * @param forDifferentialModel Whether the call to the root finding
      * information object is for a differential model, as opposed to an
      * algebraic model.
+     * @param withExternalVariables Whether the call to the root finding
+     * information object is for a model with external variables.
      *
      * @return The @c std::string for the data structure for the root finding
      * information object.
      */
-    std::string rootFindingInfoObjectString(bool forDifferentialModel) const;
+    std::string rootFindingInfoObjectString(bool forDifferentialModel,
+                                            bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the data structure for the root finding
@@ -3228,10 +3231,13 @@ public:
      * @param forDifferentialModel Whether the call to the root finding
      * information object is for a differential model, as opposed to an
      * algebraic model.
+     * @param withExternalVariables Whether the call to the root finding
+     * information object is for a model with external variables.
      * @param rootFindingInfoObjectString The @c std::string to use for the data
      * structure for the root finding information object.
      */
     void setRootFindingInfoObjectString(bool forDifferentialModel,
+                                        bool withExternalVariables,
                                         const std::string &rootFindingInfoObjectString);
 
     /**

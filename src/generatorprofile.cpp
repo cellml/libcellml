@@ -290,25 +290,42 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAlgebraicArrayString = "algebraic";
         mExternalArrayString = "externals";
 
-        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);\n";
 
-        mExternalVariableMethodCallFamString = "externalVariable(constants, computedConstants, algebraic, [INDEX])";
-        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, constants, computedConstants, algebraic, [INDEX])";
+        mExternalVariableMethodCallFamString = "externalVariable(constants, computedConstants, algebraic, externals, [INDEX])";
+        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, [INDEX])";
 
-        mRootFindingInfoObjectFamString = "typedef struct {\n"
-                                          "    double *constants;\n"
-                                          "    double *computedConstants;\n"
-                                          "    double *algebraic;\n"
-                                          "} RootFindingInfo;\n";
-        mRootFindingInfoObjectFdmString = "typedef struct {\n"
-                                          "    double voi;\n"
-                                          "    double *states;\n"
-                                          "    double *rates;\n"
-                                          "    double *constants;\n"
-                                          "    double *computedConstants;\n"
-                                          "    double *algebraic;\n"
-                                          "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFamWoevString = "typedef struct {\n"
+                                              "    double *constants;\n"
+                                              "    double *computedConstants;\n"
+                                              "    double *algebraic;\n"
+                                              "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFamWevString = "typedef struct {\n"
+                                             "    double *constants;\n"
+                                             "    double *computedConstants;\n"
+                                             "    double *algebraic;\n"
+                                             "    double *externals;\n"
+                                             "} RootFindingInfo;\n";
+
+        mRootFindingInfoObjectFdmWoevString = "typedef struct {\n"
+                                              "    double voi;\n"
+                                              "    double *states;\n"
+                                              "    double *rates;\n"
+                                              "    double *constants;\n"
+                                              "    double *computedConstants;\n"
+                                              "    double *algebraic;\n"
+                                              "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFdmWevString = "typedef struct {\n"
+                                             "    double voi;\n"
+                                             "    double *states;\n"
+                                             "    double *rates;\n"
+                                             "    double *constants;\n"
+                                             "    double *computedConstants;\n"
+                                             "    double *algebraic;\n"
+                                             "    double *externals;\n"
+                                             "} RootFindingInfo;\n";
+
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
                                       "                     double *u, size_t n, void *data);\n";
         mFindRootCallFamString = "findRoot[INDEX](constants, computedConstants, algebraic);\n";
@@ -440,8 +457,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                       "[CODE]"
                                                       "}\n";
 
-        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
-        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n"
+        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n";
+        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n{\n"
                                                      "[CODE]"
                                                      "}\n";
 
@@ -451,8 +468,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -463,8 +480,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -742,11 +759,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
 
-        mExternalVariableMethodCallFamString = "external_variable(constants, computed_constants, algebraic, [INDEX])";
-        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, constants, computed_constants, algebraic, [INDEX])";
+        mExternalVariableMethodCallFamString = "external_variable(constants, computed_constants, algebraic, externals, [INDEX])";
+        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, [INDEX])";
 
-        mRootFindingInfoObjectFamString = "";
-        mRootFindingInfoObjectFdmString = "";
+        mRootFindingInfoObjectFamWoevString = "";
+        mRootFindingInfoObjectFamWevString = "";
+
+        mRootFindingInfoObjectFdmWoevString = "";
+        mRootFindingInfoObjectFdmWevString = "";
+
         mExternNlaSolveMethodString = "\n"
                                       "from nlasolver import nla_solve"
                                       "\n";
@@ -834,7 +855,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodWevString = "";
         mImplementationComputeRatesMethodWevString = "\n"
-                                                     "def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
+                                                     "def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):\n"
                                                      "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWoevString = "";
@@ -844,7 +865,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeVariablesMethodFamWevString = "";
         mImplementationComputeVariablesMethodFamWevString = "\n"
-                                                            "def compute_variables(constants, computed_constants, algebraic, external_variable):\n"
+                                                            "def compute_variables(constants, computed_constants, algebraic, externals, external_variable):\n"
                                                             "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWoevString = "";
@@ -854,7 +875,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeVariablesMethodFdmWevString = "";
         mImplementationComputeVariablesMethodFdmWevString = "\n"
-                                                            "def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
+                                                            "def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):\n"
                                                             "[CODE]";
 
         mEmptyMethodString = "pass\n";
@@ -2328,22 +2349,40 @@ void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialM
     }
 }
 
-std::string GeneratorProfile::rootFindingInfoObjectString(bool forDifferentialModel) const
+std::string GeneratorProfile::rootFindingInfoObjectString(bool forDifferentialModel,
+                                                          bool withExternalVariables) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mRootFindingInfoObjectFdmString;
+        if (withExternalVariables) {
+            return mPimpl->mRootFindingInfoObjectFdmWevString;
+        }
+
+        return mPimpl->mRootFindingInfoObjectFdmWoevString;
     }
 
-    return mPimpl->mRootFindingInfoObjectFamString;
+    if (withExternalVariables) {
+        return mPimpl->mRootFindingInfoObjectFamWevString;
+    }
+
+    return mPimpl->mRootFindingInfoObjectFamWoevString;
 }
 
 void GeneratorProfile::setRootFindingInfoObjectString(bool forDifferentialModel,
+                                                      bool withExternalVariables,
                                                       const std::string &rootFindingInfoObjectString)
 {
     if (forDifferentialModel) {
-        mPimpl->mRootFindingInfoObjectFdmString = rootFindingInfoObjectString;
+        if (withExternalVariables) {
+            mPimpl->mRootFindingInfoObjectFdmWevString = rootFindingInfoObjectString;
+        } else {
+            mPimpl->mRootFindingInfoObjectFdmWoevString = rootFindingInfoObjectString;
+        }
     } else {
-        mPimpl->mRootFindingInfoObjectFamString = rootFindingInfoObjectString;
+        if (withExternalVariables) {
+            mPimpl->mRootFindingInfoObjectFamWevString = rootFindingInfoObjectString;
+        } else {
+            mPimpl->mRootFindingInfoObjectFamWoevString = rootFindingInfoObjectString;
+        }
     }
 }
 

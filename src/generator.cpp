@@ -727,9 +727,9 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 {
     if (modelHasNlas()
-        && !mProfile->rootFindingInfoObjectString(modelHasOdes()).empty()) {
+        && !mProfile->rootFindingInfoObjectString(modelHasOdes(), mModel->hasExternalVariables()).empty()) {
         mCode += newLineIfNeeded()
-                 + mProfile->rootFindingInfoObjectString(modelHasOdes());
+                 + mProfile->rootFindingInfoObjectString(modelHasOdes(), mModel->hasExternalVariables());
     }
 }
 

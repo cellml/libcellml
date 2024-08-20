@@ -225,8 +225,12 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mExternalVariableMethodCallFamString;
     std::string mExternalVariableMethodCallFdmString;
 
-    std::string mRootFindingInfoObjectFamString;
-    std::string mRootFindingInfoObjectFdmString;
+    std::string mRootFindingInfoObjectFamWoevString;
+    std::string mRootFindingInfoObjectFamWevString;
+
+    std::string mRootFindingInfoObjectFdmWoevString;
+    std::string mRootFindingInfoObjectFdmWevString;
+
     std::string mExternNlaSolveMethodString;
     std::string mFindRootCallFamString;
     std::string mFindRootCallFdmString;

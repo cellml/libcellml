@@ -86,10 +86,10 @@ void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    externals[0] = externalVariable(constants, computedConstants, algebraic, 0);
-    externals[1] = externalVariable(constants, computedConstants, algebraic, 1);
+    externals[0] = externalVariable(constants, computedConstants, algebraic, externals, 0);
+    externals[1] = externalVariable(constants, computedConstants, algebraic, externals, 1);
     algebraic[0] = 1000.0*3.14*externals[1]*externals[1]*externals[0];
     algebraic[1] = 0.02*algebraic[0];
 }
