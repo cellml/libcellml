@@ -1326,34 +1326,16 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
     }
 
     auto states = model->states();
-
-    if (!states.empty()) {
-        res.insert(res.end(), states.begin(), states.end());
-    }
-
     auto constants = model->constants();
-
-    if (!constants.empty()) {
-        res.insert(res.end(), constants.begin(), constants.end());
-    }
-
     auto computedConstants = model->computedConstants();
-
-    if (!computedConstants.empty()) {
-        res.insert(res.end(), computedConstants.begin(), computedConstants.end());
-    }
-
     auto algebraic = model->algebraic();
-
-    if (!algebraic.empty()) {
-        res.insert(res.end(), algebraic.begin(), algebraic.end());
-    }
-
     auto externals = model->externals();
 
-    if (!externals.empty()) {
-        res.insert(res.end(), externals.begin(), externals.end());
-    }
+    res.insert(res.end(), states.begin(), states.end());
+    res.insert(res.end(), constants.begin(), constants.end());
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraic.begin(), algebraic.end());
+    res.insert(res.end(), externals.begin(), externals.end());
 
     return res;
 }
@@ -1361,29 +1343,13 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
 std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
 {
     auto res = equation->states();
-    auto constants = equation->constants();
-
-    if (!constants.empty()) {
-        res.insert(res.end(), constants.begin(), constants.end());
-    }
-
     auto computedConstants = equation->computedConstants();
-
-    if (!computedConstants.empty()) {
-        res.insert(res.end(), computedConstants.begin(), computedConstants.end());
-    }
-
     auto algebraic = equation->algebraic();
-
-    if (!algebraic.empty()) {
-        res.insert(res.end(), algebraic.begin(), algebraic.end());
-    }
-
     auto externals = equation->externals();
 
-    if (!externals.empty()) {
-        res.insert(res.end(), externals.begin(), externals.end());
-    }
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraic.begin(), algebraic.end());
+    res.insert(res.end(), externals.begin(), externals.end());
 
     return res;
 }

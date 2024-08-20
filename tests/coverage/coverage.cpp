@@ -584,6 +584,8 @@ TEST(Coverage, generator)
 
     auto analyser = libcellml::Analyser::create();
 
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnPlus")));
+
     analyser->analyseModel(model);
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
@@ -595,8 +597,9 @@ TEST(Coverage, generator)
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(7), analyserModel->constantCount());
-    EXPECT_EQ(size_t(200), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
     EXPECT_EQ(size_t(2), analyserModel->algebraicCount());
+    EXPECT_EQ(size_t(1), analyserModel->externalCount());
     EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
@@ -607,15 +610,23 @@ TEST(Coverage, generator)
     EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
     EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
     EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->constant(0));
     EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
     EXPECT_NE(nullptr, analyserModel->algebraic(0));
+    EXPECT_NE(nullptr, analyserModel->algebraic(0)->equation(0)->algebraic(0));
     EXPECT_EQ(nullptr, analyserModel->algebraic(analyserModel->algebraicCount()));
-    EXPECT_EQ(nullptr, analyserModel->external(0));
+    EXPECT_NE(nullptr, analyserModel->external(0));
+    EXPECT_NE(nullptr, analyserModel->external(0)->equation(0)->external(0));
     EXPECT_EQ(nullptr, analyserModel->external(analyserModel->algebraicCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(0)->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
+    EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
     EXPECT_NE(nullptr, analyserModel->equation(199));
     EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
     EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
@@ -745,6 +756,9 @@ TEST(Coverage, generator)
     profile->setImplementationCreateExternalsArrayMethodString("");
 
     profile->setImplementationDeleteArrayMethodString("");
+
+    profile->setImplementationInitialiseVariablesMethodString(false, "");
+    profile->setImplementationInitialiseVariablesMethodString(true, "");
 
     profile->setImplementationComputeVariablesMethodString(false, false, "");
     profile->setImplementationComputeVariablesMethodString(false, true, "");

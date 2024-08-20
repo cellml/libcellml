@@ -35,7 +35,6 @@ struct AnalyserEquation::AnalyserEquationImpl
     bool mIsStateRateBased = false;
 
     std::vector<AnalyserVariablePtr> mStates;
-    std::vector<AnalyserVariablePtr> mConstants;
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraic;
     std::vector<AnalyserVariablePtr> mExternals;

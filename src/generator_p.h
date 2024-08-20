@@ -44,8 +44,6 @@ struct Generator::GeneratorImpl
     bool modelHasOdes() const;
     bool modelHasNlas() const;
 
-    AnalyserVariablePtr doAnalyserVariable(const VariablePtr &variable,
-                                           const std::vector<AnalyserVariablePtr> &variables) const;
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
     double scalingFactor(const VariablePtr &variable) const;
