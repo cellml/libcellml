@@ -2782,13 +2782,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // in the API.
 
     std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> aie2aeMappings;
-    std::map<VariablePtr, AnalyserEquationPtr> v2aeMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
         auto equation = AnalyserEquation::AnalyserEquationImpl::create();
 
         aie2aeMappings.emplace(internalEquation, equation);
-        v2aeMappings.emplace(internalEquation->mUnknownVariables.front()->mVariable, equation);
     }
 
     // Start making our internal equations available through our API.
