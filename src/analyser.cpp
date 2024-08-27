@@ -918,8 +918,7 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
             addIssue(issue);
         } else if (!variable->initialValue().empty()
                    && !isCellMLReal(variable->initialValue())) {
-            auto initialisingComponent = owningComponent(variable);
-            auto initialisingVariable = initialisingComponent->variable(variable->initialValue());
+            auto initialisingVariable = owningComponent(variable)->variable(variable->initialValue());
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
             if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::INITIALISED) {
@@ -933,6 +932,22 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
                 addIssue(issue);
+            } else {
+                auto scalingFactor = Units::scalingFactor(variable->units(), initialisingVariable->units());
+
+                if (!areNearlyEqual(scalingFactor, 1.0)) {
+                    auto issue = Issue::IssueImpl::create();
+
+                    issue->mPimpl->setDescription("Variable '" + variable->name()
+                                                  + "' in component '" + component->name()
+                                                  + "' is initialised using variable '" + variable->initialValue()
+                                                  + "' which has different units.");
+                    issue->mPimpl->setLevel(Issue::Level::WARNING);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
+                    issue->mPimpl->mItem->mPimpl->setVariable(variable);
+
+                    addIssue(issue);
+                }
             }
         }
     }

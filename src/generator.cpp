@@ -106,9 +106,22 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
-    // Return the scaling factor for the given variable.
+    // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by
+    // another variable which initial value may be defined in a different component.
 
-    return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
+    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
+
+    if ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT)
+        && !isCellMLReal(variable->initialValue())) {
+        auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
+        auto initialValueAnalyserVariable = Generator::GeneratorImpl::analyserVariable(initialValueVariable);
+
+        if (owningComponent(variable) != owningComponent(initialValueAnalyserVariable->variable())) {
+            return Units::scalingFactor(initialValueVariable->units(), variable->units());
+        }
+    }
+
+    return Units::scalingFactor(analyserVariable->variable()->units(), variable->units());
 }
 
 bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &ast) const
@@ -882,8 +895,8 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
         return generateDoubleCode(variable->initialValue());
     }
 
-    auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserVariable(initValueVariable);
+    auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
+    auto analyserInitialValueVariable = analyserVariable(initialValueVariable);
 
     return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
 }
@@ -1687,7 +1700,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
     std::string scalingFactorCode;
 
     if (!areNearlyEqual(scalingFactor, 1.0)) {
-        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
+        scalingFactorCode = generateDoubleCode(convertToString(scalingFactor)) + mProfile->timesString();
     }
 
     return mProfile->indentString()
@@ -1803,6 +1816,31 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     }
 }
 
+std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                                         std::vector<AnalyserVariablePtr> &remainingConstants)
+{
+    auto initialisingVariable = (*constant)->initialisingVariable();
+    auto initialValue = initialisingVariable->initialValue();
+
+    if (!isCellMLReal(initialValue)) {
+        auto initialisingComponent = owningComponent(initialisingVariable);
+        auto crtConstant = std::find_if(remainingConstants.begin(), remainingConstants.end(),
+                                        [=](const AnalyserVariablePtr &av) -> bool {
+                                            return initialisingComponent->variable(initialValue) == av->variable();
+                                        });
+
+        if (crtConstant != remainingConstants.end()) {
+            return generateConstantInitialisationCode(crtConstant, remainingConstants);
+        }
+    }
+
+    auto code = generateInitialisationCode(*constant);
+
+    remainingConstants.erase(constant);
+
+    return code;
+}
+
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes());
@@ -1816,25 +1854,17 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         for (const auto &state : mModel->states()) {
             auto initialisingVariable = state->initialisingVariable();
             auto initialValue = initialisingVariable->initialValue();
-            auto constant = constants.end();
 
-            while (!isCellMLReal(initialValue)) {
-                // The initial value references another variable, so look for it keeping in mind that its initial value may
-                // reference another variable, and so on.
+            if (!isCellMLReal(initialValue)) {
+                // The initial value references a constant.
 
                 auto initialisingComponent = owningComponent(initialisingVariable);
-                auto crtConstant = std::find_if(constants.begin(), constants.end(),
-                                                [=](const AnalyserVariablePtr &av) -> bool { return initialisingComponent->variable(initialValue)->hasEquivalentVariable(av->variable()); });
+                auto constant = std::find_if(constants.begin(), constants.end(),
+                                             [=](const AnalyserVariablePtr &av) -> bool {
+                                                 return initialisingComponent->variable(initialValue)->hasEquivalentVariable(av->variable());
+                                             });
 
-                constant = crtConstant;
-                initialisingVariable = (*constant)->variable();
-                initialValue = initialisingVariable->initialValue();
-            }
-
-            if (constant != constants.end()) {
-                methodBody += generateInitialisationCode(*constant);
-
-                constants.erase(constant);
+                methodBody += generateConstantInitialisationCode(constant, constants);
             }
 
             methodBody += generateInitialisationCode(state);
@@ -1849,10 +1879,10 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
-        // Initialise our constants.
+        // Initialise our (remaining) constants.
 
-        for (const auto &constant : constants) {
-            methodBody += generateInitialisationCode(constant);
+        while (!constants.empty()) {
+            methodBody += generateConstantInitialisationCode(constants.begin(), constants);
         }
 
         // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an

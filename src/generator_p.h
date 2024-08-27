@@ -138,6 +138,8 @@ struct Generator::GeneratorImpl
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 
     void addInterfaceComputeModelMethodsCode();
+    std::string generateConstantInitialisationCode(const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);

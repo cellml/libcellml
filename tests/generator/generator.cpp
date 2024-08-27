@@ -889,9 +889,14 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     auto analyser = libcellml::Analyser::create();
 
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'c_M' in component 'constants' is initialised using variable 'c' which has different units.",
+        "Variable 'oc_mM' in component 'other_constants' is initialised using variable 'c' which has different units.",
+    };
+
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
