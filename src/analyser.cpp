@@ -906,21 +906,20 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
         if ((variable != internalVariable->mVariable)
             && !variable->initialValue().empty()) {
             auto issue = Issue::IssueImpl::create();
-            auto trackedVariableComponent = owningComponent(internalVariable->mVariable);
 
             issue->mPimpl->setDescription("Variable '" + variable->name()
                                           + "' in component '" + component->name()
                                           + "' and variable '" + internalVariable->mVariable->name()
-                                          + "' in component '" + trackedVariableComponent->name()
+                                          + "' in component '" + owningComponent(internalVariable->mVariable)->name()
                                           + "' are equivalent and cannot therefore both be initialised.");
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
             addIssue(issue);
-        } else if (!internalVariable->mVariable->initialValue().empty()
-                   && !isCellMLReal(internalVariable->mVariable->initialValue())) {
-            auto initialisingComponent = owningComponent(internalVariable->mVariable);
-            auto initialisingVariable = initialisingComponent->variable(internalVariable->mVariable->initialValue());
+        } else if (!variable->initialValue().empty()
+                   && !isCellMLReal(variable->initialValue())) {
+            auto initialisingComponent = owningComponent(variable);
+            auto initialisingVariable = initialisingComponent->variable(variable->initialValue());
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
             if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::INITIALISED) {
@@ -928,7 +927,7 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
 
                 issue->mPimpl->setDescription("Variable '" + variable->name()
                                               + "' in component '" + component->name()
-                                              + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
+                                              + "' is initialised using variable '" + variable->initialValue()
                                               + "', which is not a constant.");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
