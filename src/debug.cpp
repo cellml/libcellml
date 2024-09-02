@@ -29,8 +29,6 @@ limitations under the License.
 #include "commonutils.h"
 #include "utilities.h"
 
-#include "libcellml/undefines.h"
-
 namespace libcellml {
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)
@@ -116,7 +114,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
             Debug() << "\nNo algebraic variables";
         }
 
-        if (eqn->algebraicCount() != 0) {
+        if (eqn->externalCount() != 0) {
             Debug() << "\nExternal variables:";
 
             for (const auto &var : eqn->externals()) {
@@ -150,7 +148,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                     if (nlaSibling->ast() != nullptr) {
                         Debug() << " - " << astAsCode(nlaSibling->ast());
                     } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
-                        Debug() << " - External equation for '" << nlaSibling->algebraic(0)->variable()->name() << "'";
+                        Debug() << " - External equation for '" << nlaSibling->external(0)->variable()->name() << "'";
                     } else {
                         Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
                     }
@@ -180,7 +178,7 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
                 if (eqn->ast() != nullptr) {
                     Debug() << " - " << astAsCode(eqn->ast());
                 } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << eqn->algebraic(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << eqn->external(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
                 }

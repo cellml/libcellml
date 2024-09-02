@@ -40,6 +40,7 @@ describe("Analyser Variable tests", () => {
         expect(am.constantCount()).toBe(5)
         expect(am.computedConstantCount()).toBe(3)
         expect(am.algebraicCount()).toBe(10)
+        expect(am.externalCount()).toBe(0)
     });
     test('Checking Analyser Variable type.', () => {
         const av = am.algebraicVariable(0)
