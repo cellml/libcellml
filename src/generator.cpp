@@ -484,11 +484,7 @@ void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::st
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
     if (modelHasOdes()) {
-        std::vector<AnalyserVariablePtr> variables;
-
-        variables.push_back(mModel->voi());
-
-        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), variables, true);
+        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {mModel->voi()}, true);
     }
 
     if (modelHasOdes()) {
@@ -496,9 +492,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
     }
 
     doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), mModel->constants(), false);
-
     doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), mModel->computedConstants(), false);
-
     doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicInfoString(), mModel->algebraic(), false);
 
     if (mModel->hasExternalVariables()) {
