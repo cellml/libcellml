@@ -755,9 +755,9 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 void Generator::GeneratorImpl::addNlaSystemsCode()
 {
     if (modelHasNlas()
-        && !mProfile->objectiveFunctionMethodString(modelHasOdes()).empty()
-        && !mProfile->findRootMethodString(modelHasOdes()).empty()
-        && !mProfile->nlaSolveCallString(modelHasOdes()).empty()) {
+        && !mProfile->objectiveFunctionMethodString(modelHasOdes(), mModel->hasExternalVariables()).empty()
+        && !mProfile->findRootMethodString(modelHasOdes(), mModel->hasExternalVariables()).empty()
+        && !mProfile->nlaSolveCallString(modelHasOdes(), mModel->hasExternalVariables()).empty()) {
         // Note: only states and algebraic variables can be computed through an NLA system. Constants, computed
         //       constants, and external variables cannot, by definition, be computed through an NLA system.
 
@@ -805,7 +805,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes()),
+                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes(), mModel->hasExternalVariables()),
                                            "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                    "[CODE]", generateMethodBodyCode(methodBody));
 
@@ -829,7 +829,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody += newLineIfNeeded()
                               + mProfile->indentString()
-                              + replace(replace(mProfile->nlaSolveCallString(modelHasOdes()),
+                              + replace(replace(mProfile->nlaSolveCallString(modelHasOdes(), mModel->hasExternalVariables()),
                                                 "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                         "[SIZE]", convertToString(variablesCount));
 
@@ -850,7 +850,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes()),
+                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes(), mModel->hasExternalVariables()),
                                                    "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                            "[SIZE]", convertToString(variablesCount)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
@@ -1752,9 +1752,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
             break;
         case AnalyserEquation::Type::NLA:
-            if (!mProfile->findRootCallString(modelHasOdes()).empty()) {
+            if (!mProfile->findRootCallString(modelHasOdes(), mModel->hasExternalVariables()).empty()) {
                 res += mProfile->indentString()
-                       + replace(mProfile->findRootCallString(modelHasOdes()),
+                       + replace(mProfile->findRootCallString(modelHasOdes(), mModel->hasExternalVariables()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
             }
 

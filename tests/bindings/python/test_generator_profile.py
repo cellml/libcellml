@@ -1738,52 +1738,84 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('findRoot[INDEX](constants, computedConstants, algebraic);\n', g.findRootCallString(False))
-        g.setFindRootCallString(False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(False))
+        self.assertEqual('findRoot[INDEX](constants, computedConstants, algebraic);\n', g.findRootCallString(False, False))
+        g.setFindRootCallString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(False, False))
 
-        self.assertEqual('findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n', g.findRootCallString(True))
-        g.setFindRootCallString(True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(True))
+        self.assertEqual('findRoot[INDEX](constants, computedConstants, algebraic, externals);\n', g.findRootCallString(False, True))
+        g.setFindRootCallString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(False, True))
+
+        self.assertEqual('findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n', g.findRootCallString(True, False))
+        g.setFindRootCallString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(True, False))
+
+        self.assertEqual('findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic, externals);\n', g.findRootCallString(True, True))
+        g.setFindRootCallString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(True, True))
 
     def test_find_root_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False))
-        g.setFindRootMethodString(False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(False))
+        self.assertEqual('void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False, False))
+        g.setFindRootMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(False, False))
 
-        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True))
-        g.setFindRootMethodString(True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(True))
+        self.assertEqual('void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic, double *externals)\n{\n    RootFindingInfo rfi = { constants, computedConstants, algebraic, externals };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False, True))
+        g.setFindRootMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(False, True))
+
+        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True, False))
+        g.setFindRootMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(True, False))
+
+        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)\n{\n    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic, externals };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True, True))
+        g.setFindRootMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(True, True))
 
     def test_nla_solve_call_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(False))
-        g.setNlaSolveCallString(False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(False))
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(False, False))
+        g.setNlaSolveCallString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(False, False))
 
-        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(True))
-        g.setNlaSolveCallString(True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(True))
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(False, True))
+        g.setNlaSolveCallString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(False, True))
+
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(True, False))
+        g.setNlaSolveCallString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(True, False))
+
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(True, True))
+        g.setNlaSolveCallString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(True, True))
 
     def test_objective_function_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False))
-        g.setObjectiveFunctionMethodString(False, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(False))
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False, False))
+        g.setObjectiveFunctionMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(False, False))
 
-        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True))
-        g.setObjectiveFunctionMethodString(True, GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(True))
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n    double *externals = ((RootFindingInfo *) data)->externals;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False, True))
+        g.setObjectiveFunctionMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(False, True))
+
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True, False))
+        g.setObjectiveFunctionMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(True, False))
+
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *constants = ((RootFindingInfo *) data)->constants;\n    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n    double *externals = ((RootFindingInfo *) data)->externals;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True, True))
+        g.setObjectiveFunctionMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(True, True))
 
     def test_u_array_string(self):
         from libcellml import GeneratorProfile

@@ -384,9 +384,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "                     double *u, size_t n, void *data);\n",
               generatorProfile->externNlaSolveMethodString());
     EXPECT_EQ("findRoot[INDEX](constants, computedConstants, algebraic);\n",
-              generatorProfile->findRootCallString(false));
+              generatorProfile->findRootCallString(false, false));
+    EXPECT_EQ("findRoot[INDEX](constants, computedConstants, algebraic, externals);\n",
+              generatorProfile->findRootCallString(false, true));
     EXPECT_EQ("findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n",
-              generatorProfile->findRootCallString(true));
+              generatorProfile->findRootCallString(true, false));
+    EXPECT_EQ("findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic, externals);\n",
+              generatorProfile->findRootCallString(true, true));
     EXPECT_EQ("void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n"
@@ -394,7 +398,15 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "\n"
               "[CODE]"
               "}\n",
-              generatorProfile->findRootMethodString(false));
+              generatorProfile->findRootMethodString(false, false));
+    EXPECT_EQ("void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic, double *externals)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { constants, computedConstants, algebraic, externals };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(false, true));
     EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n"
@@ -402,11 +414,23 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "\n"
               "[CODE]"
               "}\n",
-              generatorProfile->findRootMethodString(true));
+              generatorProfile->findRootMethodString(true, false));
+    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic, externals };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(true, true));
     EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
-              generatorProfile->nlaSolveCallString(false));
+              generatorProfile->nlaSolveCallString(false, false));
     EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
-              generatorProfile->nlaSolveCallString(true));
+              generatorProfile->nlaSolveCallString(false, true));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(true, false));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(true, true));
     EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
               "{\n"
               "    double *constants = ((RootFindingInfo *) data)->constants;\n"
@@ -415,7 +439,17 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "\n"
               "[CODE]"
               "}\n",
-              generatorProfile->objectiveFunctionMethodString(false));
+              generatorProfile->objectiveFunctionMethodString(false, false));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+              "    double *externals = ((RootFindingInfo *) data)->externals;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(false, true));
     EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
               "{\n"
               "    double voi = ((RootFindingInfo *) data)->voi;\n"
@@ -427,7 +461,20 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "\n"
               "[CODE]"
               "}\n",
-              generatorProfile->objectiveFunctionMethodString(true));
+              generatorProfile->objectiveFunctionMethodString(true, false));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double voi = ((RootFindingInfo *) data)->voi;\n"
+              "    double *states = ((RootFindingInfo *) data)->states;\n"
+              "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+              "    double *externals = ((RootFindingInfo *) data)->externals;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(true, true));
     EXPECT_EQ("u",
               generatorProfile->uArrayString());
     EXPECT_EQ("f",
@@ -960,15 +1007,29 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRootFindingInfoObjectString(false, true, value);
     generatorProfile->setRootFindingInfoObjectString(true, false, value);
     generatorProfile->setRootFindingInfoObjectString(true, true, value);
+
     generatorProfile->setExternNlaSolveMethodString(value);
-    generatorProfile->setFindRootCallString(false, value);
-    generatorProfile->setFindRootCallString(true, value);
-    generatorProfile->setFindRootMethodString(false, value);
-    generatorProfile->setFindRootMethodString(true, value);
-    generatorProfile->setNlaSolveCallString(false, value);
-    generatorProfile->setNlaSolveCallString(true, value);
-    generatorProfile->setObjectiveFunctionMethodString(false, value);
-    generatorProfile->setObjectiveFunctionMethodString(true, value);
+
+    generatorProfile->setFindRootCallString(false, false, value);
+    generatorProfile->setFindRootCallString(false, true, value);
+    generatorProfile->setFindRootCallString(true, false, value);
+    generatorProfile->setFindRootCallString(true, true, value);
+
+    generatorProfile->setFindRootMethodString(false, false, value);
+    generatorProfile->setFindRootMethodString(false, true, value);
+    generatorProfile->setFindRootMethodString(true, false, value);
+    generatorProfile->setFindRootMethodString(true, true, value);
+
+    generatorProfile->setNlaSolveCallString(false, false, value);
+    generatorProfile->setNlaSolveCallString(false, true, value);
+    generatorProfile->setNlaSolveCallString(true, false, value);
+    generatorProfile->setNlaSolveCallString(true, true, value);
+
+    generatorProfile->setObjectiveFunctionMethodString(false, false, value);
+    generatorProfile->setObjectiveFunctionMethodString(false, true, value);
+    generatorProfile->setObjectiveFunctionMethodString(true, false, value);
+    generatorProfile->setObjectiveFunctionMethodString(true, true, value);
+
     generatorProfile->setUArrayString(value);
     generatorProfile->setFArrayString(value);
 
@@ -991,30 +1052,28 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationDeleteArrayMethodString(value);
 
     generatorProfile->setInterfaceInitialiseVariablesMethodString(false, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(false, value);
-
     generatorProfile->setInterfaceInitialiseVariablesMethodString(true, value);
+
+    generatorProfile->setImplementationInitialiseVariablesMethodString(false, value);
     generatorProfile->setImplementationInitialiseVariablesMethodString(true, value);
 
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
 
     generatorProfile->setInterfaceComputeRatesMethodString(false, value);
-    generatorProfile->setImplementationComputeRatesMethodString(false, value);
-
     generatorProfile->setInterfaceComputeRatesMethodString(true, value);
+
+    generatorProfile->setImplementationComputeRatesMethodString(false, value);
     generatorProfile->setImplementationComputeRatesMethodString(true, value);
 
     generatorProfile->setInterfaceComputeVariablesMethodString(false, false, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(false, false, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(false, true, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(false, true, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(true, false, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(true, false, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(true, true, value);
+
+    generatorProfile->setImplementationComputeVariablesMethodString(false, false, value);
+    generatorProfile->setImplementationComputeVariablesMethodString(false, true, value);
+    generatorProfile->setImplementationComputeVariablesMethodString(true, false, value);
     generatorProfile->setImplementationComputeVariablesMethodString(true, true, value);
 
     generatorProfile->setEmptyMethodString(value);
@@ -1103,15 +1162,29 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(false, true));
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true, false));
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true, true));
+
     EXPECT_EQ(value, generatorProfile->externNlaSolveMethodString());
-    EXPECT_EQ(value, generatorProfile->findRootCallString(false));
-    EXPECT_EQ(value, generatorProfile->findRootCallString(true));
-    EXPECT_EQ(value, generatorProfile->findRootMethodString(false));
-    EXPECT_EQ(value, generatorProfile->findRootMethodString(true));
-    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false));
-    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true));
-    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false));
-    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true));
+
+    EXPECT_EQ(value, generatorProfile->findRootCallString(false, false));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(false, true));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(true, false));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(false, false));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(false, true));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(true, false));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false, false));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false, true));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true, false));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false, false));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false, true));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true, false));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true, true));
+
     EXPECT_EQ(value, generatorProfile->uArrayString());
     EXPECT_EQ(value, generatorProfile->fArrayString());
 

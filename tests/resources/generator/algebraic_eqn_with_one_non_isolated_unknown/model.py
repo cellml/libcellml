@@ -44,6 +44,7 @@ def objective_function_0(u, f, data):
     constants = data[0]
     computed_constants = data[1]
     algebraic = data[2]
+    externals = data[3]
 
     algebraic[0] = u[0]
 
