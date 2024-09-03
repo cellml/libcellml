@@ -307,7 +307,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                              "    double *algebraic;\n"
                                              "    double *externals;\n"
                                              "} RootFindingInfo;\n";
-
         mRootFindingInfoObjectFdmWoevString = "typedef struct {\n"
                                               "    double voi;\n"
                                               "    double *states;\n"
@@ -328,43 +327,87 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
                                       "                     double *u, size_t n, void *data);\n";
-        mFindRootCallFamString = "findRoot[INDEX](constants, computedConstants, algebraic);\n";
-        mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n";
-        mFindRootMethodFamString = "void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n"
-                                   "{\n"
-                                   "    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n"
-                                   "    double u[[SIZE]];\n"
-                                   "\n"
-                                   "[CODE]"
-                                   "}\n";
-        mFindRootMethodFdmString = "void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
-                                   "{\n"
-                                   "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n"
-                                   "    double u[[SIZE]];\n"
-                                   "\n"
-                                   "[CODE]"
-                                   "}\n";
-        mNlaSolveCallFamString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
-        mNlaSolveCallFdmString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
-        mObjectiveFunctionMethodFamString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
-                                            "{\n"
-                                            "    double *constants = ((RootFindingInfo *) data)->constants;\n"
-                                            "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
-                                            "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
-                                            "\n"
-                                            "[CODE]"
-                                            "}\n";
-        mObjectiveFunctionMethodFdmString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
-                                            "{\n"
-                                            "    double voi = ((RootFindingInfo *) data)->voi;\n"
-                                            "    double *states = ((RootFindingInfo *) data)->states;\n"
-                                            "    double *rates = ((RootFindingInfo *) data)->rates;\n"
-                                            "    double *constants = ((RootFindingInfo *) data)->constants;\n"
-                                            "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
-                                            "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
-                                            "\n"
-                                            "[CODE]"
-                                            "}\n";
+
+        mFindRootCallFamWoevString = "findRoot[INDEX](constants, computedConstants, algebraic);\n";
+        mFindRootCallFamWevString = "findRoot[INDEX](constants, computedConstants, algebraic, externals);\n";
+        mFindRootCallFdmWoevString = "findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic);\n";
+        mFindRootCallFdmWevString = "findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraic, externals);\n";
+
+        mFindRootMethodFamWoevString = "void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic)\n"
+                                       "{\n"
+                                       "    RootFindingInfo rfi = { constants, computedConstants, algebraic };\n"
+                                       "    double u[[SIZE]];\n"
+                                       "\n"
+                                       "[CODE]"
+                                       "}\n";
+        mFindRootMethodFamWevString = "void findRoot[INDEX](double *constants, double *computedConstants, double *algebraic, double *externals)\n"
+                                      "{\n"
+                                      "    RootFindingInfo rfi = { constants, computedConstants, algebraic, externals };\n"
+                                      "    double u[[SIZE]];\n"
+                                      "\n"
+                                      "[CODE]"
+                                      "}\n";
+        mFindRootMethodFdmWoevString = "void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+                                       "{\n"
+                                       "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };\n"
+                                       "    double u[[SIZE]];\n"
+                                       "\n"
+                                       "[CODE]"
+                                       "}\n";
+        mFindRootMethodFdmWevString = "void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)\n"
+                                      "{\n"
+                                      "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic, externals };\n"
+                                      "    double u[[SIZE]];\n"
+                                      "\n"
+                                      "[CODE]"
+                                      "}\n";
+
+        mNlaSolveCallFamWoevString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mNlaSolveCallFamWevString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mNlaSolveCallFdmWoevString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mNlaSolveCallFdmWevString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+
+        mObjectiveFunctionMethodFamWoevString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                                "{\n"
+                                                "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                                "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                                "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+                                                "\n"
+                                                "[CODE]"
+                                                "}\n";
+        mObjectiveFunctionMethodFamWevString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                               "{\n"
+                                               "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                               "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                               "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+                                               "    double *externals = ((RootFindingInfo *) data)->externals;\n"
+                                               "\n"
+                                               "[CODE]"
+                                               "}\n";
+        mObjectiveFunctionMethodFdmWoevString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                                "{\n"
+                                                "    double voi = ((RootFindingInfo *) data)->voi;\n"
+                                                "    double *states = ((RootFindingInfo *) data)->states;\n"
+                                                "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+                                                "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                                "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                                "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+                                                "\n"
+                                                "[CODE]"
+                                                "}\n";
+        mObjectiveFunctionMethodFdmWevString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                               "{\n"
+                                               "    double voi = ((RootFindingInfo *) data)->voi;\n"
+                                               "    double *states = ((RootFindingInfo *) data)->states;\n"
+                                               "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+                                               "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+                                               "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+                                               "    double *algebraic = ((RootFindingInfo *) data)->algebraic;\n"
+                                               "    double *externals = ((RootFindingInfo *) data)->externals;\n"
+                                               "\n"
+                                               "[CODE]"
+                                               "}\n";
+
         mUArrayString = "u";
         mFArrayString = "f";
 
@@ -764,44 +807,81 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mRootFindingInfoObjectFamWoevString = "";
         mRootFindingInfoObjectFamWevString = "";
-
         mRootFindingInfoObjectFdmWoevString = "";
         mRootFindingInfoObjectFdmWevString = "";
 
         mExternNlaSolveMethodString = "\n"
                                       "from nlasolver import nla_solve"
                                       "\n";
-        mFindRootCallFamString = "find_root_[INDEX](constants, computed_constants, algebraic)\n";
-        mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic)\n";
-        mFindRootMethodFamString = "\n"
-                                   "def find_root_[INDEX](constants, computed_constants, algebraic):\n"
-                                   "    u = [nan]*[SIZE]\n"
-                                   "\n"
-                                   "[CODE]";
-        mFindRootMethodFdmString = "\n"
-                                   "def find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic):\n"
-                                   "    u = [nan]*[SIZE]\n"
-                                   "\n"
-                                   "[CODE]";
-        mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [constants, computed_constants, algebraic])\n";
-        mNlaSolveCallFdmString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, constants, computed_constants, algebraic])\n";
-        mObjectiveFunctionMethodFamString = "\n"
-                                            "def objective_function_[INDEX](u, f, data):\n"
-                                            "    constants = data[0]\n"
-                                            "    computed_constants = data[1]\n"
-                                            "    algebraic = data[2]\n"
-                                            "\n"
-                                            "[CODE]";
-        mObjectiveFunctionMethodFdmString = "\n"
-                                            "def objective_function_[INDEX](u, f, data):\n"
-                                            "    voi = data[0]\n"
-                                            "    states = data[1]\n"
-                                            "    rates = data[2]\n"
-                                            "    constants = data[3]\n"
-                                            "    computed_constants = data[4]\n"
-                                            "    algebraic = data[5]\n"
-                                            "\n"
-                                            "[CODE]";
+
+        mFindRootCallFamWoevString = "find_root_[INDEX](constants, computed_constants, algebraic)\n";
+        mFindRootCallFamWevString = "find_root_[INDEX](constants, computed_constants, algebraic, externals)\n";
+        mFindRootCallFdmWoevString = "find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic)\n";
+        mFindRootCallFdmWevString = "find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic, externals)\n";
+
+        mFindRootMethodFamWoevString = "\n"
+                                       "def find_root_[INDEX](constants, computed_constants, algebraic):\n"
+                                       "    u = [nan]*[SIZE]\n"
+                                       "\n"
+                                       "[CODE]";
+        mFindRootMethodFamWevString = "\n"
+                                      "def find_root_[INDEX](constants, computed_constants, algebraic, externals):\n"
+                                      "    u = [nan]*[SIZE]\n"
+                                      "\n"
+                                      "[CODE]";
+        mFindRootMethodFdmWoevString = "\n"
+                                       "def find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic):\n"
+                                       "    u = [nan]*[SIZE]\n"
+                                       "\n"
+                                       "[CODE]";
+        mFindRootMethodFdmWevString = "\n"
+                                      "def find_root_[INDEX](voi, states, rates, constants, computed_constants, algebraic, externals):\n"
+                                      "    u = [nan]*[SIZE]\n"
+                                      "\n"
+                                      "[CODE]";
+
+        mNlaSolveCallFamWoevString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [constants, computed_constants, algebraic])\n";
+        mNlaSolveCallFamWevString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [constants, computed_constants, algebraic, externals])\n";
+        mNlaSolveCallFdmWoevString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, constants, computed_constants, algebraic])\n";
+        mNlaSolveCallFdmWevString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, constants, computed_constants, algebraic, externals])\n";
+
+        mObjectiveFunctionMethodFamWoevString = "\n"
+                                                "def objective_function_[INDEX](u, f, data):\n"
+                                                "    constants = data[0]\n"
+                                                "    computed_constants = data[1]\n"
+                                                "    algebraic = data[2]\n"
+                                                "    externals = data[3]\n"
+                                                "\n"
+                                                "[CODE]";
+        mObjectiveFunctionMethodFamWevString = "\n"
+                                               "def objective_function_[INDEX](u, f, data):\n"
+                                               "    constants = data[0]\n"
+                                               "    computed_constants = data[1]\n"
+                                               "    algebraic = data[2]\n"
+                                               "\n"
+                                               "[CODE]";
+        mObjectiveFunctionMethodFdmWoevString = "\n"
+                                                "def objective_function_[INDEX](u, f, data):\n"
+                                                "    voi = data[0]\n"
+                                                "    states = data[1]\n"
+                                                "    rates = data[2]\n"
+                                                "    constants = data[3]\n"
+                                                "    computed_constants = data[4]\n"
+                                                "    algebraic = data[5]\n"
+                                                "\n"
+                                                "[CODE]";
+        mObjectiveFunctionMethodFdmWevString = "\n"
+                                               "def objective_function_[INDEX](u, f, data):\n"
+                                               "    voi = data[0]\n"
+                                               "    states = data[1]\n"
+                                               "    rates = data[2]\n"
+                                               "    constants = data[3]\n"
+                                               "    computed_constants = data[4]\n"
+                                               "    algebraic = data[5]\n"
+                                               "    externals = data[6]\n"
+                                               "\n"
+                                               "[CODE]";
+
         mUArrayString = "u";
         mFArrayString = "f";
 
@@ -2396,79 +2476,151 @@ void GeneratorProfile::setExternNlaSolveMethodString(const std::string &externNl
     mPimpl->mExternNlaSolveMethodString = externNlaSolveMethodString;
 }
 
-std::string GeneratorProfile::findRootCallString(bool forDifferentialModel) const
+std::string GeneratorProfile::findRootCallString(bool forDifferentialModel,
+                                                 bool withExternalVariables) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mFindRootCallFdmString;
+        if (withExternalVariables) {
+            return mPimpl->mFindRootCallFdmWevString;
+        }
+
+        return mPimpl->mFindRootCallFdmWoevString;
     }
 
-    return mPimpl->mFindRootCallFamString;
+    if (withExternalVariables) {
+        return mPimpl->mFindRootCallFamWevString;
+    }
+
+    return mPimpl->mFindRootCallFamWoevString;
 }
 
 void GeneratorProfile::setFindRootCallString(bool forDifferentialModel,
+                                             bool withExternalVariables,
                                              const std::string &findRootCallString)
 {
     if (forDifferentialModel) {
-        mPimpl->mFindRootCallFdmString = findRootCallString;
+        if (withExternalVariables) {
+            mPimpl->mFindRootCallFdmWevString = findRootCallString;
+        } else {
+            mPimpl->mFindRootCallFdmWoevString = findRootCallString;
+        }
     } else {
-        mPimpl->mFindRootCallFamString = findRootCallString;
+        if (withExternalVariables) {
+            mPimpl->mFindRootCallFamWevString = findRootCallString;
+        } else {
+            mPimpl->mFindRootCallFamWoevString = findRootCallString;
+        }
     }
 }
 
-std::string GeneratorProfile::findRootMethodString(bool forDifferentialModel) const
+std::string GeneratorProfile::findRootMethodString(bool forDifferentialModel,
+                                                   bool withExternalVariables) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mFindRootMethodFdmString;
+        if (withExternalVariables) {
+            return mPimpl->mFindRootMethodFdmWevString;
+        }
+
+        return mPimpl->mFindRootMethodFdmWoevString;
     }
 
-    return mPimpl->mFindRootMethodFamString;
+    if (withExternalVariables) {
+        return mPimpl->mFindRootMethodFamWevString;
+    }
+
+    return mPimpl->mFindRootMethodFamWoevString;
 }
 
 void GeneratorProfile::setFindRootMethodString(bool forDifferentialModel,
+                                               bool withExternalVariables,
                                                const std::string &findRootMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mFindRootMethodFdmString = findRootMethodString;
+        if (withExternalVariables) {
+            mPimpl->mFindRootMethodFdmWevString = findRootMethodString;
+        } else {
+            mPimpl->mFindRootMethodFdmWoevString = findRootMethodString;
+        }
     } else {
-        mPimpl->mFindRootMethodFamString = findRootMethodString;
+        if (withExternalVariables) {
+            mPimpl->mFindRootMethodFamWevString = findRootMethodString;
+        } else {
+            mPimpl->mFindRootMethodFamWoevString = findRootMethodString;
+        }
     }
 }
 
-std::string GeneratorProfile::nlaSolveCallString(bool forDifferentialModel) const
+std::string GeneratorProfile::nlaSolveCallString(bool forDifferentialModel,
+                                                 bool withExternalVariables) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mNlaSolveCallFdmString;
+        if (withExternalVariables) {
+            return mPimpl->mNlaSolveCallFdmWevString;
+        }
+
+        return mPimpl->mNlaSolveCallFdmWoevString;
     }
 
-    return mPimpl->mNlaSolveCallFamString;
+    if (withExternalVariables) {
+        return mPimpl->mNlaSolveCallFamWevString;
+    }
+
+    return mPimpl->mNlaSolveCallFamWoevString;
 }
 
 void GeneratorProfile::setNlaSolveCallString(bool forDifferentialModel,
+                                             bool withExternalVariables,
                                              const std::string &nlaSolveCallString)
 {
     if (forDifferentialModel) {
-        mPimpl->mNlaSolveCallFdmString = nlaSolveCallString;
+        if (withExternalVariables) {
+            mPimpl->mNlaSolveCallFdmWevString = nlaSolveCallString;
+        } else {
+            mPimpl->mNlaSolveCallFdmWoevString = nlaSolveCallString;
+        }
     } else {
-        mPimpl->mNlaSolveCallFamString = nlaSolveCallString;
+        if (withExternalVariables) {
+            mPimpl->mNlaSolveCallFamWevString = nlaSolveCallString;
+        } else {
+            mPimpl->mNlaSolveCallFamWoevString = nlaSolveCallString;
+        }
     }
 }
 
-std::string GeneratorProfile::objectiveFunctionMethodString(bool forDifferentialModel) const
+std::string GeneratorProfile::objectiveFunctionMethodString(bool forDifferentialModel,
+                                                            bool withExternalVariables) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mObjectiveFunctionMethodFdmString;
+        if (withExternalVariables) {
+            return mPimpl->mObjectiveFunctionMethodFdmWevString;
+        }
+
+        return mPimpl->mObjectiveFunctionMethodFdmWoevString;
     }
 
-    return mPimpl->mObjectiveFunctionMethodFamString;
+    if (withExternalVariables) {
+        return mPimpl->mObjectiveFunctionMethodFamWevString;
+    }
+
+    return mPimpl->mObjectiveFunctionMethodFamWoevString;
 }
 
 void GeneratorProfile::setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                                        bool withExternalVariables,
                                                         const std::string &objectiveFunctionMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mObjectiveFunctionMethodFdmString = objectiveFunctionMethodString;
+        if (withExternalVariables) {
+            mPimpl->mObjectiveFunctionMethodFdmWevString = objectiveFunctionMethodString;
+        } else {
+            mPimpl->mObjectiveFunctionMethodFdmWoevString = objectiveFunctionMethodString;
+        }
     } else {
-        mPimpl->mObjectiveFunctionMethodFamString = objectiveFunctionMethodString;
+        if (withExternalVariables) {
+            mPimpl->mObjectiveFunctionMethodFamWevString = objectiveFunctionMethodString;
+        } else {
+            mPimpl->mObjectiveFunctionMethodFamWoevString = objectiveFunctionMethodString;
+        }
     }
 }
 

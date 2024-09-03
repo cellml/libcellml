@@ -3266,10 +3266,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the call to the find root method.
      */
-    std::string findRootCallString(bool forDifferentialModel) const;
+    std::string findRootCallString(bool forDifferentialModel,
+                                   bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the find root method.
@@ -3280,10 +3283,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      * @param findRootCallString The @c std::string to use for the call to the
      * find root method.
      */
     void setFindRootCallString(bool forDifferentialModel,
+                               bool withExternalVariables,
                                const std::string &findRootCallString);
 
     /**
@@ -3293,10 +3299,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the find root method.
      */
-    std::string findRootMethodString(bool forDifferentialModel) const;
+    std::string findRootMethodString(bool forDifferentialModel,
+                                     bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the find root method.
@@ -3311,10 +3320,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      * @param findRootMethodString The @c std::string to use for the find root
      * method.
      */
     void setFindRootMethodString(bool forDifferentialModel,
+                                 bool withExternalVariables,
                                  const std::string &findRootMethodString);
 
     /**
@@ -3324,10 +3336,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the NLA solve method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the NLA solve method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the call to the NLA solve method.
      */
-    std::string nlaSolveCallString(bool forDifferentialModel) const;
+    std::string nlaSolveCallString(bool forDifferentialModel,
+                                   bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the NLA solve method.
@@ -3341,10 +3356,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the NLA solve method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the NLA solve method is
+     * for a model with external variables.
      * @param nlaSolveCallString The @c std::string to use for the call to the
      * NLA solve method.
      */
     void setNlaSolveCallString(bool forDifferentialModel,
+                               bool withExternalVariables,
                                const std::string &nlaSolveCallString);
 
     /**
@@ -3354,10 +3372,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the objective function
      * method is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the objective function
+     * method is for a model with external variables.
      *
      * @return The @c std::string for the objective function method.
      */
-    std::string objectiveFunctionMethodString(bool forDifferentialModel) const;
+    std::string objectiveFunctionMethodString(bool forDifferentialModel,
+                                              bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the objective function method.
@@ -3369,10 +3390,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the objective function
      * method is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the objective function
+     * method is for a model with external variables.
      * @param objectiveFunctionMethodString The @c std::string to use for the
      * objective function method.
      */
     void setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                          bool withExternalVariables,
                                           const std::string &objectiveFunctionMethodString);
 
     /**

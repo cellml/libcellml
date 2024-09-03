@@ -893,8 +893,10 @@ TEST(Coverage, generator)
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");
     profile->setMinFunctionString("");
-    profile->setObjectiveFunctionMethodString(false, "");
-    profile->setObjectiveFunctionMethodString(true, "");
+    profile->setObjectiveFunctionMethodString(false, false, "");
+    profile->setObjectiveFunctionMethodString(false, true, "");
+    profile->setObjectiveFunctionMethodString(true, false, "");
+    profile->setObjectiveFunctionMethodString(true, true, "");
     profile->setSecFunctionString("");
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
@@ -904,10 +906,14 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
-    profile->setFindRootMethodString(false, "");
-    profile->setFindRootMethodString(true, "");
-    profile->setObjectiveFunctionMethodString(false, "xxx");
-    profile->setObjectiveFunctionMethodString(true, "xxx");
+    profile->setFindRootMethodString(false, false, "");
+    profile->setFindRootMethodString(false, true, "");
+    profile->setFindRootMethodString(true, false, "");
+    profile->setFindRootMethodString(true, true, "");
+    profile->setObjectiveFunctionMethodString(false, false, "xxx");
+    profile->setObjectiveFunctionMethodString(false, true, "xxx");
+    profile->setObjectiveFunctionMethodString(true, false, "xxx");
+    profile->setObjectiveFunctionMethodString(true, true, "xxx");
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
@@ -915,12 +921,18 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("xxx");
     profile->setExternNlaSolveMethodString("");
-    profile->setFindRootMethodString(false, "xxx");
-    profile->setFindRootMethodString(true, "xxx");
-    profile->setFindRootCallString(false, "");
-    profile->setFindRootCallString(true, "");
-    profile->setNlaSolveCallString(false, "");
-    profile->setNlaSolveCallString(true, "");
+    profile->setFindRootMethodString(false, false, "xxx");
+    profile->setFindRootMethodString(false, true, "xxx");
+    profile->setFindRootMethodString(true, false, "xxx");
+    profile->setFindRootMethodString(true, true, "xxx");
+    profile->setFindRootCallString(false, false, "");
+    profile->setFindRootCallString(false, true, "");
+    profile->setFindRootCallString(true, false, "");
+    profile->setFindRootCallString(true, true, "");
+    profile->setNlaSolveCallString(false, false, "");
+    profile->setNlaSolveCallString(false, true, "");
+    profile->setNlaSolveCallString(true, false, "");
+    profile->setNlaSolveCallString(true, true, "");
 
     generator->implementationCode();
 

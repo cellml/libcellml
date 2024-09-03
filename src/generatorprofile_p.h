@@ -227,19 +227,31 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mRootFindingInfoObjectFamWoevString;
     std::string mRootFindingInfoObjectFamWevString;
-
     std::string mRootFindingInfoObjectFdmWoevString;
     std::string mRootFindingInfoObjectFdmWevString;
 
     std::string mExternNlaSolveMethodString;
-    std::string mFindRootCallFamString;
-    std::string mFindRootCallFdmString;
-    std::string mFindRootMethodFamString;
-    std::string mFindRootMethodFdmString;
-    std::string mNlaSolveCallFamString;
-    std::string mNlaSolveCallFdmString;
-    std::string mObjectiveFunctionMethodFamString;
-    std::string mObjectiveFunctionMethodFdmString;
+
+    std::string mFindRootCallFamWoevString;
+    std::string mFindRootCallFamWevString;
+    std::string mFindRootCallFdmWoevString;
+    std::string mFindRootCallFdmWevString;
+
+    std::string mFindRootMethodFamWoevString;
+    std::string mFindRootMethodFamWevString;
+    std::string mFindRootMethodFdmWoevString;
+    std::string mFindRootMethodFdmWevString;
+
+    std::string mNlaSolveCallFamWoevString;
+    std::string mNlaSolveCallFamWevString;
+    std::string mNlaSolveCallFdmWoevString;
+    std::string mNlaSolveCallFdmWevString;
+
+    std::string mObjectiveFunctionMethodFamWoevString;
+    std::string mObjectiveFunctionMethodFamWevString;
+    std::string mObjectiveFunctionMethodFdmWoevString;
+    std::string mObjectiveFunctionMethodFdmWevString;
+
     std::string mUArrayString;
     std::string mFArrayString;
 
@@ -277,15 +289,13 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mImplementationComputeRatesMethodWevString;
 
     std::string mInterfaceComputeVariablesMethodFamWoevString;
-    std::string mImplementationComputeVariablesMethodFamWoevString;
-
     std::string mInterfaceComputeVariablesMethodFamWevString;
-    std::string mImplementationComputeVariablesMethodFamWevString;
-
     std::string mInterfaceComputeVariablesMethodFdmWoevString;
-    std::string mImplementationComputeVariablesMethodFdmWoevString;
-
     std::string mInterfaceComputeVariablesMethodFdmWevString;
+
+    std::string mImplementationComputeVariablesMethodFamWoevString;
+    std::string mImplementationComputeVariablesMethodFamWevString;
+    std::string mImplementationComputeVariablesMethodFdmWoevString;
     std::string mImplementationComputeVariablesMethodFdmWevString;
 
     std::string mEmptyMethodString;
