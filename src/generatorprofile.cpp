@@ -850,7 +850,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                 "    constants = data[0]\n"
                                                 "    computed_constants = data[1]\n"
                                                 "    algebraic = data[2]\n"
-                                                "    externals = data[3]\n"
                                                 "\n"
                                                 "[CODE]";
         mObjectiveFunctionMethodFamWevString = "\n"
@@ -858,6 +857,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                "    constants = data[0]\n"
                                                "    computed_constants = data[1]\n"
                                                "    algebraic = data[2]\n"
+                                               "    externals = data[3]\n"
                                                "\n"
                                                "[CODE]";
         mObjectiveFunctionMethodFdmWoevString = "\n"
