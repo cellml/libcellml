@@ -194,7 +194,6 @@ void printHistory(const History &history)
     for (const auto &h : history) {
         printHistoryEpoch(h);
     }
-
 }
 
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
@@ -234,7 +233,8 @@ void printEquivalenceMap(const EquivalenceMap &map)
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
 {
     for (const auto &iter : map) {
-        auto key = iter.first;    Debug(false) << "key: ";
+        auto key = iter.first;
+        Debug(false) << "key: ";
         printStackWithModelInfo(key, model);
         auto vector = iter.second;
         for (const auto &vectorIt : vector) {
