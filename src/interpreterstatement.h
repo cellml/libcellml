@@ -118,7 +118,9 @@ public:
         VOI, /**< The variable of integration. */
         STATE, /**< A state variable. */
         RATE, /**< A rate variable. */
-        VARIABLE, /**< A variable. */
+        CONSTANT, /**< A constant. */
+        COMPUTED_CONSTANT, /**< A computed constant. */
+        ALGEBRAIC, /**< An algebraic variable. */
         NUMBER, /**< A number. */
 
         // Qualifier elements.
@@ -279,9 +281,11 @@ public:
      * @param voi The variable of integration.
      * @param states The array of states.
      * @param rates The array of rates.
-     * @param variables The array of variables.
+     * @param constants The array of constants.
+     * @param computedConstants The array of computed constants.
+     * @param algebraic The array of algebraic variables.
      */
-    void evaluate(double voi, double *states, double *rates, double *variables) const;
+    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 
 private:
     InterpreterStatement(Type type,

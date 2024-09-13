@@ -27,7 +27,7 @@ bool modelHasNlas(const AnalyserModelPtr &model);
 
 AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
 
-std::string newLineIfNotEmpty(const std::string &code);
+std::string newLineIfNeeded(const std::string &code);
 
 std::string generateDoubleCode(const std::string &value);
 
@@ -109,7 +109,10 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 
-    void nlaSystems();
+    void addNlaSystemsCode();
+
+    std::string generateConstantInitialisationCode(const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void initialiseVariables(std::vector<AnalyserEquationPtr> &remainingEquations);
     void computeComputedConstants(std::vector<AnalyserEquationPtr> &remainingEquations);
     void computeRates(std::vector<AnalyserEquationPtr> &remainingEquations);

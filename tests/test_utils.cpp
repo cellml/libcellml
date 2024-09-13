@@ -285,6 +285,22 @@ testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, c
                                        << "    Which is: " << values[i];
 }
 
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
+}
+
 void expectEqualValues(const std::vector<double> &expectedValues, double *values, size_t valueCount)
 {
     EXPECT_EQ(expectedValues.size(), valueCount);
@@ -450,20 +466,4 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
     }
     EXPECT_EQ(r1->testValueId(), r2->testValueId());
     EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
-}
-
-void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
-{
-    // Uncomment the below when you want to generate the expected file contents.
-    // #define NEW_GENERATOR
-
-#ifdef NEW_GENERATOR
-    std::ofstream file(resourcePath(fileName));
-
-    file << fileContents;
-
-    file.close();
-#endif
-
-    EXPECT_EQ(::fileContents(fileName), fileContents);
 }

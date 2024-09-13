@@ -36,7 +36,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
-#include "commonutils.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
 

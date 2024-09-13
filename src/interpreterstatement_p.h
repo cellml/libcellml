@@ -44,8 +44,8 @@ struct InterpreterStatement::InterpreterStatementImpl
     explicit InterpreterStatementImpl(double value);
     explicit InterpreterStatementImpl(size_t index);
 
-    void evaluate(double voi, double *states, double *rates, double *variables) const;
-    double evaluateToDouble(double voi, double *states, double *rates, double *variables) const;
+    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+    double evaluateToDouble(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 };
 
 } // namespace libcellml

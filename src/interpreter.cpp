@@ -69,45 +69,45 @@ void Interpreter::setModel(const AnalyserModelPtr &model)
     mPimpl->setModel(model);
 }
 
-void Interpreter::initialiseVariablesForAlgebraicModel(double *pVariables) const
+void Interpreter::initialiseVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, pVariables);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic);
     }
 }
 
-void Interpreter::initialiseVariablesForDifferentialModel(double *pStates, double *pRates, double *pVariables) const
+void Interpreter::initialiseVariablesForDifferentialModel(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(0.0, pStates, pRates, pVariables);
+        statement->evaluate(0.0, states, rates, constants, computedConstants, algebraic);
     }
 }
 
-void Interpreter::computeComputedConstants(double *pVariables) const
+void Interpreter::computeComputedConstants(double *constants, double *computedConstants) const
 {
     for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, pVariables);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, nullptr);
     }
 }
 
-void Interpreter::computeRates(double pVoi, double *pStates, double *pRates, double *pVariables) const
+void Interpreter::computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mComputeRatesStatements) {
-        statement->evaluate(pVoi, pStates, pRates, pVariables);
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic);
     }
 }
 
-void Interpreter::computeVariablesForAlgebraicModel(double *pVariables) const
+void Interpreter::computeVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, pVariables);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic);
     }
 }
 
-void Interpreter::computeVariablesForDifferentialModel(double pVoi, double *pStates, double *pRates, double *pVariables) const
+void Interpreter::computeVariablesForDifferentialModel(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(pVoi, pStates, pRates, pVariables);
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic);
     }
 }
 

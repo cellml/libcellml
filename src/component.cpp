@@ -27,7 +27,6 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
 
-#include "commonutils.h"
 #include "component_p.h"
 #include "reset_p.h"
 #include "utilities.h"

@@ -7,3 +7,8 @@ set(${CURRENT_TEST}_SRCS
   ${CMAKE_CURRENT_LIST_DIR}/generator.cpp
   ${CMAKE_CURRENT_LIST_DIR}/generatorprofile.cpp
 )
+
+set(${CURRENT_TEST}_HDRS
+  ${CMAKE_CURRENT_LIST_DIR}/generator.macros.h
+  ${CMAKE_CURRENT_LIST_DIR}/generator.models.h
+)

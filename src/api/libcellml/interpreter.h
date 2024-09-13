@@ -75,62 +75,73 @@ public:
      *
      * Initialise the model's variables. This method is only relevant for algebraic models.
      *
-     * @param pVariables The array of variables to initialise.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
+     * @param algebraic The array of algebraic variables to initialise.
      */
-    void initialiseVariablesForAlgebraicModel(double *pVariables) const;
+    void initialiseVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Initialise the model's variables.
      *
      * Initialise the model's variables. This method is only relevant for differential models.
      *
-     * @param pStates The array of states to initialise.
-     * @param pRates The array of rates to initialise.
-     * @param pVariables The array of variables to initialise.
+     * @param states The array of states to initialise.
+     * @param rates The array of rates to initialise.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
+     * @param algebraic The array of algebraic variables to initialise.
      */
-    void initialiseVariablesForDifferentialModel(double *pStates, double *pRates, double *pVariables) const;
+    void initialiseVariablesForDifferentialModel(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Compute the model's computed constants.
      *
      * Compute the model's computed constants.
      *
-     * @param pVariables The array of variables to compute.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
      */
-    void computeComputedConstants(double *pVariables) const;
+    void computeComputedConstants(double *constants, double *computedConstants) const;
 
     /**
      * @brief Compute the model's rates.
      *
      * Compute the model's rates. This method is only relevant for differential models.
      *
-     * @param pVoi The value of the variable of integration.
-     * @param pStates The array of states.
-     * @param pRates The array of rates to compute.
-     * @param pVariables The array of variables.
+     * @param voi The value of the variable of integration.
+     * @param states The array of states.
+     * @param rates The array of rates to compute.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
+     * @param algebraic The array of algebraic variables to initialise.
      */
-    void computeRates(double pVoi, double *pStates, double *pRates, double *pVariables) const;
+    void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Compute the model's variables.
      *
      * Compute the model's variables. This method is only relevant for algebraic models.
      *
-     * @param pVariables The array of variables to compute.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
+     * @param algebraic The array of algebraic variables to initialise.
      */
-    void computeVariablesForAlgebraicModel(double *pVariables) const;
+    void computeVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Compute the model's variables.
      *
      * Compute the model's variables. This method is only relevant for differential models.
      *
-     * @param pVoi The value of the variable of integration.
-     * @param pStates The array of states.
-     * @param pRates The array of rates.
-     * @param pVariables The array of variables to compute.
+     * @param voi The value of the variable of integration.
+     * @param states The array of states.
+     * @param rates The array of rates.
+     * @param constants The array of constants to initialise.
+     * @param computedConstants The array of computed constants to initialise.
+     * @param algebraic The array of algebraic variables to initialise.
      */
-    void computeVariablesForDifferentialModel(double pVoi, double *pStates, double *pRates, double *pVariables) const;
+    void computeVariablesForDifferentialModel(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 
 private:
     Interpreter(); /**< Constructor, @private. */
