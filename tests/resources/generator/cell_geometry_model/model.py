@@ -7,36 +7,45 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-VARIABLE_COUNT = 4
+CONSTANT_COUNT = 2
+COMPUTED_CONSTANT_COUNT = 2
+ALGEBRAIC_COUNT = 0
 
+CONSTANT_INFO = [
+    {"name": "L", "units": "centimeter", "component": "cell_geometry"},
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry"}
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
+COMPUTED_CONSTANT_INFO = [
+    {"name": "vcell", "units": "microlitre", "component": "cell_geometry"},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry"}
+]
 
-
-VARIABLE_INFO = [
-    {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT}
+ALGEBRAIC_INFO = [
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables):
-    variables[1] = 0.01
-    variables[2] = 0.0011
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
-    variables[0] = 1000.0*3.14*variables[2]*variables[2]*variables[1]
-    variables[3] = 0.02*variables[0]
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
 
 
-def compute_variables(variables):
+def initialise_variables(constants, computed_constants, algebraic):
+    constants[0] = 0.01
+    constants[1] = 0.0011
+
+
+def compute_computed_constants(constants, computed_constants):
+    computed_constants[0] = 1000.0*3.14*constants[1]*constants[1]*constants[0]
+    computed_constants[1] = 0.02*computed_constants[0]
+
+
+def compute_variables(constants, computed_constants, algebraic):
     pass

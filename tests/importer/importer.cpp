@@ -334,9 +334,9 @@ TEST(Importer, accessImportedModelLibrary)
     auto point = importer->library(resourcePath("importer/diamond_point.cellml"));
 
     // Test that the library items are the same as those in the files.
-    EXPECT_EQ(fileContents("importer/diamond_left.cellml"), printer->printModel(left));
-    EXPECT_EQ(fileContents("importer/diamond_right.cellml"), printer->printModel(right));
-    EXPECT_EQ(fileContents("importer/diamond_point.cellml"), printer->printModel(point));
+    EXPECT_EQ_FILE_CONTENTS("importer/diamond_left.cellml", printer->printModel(left));
+    EXPECT_EQ_FILE_CONTENTS("importer/diamond_right.cellml", printer->printModel(right));
+    EXPECT_EQ_FILE_CONTENTS("importer/diamond_point.cellml", printer->printModel(point));
 }
 
 TEST(Importer, multipleModelResolution)

@@ -314,7 +314,7 @@ function(redhat_based _RESULT)
   set(${_RESULT} ${_REDHAT_BASED} PARENT_SCOPE)
 endfunction()
 
-function(link_libxml2 _TARGET)
+function(apply_libxml2_settings _TARGET)
   if(HAVE_LIBXML2_CONFIG)
     target_link_libraries(${_TARGET} PUBLIC ${LIBXML2_TARGET_NAME})
   else()

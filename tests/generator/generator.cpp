@@ -67,55 +67,75 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
 #define INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel) \
     double *expectedStatesData = nullptr; \
     double *expectedRatesData = nullptr; \
-    double *expectedVariablesData = nullptr; \
+    double *expectedConstantsData = nullptr; \
+    double *expectedComputedConstantsData = nullptr; \
+    double *expectedAlgebraicData = nullptr; \
     double *states = nullptr; \
     double *rates = nullptr; \
-    auto *variables = new double[analyserModel->variableCount()]; \
+    auto *constants = new double[analyserModel->constantCount()]; \
+    auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
+    auto *algebraic = new double[analyserModel->algebraicCount()]; \
 \
     (void)expectedStatesData; \
     (void)expectedRatesData; \
-    (void)expectedVariablesData; \
-    interpreter->initialiseVariablesForAlgebraicModel(variables); \
-    interpreter->computeComputedConstants(variables); \
-    interpreter->computeVariablesForAlgebraicModel(variables);
+    (void)expectedConstantsData; \
+    (void)expectedComputedConstantsData; \
+    (void)expectedAlgebraicData; \
+    interpreter->initialiseVariablesForAlgebraicModel(constants, computedConstants, algebraic); \
+    interpreter->computeComputedConstants(constants, computedConstants); \
+    interpreter->computeVariablesForAlgebraicModel(constants, computedConstants, algebraic);
 
 #define INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel) \
     double *expectedStatesData = nullptr; \
     double *expectedRatesData = nullptr; \
-    double *expectedVariablesData = nullptr; \
+    double *expectedConstantsData = nullptr; \
+    double *expectedComputedConstantsData = nullptr; \
+    double *expectedAlgebraicData = nullptr; \
     auto *states = new double[analyserModel->stateCount()]; \
     auto *rates = new double[analyserModel->stateCount()]; \
-    auto *variables = new double[analyserModel->variableCount()]; \
+    auto *constants = new double[analyserModel->constantCount()]; \
+    auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
+    auto *algebraic = new double[analyserModel->algebraicCount()]; \
 \
     (void)expectedStatesData; \
     (void)expectedRatesData; \
-    (void)expectedVariablesData; \
-    interpreter->initialiseVariablesForDifferentialModel(states, rates, variables); \
-    interpreter->computeComputedConstants(variables); \
-    interpreter->computeRates(0.0, states, rates, variables); \
-    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, variables);
+    (void)expectedConstantsData; \
+    (void)expectedComputedConstantsData; \
+    (void)expectedAlgebraicData; \
+    interpreter->initialiseVariablesForDifferentialModel(states, rates, constants, computedConstants, algebraic); \
+    interpreter->computeComputedConstants(constants, computedConstants); \
+    interpreter->computeRates(0.0, states, rates, constants, computedConstants, algebraic); \
+    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, constants, computedConstants, algebraic);
 
 #define INITIALISE_COMPILED_MODEL(model) \
     expectedStatesData = model::createStatesArray(); \
     expectedRatesData = model::createStatesArray(); \
-    expectedVariablesData = model::createVariablesArray(); \
+    expectedConstantsData = model::createConstantsArray(); \
+    expectedComputedConstantsData = model::createComputedConstantsArray(); \
+    expectedAlgebraicData = model::createAlgebraicArray(); \
 \
-    model::initialiseVariables(expectedStatesData, expectedRatesData, expectedVariablesData); \
-    model::computeComputedConstants(expectedVariablesData); \
-    model::computeRates(0.0, expectedStatesData, expectedRatesData, expectedVariablesData); \
-    model::computeVariables(0.0, expectedStatesData, expectedRatesData, expectedVariablesData); \
+    model::initialiseVariables(expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
+    model::computeComputedConstants(expectedConstantsData, expectedComputedConstantsData); \
+    model::computeRates(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
+    model::computeVariables(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
 \
     std::vector<double> expectedStates(expectedStatesData, expectedStatesData + model::STATE_COUNT); \
     std::vector<double> expectedRates(expectedRatesData, expectedRatesData + model::STATE_COUNT); \
-    std::vector<double> expectedVariables(expectedVariablesData, expectedVariablesData + model::VARIABLE_COUNT);
+    std::vector<double> expectedConstants(expectedConstantsData, expectedConstantsData + model::CONSTANT_COUNT); \
+    std::vector<double> expectedComputedConstants(expectedComputedConstantsData, expectedComputedConstantsData + model::COMPUTED_CONSTANT_COUNT); \
+    std::vector<double> expectedAlgebraic(expectedAlgebraicData, expectedAlgebraicData + model::ALGEBRAIC_COUNT);
 
 #define FINALISE_MODEL() \
     delete[] expectedStatesData; \
     delete[] expectedRatesData; \
-    delete[] expectedVariablesData; \
+    delete[] expectedConstantsData; \
+    delete[] expectedComputedConstantsData; \
+    delete[] expectedAlgebraicData; \
     delete[] states; \
     delete[] rates; \
-    delete[] variables;
+    delete[] constants; \
+    delete[] computedConstants; \
+    delete[] algebraic;
 
 #define STRINGIFY(x) #x
 
@@ -155,14 +175,14 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -170,7 +190,9 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -199,14 +221,14 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.external.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -214,7 +236,9 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(NAN_x_2, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NAN_x_2, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NAN_x_2, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NAN_x_2, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -237,14 +261,14 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_const_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_const_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_const_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -252,7 +276,9 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -275,14 +301,14 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_constant_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_constant_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_constant_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -290,7 +316,9 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -313,14 +341,14 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -330,7 +358,9 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -353,14 +383,14 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -370,7 +400,9 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -393,14 +425,14 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -410,7 +442,9 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -433,14 +467,14 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -450,7 +484,9 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -473,14 +509,14 @@ TEST(Generator, algebraicUnknownVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_unknown_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_unknown_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_unknown_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -488,7 +524,9 @@ TEST(Generator, algebraicUnknownVarOnRhs)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -511,14 +549,14 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -526,7 +564,9 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -540,7 +580,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("c")));
 
     analyser->analyseModel(model);
 
@@ -555,14 +595,14 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -570,7 +610,9 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -593,14 +635,14 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -608,7 +650,9 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -637,16 +681,16 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     auto profile = generator->profile();
 
-    profile->setInterfaceFileNameString("model.three.externals.h");
+    profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -654,7 +698,9 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(NAN_x_3, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NAN_x_3, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NAN_x_3, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NAN_x_3, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -681,14 +727,14 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 
     profile->setInterfaceFileNameString("model.ordered.h");
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.ordered.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.ordered.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.ordered.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -696,7 +742,9 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -723,14 +771,14 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 
     profile->setInterfaceFileNameString("model.not.ordered.h");
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.not.ordered.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.not.ordered.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_various_dependencies/model.not.ordered.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -738,7 +786,9 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -761,14 +811,14 @@ TEST(Generator, odeComputedVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -778,7 +828,9 @@ TEST(Generator, odeComputedVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -801,14 +853,14 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -818,7 +870,9 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -841,14 +895,14 @@ TEST(Generator, odeConstVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -858,7 +912,9 @@ TEST(Generator, odeConstVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -881,14 +937,14 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -898,7 +954,9 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -921,14 +979,14 @@ TEST(Generator, odeConstantOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -938,7 +996,9 @@ TEST(Generator, odeConstantOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -961,14 +1021,14 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -978,7 +1038,9 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1001,14 +1063,14 @@ TEST(Generator, odeMultipleDependentOdes)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1018,7 +1080,9 @@ TEST(Generator, odeMultipleDependentOdes)
 
     EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1041,14 +1105,14 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes_one_component/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes_one_component/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes_one_component/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1058,7 +1122,9 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1081,14 +1147,14 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1098,7 +1164,9 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1121,14 +1189,14 @@ TEST(Generator, odeUnknownVarOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1138,7 +1206,9 @@ TEST(Generator, odeUnknownVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1161,14 +1231,14 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_mappings_and_encapsulations/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_mappings_and_encapsulations/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_mappings_and_encapsulations/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1178,7 +1248,9 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, -1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1201,14 +1273,14 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_state_initialised_using_variable/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_state_initialised_using_variable/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_state_initialised_using_variable/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1218,7 +1290,9 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
     EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({123.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1241,14 +1315,14 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_indirect/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_indirect/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_indirect/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1258,7 +1332,9 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     EXPECT_EQ_VALUES(std::vector<double>({3.0, 7.0, 11.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({5.0, 9000.0, 0.013}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1281,14 +1357,14 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_direct/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_direct/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_direct/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1298,7 +1374,9 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
     EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1312,23 +1390,28 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     auto analyser = libcellml::Analyser::create();
 
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'c_M' in component 'constants' is initialised using variable 'c' which has different units.",
+        "Variable 'oc_mM' in component 'other_constants' is initialised using variable 'c' which has different units.",
+    };
+
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_constant/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_constant/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_constant/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1336,7 +1419,9 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1359,14 +1444,14 @@ TEST(Generator, cellmlUnitScalingState)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1376,7 +1461,9 @@ TEST(Generator, cellmlUnitScalingState)
 
     EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1399,14 +1486,14 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_constant/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_constant/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_constant/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1416,7 +1503,9 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
     EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NO_VALUES, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NO_VALUES, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1439,14 +1528,14 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_variable/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_variable/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_variable/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1456,7 +1545,9 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
     EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1479,14 +1570,14 @@ TEST(Generator, cellmlUnitScalingRate)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_rate/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_rate/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_rate/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1496,7 +1587,9 @@ TEST(Generator, cellmlUnitScalingRate)
 
     EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1519,14 +1612,14 @@ TEST(Generator, dependentEqns)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/dependent_eqns/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/dependent_eqns/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dependent_eqns/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dependent_eqns/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dependent_eqns/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1536,7 +1629,9 @@ TEST(Generator, dependentEqns)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1559,14 +1654,14 @@ TEST(Generator, cellGeometryModel)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1574,7 +1669,9 @@ TEST(Generator, cellGeometryModel)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1604,14 +1701,14 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.external.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1619,7 +1716,9 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(NAN_x_4, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(NAN_x_4, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(NAN_x_4, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(NAN_x_4, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1642,14 +1741,14 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1660,7 +1759,9 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
     EXPECT_EQ_VALUES(expectedStates, states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(expectedRates, rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(expectedVariables, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(expectedConstants, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(expectedComputedConstants, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(expectedAlgebraic, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1683,14 +1784,14 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1701,7 +1802,9 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
     EXPECT_EQ_VALUES(expectedStates, states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(expectedRates, rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(expectedVariables, variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(expectedConstants, constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(expectedComputedConstants, computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(expectedAlgebraic, algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1724,14 +1827,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1741,7 +1844,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1764,14 +1869,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1781,7 +1886,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1813,14 +1920,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     profile->setInterfaceFileNameString("model.state.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.state.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.state.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1830,7 +1937,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1869,14 +1978,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     profile->setInterfaceFileNameString("model.dependent.state.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1886,7 +1995,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(NAN_x_2, rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1918,14 +2029,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     profile->setInterfaceFileNameString("model.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1935,7 +2046,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -1973,14 +2086,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     profile->setInterfaceFileNameString("model.dependent.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -1990,7 +2103,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2022,14 +2137,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     profile->setInterfaceFileNameString("model.computed.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2039,7 +2154,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2077,14 +2194,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     profile->setInterfaceFileNameString("model.dependent.computed.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2094,7 +2211,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2126,14 +2245,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     profile->setInterfaceFileNameString("model.algebraic.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2143,7 +2262,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2161,12 +2282,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     auto analyser = libcellml::Analyser::create();
     auto potassium_channel_n_gate_beta_n = model->component("potassium_channel_n_gate")->variable("beta_n");
-    auto membrane_i_Stime = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
+    auto membrane_i_Stim = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
 
-    membrane_i_Stime->addDependency(potassium_channel_n_gate_beta_n);
+    membrane_i_Stim->addDependency(potassium_channel_n_gate_beta_n);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n));
-    analyser->addExternalVariable(membrane_i_Stime);
+    analyser->addExternalVariable(membrane_i_Stim);
 
     analyser->analyseModel(model);
 
@@ -2181,14 +2302,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     profile->setInterfaceFileNameString("model.dependent.algebraic.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2198,7 +2319,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, NAN}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2243,14 +2366,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 
     profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2260,12 +2383,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(NAN_x_3, rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
+TEST(Generator, hodgkinHuxleySquidAxonModel195Dae)
 {
     // Same as the hodgkinHuxleySquidAxonModel1952 test, except that all the
     // algebraic equations are to be computed using NLA systems of one equation.
@@ -2290,14 +2415,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 
     profile->setInterfaceFileNameString("model.dae.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2307,7 +2432,66 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), algebraic, analyserModel->algebraicCount());
+
+    FINALISE_MODEL();
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
+{
+    // Same as hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables but with the DAE version of the HH52 model.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
+    auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
+
+    external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
+    external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(external_sodium_channel_i_Na);
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dae.external.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.c", generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.py", generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
+
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2330,14 +2514,14 @@ TEST(Generator, nobleModel1962)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/noble_model_1962/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/noble_model_1962/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/noble_model_1962/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/noble_model_1962/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/noble_model_1962/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/noble_model_1962/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2347,7 +2531,9 @@ TEST(Generator, nobleModel1962)
 
     EXPECT_EQ_VALUES(std::vector<double>({-87.0, 0.01, 0.8, 0.01}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.41242627135769938, 0.21497864158814481, 0.020474517093977421, 7.3594167713619075e-05}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2374,14 +2560,14 @@ TEST(Generator, robertsonOdeModel1966)
 
     profile->setInterfaceFileNameString("model.ode.h");
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.ode.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.ode.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.ode.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2391,7 +2577,9 @@ TEST(Generator, robertsonOdeModel1966)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.0, 0.04}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2418,14 +2606,14 @@ TEST(Generator, robertsonDaeModel1966)
 
     profile->setInterfaceFileNameString("model.dae.h");
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2435,7 +2623,9 @@ TEST(Generator, robertsonDaeModel1966)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.04}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2466,14 +2656,14 @@ TEST(Generator, sineImports)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/sine_model_imports/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/sine_model_imports/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/sine_model_imports/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/sine_model_imports/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/sine_model_imports/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2483,7 +2673,9 @@ TEST(Generator, sineImports)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2509,8 +2701,8 @@ TEST(Generator, analyserModelScopeTest)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.c", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2520,7 +2712,9 @@ TEST(Generator, analyserModelScopeTest)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2543,14 +2737,14 @@ TEST(Generator, daeModel)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/dae_cellml_1_1_model/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/dae_cellml_1_1_model/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dae_cellml_1_1_model/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dae_cellml_1_1_model/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/dae_cellml_1_1_model/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/dae_cellml_1_1_model/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2560,7 +2754,9 @@ TEST(Generator, daeModel)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2583,14 +2779,14 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2600,7 +2796,9 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     EXPECT_EQ_VALUES(std::vector<double>({7.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({3.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({7.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({7.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({7.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({7.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2631,7 +2829,7 @@ TEST(Generator, modelOutOfScope)
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2641,7 +2839,9 @@ TEST(Generator, modelOutOfScope)
 
     EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2666,14 +2866,14 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/unknown_variable_as_external_variable/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/unknown_variable_as_external_variable/model.c", generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/unknown_variable_as_external_variable/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2681,7 +2881,9 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }
@@ -2717,7 +2919,7 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_slc_example/model.py", generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
 
@@ -2725,7 +2927,9 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), algebraic, analyserModel->algebraicCount());
 
     FINALISE_MODEL();
 }

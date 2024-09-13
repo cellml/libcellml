@@ -454,9 +454,21 @@ TEST(Coverage, analyser)
     EXPECT_EQ(size_t(0), analyserModel->states().size());
     EXPECT_EQ(nullptr, analyserModel->state(0));
 
-    EXPECT_EQ(size_t(0), analyserModel->variableCount());
-    EXPECT_EQ(size_t(0), analyserModel->variables().size());
-    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->constantCount());
+    EXPECT_EQ(size_t(0), analyserModel->constants().size());
+    EXPECT_EQ(nullptr, analyserModel->constant(0));
+
+    EXPECT_EQ(size_t(0), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(0), analyserModel->computedConstants().size());
+    EXPECT_EQ(nullptr, analyserModel->computedConstant(0));
+
+    EXPECT_EQ(size_t(0), analyserModel->algebraicCount());
+    EXPECT_EQ(size_t(0), analyserModel->algebraic().size());
+    EXPECT_EQ(nullptr, analyserModel->algebraic(0));
+
+    EXPECT_EQ(size_t(0), analyserModel->externalCount());
+    EXPECT_EQ(size_t(0), analyserModel->externals().size());
+    EXPECT_EQ(nullptr, analyserModel->external(0));
 
     EXPECT_EQ(size_t(0), analyserModel->equationCount());
     EXPECT_EQ(size_t(0), analyserModel->equations().size());
@@ -550,7 +562,7 @@ TEST(Coverage, analyserTypes)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
-    EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
+    EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraic(0)->type()));
 }
 
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
@@ -574,6 +586,8 @@ TEST(Coverage, generator)
 
     auto analyser = libcellml::Analyser::create();
 
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnPlus")));
+
     analyser->analyseModel(model);
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
@@ -584,8 +598,11 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(220), analyserModel->variableCount());
-    EXPECT_EQ(size_t(214), analyserModel->equationCount());
+    EXPECT_EQ(size_t(7), analyserModel->constantCount());
+    EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(2), analyserModel->algebraicCount());
+    EXPECT_EQ(size_t(1), analyserModel->externalCount());
+    EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -595,22 +612,44 @@ TEST(Coverage, generator)
     EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
     EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
     EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
-    EXPECT_NE(nullptr, analyserModel->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(210));
-    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(210)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(210)->dependency(analyserModel->equation(210)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(210)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(210)->nlaSibling(analyserModel->equation(210)->nlaSiblingCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(210)->variableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(210)->variables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(210)->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(210)->variable(analyserModel->equation(210)->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->constant(0));
+    EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
+    EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
+    EXPECT_NE(nullptr, analyserModel->algebraic(0));
+    EXPECT_NE(nullptr, analyserModel->algebraic(0)->equation(0)->algebraic(0));
+    EXPECT_EQ(nullptr, analyserModel->algebraic(analyserModel->algebraicCount()));
+    EXPECT_NE(nullptr, analyserModel->external(0));
+    EXPECT_NE(nullptr, analyserModel->external(0)->equation(0)->external(0));
+    EXPECT_EQ(nullptr, analyserModel->external(analyserModel->algebraicCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(0)->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
+    EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(199));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstantCount());
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstants().size());
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(analyserModel->equation(199)->computedConstantCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraic().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraic(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraic(analyserModel->equation(199)->algebraicCount()));
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalCount());
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externals().size());
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(analyserModel->equation(199)->externalCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -625,10 +664,12 @@ TEST(Coverage, generator)
         EXPECT_NE(nullptr, analyserModel->state(i)->initialisingVariable());
     }
 
-    for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 183) || (i == 184) || (i == 187) || (i == 216) || (i == 217)) {
-            EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
-        }
+    for (size_t i = 0; i < analyserModel->constantCount(); ++i) {
+        EXPECT_NE(nullptr, analyserModel->constant(i)->initialisingVariable());
+    }
+
+    for (size_t i = 0; i < analyserModel->algebraicCount(); ++i) {
+        EXPECT_NE(nullptr, analyserModel->algebraic(i)->initialisingVariable());
     }
 
     EXPECT_EQ(nullptr, generator->model());
@@ -638,8 +679,8 @@ TEST(Coverage, generator)
     generator->setModel(analyserModel);
 
     EXPECT_EQ(analyserModel, generator->model());
-    EXPECT_EQ(fileContents("coverage/generator/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode());
 
     auto profile = generator->profile();
 
@@ -655,8 +696,8 @@ TEST(Coverage, generator)
                                                             "    return res;\n"
                                                             "}\n");
 
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -685,19 +726,10 @@ TEST(Coverage, generator)
 
     profile->setImplementationStateCountString("");
 
-    profile->setImplementationVariableCountString("");
-
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
-
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
+    profile->setImplementationConstantCountString("");
+    profile->setImplementationComputedConstantCountString("");
+    profile->setImplementationAlgebraicCountString("");
+    profile->setImplementationExternalCountString("");
 
     profile->setVariableInfoObjectString("");
 
@@ -705,15 +737,30 @@ TEST(Coverage, generator)
 
     profile->setImplementationStateInfoString("");
 
-    profile->setImplementationVariableInfoString("");
+    profile->setImplementationConstantInfoString("");
+
+    profile->setImplementationComputedConstantInfoString("");
+
+    profile->setImplementationAlgebraicInfoString("");
+
+    profile->setImplementationExternalInfoString("");
 
     profile->setVariableInfoEntryString("");
 
     profile->setImplementationCreateStatesArrayMethodString("");
 
-    profile->setImplementationCreateVariablesArrayMethodString("");
+    profile->setImplementationCreateConstantsArrayMethodString("");
+
+    profile->setImplementationCreateComputedConstantsArrayMethodString("");
+
+    profile->setImplementationCreateAlgebraicArrayMethodString("");
+
+    profile->setImplementationCreateExternalsArrayMethodString("");
 
     profile->setImplementationDeleteArrayMethodString("");
+
+    profile->setImplementationInitialiseVariablesMethodString(false, "");
+    profile->setImplementationInitialiseVariablesMethodString(true, "");
 
     profile->setImplementationComputeVariablesMethodString(false, false, "");
     profile->setImplementationComputeVariablesMethodString(false, true, "");
@@ -721,7 +768,7 @@ TEST(Coverage, generator)
     profile->setImplementationComputeVariablesMethodString(true, true, "");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.out"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -760,20 +807,17 @@ TEST(Coverage, generator)
     profile->setInterfaceStateCountString("");
     profile->setImplementationStateCountString("");
 
-    profile->setInterfaceVariableCountString("");
-    profile->setImplementationVariableCountString("");
+    profile->setInterfaceConstantCountString("");
+    profile->setImplementationConstantCountString("");
 
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
+    profile->setInterfaceComputedConstantCountString("");
+    profile->setImplementationComputedConstantCountString("");
 
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
+    profile->setInterfaceAlgebraicCountString("");
+    profile->setImplementationAlgebraicCountString("");
+
+    profile->setInterfaceExternalCountString("");
+    profile->setImplementationExternalCountString("");
 
     profile->setVariableInfoObjectString("");
 
@@ -783,25 +827,34 @@ TEST(Coverage, generator)
     profile->setInterfaceStateInfoString("");
     profile->setImplementationStateInfoString("");
 
-    profile->setInterfaceVariableInfoString("");
-    profile->setImplementationVariableInfoString("");
+    profile->setInterfaceConstantInfoString("");
+    profile->setImplementationConstantInfoString("");
+
+    profile->setInterfaceComputedConstantInfoString("");
+    profile->setImplementationComputedConstantInfoString("");
+
+    profile->setInterfaceAlgebraicInfoString("");
+    profile->setImplementationAlgebraicInfoString("");
+
+    profile->setInterfaceExternalInfoString("");
+    profile->setImplementationExternalInfoString("");
 
     profile->setVariableInfoEntryString("");
 
-    EXPECT_EQ(fileContents("coverage/generator/model.interface.out"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.implementation.out"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode());
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode());
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
                                                             "    return [nan]*STATE_COUNT\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode());
 
     // Coverage for the case where mProfile is equal to nullptr in Generator.
 
@@ -838,13 +891,14 @@ TEST(Coverage, generator)
     profile->setImplementationComputeComputedConstantsMethodString("");
     profile->setImplementationComputeRatesMethodString(true, "");
     profile->setImplementationHeaderString("[INTERFACE_FILE_NAME]");
-    profile->setImplementationInitialiseVariablesMethodString(true, true, "");
     profile->setInterfaceFileNameString("");
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");
     profile->setMinFunctionString("");
-    profile->setObjectiveFunctionMethodString(false, "");
-    profile->setObjectiveFunctionMethodString(true, "");
+    profile->setObjectiveFunctionMethodString(false, false, "");
+    profile->setObjectiveFunctionMethodString(false, true, "");
+    profile->setObjectiveFunctionMethodString(true, false, "");
+    profile->setObjectiveFunctionMethodString(true, true, "");
     profile->setSecFunctionString("");
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
@@ -854,10 +908,14 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
-    profile->setFindRootMethodString(false, "");
-    profile->setFindRootMethodString(true, "");
-    profile->setObjectiveFunctionMethodString(false, "xxx");
-    profile->setObjectiveFunctionMethodString(true, "xxx");
+    profile->setFindRootMethodString(false, false, "");
+    profile->setFindRootMethodString(false, true, "");
+    profile->setFindRootMethodString(true, false, "");
+    profile->setFindRootMethodString(true, true, "");
+    profile->setObjectiveFunctionMethodString(false, false, "xxx");
+    profile->setObjectiveFunctionMethodString(false, true, "xxx");
+    profile->setObjectiveFunctionMethodString(true, false, "xxx");
+    profile->setObjectiveFunctionMethodString(true, true, "xxx");
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
@@ -865,38 +923,18 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("xxx");
     profile->setExternNlaSolveMethodString("");
-    profile->setFindRootMethodString(false, "xxx");
-    profile->setFindRootMethodString(true, "xxx");
-    profile->setFindRootCallString(false, "");
-    profile->setFindRootCallString(true, "");
-    profile->setNlaSolveCallString(false, "");
-    profile->setNlaSolveCallString(true, "");
-    profile->setVariableOfIntegrationVariableTypeString("");
-
-    generator->implementationCode();
-
-    profile->setStateVariableTypeString("");
-    profile->setVariableOfIntegrationVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setConstantVariableTypeString("");
-    profile->setStateVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setComputedConstantVariableTypeString("");
-    profile->setConstantVariableTypeString("xxx");
-
-    generator->implementationCode();
-
-    profile->setComputedConstantVariableTypeString("xxx");
-    profile->setAlgebraicVariableTypeString("");
-
-    generator->implementationCode();
-
-    profile->setAlgebraicVariableTypeString("xxx");
-    profile->setExternalVariableTypeString("");
+    profile->setFindRootMethodString(false, false, "xxx");
+    profile->setFindRootMethodString(false, true, "xxx");
+    profile->setFindRootMethodString(true, false, "xxx");
+    profile->setFindRootMethodString(true, true, "xxx");
+    profile->setFindRootCallString(false, false, "");
+    profile->setFindRootCallString(false, true, "");
+    profile->setFindRootCallString(true, false, "");
+    profile->setFindRootCallString(true, true, "");
+    profile->setNlaSolveCallString(false, false, "");
+    profile->setNlaSolveCallString(false, true, "");
+    profile->setNlaSolveCallString(true, false, "");
+    profile->setNlaSolveCallString(true, true, "");
 
     generator->implementationCode();
 
@@ -935,20 +973,26 @@ TEST(Coverage, interpreter)
 
     auto *states = new double[analyserModel->stateCount()];
     auto *rates = new double[analyserModel->stateCount()];
-    auto *variables = new double[analyserModel->variableCount()];
+    auto *constants = new double[analyserModel->constantCount()];
+    auto *computedConstants = new double[analyserModel->computedConstantCount()];
+    auto *algebraic = new double[analyserModel->algebraicCount()];
 
-    interpreter->initialiseVariablesForDifferentialModel(states, rates, variables);
-    interpreter->computeComputedConstants(variables);
-    interpreter->computeRates(0.0, states, rates, variables);
-    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, variables);
+    interpreter->initialiseVariablesForDifferentialModel(states, rates, constants, computedConstants, algebraic);
+    interpreter->computeComputedConstants(constants, computedConstants);
+    interpreter->computeRates(0.0, states, rates, constants, computedConstants, algebraic);
+    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, constants, computedConstants, algebraic);
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), variables, analyserModel->variableCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), constants, analyserModel->constantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), computedConstants, analyserModel->computedConstantCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), algebraic, analyserModel->algebraicCount());
 
     delete[] states;
     delete[] rates;
-    delete[] variables;
+    delete[] constants;
+    delete[] computedConstants;
+    delete[] algebraic;
 
     interpreter->setModel(nullptr);
 

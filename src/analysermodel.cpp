@@ -121,31 +121,112 @@ AnalyserVariablePtr AnalyserModel::state(size_t index) const
     return mPimpl->mStates[index];
 }
 
-size_t AnalyserModel::variableCount() const
+size_t AnalyserModel::constantCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mVariables.size();
+    return mPimpl->mConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::variables() const
+std::vector<AnalyserVariablePtr> AnalyserModel::constants() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mVariables;
+    return mPimpl->mConstants;
 }
 
-AnalyserVariablePtr AnalyserModel::variable(size_t index) const
+AnalyserVariablePtr AnalyserModel::constant(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mVariables.size())) {
+    if (!isValid() || (index >= mPimpl->mConstants.size())) {
         return {};
     }
 
-    return mPimpl->mVariables[index];
+    return mPimpl->mConstants[index];
+}
+
+size_t AnalyserModel::computedConstantCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mComputedConstants.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::computedConstants() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mComputedConstants;
+}
+
+AnalyserVariablePtr AnalyserModel::computedConstant(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mComputedConstants.size())) {
+        return {};
+    }
+
+    return mPimpl->mComputedConstants[index];
+}
+
+size_t AnalyserModel::algebraicCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mAlgebraic.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::algebraic() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraic;
+}
+
+AnalyserVariablePtr AnalyserModel::algebraic(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mAlgebraic.size())) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraic[index];
+}
+
+size_t AnalyserModel::externalCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mExternals.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::externals() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mExternals;
+}
+
+AnalyserVariablePtr AnalyserModel::external(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mExternals.size())) {
+        return {};
+    }
+
+    return mPimpl->mExternals[index];
 }
 
 size_t AnalyserModel::equationCount() const

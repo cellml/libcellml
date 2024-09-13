@@ -72,15 +72,16 @@ void Generator::GeneratorImpl::addOriginCommentCode()
                                   "Python";
         profileInformation += " profile of";
 
-        mCode += replace(mProfile->commentString(),
-                         "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
+        mCode += newLineIfNeeded(mCode)
+                 + replace(mProfile->commentString(),
+                           "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
     }
 }
 
 void Generator::GeneratorImpl::addInterfaceHeaderCode()
 {
     if (!mProfile->interfaceHeaderString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->interfaceHeaderString();
     }
 }
@@ -94,7 +95,7 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
     if (!mProfile->implementationHeaderString().empty()
         && ((hasInterfaceFileName && !mProfile->interfaceFileNameString().empty())
             || !hasInterfaceFileName)) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + replace(mProfile->implementationHeaderString(),
                            "[INTERFACE_FILE_NAME]", mProfile->interfaceFileNameString());
     }
@@ -102,74 +103,86 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
 
 void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
 {
-    std::string versionAndLibcellmlCode;
+    std::string code;
 
     if ((interface && !mProfile->interfaceVersionString().empty())
         || (!interface && !mProfile->implementationVersionString().empty())) {
         if (interface) {
-            versionAndLibcellmlCode += mProfile->interfaceVersionString();
+            code += mProfile->interfaceVersionString();
         } else {
             if (modifiedProfile()) {
                 static const std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
 
-                versionAndLibcellmlCode += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
+                code += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
             } else {
-                versionAndLibcellmlCode += mProfile->implementationVersionString();
+                code += mProfile->implementationVersionString();
             }
         }
     }
 
     if ((interface && !mProfile->interfaceLibcellmlVersionString().empty())
         || (!interface && !mProfile->implementationLibcellmlVersionString().empty())) {
-        versionAndLibcellmlCode += interface ?
-                                       mProfile->interfaceLibcellmlVersionString() :
-                                       replace(mProfile->implementationLibcellmlVersionString(),
-                                               "[LIBCELLML_VERSION]", versionString());
+        code += interface ?
+                    mProfile->interfaceLibcellmlVersionString() :
+                    replace(mProfile->implementationLibcellmlVersionString(),
+                            "[LIBCELLML_VERSION]", versionString());
     }
 
-    if (!versionAndLibcellmlCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + code;
     }
-
-    mCode += versionAndLibcellmlCode;
 }
 
 void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 {
-    std::string stateAndVariableCountCode;
+    std::string code;
 
     if (mModelHasOdes
         && ((interface && !mProfile->interfaceStateCountString().empty())
             || (!interface && !mProfile->implementationStateCountString().empty()))) {
-        stateAndVariableCountCode += interface ?
-                                         mProfile->interfaceStateCountString() :
-                                         replace(mProfile->implementationStateCountString(),
-                                                 "[STATE_COUNT]", std::to_string(mModel->stateCount()));
+        code += interface ?
+                    mProfile->interfaceStateCountString() :
+                    replace(mProfile->implementationStateCountString(),
+                            "[STATE_COUNT]", std::to_string(mModel->stateCount()));
     }
 
-    if ((interface && !mProfile->interfaceVariableCountString().empty())
-        || (!interface && !mProfile->implementationVariableCountString().empty())) {
-        stateAndVariableCountCode += interface ?
-                                         mProfile->interfaceVariableCountString() :
-                                         replace(mProfile->implementationVariableCountString(),
-                                                 "[VARIABLE_COUNT]", std::to_string(mModel->variableCount()));
+    if ((interface && !mProfile->interfaceConstantCountString().empty())
+        || (!interface && !mProfile->implementationConstantCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceConstantCountString() :
+                    replace(mProfile->implementationConstantCountString(),
+                            "[CONSTANT_COUNT]", std::to_string(mModel->constantCount()));
     }
 
-    if (!stateAndVariableCountCode.empty()) {
-        mCode += "\n";
+    if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
+        || (!interface && !mProfile->implementationComputedConstantCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceComputedConstantCountString() :
+                    replace(mProfile->implementationComputedConstantCountString(),
+                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(mModel->computedConstantCount()));
     }
 
-    mCode += stateAndVariableCountCode;
-}
+    if ((interface && !mProfile->interfaceAlgebraicCountString().empty())
+        || (!interface && !mProfile->implementationAlgebraicCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceAlgebraicCountString() :
+                    replace(mProfile->implementationAlgebraicCountString(),
+                            "[ALGEBRAIC_COUNT]", std::to_string(mModel->algebraicCount()));
+    }
 
-void Generator::GeneratorImpl::addVariableTypeObjectCode()
-{
-    auto variableTypeObjectString = mProfile->variableTypeObjectString(mModelHasOdes,
-                                                                       mModel->hasExternalVariables());
+    if ((mModel->externalCount() != 0)
+        && ((interface && !mProfile->interfaceExternalCountString().empty())
+            || (!interface && !mProfile->implementationExternalCountString().empty()))) {
+        code += interface ?
+                    mProfile->interfaceExternalCountString() :
+                    replace(mProfile->implementationExternalCountString(),
+                            "[EXTERNAL_COUNT]", std::to_string(mModel->externalCount()));
+    }
 
-    if (!variableTypeObjectString.empty()) {
-        mCode += newLineIfNotEmpty(mCode)
-                 + variableTypeObjectString;
+    if (!code.empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + code;
     }
 }
 
@@ -179,15 +192,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (mModelHasOdes) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->voi());
-
-        for (const auto &state : mModel->states()) {
-            updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
-        }
-    }
-
-    for (const auto &variable : mModel->variables()) {
+    for (const auto &variable : variables(mModel)) {
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
@@ -200,154 +205,105 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
     if (!mProfile->variableInfoObjectString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + generateVariableInfoObjectCode(mProfile->variableInfoObjectString());
     }
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &name,
                                                                     const std::string &units,
-                                                                    const std::string &component,
-                                                                    const std::string &type) const
+                                                                    const std::string &component) const
 {
-    return replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                           "[NAME]", name),
-                                   "[UNITS]", units),
-                           "[COMPONENT]", component),
-                   "[TYPE]", type);
+    return replace(replace(replace(mProfile->variableInfoEntryString(),
+                                   "[NAME]", name),
+                           "[UNITS]", units),
+                   "[COMPONENT]", component);
 }
 
-void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
+void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
 {
-    std::string interfaceVoiStateAndVariableInfoCode;
+    std::string code;
 
     if (mModelHasOdes
         && !mProfile->interfaceVoiInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceVoiInfoString();
+        code += mProfile->interfaceVoiInfoString();
     }
 
     if (mModelHasOdes
         && !mProfile->interfaceStateInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceStateInfoString();
+        code += mProfile->interfaceStateInfoString();
     }
 
-    if (!mProfile->interfaceVariableInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceVariableInfoString();
+    if (!mProfile->interfaceConstantInfoString().empty()) {
+        code += mProfile->interfaceConstantInfoString();
     }
 
-    if (!interfaceVoiStateAndVariableInfoCode.empty()) {
-        mCode += "\n";
+    if (!mProfile->interfaceComputedConstantInfoString().empty()) {
+        code += mProfile->interfaceComputedConstantInfoString();
     }
 
-    mCode += interfaceVoiStateAndVariableInfoCode;
-}
+    if (!mProfile->interfaceAlgebraicInfoString().empty()) {
+        code += mProfile->interfaceAlgebraicInfoString();
+    }
 
-void Generator::GeneratorImpl::addImplementationVoiInfoCode()
-{
-    if (mModelHasOdes
-        && !mProfile->implementationVoiInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()) {
-        auto voiVariable = mModel->voi()->variable();
-        auto name = voiVariable->name();
-        auto units = voiVariable->units()->name();
-        auto component = owningComponent(voiVariable)->name();
-        auto type = mProfile->variableOfIntegrationVariableTypeString();
+    if (mModel->hasExternalVariables()
+        && !mProfile->interfaceExternalInfoString().empty()) {
+        code += mProfile->interfaceExternalInfoString();
+    }
 
-        mCode += newLineIfNotEmpty(mCode)
-                 + replace(mProfile->implementationVoiInfoString(),
-                           "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
+    if (!code.empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + code;
     }
 }
 
-void Generator::GeneratorImpl::addImplementationStateInfoCode()
+void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::string &variableInfoString,
+                                                                   const std::vector<AnalyserVariablePtr> &variables,
+                                                                   bool voiVariable)
 {
-    if (mModelHasOdes
-        && !mProfile->implementationStateInfoString().empty()
+    if (!variableInfoString.empty()
         && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->stateVariableTypeString().empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
-        auto type = mProfile->stateVariableTypeString();
 
-        for (const auto &state : mModel->states()) {
+        for (const auto &variable : variables) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            auto stateVariable = state->variable();
+            auto variableVariable = variable->variable();
 
-            infoElementsCode += mProfile->indentString()
-                                + generateVariableInfoEntryCode(stateVariable->name(),
-                                                                stateVariable->units()->name(),
-                                                                owningComponent(stateVariable)->name(),
-                                                                type);
+            infoElementsCode += (voiVariable ? "" : mProfile->indentString())
+                                + generateVariableInfoEntryCode(variableVariable->name(),
+                                                                variableVariable->units()->name(),
+                                                                owningComponent(variableVariable)->name());
         }
 
-        infoElementsCode += "\n";
+        if (!voiVariable && !infoElementsCode.empty()) {
+            infoElementsCode += "\n";
+        }
 
-        mCode += newLineIfNotEmpty(mCode)
-                 + replace(mProfile->implementationStateInfoString(),
-                           "[CODE]", infoElementsCode);
+        mCode += newLineIfNeeded(mCode)
+                 + replace(variableInfoString, "[CODE]", infoElementsCode);
     }
 }
 
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
-    if (!mProfile->implementationVariableInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->arrayElementSeparatorString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()
-        && !mProfile->stateVariableTypeString().empty()
-        && !mProfile->constantVariableTypeString().empty()
-        && !mProfile->computedConstantVariableTypeString().empty()
-        && !mProfile->algebraicVariableTypeString().empty()
-        && !mProfile->externalVariableTypeString().empty()) {
-        std::string infoElementsCode;
+    if (mModelHasOdes) {
+        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {mModel->voi()}, true);
+    }
 
-        for (const auto &variable : mModel->variables()) {
-            if (!infoElementsCode.empty()) {
-                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
-            }
+    if (mModelHasOdes) {
+        doAddImplementationVariableInfoCode(mProfile->implementationStateInfoString(), mModel->states(), false);
+    }
 
-            std::string variableType;
+    doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), mModel->constants(), false);
+    doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), mModel->computedConstants(), false);
+    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicInfoString(), mModel->algebraic(), false);
 
-            switch (variable->type()) {
-            case AnalyserVariable::Type::CONSTANT:
-                variableType = mProfile->constantVariableTypeString();
-
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
-                variableType = mProfile->computedConstantVariableTypeString();
-
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
-                variableType = mProfile->algebraicVariableTypeString();
-
-                break;
-            default: // AnalyserVariable::Type::EXTERNAL.
-                variableType = mProfile->externalVariableTypeString();
-
-                break;
-            }
-
-            auto variableVariable = variable->variable();
-
-            infoElementsCode += mProfile->indentString()
-                                + replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                                                  "[NAME]", variableVariable->name()),
-                                                          "[UNITS]", variableVariable->units()->name()),
-                                                  "[COMPONENT]", owningComponent(variableVariable)->name()),
-                                          "[TYPE]", variableType);
-        }
-
-        if (!infoElementsCode.empty()) {
-            infoElementsCode += "\n";
-        }
-
-        mCode += newLineIfNotEmpty(mCode)
-                 + replace(mProfile->implementationVariableInfoString(),
-                           "[CODE]", infoElementsCode);
+    if (mModel->hasExternalVariables()) {
+        doAddImplementationVariableInfoCode(mProfile->implementationExternalInfoString(), mModel->externals(), false);
     }
 }
 
@@ -355,73 +311,73 @@ void Generator::GeneratorImpl::addArithmeticFunctionsCode()
 {
     if (mModel->needEqFunction() && !mProfile->hasEqOperator()
         && !mProfile->eqFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->eqFunctionString();
     }
 
     if (mModel->needNeqFunction() && !mProfile->hasNeqOperator()
         && !mProfile->neqFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->neqFunctionString();
     }
 
     if (mModel->needLtFunction() && !mProfile->hasLtOperator()
         && !mProfile->ltFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->ltFunctionString();
     }
 
     if (mModel->needLeqFunction() && !mProfile->hasLeqOperator()
         && !mProfile->leqFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->leqFunctionString();
     }
 
     if (mModel->needGtFunction() && !mProfile->hasGtOperator()
         && !mProfile->gtFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->gtFunctionString();
     }
 
     if (mModel->needGeqFunction() && !mProfile->hasGeqOperator()
         && !mProfile->geqFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->geqFunctionString();
     }
 
     if (mModel->needAndFunction() && !mProfile->hasAndOperator()
         && !mProfile->andFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->andFunctionString();
     }
 
     if (mModel->needOrFunction() && !mProfile->hasOrOperator()
         && !mProfile->orFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->orFunctionString();
     }
 
     if (mModel->needXorFunction() && !mProfile->hasXorOperator()
         && !mProfile->xorFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->xorFunctionString();
     }
 
     if (mModel->needNotFunction() && !mProfile->hasNotOperator()
         && !mProfile->notFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->notFunctionString();
     }
 
     if (mModel->needMinFunction()
         && !mProfile->minFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->minFunctionString();
     }
 
     if (mModel->needMaxFunction()
         && !mProfile->maxFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->maxFunctionString();
     }
 }
@@ -430,99 +386,147 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode()
 {
     if (mModel->needSecFunction()
         && !mProfile->secFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->secFunctionString();
     }
 
     if (mModel->needCscFunction()
         && !mProfile->cscFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->cscFunctionString();
     }
 
     if (mModel->needCotFunction()
         && !mProfile->cotFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->cotFunctionString();
     }
 
     if (mModel->needSechFunction()
         && !mProfile->sechFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->sechFunctionString();
     }
 
     if (mModel->needCschFunction()
         && !mProfile->cschFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->cschFunctionString();
     }
 
     if (mModel->needCothFunction()
         && !mProfile->cothFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->cothFunctionString();
     }
 
     if (mModel->needAsecFunction()
         && !mProfile->asecFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->asecFunctionString();
     }
 
     if (mModel->needAcscFunction()
         && !mProfile->acscFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->acscFunctionString();
     }
 
     if (mModel->needAcotFunction()
         && !mProfile->acotFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->acotFunctionString();
     }
 
     if (mModel->needAsechFunction()
         && !mProfile->asechFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->asechFunctionString();
     }
 
     if (mModel->needAcschFunction()
         && !mProfile->acschFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->acschFunctionString();
     }
 
     if (mModel->needAcothFunction()
         && !mProfile->acothFunctionString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->acothFunctionString();
     }
 }
 
 void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 {
-    std::string interfaceCreateDeleteArraysCode;
+    std::string code;
 
     if (mModelHasOdes
         && !mProfile->interfaceCreateStatesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateStatesArrayMethodString();
+        code += mProfile->interfaceCreateStatesArrayMethodString();
     }
 
-    if (!mProfile->interfaceCreateVariablesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateVariablesArrayMethodString();
+    if (!mProfile->interfaceCreateConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateComputedConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateAlgebraicArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateAlgebraicArrayMethodString();
+    }
+
+    if (mModel->hasExternalVariables()
+        && !mProfile->interfaceCreateExternalsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateExternalsArrayMethodString();
     }
 
     if (!mProfile->interfaceDeleteArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceDeleteArrayMethodString();
+        code += "\n"
+                + mProfile->interfaceDeleteArrayMethodString();
     }
 
-    if (!interfaceCreateDeleteArraysCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + code;
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationCreateDeleteArrayMethodsCode()
+{
+    if (mModelHasOdes
+        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationCreateStatesArrayMethodString();
     }
 
-    mCode += interfaceCreateDeleteArraysCode;
+    if (!mProfile->implementationCreateConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateComputedConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateAlgebraicArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationCreateAlgebraicArrayMethodString();
+    }
+
+    if (mModel->hasExternalVariables()
+        && !mProfile->implementationCreateExternalsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationCreateExternalsArrayMethodString();
+    }
+
+    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->implementationDeleteArrayMethodString();
+    }
 }
 
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
@@ -531,43 +535,18 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
         auto externalVariableMethodTypeDefinitionString = mProfile->externalVariableMethodTypeDefinitionString(mModelHasOdes);
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
-            mCode += "\n"
+            mCode += newLineIfNeeded(mCode)
                      + externalVariableMethodTypeDefinitionString;
         }
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
-{
-    if (mModelHasOdes
-        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
-                 + mProfile->implementationCreateStatesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
-{
-    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
-                 + mProfile->implementationCreateVariablesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
-{
-    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
-                 + mProfile->implementationDeleteArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 {
     if (mModelHasNlas
-        && !mProfile->rootFindingInfoObjectString(mModelHasOdes).empty()) {
-        mCode += newLineIfNotEmpty(mCode)
-                 + mProfile->rootFindingInfoObjectString(mModelHasOdes);
+        && !mProfile->rootFindingInfoObjectString(mModelHasOdes, mModel->hasExternalVariables()).empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + mProfile->rootFindingInfoObjectString(mModelHasOdes, mModel->hasExternalVariables());
     }
 }
 
@@ -575,44 +554,42 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 {
     if (mModelHasNlas
         && !mProfile->externNlaSolveMethodString().empty()) {
-        mCode += newLineIfNotEmpty(mCode)
+        mCode += newLineIfNeeded(mCode)
                  + mProfile->externNlaSolveMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(mModelHasOdes,
-                                                                                                       mModel->hasExternalVariables());
-    std::string interfaceComputeModelMethodsCode;
+    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(mModelHasOdes);
+    std::string code;
 
     if (!interfaceInitialiseVariablesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceInitialiseVariablesMethodString;
+        code += interfaceInitialiseVariablesMethodString;
     }
 
     if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mProfile->interfaceComputeComputedConstantsMethodString();
+        code += mProfile->interfaceComputeComputedConstantsMethodString();
     }
 
     auto interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(mModel->hasExternalVariables());
 
     if (mModelHasOdes
         && !interfaceComputeRatesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceComputeRatesMethodString;
+        code += interfaceComputeRatesMethodString;
     }
 
     auto interfaceComputeVariablesMethodString = mProfile->interfaceComputeVariablesMethodString(mModelHasOdes,
                                                                                                  mModel->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceComputeVariablesMethodString;
+        code += interfaceComputeVariablesMethodString;
     }
 
-    if (!interfaceComputeModelMethodsCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded(mCode)
+                 + code;
     }
-
-    mCode += interfaceComputeModelMethodsCode;
 }
 
 void Generator::GeneratorImpl::addImplementationComputeModelMethodsCode()
@@ -690,13 +667,12 @@ std::string Generator::interfaceCode() const
 
     // Add code for the variable information related objects.
 
-    mPimpl->addVariableTypeObjectCode();
     mPimpl->addVariableInfoObjectCode();
 
-    // Add code for the interface of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the interface of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addInterfaceVoiStateAndVariableInfoCode();
+    mPimpl->addInterfaceVariableInfoCode();
 
     // Add code for the interface to create and delete arrays.
 
@@ -745,15 +721,12 @@ std::string Generator::implementationCode() const
     // Add code for the variable information related objects.
 
     if (!mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode();
         mPimpl->addVariableInfoObjectCode();
     }
 
-    // Add code for the implementation of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the implementation of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addImplementationVoiInfoCode();
-    mPimpl->addImplementationStateInfoCode();
     mPimpl->addImplementationVariableInfoCode();
 
     // Add code for the arithmetic and trigonometric functions.
@@ -763,9 +736,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateStatesArrayMethodCode();
-    mPimpl->addImplementationCreateVariablesArrayMethodCode();
-    mPimpl->addImplementationDeleteArrayMethodCode();
+    mPimpl->addImplementationCreateDeleteArrayMethodsCode();
 
     // Add code for the NLA solver.
 

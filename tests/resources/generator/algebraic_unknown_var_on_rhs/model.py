@@ -7,32 +7,41 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-VARIABLE_COUNT = 2
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 2
+ALGEBRAIC_COUNT = 0
 
+CONSTANT_INFO = [
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
+COMPUTED_CONSTANT_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_component"},
+    {"name": "y", "units": "dimensionless", "component": "my_component"}
+]
 
-
-VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "y", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
+ALGEBRAIC_INFO = [
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables):
-    variables[0] = 1.0
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
-    variables[1] = variables[0]
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
 
 
-def compute_variables(variables):
+def initialise_variables(constants, computed_constants, algebraic):
+    computed_constants[0] = 1.0
+
+
+def compute_computed_constants(constants, computed_constants):
+    computed_constants[1] = computed_constants[0]
+
+
+def compute_variables(constants, computed_constants, algebraic):
     pass

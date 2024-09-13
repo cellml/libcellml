@@ -139,6 +139,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorinterpreter_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorinterpreter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofilesha1values.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
@@ -202,7 +203,7 @@ else()
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
-link_libxml2(cellml)
+apply_libxml2_settings(cellml)
 
 # Use target compile features to propagate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_17)
@@ -226,7 +227,7 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-link_libxml2(cellml_debug_utilities)
+apply_libxml2_settings(cellml_debug_utilities)
 
 target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
@@ -235,6 +236,8 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
+
+apply_libxml2_settings(cellml_debug_utilities)
 
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
