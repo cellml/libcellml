@@ -16,6 +16,34 @@ limitations under the License.
 
 #pragma once
 
+#include <limits>
+
+static const auto NAN = std::numeric_limits<double>::quiet_NaN();
+
+typedef struct
+{
+    char name[256];
+    char units[256];
+    char component[256];
+} VariableInfo;
+
+#define NLA_SOLVE_METHOD \
+    void nlaSolve(void (*)(double *, double *, void *), double *, size_t, void *) \
+    { \
+    }
+
+#define ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD \
+    double externalVariable(double *, double *, double *, double *, size_t) \
+    { \
+        return 1.23; \
+    }
+
+#define DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD \
+    double externalVariable(double, double *, double *, double *, double *, double *, double *, size_t) \
+    { \
+        return 7.89; \
+    }
+
 #define TEST_ALGEBRAIC_MODEL(analyserModel, model) \
     auto interpreter = libcellml::Interpreter::create(); \
 \
@@ -25,9 +53,9 @@ limitations under the License.
     auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
     auto *algebraic = new double[analyserModel->algebraicCount()]; \
 \
-    interpreter->initialiseVariablesForAlgebraicModel(constants, computedConstants, algebraic); \
+    interpreter->initialiseVariables(constants, computedConstants, algebraic); \
     interpreter->computeComputedConstants(constants, computedConstants); \
-    interpreter->computeVariablesForAlgebraicModel(constants, computedConstants, algebraic); \
+    interpreter->computeVariables(constants, computedConstants, algebraic); \
 \
     auto *expectedConstantsData = model::createConstantsArray(); \
     auto *expectedComputedConstantsData = model::createComputedConstantsArray(); \
@@ -53,6 +81,49 @@ limitations under the License.
     delete[] computedConstants; \
     delete[] algebraic;
 
+#define TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, model) \
+    auto interpreter = libcellml::Interpreter::create(); \
+\
+    interpreter->setModel(analyserModel); \
+\
+    auto *constants = new double[analyserModel->constantCount()]; \
+    auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
+    auto *algebraic = new double[analyserModel->algebraicCount()]; \
+    auto *externals = new double[analyserModel->externalCount()]; \
+\
+    interpreter->initialiseVariables(constants, computedConstants, algebraic); \
+    interpreter->computeComputedConstants(constants, computedConstants); \
+    interpreter->computeVariables(constants, computedConstants, algebraic, externals, model::externalVariable); \
+\
+    auto *expectedConstantsData = model::createConstantsArray(); \
+    auto *expectedComputedConstantsData = model::createComputedConstantsArray(); \
+    auto *expectedAlgebraicData = model::createAlgebraicArray(); \
+    auto *expectedAlgebraicExternals = model::createExternalsArray(); \
+\
+    model::initialiseVariables(expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
+    model::computeComputedConstants(expectedConstantsData, expectedComputedConstantsData); \
+    model::computeVariables(expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData, expectedAlgebraicExternals, model::externalVariable); \
+\
+    std::vector<double> expectedConstants(expectedConstantsData, expectedConstantsData + model::CONSTANT_COUNT); \
+    std::vector<double> expectedComputedConstants(expectedComputedConstantsData, expectedComputedConstantsData + model::COMPUTED_CONSTANT_COUNT); \
+    std::vector<double> expectedAlgebraic(expectedAlgebraicData, expectedAlgebraicData + model::ALGEBRAIC_COUNT); \
+    std::vector<double> expectedExternals(expectedAlgebraicExternals, expectedAlgebraicExternals + model::EXTERNAL_COUNT); \
+\
+    expectEqualValues(expectedConstants, constants, analyserModel->constantCount()); \
+    expectEqualValues(expectedComputedConstants, computedConstants, analyserModel->computedConstantCount()); \
+    expectEqualValues(expectedAlgebraic, algebraic, analyserModel->algebraicCount()); \
+    expectEqualValues(expectedExternals, externals, analyserModel->externalCount()); \
+\
+    delete[] expectedConstantsData; \
+    delete[] expectedComputedConstantsData; \
+    delete[] expectedAlgebraicData; \
+    delete[] expectedAlgebraicExternals; \
+\
+    delete[] constants; \
+    delete[] computedConstants; \
+    delete[] algebraic; \
+    delete[] externals;
+
 #define TEST_DIFFERENTIAL_MODEL(analyserModel, model) \
     auto interpreter = libcellml::Interpreter::create(); \
 \
@@ -64,10 +135,10 @@ limitations under the License.
     auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
     auto *algebraic = new double[analyserModel->algebraicCount()]; \
 \
-    interpreter->initialiseVariablesForDifferentialModel(states, rates, constants, computedConstants, algebraic); \
+    interpreter->initialiseVariables(states, rates, constants, computedConstants, algebraic); \
     interpreter->computeComputedConstants(constants, computedConstants); \
     interpreter->computeRates(0.0, states, rates, constants, computedConstants, algebraic); \
-    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, constants, computedConstants, algebraic); \
+    interpreter->computeVariables(0.0, states, rates, constants, computedConstants, algebraic); \
 \
     auto *expectedStatesData = model::createStatesArray(); \
     auto *expectedRatesData = model::createStatesArray(); \
@@ -104,77 +175,59 @@ limitations under the License.
     delete[] computedConstants; \
     delete[] algebraic;
 
-#define INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel) \
-    double *expectedStatesData = nullptr; \
-    double *expectedRatesData = nullptr; \
-    double *expectedConstantsData = nullptr; \
-    double *expectedComputedConstantsData = nullptr; \
-    double *expectedAlgebraicData = nullptr; \
-    double *states = nullptr; \
-    double *rates = nullptr; \
-    auto *constants = new double[analyserModel->constantCount()]; \
-    auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
-    auto *algebraic = new double[analyserModel->algebraicCount()]; \
+#define TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, model) \
+    auto interpreter = libcellml::Interpreter::create(); \
 \
-    (void)expectedStatesData; \
-    (void)expectedRatesData; \
-    (void)expectedConstantsData; \
-    (void)expectedComputedConstantsData; \
-    (void)expectedAlgebraicData; \
-    interpreter->initialiseVariablesForAlgebraicModel(constants, computedConstants, algebraic); \
-    interpreter->computeComputedConstants(constants, computedConstants); \
-    interpreter->computeVariablesForAlgebraicModel(constants, computedConstants, algebraic);
-
-#define INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel) \
-    double *expectedStatesData = nullptr; \
-    double *expectedRatesData = nullptr; \
-    double *expectedConstantsData = nullptr; \
-    double *expectedComputedConstantsData = nullptr; \
-    double *expectedAlgebraicData = nullptr; \
+    interpreter->setModel(analyserModel); \
+\
     auto *states = new double[analyserModel->stateCount()]; \
     auto *rates = new double[analyserModel->stateCount()]; \
     auto *constants = new double[analyserModel->constantCount()]; \
     auto *computedConstants = new double[analyserModel->computedConstantCount()]; \
     auto *algebraic = new double[analyserModel->algebraicCount()]; \
+    auto *externals = new double[analyserModel->externalCount()]; \
 \
-    (void)expectedStatesData; \
-    (void)expectedRatesData; \
-    (void)expectedConstantsData; \
-    (void)expectedComputedConstantsData; \
-    (void)expectedAlgebraicData; \
-    interpreter->initialiseVariablesForDifferentialModel(states, rates, constants, computedConstants, algebraic); \
+    interpreter->initialiseVariables(states, rates, constants, computedConstants, algebraic); \
     interpreter->computeComputedConstants(constants, computedConstants); \
-    interpreter->computeRates(0.0, states, rates, constants, computedConstants, algebraic); \
-    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, constants, computedConstants, algebraic);
-
-#define INITIALISE_COMPILED_DIFFERENTIAL_MODEL(model) \
-    expectedStatesData = model::createStatesArray(); \
-    expectedRatesData = model::createStatesArray(); \
-    expectedConstantsData = model::createConstantsArray(); \
-    expectedComputedConstantsData = model::createComputedConstantsArray(); \
-    expectedAlgebraicData = model::createAlgebraicArray(); \
+    interpreter->computeRates(0.0, states, rates, constants, computedConstants, algebraic, externals, model::externalVariable); \
+    interpreter->computeVariables(0.0, states, rates, constants, computedConstants, algebraic, externals, model::externalVariable); \
+\
+    auto *expectedStatesData = model::createStatesArray(); \
+    auto *expectedRatesData = model::createStatesArray(); \
+    auto *expectedConstantsData = model::createConstantsArray(); \
+    auto *expectedComputedConstantsData = model::createComputedConstantsArray(); \
+    auto *expectedAlgebraicData = model::createAlgebraicArray(); \
+    auto *expectedAlgebraicExternals = model::createExternalsArray(); \
 \
     model::initialiseVariables(expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
     model::computeComputedConstants(expectedConstantsData, expectedComputedConstantsData); \
-    model::computeRates(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
-    model::computeVariables(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData); \
+    model::computeRates(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData, expectedAlgebraicExternals, model::externalVariable); \
+    model::computeVariables(0.0, expectedStatesData, expectedRatesData, expectedConstantsData, expectedComputedConstantsData, expectedAlgebraicData, expectedAlgebraicExternals, model::externalVariable); \
 \
     std::vector<double> expectedStates(expectedStatesData, expectedStatesData + model::STATE_COUNT); \
     std::vector<double> expectedRates(expectedRatesData, expectedRatesData + model::STATE_COUNT); \
     std::vector<double> expectedConstants(expectedConstantsData, expectedConstantsData + model::CONSTANT_COUNT); \
     std::vector<double> expectedComputedConstants(expectedComputedConstantsData, expectedComputedConstantsData + model::COMPUTED_CONSTANT_COUNT); \
-    std::vector<double> expectedAlgebraic(expectedAlgebraicData, expectedAlgebraicData + model::ALGEBRAIC_COUNT);
-
-#define FINALISE_MODEL() \
+    std::vector<double> expectedAlgebraic(expectedAlgebraicData, expectedAlgebraicData + model::ALGEBRAIC_COUNT); \
+    std::vector<double> expectedExternals(expectedAlgebraicExternals, expectedAlgebraicExternals + model::EXTERNAL_COUNT); \
+\
+    expectEqualValues(expectedStates, states, analyserModel->stateCount()); \
+    expectEqualValues(expectedRates, rates, analyserModel->stateCount()); \
+    expectEqualValues(expectedConstants, constants, analyserModel->constantCount()); \
+    expectEqualValues(expectedComputedConstants, computedConstants, analyserModel->computedConstantCount()); \
+    expectEqualValues(expectedAlgebraic, algebraic, analyserModel->algebraicCount()); \
+    expectEqualValues(expectedExternals, externals, analyserModel->externalCount()); \
+\
     delete[] expectedStatesData; \
     delete[] expectedRatesData; \
     delete[] expectedConstantsData; \
     delete[] expectedComputedConstantsData; \
     delete[] expectedAlgebraicData; \
+    delete[] expectedAlgebraicExternals; \
+\
     delete[] states; \
     delete[] rates; \
     delete[] constants; \
     delete[] computedConstants; \
-    delete[] algebraic;
-
-#define STRINGIFY(x) #x
+    delete[] algebraic; \
+    delete[] externals;

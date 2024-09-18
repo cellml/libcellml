@@ -16,18 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <limits>
-
-static const auto NAN = std::numeric_limits<double>::quiet_NaN();
-
-typedef struct {
-    char name[256];
-    char units[256];
-    char component[256];
-} VariableInfo;
-
-#define NLA_SOLVE_METHOD void nlaSolve(void (*)(double *, double *, void *), double *, size_t, void *) {}
-
 #if defined(_MSC_VER) && !defined(__clang__)
 #    pragma warning(push)
 #    pragma warning(disable : 4100)
@@ -45,6 +33,7 @@ namespace algebraic_eqn_computed_var_on_rhs {
 } // namespace algebraic_eqn_computed_var_on_rhs
 
 namespace algebraic_eqn_computed_var_on_rhs_external {
+ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/algebraic_eqn_computed_var_on_rhs/model.external.c"
 } // namespace algebraic_eqn_computed_var_on_rhs_external
 
@@ -83,7 +72,8 @@ NLA_SOLVE_METHOD
 
 namespace algebraic_eqn_with_one_non_isolated_unknown_external {
 NLA_SOLVE_METHOD
-#include "../resources/generator/algebraic_eqn_with_one_non_isolated_unknown/model.c"
+ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD
+#include "../resources/generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.c"
 } // namespace algebraic_eqn_with_one_non_isolated_unknown_external
 
 namespace algebraic_system_with_three_linked_unknowns {
@@ -92,6 +82,7 @@ NLA_SOLVE_METHOD
 } // namespace algebraic_system_with_three_linked_unknowns
 
 namespace algebraic_system_with_three_linked_unknowns_external {
+ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/algebraic_system_with_three_linked_unknowns/model.external.c"
 } // namespace algebraic_system_with_three_linked_unknowns_external
 
@@ -189,6 +180,11 @@ namespace cell_geometry_model {
 #include "../resources/generator/cell_geometry_model/model.c"
 } // namespace cell_geometry_model
 
+namespace cell_geometry_model_external {
+ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD
+#include "../resources/generator/cell_geometry_model/model.external.c"
+} // namespace cell_geometry_model_external
+
 namespace fabbri_fantini_wilders_severi_human_san_model_2017 {
 #include "../resources/generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.c"
 } // namespace fabbri_fantini_wilders_severi_human_san_model_2017
@@ -202,38 +198,47 @@ namespace hodgkin_huxley_squid_axon_model_1952 {
 } // namespace hodgkin_huxley_squid_axon_model_1952
 
 namespace hodgkin_huxley_squid_axon_model_1952_state_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.state.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_state_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_dependent_state_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_dependent_state_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_constant_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.constant.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_constant_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_dependent_constant_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_dependent_constant_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_computed_constant_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_computed_constant_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_dependent_computed_constant_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_dependent_computed_constant_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_algebraic_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_algebraic_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_dependent_algebraic_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_dependent_algebraic_external
 
 namespace hodgkin_huxley_squid_axon_model_1952_external {
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_external
 
@@ -244,6 +249,7 @@ NLA_SOLVE_METHOD
 
 namespace hodgkin_huxley_squid_axon_model_1952_dae_external {
 NLA_SOLVE_METHOD
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.c"
 } // namespace hodgkin_huxley_squid_axon_model_1952_dae_external
 
@@ -275,12 +281,19 @@ NLA_SOLVE_METHOD
 } // namespace variable_initialised_using_a_constant
 
 namespace unknown_variable_as_external_variable {
+ALGEBRAIC_MODEL_EXTERNAL_VARIABLE_METHOD
 #include "../resources/generator/unknown_variable_as_external_variable/model.c"
 } // namespace unknown_variable_as_external_variable
 
 namespace cellml_slc_example {
 #include "../resources/generator/cellml_slc_example/model.c"
 } // namespace cellml_slc_example
+
+namespace coverage {
+NLA_SOLVE_METHOD
+DIFFERENTIAL_MODEL_EXTERNAL_VARIABLE_METHOD
+#include "../resources/coverage/generator/model.xor.c"
+} // namespace coverage
 
 #if defined(_MSC_VER) && !defined(__clang__)
 #    pragma warning(pop)

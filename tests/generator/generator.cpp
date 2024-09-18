@@ -110,7 +110,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_eqn_computed_var_on_rhs_external);
+    TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_eqn_computed_var_on_rhs_external);
 }
 
 TEST(Generator, algebraicEqnConstVarOnRhs)
@@ -386,7 +386,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_eqn_with_one_non_isolated_unknown_external);
+    TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_eqn_with_one_non_isolated_unknown_external);
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -454,7 +454,7 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_system_with_three_linked_unknowns_external);
+    TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, algebraic_system_with_three_linked_unknowns_external);
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
@@ -1194,7 +1194,7 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, cell_geometry_model_external);
+    TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, cell_geometry_model_external);
 }
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
@@ -1353,7 +1353,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.state.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_state_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_state_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1399,7 +1399,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_state_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_state_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
@@ -1438,7 +1438,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_constant_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_constant_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1483,7 +1483,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_constant_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_constant_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
@@ -1522,7 +1522,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_computed_constant_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_computed_constant_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1567,7 +1567,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_computed_constant_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_computed_constant_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
@@ -1606,7 +1606,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_algebraic_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_algebraic_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1651,7 +1651,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_algebraic_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dependent_algebraic_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
@@ -1703,7 +1703,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_external);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel195Dae)
@@ -1785,7 +1785,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.py", generator->implementationCode());
 
-    //---GRY--- TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dae_external);
+    TEST_DIFFERENTIAL_MODEL_EXTERNAL(analyserModel, hodgkin_huxley_squid_axon_model_1952_dae_external);
 }
 
 TEST(Generator, nobleModel1962)
@@ -2069,7 +2069,7 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     EXPECT_EQ_FILE_CONTENTS("generator/unknown_variable_as_external_variable/model.py", generator->implementationCode());
 
-    //---GRY--- TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, unknown_variable_as_external_variable);
+    TEST_ALGEBRAIC_MODEL_EXTERNAL(analyserModel, unknown_variable_as_external_variable);
 }
 
 TEST(Generator, modelWithComplexUnitsOutOfScope)

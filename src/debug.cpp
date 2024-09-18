@@ -353,7 +353,9 @@ std::string ciValue(const AnalyserVariablePtr &analyserVariable, bool rate)
                                "constants" :
                                ((analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
                                     "computedConstants" :
-                                    "algebraic"));
+                                    ((analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC) ?
+                                         "algebraic" :
+                                         "externals")));
     auto variable = analyserVariable->variable();
 
     res += "[" + std::to_string(analyserVariable->index()) + "] | "
@@ -994,6 +996,7 @@ std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpret
     case InterpreterStatement::Type::CONSTANT:
     case InterpreterStatement::Type::COMPUTED_CONSTANT:
     case InterpreterStatement::Type::ALGEBRAIC:
+    case InterpreterStatement::Type::EXTERNAL:
         res = ciValue(interpreterStatement->variable(),
                       interpreterStatement->type() == InterpreterStatement::Type::RATE);
 
@@ -1047,8 +1050,8 @@ std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpret
 
         // Miscellaneous.
 
-    case InterpreterStatement::Type::EXTERNAL:
-        res = "EXTERNAL[" + convertToString(interpreterStatement->externalIndex()) + "]";
+    case InterpreterStatement::Type::EXTERNAL_VARIABLE_CALL:
+        res = "externalVariable(" + convertToString(interpreterStatement->index()) + ")";
 
         break;
     }

@@ -35,7 +35,6 @@ struct InterpreterStatement::InterpreterStatementImpl
     AnalyserVariablePtr mVariable;
     size_t mIndex = 0;
     double mValue = std::numeric_limits<double>::quiet_NaN();
-    size_t mExternalIndex = 0;
 
     explicit InterpreterStatementImpl(Type type,
                                       const InterpreterStatementPtr &leftChild,
@@ -44,8 +43,8 @@ struct InterpreterStatement::InterpreterStatementImpl
     explicit InterpreterStatementImpl(double value);
     explicit InterpreterStatementImpl(size_t index);
 
-    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
-    double evaluateToDouble(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, AlgebraicModelExternalVariable algebraicModelExternalVariable, DifferentialModelExternalVariable differentialModelExternalVariable) const;
+    double evaluateToDouble(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, AlgebraicModelExternalVariable algebraicModelExternalVariable, DifferentialModelExternalVariable differentialModelExternalVariable) const;
 };
 
 } // namespace libcellml

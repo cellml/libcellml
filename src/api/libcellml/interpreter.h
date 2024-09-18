@@ -23,6 +23,9 @@ limitations under the License.
 
 namespace libcellml {
 
+typedef double (*AlgebraicModelExternalVariable)(double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);
+typedef double (*DifferentialModelExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);
+
 /**
  * @brief The Interpreter class.
  *
@@ -75,32 +78,32 @@ public:
      *
      * Initialise the model's variables. This method is only relevant for algebraic models.
      *
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
-     * @param algebraic The array of algebraic variables to initialise.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
      */
-    void initialiseVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const;
+    void initialiseVariables(double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Initialise the model's variables.
      *
      * Initialise the model's variables. This method is only relevant for differential models.
      *
-     * @param states The array of states to initialise.
-     * @param rates The array of rates to initialise.
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
-     * @param algebraic The array of algebraic variables to initialise.
+     * @param states The array of states to use.
+     * @param rates The array of rates to use.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
      */
-    void initialiseVariablesForDifferentialModel(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+    void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
 
     /**
      * @brief Compute the model's computed constants.
      *
      * Compute the model's computed constants.
      *
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
      */
     void computeComputedConstants(double *constants, double *computedConstants) const;
 
@@ -111,23 +114,52 @@ public:
      *
      * @param voi The value of the variable of integration.
      * @param states The array of states.
-     * @param rates The array of rates to compute.
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
-     * @param algebraic The array of algebraic variables to initialise.
+     * @param rates The array of rates to use.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
      */
     void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+
+    /**
+     * @brief Compute the model's rates.
+     *
+     * Compute the model's rates. This method is only relevant for differential models with external variables.
+     *
+     * @param voi The value of the variable of integration.
+     * @param states The array of states.
+     * @param rates The array of rates to use.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
+     * @param externals The array of external variables to use.
+     * @param externalVariable The external variable function to use.
+     */
+    void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, DifferentialModelExternalVariable externalVariable) const;
 
     /**
      * @brief Compute the model's variables.
      *
      * Compute the model's variables. This method is only relevant for algebraic models.
      *
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
-     * @param algebraic The array of algebraic variables to initialise.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
      */
-    void computeVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const;
+    void computeVariables(double *constants, double *computedConstants, double *algebraic) const;
+
+    /**
+     * @brief Compute the model's variables.
+     *
+     * Compute the model's variables. This method is only relevant for algebraic models with external variables.
+     *
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
+     * @param externals The array of external variables to use.
+     * @param externalVariable The external variable function to use.
+     */
+    void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, AlgebraicModelExternalVariable externalVariable) const;
 
     /**
      * @brief Compute the model's variables.
@@ -137,11 +169,27 @@ public:
      * @param voi The value of the variable of integration.
      * @param states The array of states.
      * @param rates The array of rates.
-     * @param constants The array of constants to initialise.
-     * @param computedConstants The array of computed constants to initialise.
-     * @param algebraic The array of algebraic variables to initialise.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
      */
-    void computeVariablesForDifferentialModel(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+    void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+
+    /**
+     * @brief Compute the model's variables.
+     *
+     * Compute the model's variables. This method is only relevant for differential models with external variables.
+     *
+     * @param voi The value of the variable of integration.
+     * @param states The array of states.
+     * @param rates The array of rates.
+     * @param constants The array of constants to use.
+     * @param computedConstants The array of computed constants to use.
+     * @param algebraic The array of algebraic variables to use.
+     * @param externals The array of external variables to use.
+     * @param externalVariable The external variable function to use.
+     */
+    void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, DifferentialModelExternalVariable externalVariable) const;
 
 private:
     Interpreter(); /**< Constructor, @private. */

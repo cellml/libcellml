@@ -38,14 +38,14 @@ AnalyserVariablePtr InterpreterStatement::variable() const
     return mPimpl->mVariable;
 }
 
+size_t InterpreterStatement::index() const
+{
+    return mPimpl->mIndex;
+}
+
 double InterpreterStatement::value() const
 {
     return mPimpl->mValue;
-}
-
-size_t InterpreterStatement::externalIndex() const
-{
-    return mPimpl->mExternalIndex;
 }
 
 } // namespace libcellml

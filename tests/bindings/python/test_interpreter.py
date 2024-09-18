@@ -51,10 +51,10 @@ class InterpreterTestCase(unittest.TestCase):
         rates = np.full(am.stateCount(), np.nan)
         variables = np.full(am.variableCount(), np.nan)
 
-        i.initialiseVariablesForDifferentialModel(states, rates, variables)
+        i.initialiseVariables(states, rates, variables)
         i.computeComputedConstants(variables)
         i.computeRates(0.0, states, rates, variables)
-        i.computeVariablesForDifferentialModel(0.0, states, rates, variables)
+        i.computeVariables(0.0, states, rates, variables)
 
         self.assert_array_equal([0.0, 0.6, 0.05, 0.325], states)
         self.assert_array_equal([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], rates)

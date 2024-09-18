@@ -19,6 +19,7 @@ limitations under the License.
 #include <memory>
 
 #include "libcellml/analyservariable.h"
+#include "libcellml/interpreter.h"
 
 #include "internaltypes.h"
 
@@ -121,6 +122,7 @@ public:
         CONSTANT, /**< A constant. */
         COMPUTED_CONSTANT, /**< A computed constant. */
         ALGEBRAIC, /**< An algebraic variable. */
+        EXTERNAL, /**< An external variable. */
         NUMBER, /**< A number. */
 
         // Qualifier elements.
@@ -140,7 +142,7 @@ public:
 
         // Miscellaneous.
 
-        EXTERNAL /**< An external variable. */
+        EXTERNAL_VARIABLE_CALL /**< An external variable call. */
     };
 
     ~InterpreterStatement(); /**< Destructor, @private. */
@@ -208,14 +210,14 @@ public:
      * statement with::
      *
      * @code
-     *   auto interpreterStatement = libcellml::InterpreterStatement::create(externalIndex);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(index);
      * @endcode
      *
-     * @param externalIndex
+     * @param index
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterStatementPtr create(size_t externalIndex) noexcept;
+    static InterpreterStatementPtr create(size_t index) noexcept;
 
 #ifdef DEBUG
     /**
@@ -255,6 +257,15 @@ public:
     AnalyserVariablePtr variable() const;
 
     /**
+     * @brief Get the index associated with the statement.
+     *
+     * Return the index associated with the statement.
+     *
+     * @return The index associated with the statement.
+     */
+    size_t index() const;
+
+    /**
      * @brief Get the value associated with the statement.
      *
      * Return the value associated with the statement.
@@ -262,15 +273,6 @@ public:
      * @return The value associated with the statement.
      */
     double value() const;
-
-    /**
-     * @brief Get the external index associated with the statement.
-     *
-     * Return the external index associated with the statement.
-     *
-     * @return The external index associated with the statement.
-     */
-    size_t externalIndex() const;
 #endif
 
     /**
@@ -284,8 +286,10 @@ public:
      * @param constants The array of constants.
      * @param computedConstants The array of computed constants.
      * @param algebraic The array of algebraic variables.
+     * @param externals The array of external variables.
+     * @param externalVariable The external variable method to use.
      */
-    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const;
+    void evaluate(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, AlgebraicModelExternalVariable algebraicModelExternalVariable, DifferentialModelExternalVariable differentialModelExternalVariable) const;
 
 private:
     InterpreterStatement(Type type,
@@ -293,7 +297,7 @@ private:
                          const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
     InterpreterStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
-    InterpreterStatement(size_t externalIndex); /**< Constructor, @private. */
+    InterpreterStatement(size_t index); /**< Constructor, @private. */
 
     struct InterpreterStatementImpl;
     InterpreterStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */

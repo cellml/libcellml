@@ -69,45 +69,66 @@ void Interpreter::setModel(const AnalyserModelPtr &model)
     mPimpl->setModel(model);
 }
 
-void Interpreter::initialiseVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const
+void Interpreter::initialiseVariables(double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic, nullptr, nullptr, nullptr);
     }
 }
 
-void Interpreter::initialiseVariablesForDifferentialModel(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
+void Interpreter::initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(0.0, states, rates, constants, computedConstants, algebraic);
+        statement->evaluate(0.0, states, rates, constants, computedConstants, algebraic, nullptr, nullptr, nullptr);
     }
 }
 
 void Interpreter::computeComputedConstants(double *constants, double *computedConstants) const
 {
     for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, nullptr);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, nullptr, nullptr, nullptr, nullptr);
     }
 }
 
 void Interpreter::computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mComputeRatesStatements) {
-        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic);
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic, nullptr, nullptr, nullptr);
     }
 }
 
-void Interpreter::computeVariablesForAlgebraicModel(double *constants, double *computedConstants, double *algebraic) const
+void Interpreter::computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, DifferentialModelExternalVariable externalVariable) const
 {
-    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic);
+    for (const auto &statement : mPimpl->mComputeRatesStatements) {
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic, externals, nullptr, externalVariable);
     }
 }
 
-void Interpreter::computeVariablesForDifferentialModel(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
+void Interpreter::computeVariables(double *constants, double *computedConstants, double *algebraic) const
 {
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic);
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic, nullptr, nullptr, nullptr);
+    }
+}
+
+void Interpreter::computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, AlgebraicModelExternalVariable externalVariable) const
+{
+    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+        statement->evaluate(0.0, nullptr, nullptr, constants, computedConstants, algebraic, externals, externalVariable, nullptr);
+    }
+}
+
+void Interpreter::computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic) const
+{
+    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic, nullptr, nullptr, nullptr);
+    }
+}
+
+void Interpreter::computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, DifferentialModelExternalVariable externalVariable) const
+{
+    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+        statement->evaluate(voi, states, rates, constants, computedConstants, algebraic, externals, nullptr, externalVariable);
     }
 }
 
