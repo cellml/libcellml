@@ -4,50 +4,52 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 4
-VARIABLE_COUNT = 18
+CONSTANT_COUNT = 4
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 12
+EXTERNAL_COUNT = 2
 
-
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-    EXTERNAL = 5
-
-
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE},
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.STATE},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE}
+    {"name": "V", "units": "millivolt", "component": "membrane"},
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
 ]
 
-VARIABLE_INFO = [
-    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
-    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
-    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
-    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL},
-    {"name": "E_L", "units": "millivolt", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
-    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
-    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
-    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.EXTERNAL},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
-    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
+CONSTANT_INFO = [
+    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane"},
+    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current"},
+    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel"},
+    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel"}
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
+    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane"},
+    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current"},
+    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "E_L", "units": "millivolt", "component": "leakage_current"},
+    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel"},
+    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
+    {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"},
+    {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
+    {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate"},
+    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"},
+    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
+]
+
+EXTERNAL_INFO = [
+    {"name": "E_R", "units": "millivolt", "component": "membrane"},
+    {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
 
@@ -67,59 +69,69 @@ def create_states_array():
     return [nan]*STATE_COUNT
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(voi, states, rates, variables, external_variable):
-    variables[4] = 1.0
-    variables[7] = 0.3
-    variables[9] = 120.0
-    variables[15] = 36.0
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
+
+
+def create_externals_array():
+    return [nan]*EXTERNAL_COUNT
+
+
+def initialise_variables(states, rates, constants, computed_constants, algebraic):
     states[0] = 0.0
     states[1] = 0.6
     states[2] = 0.05
     states[3] = 0.325
-    variables[14] = external_variable(voi, states, rates, variables, 14)
-    variables[5] = external_variable(voi, states, rates, variables, 5)
+    constants[0] = 1.0
+    constants[1] = 0.3
+    constants[2] = 120.0
+    constants[3] = 36.0
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables, external_variable):
-    variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[14] = external_variable(voi, states, rates, variables, 14)
-    variables[5] = external_variable(voi, states, rates, variables, 5)
-    variables[6] = variables[5]-10.613
-    variables[1] = variables[7]*(states[0]-variables[6])
-    variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])
-    variables[8] = variables[5]-115.0
-    variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])
-    rates[0] = -(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4]
-    variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    variables[11] = 4.0*exp(states[0]/18.0)
-    rates[2] = variables[10]*(1.0-states[2])-variables[11]*states[2]
-    variables[12] = 0.07*exp(states[0]/20.0)
-    variables[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    rates[1] = variables[12]*(1.0-states[1])-variables[13]*states[1]
-    variables[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    variables[17] = 0.125*exp(states[0]/80.0)
-    rates[3] = variables[16]*(1.0-states[3])-variables[17]*states[3]
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    algebraic[4] = externals[0]-10.613
+    algebraic[1] = constants[1]*(states[0]-algebraic[4])
+    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-externals[1])
+    algebraic[5] = externals[0]-115.0
+    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5])
+    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0]
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    algebraic[7] = 4.0*exp(states[0]/18.0)
+    rates[2] = algebraic[6]*(1.0-states[2])-algebraic[7]*states[2]
+    algebraic[8] = 0.07*exp(states[0]/20.0)
+    algebraic[9] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    rates[1] = algebraic[8]*(1.0-states[1])-algebraic[9]*states[1]
+    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    algebraic[11] = 0.125*exp(states[0]/80.0)
+    rates[3] = algebraic[10]*(1.0-states[3])-algebraic[11]*states[3]
 
 
-def compute_variables(voi, states, rates, variables, external_variable):
-    variables[14] = external_variable(voi, states, rates, variables, 14)
-    variables[5] = external_variable(voi, states, rates, variables, 5)
-    variables[6] = variables[5]-10.613
-    variables[1] = variables[7]*(states[0]-variables[6])
-    variables[8] = variables[5]-115.0
-    variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])
-    variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    variables[11] = 4.0*exp(states[0]/18.0)
-    variables[12] = 0.07*exp(states[0]/20.0)
-    variables[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])
-    variables[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    variables[17] = 0.125*exp(states[0]/80.0)
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    algebraic[4] = externals[0]-10.613
+    algebraic[1] = constants[1]*(states[0]-algebraic[4])
+    algebraic[5] = externals[0]-115.0
+    algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5])
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    algebraic[7] = 4.0*exp(states[0]/18.0)
+    algebraic[8] = 0.07*exp(states[0]/20.0)
+    algebraic[9] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    algebraic[2] = constants[3]*pow(states[3], 4.0)*(states[0]-externals[1])
+    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    algebraic[11] = 0.125*exp(states[0]/80.0)
