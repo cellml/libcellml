@@ -38,4 +38,3 @@ EMSCRIPTEN_BINDINGS(libcellml_analyser)
         .function("model", &libcellml::Analyser::model)
     ;
 }
-

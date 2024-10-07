@@ -216,7 +216,6 @@ std::vector<std::string> expectedUrls(size_t size, std::string url)
 }
 
 void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
-
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
@@ -257,6 +256,57 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
         EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
         EXPECT_EQ(urls.at(i), logger->issue(i)->url());
+    }
+}
+
+double roundValue(double value, int precision)
+{
+    return std::round(value * std::pow(10.0, precision)) / std::pow(10.0, precision);
+}
+
+testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, const char *ndxExpr,
+                                        const void *ev, const void *v, const void *ndx)
+{
+    static const auto PRECISION = 12;
+
+    auto expectedValues = *(static_cast<const std::vector<double> *>(ev));
+    auto values = static_cast<const double *>(v);
+    auto i = *(static_cast<const size_t *>(ndx));
+
+    if ((std::isnan(expectedValues[i]) && std::isnan(values[i]))
+        || areNearlyEqual(roundValue(expectedValues[i], PRECISION), roundValue(values[i], PRECISION))) {
+        return testing::AssertionSuccess();
+    }
+
+    return testing::AssertionFailure() << "Expected equality of these values:" << std::endl
+                                       << "  expectedValues[" << i << "]" << std::endl
+                                       << "    Which is: " << expectedValues[i] << std::endl
+                                       << "  values[" << i << "]" << std::endl
+                                       << "    Which is: " << values[i];
+}
+
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
+}
+
+void expectEqualValues(const std::vector<double> &expectedValues, double *values, size_t valueCount)
+{
+    EXPECT_EQ(expectedValues.size(), valueCount);
+
+    for (size_t i = 0; i < valueCount; ++i) {
+        EXPECT_PRED_FORMAT3(areEqualValues, &expectedValues, values, &i);
     }
 }
 

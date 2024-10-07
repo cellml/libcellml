@@ -20,6 +20,7 @@ limitations under the License.
 #include <iterator>
 
 #include "analyserequation_p.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -28,25 +29,9 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
-                                                      const AnalyserEquationAstPtr &ast,
-                                                      const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      size_t nlaSystemIndex,
-                                                      const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                                                      const std::vector<AnalyserVariablePtr> &variables)
-{
-    mType = type;
-    mAst = ast;
-    mNlaSystemIndex = nlaSystemIndex;
-
-    std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
-    std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
-    std::copy(variables.begin(), variables.end(), back_inserter(mVariables));
-}
-
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto variables = dependency.lock()->variables();
+    auto variables = libcellml::variables(dependency.lock());
 
     if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
         return false;
@@ -153,23 +138,80 @@ bool AnalyserEquation::isStateRateBased() const
     return mPimpl->mIsStateRateBased;
 }
 
-size_t AnalyserEquation::variableCount() const
+size_t AnalyserEquation::stateCount() const
 {
-    return mPimpl->mVariables.size();
+    return mPimpl->mStates.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::variables() const
+std::vector<AnalyserVariablePtr> AnalyserEquation::states() const
 {
-    return mPimpl->mVariables;
+    return mPimpl->mStates;
 }
 
-AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
+AnalyserVariablePtr AnalyserEquation::state(size_t index) const
 {
-    if (index >= mPimpl->mVariables.size()) {
+    if (index >= mPimpl->mStates.size()) {
         return {};
     }
 
-    return mPimpl->mVariables[index];
+    return mPimpl->mStates[index];
+}
+
+size_t AnalyserEquation::computedConstantCount() const
+{
+    return mPimpl->mComputedConstants.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::computedConstants() const
+{
+    return mPimpl->mComputedConstants;
+}
+
+AnalyserVariablePtr AnalyserEquation::computedConstant(size_t index) const
+{
+    if (index >= mPimpl->mComputedConstants.size()) {
+        return {};
+    }
+
+    return mPimpl->mComputedConstants[index];
+}
+
+size_t AnalyserEquation::algebraicCount() const
+{
+    return mPimpl->mAlgebraic.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::algebraic() const
+{
+    return mPimpl->mAlgebraic;
+}
+
+AnalyserVariablePtr AnalyserEquation::algebraic(size_t index) const
+{
+    if (index >= mPimpl->mAlgebraic.size()) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraic[index];
+}
+
+size_t AnalyserEquation::externalCount() const
+{
+    return mPimpl->mExternals.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::externals() const
+{
+    return mPimpl->mExternals;
+}
+
+AnalyserVariablePtr AnalyserEquation::external(size_t index) const
+{
+    if (index >= mPimpl->mExternals.size()) {
+        return {};
+    }
+
+    return mPimpl->mExternals[index];
 }
 
 } // namespace libcellml

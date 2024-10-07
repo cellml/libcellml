@@ -5,23 +5,53 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 4;
+const size_t CONSTANT_COUNT = 2;
+const size_t COMPUTED_CONSTANT_COUNT = 2;
+const size_t ALGEBRAIC_COUNT = 0;
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"vcell", "microlitre", "cell_geometry", COMPUTED_CONSTANT},
-    {"L", "centimeter", "cell_geometry", CONSTANT},
-    {"rad", "centimeter", "cell_geometry", CONSTANT},
-    {"vss", "microlitre", "cell_geometry", COMPUTED_CONSTANT}
+const VariableInfo CONSTANT_INFO[] = {
+    {"L", "centimeter", "cell_geometry"},
+    {"rad", "centimeter", "cell_geometry"}
 };
 
-double * createVariablesArray()
-{
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"vcell", "microlitre", "cell_geometry"},
+    {"vss", "microlitre", "cell_geometry"}
+};
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+const VariableInfo ALGEBRAIC_INFO[] = {
+};
+
+double * createConstantsArray()
+{
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -33,18 +63,18 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables)
+void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
 {
-    variables[1] = 0.01;
-    variables[2] = 0.0011;
+    constants[0] = 0.01;
+    constants[1] = 0.0011;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
-    variables[0] = 1000.0*3.14*variables[2]*variables[2]*variables[1];
-    variables[3] = 0.02*variables[0];
+    computedConstants[0] = 1000.0*3.14*constants[1]*constants[1]*constants[0];
+    computedConstants[1] = 0.02*computedConstants[0];
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
 }
