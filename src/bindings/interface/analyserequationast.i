@@ -53,6 +53,9 @@
 "Swaps the left and right children of this :class:`AnalyserEquationAst` object.";
 
 %{
+#include <float.h>
+#include <math.h>
+
 #include "libcellml/analyserequationast.h"
 %}
 
