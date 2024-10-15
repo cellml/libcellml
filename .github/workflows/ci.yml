@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  BUILDCACHE_ACCURACY: STRICT
+  BUILDCACHE_COMPRESS_FORMAT: ZSTD
+  BUILDCACHE_DEBUG: -1
+  BUILDCACHE_LOG_FILE: ""
+
+jobs:
+  cpp_python:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'Windows static (BPT)'
+            os: windows-latest
+            bindings_python: ON
+            build_shared: OFF
+            unit_tests: ON
+            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
+            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+          - name: 'Windows shared (BPT)'
+            os: windows-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
+            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+          - name: 'Linux static (B)'
+            os: ubuntu-latest
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: OFF
+          - name: 'Linux shared (BPT)'
+            os: ubuntu-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+          - name: 'macOS static (Intel) (BT)'
+            os: macos-13
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: ON
+          - name: 'macOS shared (Intel) (BPT)'
+            os: macos-13
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+          - name: 'macOS static (ARM) (BT)'
+            os: macos-latest
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: ON
+          - name: 'macOS shared (ARM) (BPT)'
+            os: macos-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install Python (if needed)
+        if: ${{ matrix.bindings_python == 'ON' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+        with:
+          cache_key: ${{ matrix.os }}-${{ matrix.build_shared }}
+      - name: Configure MSVC (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install libxml2 (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/libxml2.zip -OutFile libxml2.zip
+          Expand-Archive -LiteralPath libxml2.zip -DestinationPath C:\
+      - name: Install SWIG (macOS only and if needed)
+        if: ${{ runner.os == 'macOS' && matrix.bindings_python == 'ON' }}
+        run: |
+          brew install swig
+      - name: Install zlib (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/zlib.zip -OutFile zlib.zip
+          Expand-Archive -LiteralPath zlib.zip -DestinationPath C:\
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          ${{ matrix.set_path }}
+          cmake -G Ninja -DBINDINGS_PYTHON=${{ matrix.bindings_python }} -DBUILD_SHARED=${{ matrix.build_shared }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=${{ matrix.unit_tests }} ${{ matrix.additional_cmake_options }} ..
+      - name: Build libCellML
+        run: |
+          cd build
+          ninja
+      - name: Unit testing
+        if: ${{ matrix.unit_tests == 'ON' }}
+        run: |
+          cd build
+          ninja test
