@@ -109,3 +109,26 @@ jobs:
         run: |
           cd build
           ninja test
+  code_formatting:
+    name: Code formatting
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install ClangFormat
+        run: |
+          sudo apt update
+          sudo apt install clang-format
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja ..
+      - name: Code formatting
+        run: |
+          cd build
+          ninja test_clang_format
