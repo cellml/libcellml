@@ -730,19 +730,18 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
 
     analyser->analyseModel(model);
 
+    auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
-    generator->setModel(analyser->model());
-
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode(analyserModel));
 
     libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ("", generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+    EXPECT_EQ("", generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode(analyserModel));
 }
 
 TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)

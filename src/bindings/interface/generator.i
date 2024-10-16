@@ -17,12 +17,6 @@
 %feature("docstring") libcellml::Generator::setProfile
 "Sets the profile to use for code generation.";
 
-%feature("docstring") libcellml::Generator::model
-"Returns the model used for code generation.";
-
-%feature("docstring") libcellml::Generator::setModel
-"Sets the model to use for code generation.";
-
 %feature("docstring") libcellml::Generator::interfaceCode
 "Returns the interface code.";
 

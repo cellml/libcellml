@@ -68,49 +68,33 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
-     * @brief Get the @ref AnalyserModel.
-     *
-     * Get the @ref AnalyserModel used by this @ref Generator.
-     *
-     * @return The @ref AnalyserModel used.
-     */
-    AnalyserModelPtr model();
-
-    /**
-     * @brief Set the @ref AnalyserModel.
-     *
-     * Set the @ref AnalyserModel to be used by this @ref Generator.
-     *
-     * @param model The @ref AnalyserModel to set.
-     */
-    void setModel(const AnalyserModelPtr &model);
-
-    /**
      * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Return the interface code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param model The @ref AnalyserModel for which we want to generate some interface code.
      *
      * @return The interface code as a @c std::string.
      */
-    std::string interfaceCode() const;
+    std::string interfaceCode(const AnalyserModelPtr &model) const;
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
-     * Return the implementation code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param model The @ref AnalyserModel for which we want to generate some implementation code.
      *
      * @return The implementation code as a @c std::string.
      */
-    std::string implementationCode() const;
+    std::string implementationCode(const AnalyserModelPtr &model) const;
 
     /**
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      * @param generatorProfile The @ref GeneratorProfile, if any, to use to generate the equation code. If no
      * @ref GeneratorProfile is provided then the default @ref GeneratorProfile is used.
      *
@@ -124,7 +108,7 @@ public:
      *
      * Return the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      *
      * @return The equation code as a @c std::string.
      */
