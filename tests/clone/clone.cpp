@@ -501,9 +501,7 @@ TEST(Clone, generateFromClonedModel)
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
-    generator->setModel(analyser->model());
-
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode(analyser->model()));
 
     libcellml::PrinterPtr p = libcellml::Printer::create();
 

@@ -33,20 +33,18 @@ std::string generateDoubleCode(const std::string &value);
  */
 struct Generator::GeneratorImpl
 {
-    AnalyserModelPtr mModel;
-
     std::string mCode;
 
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
     void reset();
 
-    bool modelHasOdes() const;
-    bool modelHasNlas() const;
+    bool modelHasOdes(const AnalyserModelPtr &model) const;
+    bool modelHasNlas(const AnalyserModelPtr &model) const;
 
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
+    AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable) const;
 
-    double scalingFactor(const VariablePtr &variable) const;
+    double scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const;
 
     bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
 
@@ -78,73 +76,79 @@ struct Generator::GeneratorImpl
 
     void addVersionAndLibcellmlVersionCode(bool interface = false);
 
-    void addStateAndVariableCountCode(bool interface = false);
+    void addStateAndVariableCountCode(const AnalyserModelPtr &model, bool interface = false);
 
-    void addVariableTypeObjectCode();
+    void addVariableTypeObjectCode(const AnalyserModelPtr &model);
 
-    std::string generateVariableInfoObjectCode(const std::string &objectString) const;
+    std::string generateVariableInfoObjectCode(const AnalyserModelPtr &model, const std::string &objectString) const;
 
-    void addVariableInfoObjectCode();
+    void addVariableInfoObjectCode(const AnalyserModelPtr &model);
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
                                               const std::string &component,
                                               const std::string &type) const;
 
-    void addInterfaceVoiStateAndVariableInfoCode();
-    void addImplementationVoiInfoCode();
-    void addImplementationStateInfoCode();
-    void addImplementationVariableInfoCode();
+    void addInterfaceVoiStateAndVariableInfoCode(const AnalyserModelPtr &model);
+    void addImplementationVoiInfoCode(const AnalyserModelPtr &model);
+    void addImplementationStateInfoCode(const AnalyserModelPtr &model);
+    void addImplementationVariableInfoCode(const AnalyserModelPtr &model);
 
-    void addArithmeticFunctionsCode();
-    void addTrigonometricFunctionsCode();
+    void addArithmeticFunctionsCode(const AnalyserModelPtr &model);
+    void addTrigonometricFunctionsCode(const AnalyserModelPtr &model);
 
-    void addInterfaceCreateDeleteArrayMethodsCode();
-    void addExternalVariableMethodTypeDefinitionCode();
-    void addImplementationCreateStatesArrayMethodCode();
+    void addInterfaceCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model);
+    void addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &model);
+    void addImplementationCreateStatesArrayMethodCode(const AnalyserModelPtr &model);
     void addImplementationCreateVariablesArrayMethodCode();
     void addImplementationDeleteArrayMethodCode();
 
-    void addRootFindingInfoObjectCode();
-    void addExternNlaSolveMethodCode();
-    void addNlaSystemsCode();
+    void addRootFindingInfoObjectCode(const AnalyserModelPtr &model);
+    void addExternNlaSolveMethodCode(const AnalyserModelPtr &model);
+    void addNlaSystemsCode(const AnalyserModelPtr &model);
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
-    std::string generateVariableNameCode(const VariablePtr &variable,
+    std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &model,
+                                                         const VariablePtr &variable) const;
+    std::string generateVariableNameCode(const AnalyserModelPtr &model, const VariablePtr &variable,
                                          bool state = true) const;
 
-    std::string generateOperatorCode(const std::string &op,
+    std::string generateOperatorCode(const AnalyserModelPtr &model, const std::string &op,
                                      const AnalyserEquationAstPtr &ast) const;
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
-    std::string generateOneParameterFunctionCode(const std::string &function,
+    std::string generateMinusUnaryCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast) const;
+    std::string generateOneParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
                                                  const AnalyserEquationAstPtr &ast) const;
-    std::string generateTwoParameterFunctionCode(const std::string &function,
+    std::string generateTwoParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
                                                  const AnalyserEquationAstPtr &ast) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
+    std::string generateCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast) const;
 
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
     bool isSomeConstant(const AnalyserEquationPtr &equation,
                         bool includeComputedConstants) const;
 
-    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
-    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
-    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+    std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
+                                               const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable) const;
+    std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
                                      bool includeComputedConstants);
-    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+    std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 
-    void addInterfaceComputeModelMethodsCode();
-    void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model);
+    void addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
+                                                        std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &model,
+                                                             std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeRatesMethodCode(const AnalyserModelPtr &model,
+                                                 std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeVariablesMethodCode(const AnalyserModelPtr &model,
+                                                     std::vector<AnalyserEquationPtr> &remainingEquations);
 };
 
 } // namespace libcellml

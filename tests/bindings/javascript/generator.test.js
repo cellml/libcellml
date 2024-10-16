@@ -34,22 +34,6 @@ describe("Generator tests", () => {
 
         expect(g.profile().commentString()).toBe("# [CODE]\n")
     })
-    test('Checking Generator model manipulation.', () => {
-        const g = new libcellml.Generator()
-        const p = new libcellml.Parser(true)
-
-        m = p.parseModel(basicModel)
-        a = new libcellml.Analyser()
-
-        a.analyseModel(m)
-
-        expect(g.model()).toBe(null)
-
-        g.setModel(a.model())
-
-        expect(g.model()).toBeDefined()
-        expect(g.model().stateCount()).toBe(1)
-    })
     test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
         const p = new libcellml.Parser(true)
@@ -59,12 +43,12 @@ describe("Generator tests", () => {
 
         a.analyseModel(m)
 
-        g.setModel(a.model())
+        am = a.model()
 
-        const interface_lines = g.interfaceCode().split('\n')
+        const interface_lines = g.interfaceCode(am).split('\n')
         expect(interface_lines.length).toBe(40)
 
-        const implementation_lines = g.implementationCode().split('\n')
+        const implementation_lines = g.implementationCode(am).split('\n')
         expect(implementation_lines.length).toBe(67)
 
         const equation_line_1 = libcellml.Generator.equationCode(a.model().equation(0).ast())
