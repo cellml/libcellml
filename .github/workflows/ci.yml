@@ -164,3 +164,29 @@ jobs:
         run: |
           cd build
           ninja docs
+  coverage:
+    name: Code coverage
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install LLVM
+        run: |
+          brew install --overwrite llvm
+          brew info llvm
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DBINDINGS_PYTHON=OFF ..
+      - name: Code coverage
+        run: |
+          cd build
+          ninja llvm_coverage
+          if [ `ninja llvm_coverage | grep TOTAL | sed 's/ /\n/g' | grep "100.00%" | wc -l | sed 's/ //g'` -eq 4 ]; then exit 0; else exit 1; fi
