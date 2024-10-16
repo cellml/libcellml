@@ -215,3 +215,53 @@ jobs:
         run: |
           cd build
           ninja memcheck
+  javascript:
+    name: JavaScript (BT)
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    env:
+      LIBCELLML_WASM_DIR: wasm
+      LIBXML2_VERSION: 2.9.10
+      ZLIB_VERSION: 1.2.3
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install Emscripten
+        run: |
+          brew install --overwrite emscripten
+      - name: Set up the build directory
+        run: |
+          mkdir build
+      - name: Build zlib
+        run: |
+          cd build
+          ZLIB_BUILD_DIR=zlib-wasm
+          git clone https://github.com/OpenCMISS-Dependencies/zlib.git -b v${ZLIB_VERSION}
+          mkdir ${ZLIB_BUILD_DIR}
+          emcmake cmake -G Ninja -S zlib -B ${ZLIB_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DBUILD_SHARED_LIBS=OFF
+          cmake --build ${ZLIB_BUILD_DIR}
+          cmake --install ${ZLIB_BUILD_DIR}
+      - name: Build libxml2
+        run: |
+          cd build
+          LIBXML2_BUILD_DIR=libxml2-wasm
+          git clone https://github.com/OpenCMISS-Dependencies/libxml2.git -b v${LIBXML2_VERSION}
+          mkdir ${LIBXML2_BUILD_DIR}
+          emcmake cmake -G Ninja -S libxml2 -B ${LIBXML2_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DZLIB_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/ZLIB-${ZLIB_VERSION} -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+          cmake --build ${LIBXML2_BUILD_DIR}
+          cmake --install ${LIBXML2_BUILD_DIR}
+      - name: Build libCellML
+        run: |
+          cd build
+          mkdir ${LIBCELLML_WASM_DIR}
+          emcmake cmake -G Ninja -S .. -B ${LIBCELLML_WASM_DIR} -DLibXml2_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/libxml2-${LIBXML2_VERSION} -DBUILD_TYPE=Release
+          cmake --build ${LIBCELLML_WASM_DIR}
+      - name: Unit testing
+        run: |
+          cd build
+          cmake --build ${LIBCELLML_WASM_DIR} --target jest_test
