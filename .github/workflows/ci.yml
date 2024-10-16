@@ -132,3 +132,35 @@ jobs:
         run: |
           cd build
           ninja test_clang_format
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install dot
+        run: |
+          sudo apt update
+          sudo apt install graphviz
+      - name: Install Doxygen
+        run: |
+          sudo apt update
+          sudo apt install doxygen
+      - name: Install Sphinx
+        run: |
+          pip3 install sphinx
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DBINDINGS_PYTHON=OFF ..
+      - name: Documentation
+        run: |
+          cd build
+          ninja docs
