@@ -133,7 +133,7 @@ public:
     /**
      * @brief Get the state at @p index.
      *
-     * Return the state at the index @p index for the @ref AnalyserModel.
+     * Return the state at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the state to return.
      *
@@ -163,7 +163,7 @@ public:
     /**
      * @brief Get the constant at @p index.
      *
-     * Return the constant at the index @p index for the @ref AnalyserModel.
+     * Return the constant at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the constant to return.
      *
@@ -193,7 +193,7 @@ public:
     /**
      * @brief Get the computed constant at @p index.
      *
-     * Return the computed constant at the index @p index for the @ref AnalyserModel.
+     * Return the computed constant at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the computed constant to return.
      *
@@ -223,7 +223,7 @@ public:
     /**
      * @brief Get the algebraic variable at @p index.
      *
-     * Return the algebraic variable at the index @p index for the @ref AnalyserModel.
+     * Return the algebraic variable at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the algebraic variable to return.
      *
@@ -253,7 +253,7 @@ public:
     /**
      * @brief Get the external variable at @p index.
      *
-     * Return the external variable at the index @p index for the @ref AnalyserModel.
+     * Return the external variable at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the external variable to return.
      *
@@ -283,7 +283,7 @@ public:
     /**
      * @brief Get the equation at @p index.
      *
-     * Return the equation at the index @p index for the @ref AnalyserModel.
+     * Return the equation at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the equation to return.
      *
