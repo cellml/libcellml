@@ -81,6 +81,10 @@ describe("Analyser Model tests", () => {
         expect(am.externals().size()).toBe(0)
         expect(am.external(0)).toBeNull()
     });
+    test('Checking Analyser Model variable API.', () => {
+        expect(am.variable(null)).toBeNull()
+        expect(am.variable(m.componentByName("membrane").variableByName("V"))).not.toBeNull()
+    });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)
         expect(am.needNeqFunction()).toBe(false)

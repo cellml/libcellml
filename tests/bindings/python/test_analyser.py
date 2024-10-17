@@ -124,6 +124,8 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(12, am.algebraicCount())
         self.assertIsNotNone(am.algebraic())
         self.assertIsNotNone(am.algebraic(3))
+        self.assertIsNone(am.variable(None))
+        self.assertIsNotNone(am.variable(m.component("membrane").variable("V")))
 
         self.assertEqual(16, am.equationCount())
         self.assertIsNotNone(am.equations())

@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
+#include "libcellml/analyservariable.h"
+
 #include "analysermodel_p.h"
 #include "utilities.h"
 
@@ -227,6 +229,51 @@ AnalyserVariablePtr AnalyserModel::external(size_t index) const
     }
 
     return mPimpl->mExternals[index];
+}
+
+AnalyserVariablePtr AnalyserModel::variable(const VariablePtr &variable)
+{
+    if (!isValid() || (variable == nullptr)) {
+        return {};
+    }
+
+    if (mPimpl->mVoi != nullptr) {
+        if (areEquivalentVariables(mPimpl->mVoi->variable(), variable)) {
+            return mPimpl->mVoi;
+        }
+    }
+
+    for (const auto &state : mPimpl->mStates) {
+        if (areEquivalentVariables(state->variable(), variable)) {
+            return state;
+        }
+    }
+
+    for (const auto &constant : mPimpl->mConstants) {
+        if (areEquivalentVariables(constant->variable(), variable)) {
+            return constant;
+        }
+    }
+
+    for (const auto &computedConstant : mPimpl->mComputedConstants) {
+        if (areEquivalentVariables(computedConstant->variable(), variable)) {
+            return computedConstant;
+        }
+    }
+
+    for (const auto &algebraic : mPimpl->mAlgebraic) {
+        if (areEquivalentVariables(algebraic->variable(), variable)) {
+            return algebraic;
+        }
+    }
+
+    for (const auto &external : mPimpl->mExternals) {
+        if (areEquivalentVariables(external->variable(), variable)) {
+            return external;
+        }
+    }
+
+    return {};
 }
 
 size_t AnalyserModel::equationCount() const
