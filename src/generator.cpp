@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
+#include "analysermodel_p.h"
 #include "commonutils.h"
 #include "generator_p.h"
 #include "generatorprofilesha1values.h"
@@ -40,6 +41,98 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
+}
+
+bool Generator::GeneratorImpl::doTrackVariable(const ModelPtr &model, const VariablePtr &variable, bool tracked)
+{
+    mTrackedVariables[model][variable] = tracked;
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::doTrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable, bool tracked)
+{
+    if ((model == nullptr) || (variable == nullptr)) {
+        return false;
+    }
+
+    auto owningModel = libcellml::owningModel(variable);
+
+    if (owningModel == nullptr) {
+        return false;
+    }
+
+    for (const auto &untrackableVariable : variables(model, false)) {
+        if (model->areEquivalentVariables(variable, untrackableVariable->variable())) {
+            return doTrackVariable(owningModel, variable, tracked);
+        }
+    }
+
+    return false;
+}
+
+bool Generator::GeneratorImpl::trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+{
+    return doTrackVariable(model, variable, true);
+}
+
+bool Generator::GeneratorImpl::untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+{
+    return doTrackVariable(model, variable, false);
+}
+
+bool Generator::GeneratorImpl::doTrackAllVariables(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return false;
+    }
+
+    for (const auto &variable : variables(model, false)) {
+        doTrackVariable(model->mPimpl->mModel, variable->variable(), tracked);
+    }
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &model)
+{
+    return doTrackAllVariables(model, true);
+}
+
+bool Generator::GeneratorImpl::untrackAllVariables(const AnalyserModelPtr &model)
+{
+    return doTrackAllVariables(model, false);
+}
+
+size_t Generator::GeneratorImpl::doTrackedVariableCount(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return 0;
+    }
+
+    size_t res = 0;
+
+    for (const auto &variable : variables(model, false)) {
+        if (mTrackedVariables[model->mPimpl->mModel].find(variable->variable()) == mTrackedVariables[model->mPimpl->mModel].end()) {
+            mTrackedVariables[model->mPimpl->mModel][variable->variable()] = true;
+        }
+
+        if (mTrackedVariables[model->mPimpl->mModel][variable->variable()] == tracked) {
+            ++res;
+        }
+    }
+
+    return res;
+}
+
+size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &model)
+{
+    return doTrackedVariableCount(model, true);
+}
+
+size_t Generator::GeneratorImpl::untrackedVariableCount(const AnalyserModelPtr &model)
+{
+    return doTrackedVariableCount(model, false);
 }
 
 bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &model) const
@@ -2020,6 +2113,36 @@ GeneratorProfilePtr Generator::profile()
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
     mPimpl->mProfile = profile;
+}
+
+bool Generator::trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+{
+    return mPimpl->trackVariable(model, variable);
+}
+
+bool Generator::untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+{
+    return mPimpl->untrackVariable(model, variable);
+}
+
+bool Generator::trackAllVariables(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackAllVariables(model);
+}
+
+bool Generator::untrackAllVariables(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackAllVariables(model);
+}
+
+size_t Generator::trackedVariableCount(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackedVariableCount(model);
+}
+
+size_t Generator::untrackedVariableCount(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackedVariableCount(model);
 }
 
 std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
