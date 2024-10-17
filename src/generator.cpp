@@ -77,40 +77,29 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const AnalyserMod
         && model->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        for (const auto &modelState : model->states()) {
-            if (model->areEquivalentVariables(variable, modelState->variable())) {
-                res = modelState;
+        // Normally, we would have something like:
+        //
+        //     for (const auto &modelVariable : variables(model)) {
+        //         if (model->areEquivalentVariables(variable, modelVariable->variable())) {
+        //             res = modelVariable;
+        //
+        //             break;
+        //         }
+        //     }
+        //
+        // but we always have variables, so llvm-cov will complain that the false branch of our for loop is never
+        // reached. The below code is a bit more verbose but at least it makes llvm-cov happy.
 
-                break;
+        auto modelVariables = variables(model);
+        auto modelVariable = modelVariables.begin();
+
+        do {
+            if (model->areEquivalentVariables(variable, (*modelVariable)->variable())) {
+                res = *modelVariable;
+            } else {
+                ++modelVariable;
             }
-        }
-
-        if (res == nullptr) {
-            // Normally, we would have:
-            //
-            //     for (const auto &modelVariable : model->variables()) {
-            //         if (model->areEquivalentVariables(variable, modelVariable->variable())) {
-            //             res = modelVariable;
-            //
-            //             break;
-            //         }
-            //     }
-            //
-            // but we always have variables, so llvm-cov will complain that the
-            // false branch of our for loop is never reached. The below code is
-            // a bit more verbose but at least it makes llvm-cov happy.
-
-            auto modelVariables = model->variables();
-            auto modelVariable = modelVariables.begin();
-
-            do {
-                if (model->areEquivalentVariables(variable, (*modelVariable)->variable())) {
-                    res = *modelVariable;
-                } else {
-                    ++modelVariable;
-                }
-            } while (res == nullptr);
-        }
+        } while (res == nullptr);
     }
 
     return res;
@@ -118,9 +107,22 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const AnalyserMod
 
 double Generator::GeneratorImpl::scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const
 {
-    // Return the scaling factor for the given variable.
+    // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by
+    // another variable which initial value may be defined in a different component.
 
-    return Units::scalingFactor(variable->units(), analyserVariable(model, variable)->variable()->units());
+    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(model, variable);
+
+    if ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT)
+        && !isCellMLReal(variable->initialValue())) {
+        auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
+        auto initialValueAnalyserVariable = Generator::GeneratorImpl::analyserVariable(model, initialValueVariable);
+
+        if (owningComponent(variable) != owningComponent(initialValueAnalyserVariable->variable())) {
+            return Units::scalingFactor(initialValueVariable->units(), variable->units());
+        }
+    }
+
+    return Units::scalingFactor(analyserVariable->variable()->units(), variable->units());
 }
 
 bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &ast) const
@@ -264,8 +266,9 @@ void Generator::GeneratorImpl::addOriginCommentCode()
                                   "Python";
         profileInformation += " profile of";
 
-        mCode += replace(mProfile->commentString(),
-                         "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
+        mCode += newLineIfNeeded()
+                 + replace(mProfile->commentString(),
+                           "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
     }
 }
 
@@ -294,74 +297,86 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
 
 void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
 {
-    std::string versionAndLibcellmlCode;
+    std::string code;
 
     if ((interface && !mProfile->interfaceVersionString().empty())
         || (!interface && !mProfile->implementationVersionString().empty())) {
         if (interface) {
-            versionAndLibcellmlCode += mProfile->interfaceVersionString();
+            code += mProfile->interfaceVersionString();
         } else {
             if (modifiedProfile()) {
                 static const std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
 
-                versionAndLibcellmlCode += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
+                code += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
             } else {
-                versionAndLibcellmlCode += mProfile->implementationVersionString();
+                code += mProfile->implementationVersionString();
             }
         }
     }
 
     if ((interface && !mProfile->interfaceLibcellmlVersionString().empty())
         || (!interface && !mProfile->implementationLibcellmlVersionString().empty())) {
-        versionAndLibcellmlCode += interface ?
-                                       mProfile->interfaceLibcellmlVersionString() :
-                                       replace(mProfile->implementationLibcellmlVersionString(),
-                                               "[LIBCELLML_VERSION]", versionString());
+        code += interface ?
+                    mProfile->interfaceLibcellmlVersionString() :
+                    replace(mProfile->implementationLibcellmlVersionString(),
+                            "[LIBCELLML_VERSION]", versionString());
     }
 
-    if (!versionAndLibcellmlCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded()
+                 + code;
     }
-
-    mCode += versionAndLibcellmlCode;
 }
 
 void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelPtr &model, bool interface)
 {
-    std::string stateAndVariableCountCode;
+    std::string code;
 
     if (modelHasOdes(model)
         && ((interface && !mProfile->interfaceStateCountString().empty())
             || (!interface && !mProfile->implementationStateCountString().empty()))) {
-        stateAndVariableCountCode += interface ?
-                                         mProfile->interfaceStateCountString() :
-                                         replace(mProfile->implementationStateCountString(),
-                                                 "[STATE_COUNT]", std::to_string(model->stateCount()));
+        code += interface ?
+                    mProfile->interfaceStateCountString() :
+                    replace(mProfile->implementationStateCountString(),
+                            "[STATE_COUNT]", std::to_string(model->stateCount()));
     }
 
-    if ((interface && !mProfile->interfaceVariableCountString().empty())
-        || (!interface && !mProfile->implementationVariableCountString().empty())) {
-        stateAndVariableCountCode += interface ?
-                                         mProfile->interfaceVariableCountString() :
-                                         replace(mProfile->implementationVariableCountString(),
-                                                 "[VARIABLE_COUNT]", std::to_string(model->variableCount()));
+    if ((interface && !mProfile->interfaceConstantCountString().empty())
+        || (!interface && !mProfile->implementationConstantCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceConstantCountString() :
+                    replace(mProfile->implementationConstantCountString(),
+                            "[CONSTANT_COUNT]", std::to_string(model->constantCount()));
     }
 
-    if (!stateAndVariableCountCode.empty()) {
-        mCode += "\n";
+    if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
+        || (!interface && !mProfile->implementationComputedConstantCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceComputedConstantCountString() :
+                    replace(mProfile->implementationComputedConstantCountString(),
+                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(model->computedConstantCount()));
     }
 
-    mCode += stateAndVariableCountCode;
-}
+    if ((interface && !mProfile->interfaceAlgebraicCountString().empty())
+        || (!interface && !mProfile->implementationAlgebraicCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceAlgebraicCountString() :
+                    replace(mProfile->implementationAlgebraicCountString(),
+                            "[ALGEBRAIC_COUNT]", std::to_string(model->algebraicCount()));
+    }
 
-void Generator::GeneratorImpl::addVariableTypeObjectCode(const AnalyserModelPtr &model)
-{
-    auto variableTypeObjectString = mProfile->variableTypeObjectString(modelHasOdes(model),
-                                                                       model->hasExternalVariables());
+    if ((model->externalCount() != 0)
+        && ((interface && !mProfile->interfaceExternalCountString().empty())
+            || (!interface && !mProfile->implementationExternalCountString().empty()))) {
+        code += interface ?
+                    mProfile->interfaceExternalCountString() :
+                    replace(mProfile->implementationExternalCountString(),
+                            "[EXTERNAL_COUNT]", std::to_string(model->externalCount()));
+    }
 
-    if (!variableTypeObjectString.empty()) {
+    if (!code.empty()) {
         mCode += newLineIfNeeded()
-                 + variableTypeObjectString;
+                 + code;
     }
 }
 
@@ -372,15 +387,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const Analy
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (modelHasOdes(model)) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, model->voi());
-
-        for (const auto &state : model->states()) {
-            updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
-        }
-    }
-
-    for (const auto &variable : model->variables()) {
+    for (const auto &variable : variables(model)) {
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
@@ -400,147 +407,98 @@ void Generator::GeneratorImpl::addVariableInfoObjectCode(const AnalyserModelPtr 
 
 std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &name,
                                                                     const std::string &units,
-                                                                    const std::string &component,
-                                                                    const std::string &type) const
+                                                                    const std::string &component) const
 {
-    return replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                           "[NAME]", name),
-                                   "[UNITS]", units),
-                           "[COMPONENT]", component),
-                   "[TYPE]", type);
+    return replace(replace(replace(mProfile->variableInfoEntryString(),
+                                   "[NAME]", name),
+                           "[UNITS]", units),
+                   "[COMPONENT]", component);
 }
 
-void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::addInterfaceVariableInfoCode(const AnalyserModelPtr &model)
 {
-    std::string interfaceVoiStateAndVariableInfoCode;
+    std::string code;
 
     if (modelHasOdes(model)
         && !mProfile->interfaceVoiInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceVoiInfoString();
+        code += mProfile->interfaceVoiInfoString();
     }
 
     if (modelHasOdes(model)
         && !mProfile->interfaceStateInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceStateInfoString();
+        code += mProfile->interfaceStateInfoString();
     }
 
-    if (!mProfile->interfaceVariableInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mProfile->interfaceVariableInfoString();
+    if (!mProfile->interfaceConstantInfoString().empty()) {
+        code += mProfile->interfaceConstantInfoString();
     }
 
-    if (!interfaceVoiStateAndVariableInfoCode.empty()) {
-        mCode += "\n";
+    if (!mProfile->interfaceComputedConstantInfoString().empty()) {
+        code += mProfile->interfaceComputedConstantInfoString();
     }
 
-    mCode += interfaceVoiStateAndVariableInfoCode;
-}
+    if (!mProfile->interfaceAlgebraicInfoString().empty()) {
+        code += mProfile->interfaceAlgebraicInfoString();
+    }
 
-void Generator::GeneratorImpl::addImplementationVoiInfoCode(const AnalyserModelPtr &model)
-{
-    if (modelHasOdes(model)
-        && !mProfile->implementationVoiInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()) {
-        auto voiVariable = model->voi()->variable();
-        auto name = voiVariable->name();
-        auto units = voiVariable->units()->name();
-        auto component = owningComponent(voiVariable)->name();
-        auto type = mProfile->variableOfIntegrationVariableTypeString();
+    if (model->hasExternalVariables()
+        && !mProfile->interfaceExternalInfoString().empty()) {
+        code += mProfile->interfaceExternalInfoString();
+    }
 
+    if (!code.empty()) {
         mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationVoiInfoString(),
-                           "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
+                 + code;
     }
 }
 
-void Generator::GeneratorImpl::addImplementationStateInfoCode(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::string &variableInfoString,
+                                                                   const std::vector<AnalyserVariablePtr> &variables,
+                                                                   bool voiVariable)
 {
-    if (modelHasOdes(model)
-        && !mProfile->implementationStateInfoString().empty()
+    if (!variableInfoString.empty()
         && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->stateVariableTypeString().empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
-        auto type = mProfile->stateVariableTypeString();
 
-        for (const auto &state : model->states()) {
+        for (const auto &variable : variables) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            auto stateVariable = state->variable();
+            auto variableVariable = variable->variable();
 
-            infoElementsCode += mProfile->indentString()
-                                + generateVariableInfoEntryCode(stateVariable->name(),
-                                                                stateVariable->units()->name(),
-                                                                owningComponent(stateVariable)->name(),
-                                                                type);
+            infoElementsCode += (voiVariable ? "" : mProfile->indentString())
+                                + generateVariableInfoEntryCode(variableVariable->name(),
+                                                                variableVariable->units()->name(),
+                                                                owningComponent(variableVariable)->name());
         }
 
-        infoElementsCode += "\n";
+        if (!voiVariable && !infoElementsCode.empty()) {
+            infoElementsCode += "\n";
+        }
 
         mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationStateInfoString(),
-                           "[CODE]", infoElementsCode);
+                 + replace(variableInfoString, "[CODE]", infoElementsCode);
     }
 }
 
 void Generator::GeneratorImpl::addImplementationVariableInfoCode(const AnalyserModelPtr &model)
 {
-    if (!mProfile->implementationVariableInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()
-        && !mProfile->arrayElementSeparatorString().empty()
-        && !mProfile->variableOfIntegrationVariableTypeString().empty()
-        && !mProfile->stateVariableTypeString().empty()
-        && !mProfile->constantVariableTypeString().empty()
-        && !mProfile->computedConstantVariableTypeString().empty()
-        && !mProfile->algebraicVariableTypeString().empty()
-        && !mProfile->externalVariableTypeString().empty()) {
-        std::string infoElementsCode;
+    if (modelHasOdes(model)) {
+        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {model->voi()}, true);
+    }
 
-        for (const auto &variable : model->variables()) {
-            if (!infoElementsCode.empty()) {
-                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
-            }
+    if (modelHasOdes(model)) {
+        doAddImplementationVariableInfoCode(mProfile->implementationStateInfoString(), model->states(), false);
+    }
 
-            std::string variableType;
+    doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), model->constants(), false);
+    doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), model->computedConstants(), false);
+    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicInfoString(), model->algebraic(), false);
 
-            switch (variable->type()) {
-            case AnalyserVariable::Type::CONSTANT:
-                variableType = mProfile->constantVariableTypeString();
-
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
-                variableType = mProfile->computedConstantVariableTypeString();
-
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
-                variableType = mProfile->algebraicVariableTypeString();
-
-                break;
-            default: // AnalyserVariable::Type::EXTERNAL.
-                variableType = mProfile->externalVariableTypeString();
-
-                break;
-            }
-
-            auto variableVariable = variable->variable();
-
-            infoElementsCode += mProfile->indentString()
-                                + replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                                                  "[NAME]", variableVariable->name()),
-                                                          "[UNITS]", variableVariable->units()->name()),
-                                                  "[COMPONENT]", owningComponent(variableVariable)->name()),
-                                          "[TYPE]", variableType);
-        }
-
-        if (!infoElementsCode.empty()) {
-            infoElementsCode += "\n";
-        }
-
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationVariableInfoString(),
-                           "[CODE]", infoElementsCode);
+    if (model->hasExternalVariables()) {
+        doAddImplementationVariableInfoCode(mProfile->implementationExternalInfoString(), model->externals(), false);
     }
 }
 
@@ -696,26 +654,74 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode(const AnalyserModel
 
 void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model)
 {
-    std::string interfaceCreateDeleteArraysCode;
+    std::string code;
 
     if (modelHasOdes(model)
         && !mProfile->interfaceCreateStatesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateStatesArrayMethodString();
+        code += mProfile->interfaceCreateStatesArrayMethodString();
     }
 
-    if (!mProfile->interfaceCreateVariablesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateVariablesArrayMethodString();
+    if (!mProfile->interfaceCreateConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateComputedConstantsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateAlgebraicArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateAlgebraicArrayMethodString();
+    }
+
+    if (model->hasExternalVariables()
+        && !mProfile->interfaceCreateExternalsArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateExternalsArrayMethodString();
     }
 
     if (!mProfile->interfaceDeleteArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mProfile->interfaceDeleteArrayMethodString();
+        code += "\n"
+                + mProfile->interfaceDeleteArrayMethodString();
     }
 
-    if (!interfaceCreateDeleteArraysCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded()
+                 + code;
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model)
+{
+    if (modelHasOdes(model)
+        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateStatesArrayMethodString();
     }
 
-    mCode += interfaceCreateDeleteArraysCode;
+    if (!mProfile->implementationCreateConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateComputedConstantsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateComputedConstantsArrayMethodString();
+    }
+
+    if (!mProfile->implementationCreateAlgebraicArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateAlgebraicArrayMethodString();
+    }
+
+    if (model->hasExternalVariables()
+        && !mProfile->implementationCreateExternalsArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationCreateExternalsArrayMethodString();
+    }
+
+    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mProfile->implementationDeleteArrayMethodString();
+    }
 }
 
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &model)
@@ -724,43 +730,18 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode(const
         auto externalVariableMethodTypeDefinitionString = mProfile->externalVariableMethodTypeDefinitionString(modelHasOdes(model));
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
-            mCode += "\n"
+            mCode += newLineIfNeeded()
                      + externalVariableMethodTypeDefinitionString;
         }
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(const AnalyserModelPtr &model)
-{
-    if (modelHasOdes(model)
-        && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateStatesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
-{
-    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateVariablesArrayMethodString();
-    }
-}
-
-void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
-{
-    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationDeleteArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode(const AnalyserModelPtr &model)
 {
     if (modelHasNlas(model)
-        && !mProfile->rootFindingInfoObjectString(modelHasOdes(model)).empty()) {
+        && !mProfile->rootFindingInfoObjectString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
         mCode += newLineIfNeeded()
-                 + mProfile->rootFindingInfoObjectString(modelHasOdes(model));
+                 + mProfile->rootFindingInfoObjectString(modelHasOdes(model), model->hasExternalVariables());
     }
 }
 
@@ -776,9 +757,12 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode(const AnalyserModelPt
 void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
 {
     if (modelHasNlas(model)
-        && !mProfile->objectiveFunctionMethodString(modelHasOdes(model)).empty()
-        && !mProfile->findRootMethodString(modelHasOdes(model)).empty()
-        && !mProfile->nlaSolveCallString(modelHasOdes(model)).empty()) {
+        && !mProfile->objectiveFunctionMethodString(modelHasOdes(model), model->hasExternalVariables()).empty()
+        && !mProfile->findRootMethodString(modelHasOdes(model), model->hasExternalVariables()).empty()
+        && !mProfile->nlaSolveCallString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
+        // Note: only states and algebraic variables can be computed through an NLA system. Constants, computed
+        //       constants, and external variables cannot, by definition, be computed through an NLA system.
+
         std::vector<AnalyserEquationPtr> handledNlaEquations;
 
         for (const auto &equation : model->equations()) {
@@ -786,18 +770,17 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                 && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())) {
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
-                auto variables = equation->variables();
-                auto variablesSize = variables.size();
+                auto variables = libcellml::variables(equation);
 
-                for (i = 0; i < variablesSize; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
@@ -824,48 +807,54 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes(model)),
+                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes(model), model->hasExternalVariables()),
                                            "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                    "[CODE]", generateMethodBodyCode(methodBody));
 
                 methodBody = {};
 
-                for (i = 0; i < variablesSize; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                i = MAX_SIZE_T;
+
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
+                auto variablesCount = variables.size();
+
                 methodBody += newLineIfNeeded()
                               + mProfile->indentString()
-                              + replace(replace(mProfile->nlaSolveCallString(modelHasOdes(model)),
+                              + replace(replace(mProfile->nlaSolveCallString(modelHasOdes(model), model->hasExternalVariables()),
                                                 "[INDEX]", convertToString(equation->nlaSystemIndex())),
-                                        "[SIZE]", convertToString(equation->variableCount()));
+                                        "[SIZE]", convertToString(variablesCount));
 
                 methodBody += newLineIfNeeded();
 
-                for (i = 0; i < variablesSize; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                i = MAX_SIZE_T;
+
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes(model)),
+                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes(model), model->hasExternalVariables()),
                                                    "[INDEX]", convertToString(equation->nlaSystemIndex())),
-                                           "[SIZE]", convertToString(variablesSize)),
+                                           "[SIZE]", convertToString(variablesCount)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
             }
         }
@@ -903,10 +892,10 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
         return generateDoubleCode(variable->initialValue());
     }
 
-    auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserVariable(model, initValueVariable);
+    auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
+    auto analyserInitialValueVariable = analyserVariable(model, initialValueVariable);
 
-    return mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
+    return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserModelPtr &model,
@@ -934,8 +923,14 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
         arrayName = state ?
                         mProfile->statesArrayString() :
                         mProfile->ratesArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
+        arrayName = mProfile->constantsArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
+        arrayName = mProfile->computedConstantsArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC) {
+        arrayName = mProfile->algebraicArrayString();
     } else {
-        arrayName = mProfile->variablesArrayString();
+        arrayName = mProfile->externalArrayString();
     }
 
     return arrayName + mProfile->openArrayString() + convertToString(analyserVariable->index()) + mProfile->closeArrayString();
@@ -1709,7 +1704,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserM
     std::string scalingFactorCode;
 
     if (!areNearlyEqual(scalingFactor, 1.0)) {
-        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
+        scalingFactorCode = generateDoubleCode(convertToString(scalingFactor)) + mProfile->timesString();
     }
 
     return mProfile->indentString()
@@ -1757,7 +1752,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
-            for (const auto &variable : equation->variables()) {
+            for (const auto &variable : variables(equation)) {
                 res += mProfile->indentString()
                        + generateVariableNameCode(model, variable->variable())
                        + mProfile->equalityString()
@@ -1768,9 +1763,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
             break;
         case AnalyserEquation::Type::NLA:
-            if (!mProfile->findRootCallString(modelHasOdes(model)).empty()) {
+            if (!mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
                 res += mProfile->indentString()
-                       + replace(mProfile->findRootCallString(modelHasOdes(model)),
+                       + replace(mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
             }
 
@@ -1796,94 +1791,95 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model)
 {
-    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(modelHasOdes(model),
-                                                                                                       model->hasExternalVariables());
-    std::string interfaceComputeModelMethodsCode;
+    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(modelHasOdes(model));
+    std::string code;
 
     if (!interfaceInitialiseVariablesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceInitialiseVariablesMethodString;
+        code += interfaceInitialiseVariablesMethodString;
     }
 
     if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mProfile->interfaceComputeComputedConstantsMethodString();
+        code += mProfile->interfaceComputeComputedConstantsMethodString();
     }
 
     auto interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(model->hasExternalVariables());
 
     if (modelHasOdes(model)
         && !interfaceComputeRatesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceComputeRatesMethodString;
+        code += interfaceComputeRatesMethodString;
     }
 
     auto interfaceComputeVariablesMethodString = mProfile->interfaceComputeVariablesMethodString(modelHasOdes(model),
                                                                                                  model->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
-        interfaceComputeModelMethodsCode += interfaceComputeVariablesMethodString;
+        code += interfaceComputeVariablesMethodString;
     }
 
-    if (!interfaceComputeModelMethodsCode.empty()) {
-        mCode += "\n";
+    if (!code.empty()) {
+        mCode += newLineIfNeeded()
+                 + code;
+    }
+}
+
+std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const AnalyserModelPtr &model,
+                                                                         const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                                         std::vector<AnalyserVariablePtr> &remainingConstants)
+{
+    auto initialisingVariable = (*constant)->initialisingVariable();
+    auto initialValue = initialisingVariable->initialValue();
+
+    if (!isCellMLReal(initialValue)) {
+        auto initialisingComponent = owningComponent(initialisingVariable);
+        auto crtConstant = std::find_if(remainingConstants.begin(), remainingConstants.end(),
+                                        [=](const AnalyserVariablePtr &av) -> bool {
+                                            return initialisingComponent->variable(initialValue) == av->variable();
+                                        });
+
+        if (crtConstant != remainingConstants.end()) {
+            return generateConstantInitialisationCode(model, crtConstant, remainingConstants);
+        }
     }
 
-    mCode += interfaceComputeModelMethodsCode;
+    auto code = generateInitialisationCode(model, *constant);
+
+    remainingConstants.erase(constant);
+
+    return code;
 }
 
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
                                                                               std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes(model),
-                                                                                                                 model->hasExternalVariables());
+    auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes(model));
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
-        // Initialise our constants and our algebraic variables that have an
-        // initial value. Also use an initial guess of zero for computed
-        // constants and algebraic variables computed using an NLA system.
-        // Note: a variable which is the only unknown in an equation, but which
-        //       is not on its own on either the LHS or RHS of that equation
-        //       (e.g., x = y+z with x and y known and z unknown) is (currently)
-        //       to be computed using an NLA system for which we need an initial
-        //       guess. We use an initial guess of zero, which is fine since
-        //       such an NLA system has only one solution.
+        // Initialise our states (after, if needed, initialising the constant on which it depends).
 
         std::string methodBody;
-
-        for (const auto &variable : model->variables()) {
-            switch (variable->type()) {
-            case AnalyserVariable::Type::CONSTANT:
-                methodBody += generateInitialisationCode(model, variable);
-
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
-            case AnalyserVariable::Type::ALGEBRAIC:
-                if (variable->initialisingVariable() != nullptr) {
-                    methodBody += generateInitialisationCode(model, variable);
-                } else if (variable->equation(0)->type() == AnalyserEquation::Type::NLA) {
-                    methodBody += generateZeroInitialisationCode(model, variable);
-                }
-
-                break;
-            default: // Other types we don't care about.
-                break;
-            }
-        }
-
-        // Initialise our true constants.
-
-        for (const auto &equation : model->equations()) {
-            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
-                methodBody += generateEquationCode(model, equation, remainingEquations);
-            }
-        }
-
-        // Initialise our states.
+        auto constants = model->constants();
 
         for (const auto &state : model->states()) {
+            auto initialisingVariable = state->initialisingVariable();
+            auto initialValue = initialisingVariable->initialValue();
+
+            if (!isCellMLReal(initialValue)) {
+                // The initial value references a constant.
+
+                auto initialisingComponent = owningComponent(initialisingVariable);
+                auto constant = std::find_if(constants.begin(), constants.end(),
+                                             [=](const AnalyserVariablePtr &av) -> bool {
+                                                 return initialisingComponent->variable(initialValue)->hasEquivalentVariable(av->variable());
+                                             });
+
+                methodBody += generateConstantInitialisationCode(model, constant, constants);
+            }
+
             methodBody += generateInitialisationCode(model, state);
         }
 
         // Use an initial guess of zero for rates computed using an NLA system
-        // (see the note above).
+        // (see the note below).
 
         for (const auto &state : model->states()) {
             if (state->equation(0)->type() == AnalyserEquation::Type::NLA) {
@@ -1891,20 +1887,35 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
             }
         }
 
-        // Initialise our external variables.
+        // Initialise our (remaining) constants.
 
-        if (model->hasExternalVariables()) {
-            auto equations = model->equations();
-            std::vector<AnalyserEquationPtr> remainingExternalEquations;
+        while (!constants.empty()) {
+            methodBody += generateConstantInitialisationCode(model, constants.begin(), constants);
+        }
 
-            std::copy_if(equations.begin(), equations.end(),
-                         std::back_inserter(remainingExternalEquations),
-                         [](const AnalyserEquationPtr &equation) { return equation->type() == AnalyserEquation::Type::EXTERNAL; });
+        // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
+        // initial value of 3).
 
-            for (const auto &equation : model->equations()) {
-                if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
-                    methodBody += generateEquationCode(model, equation, remainingExternalEquations);
-                }
+        auto equations = model->equations();
+
+        for (const auto &equation : equations) {
+            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
+                methodBody += generateEquationCode(model, equation, remainingEquations);
+            }
+        }
+
+        // Initialise our algebraic variables that have an initial value. Also use an initial guess of zero for
+        // algebraic variables computed using an NLA system.
+        // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or
+        //       RHS of that equation (e.g., x = y+z with x and y known and z unknown) is (currently) to be computed
+        //       using an NLA system for which we need an initial guess. We use an initial guess of zero, which is fine
+        //       since such an NLA system has only one solution.
+
+        for (const auto &algebraic : model->algebraic()) {
+            if (algebraic->initialisingVariable() != nullptr) {
+                methodBody += generateInitialisationCode(model, algebraic);
+            } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                methodBody += generateZeroInitialisationCode(model, algebraic);
             }
         }
 
@@ -1946,10 +1957,12 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(const Ana
             // NLA equation in case the rate is not on its own on either the LHS
             // or RHS of the equation.
 
+            auto variables = libcellml::variables(equation);
+
             if ((equation->type() == AnalyserEquation::Type::ODE)
                 || ((equation->type() == AnalyserEquation::Type::NLA)
-                    && (equation->variableCount() == 1)
-                    && (equation->variable(0)->type() == AnalyserVariable::Type::STATE))) {
+                    && (variables.size() == 1)
+                    && (variables[0]->type() == AnalyserVariable::Type::STATE))) {
                 methodBody += generateEquationCode(model, equation, remainingEquations);
             }
         }
@@ -2040,13 +2053,12 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
 
     // Add code for the variable information related objects.
 
-    mPimpl->addVariableTypeObjectCode(model);
     mPimpl->addVariableInfoObjectCode(model);
 
-    // Add code for the interface of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the interface of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addInterfaceVoiStateAndVariableInfoCode(model);
+    mPimpl->addInterfaceVariableInfoCode(model);
 
     // Add code for the interface to create and delete arrays.
 
@@ -2095,15 +2107,12 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
     // Add code for the variable information related objects.
 
     if (!mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode(model);
         mPimpl->addVariableInfoObjectCode(model);
     }
 
-    // Add code for the implementation of the information about the variable of
-    // integration, states and (other) variables.
+    // Add code for the implementation of the information about the variable of integration, states, constants, computed
+    // constants, algebraic variables, and external variables.
 
-    mPimpl->addImplementationVoiInfoCode(model);
-    mPimpl->addImplementationStateInfoCode(model);
     mPimpl->addImplementationVariableInfoCode(model);
 
     // Add code for the arithmetic and trigonometric functions.
@@ -2113,9 +2122,7 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateStatesArrayMethodCode(model);
-    mPimpl->addImplementationCreateVariablesArrayMethodCode();
-    mPimpl->addImplementationDeleteArrayMethodCode();
+    mPimpl->addImplementationCreateDeleteArrayMethodsCode(model);
 
     // Add code for the NLA solver.
 

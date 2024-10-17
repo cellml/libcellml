@@ -5,268 +5,276 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 33;
-const size_t VARIABLE_COUNT = 217;
+const size_t CONSTANT_COUNT = 91;
+const size_t COMPUTED_CONSTANT_COUNT = 25;
+const size_t ALGEBRAIC_COUNT = 101;
 
-const VariableInfo VOI_INFO = {"time", "second", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"time", "second", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"Ca_sub", "millimolar", "Ca_dynamics", STATE},
-    {"Nai_", "millimolar", "Nai_concentration", STATE},
-    {"Ca_jsr", "millimolar", "Ca_dynamics", STATE},
-    {"O", "dimensionless", "Ca_SR_release", STATE},
-    {"R", "dimensionless", "Ca_SR_release", STATE},
-    {"RI", "dimensionless", "Ca_SR_release", STATE},
-    {"I", "dimensionless", "Ca_SR_release", STATE},
-    {"Cai", "millimolar", "Ca_dynamics", STATE},
-    {"Ca_nsr", "millimolar", "Ca_dynamics", STATE},
-    {"fTC", "dimensionless", "Ca_buffering", STATE},
-    {"fTMC", "dimensionless", "Ca_buffering", STATE},
-    {"fTMM", "dimensionless", "Ca_buffering", STATE},
-    {"fCMi", "dimensionless", "Ca_buffering", STATE},
-    {"fCMs", "dimensionless", "Ca_buffering", STATE},
-    {"fCQ", "dimensionless", "Ca_buffering", STATE},
-    {"V_ode", "millivolt", "Membrane", STATE},
-    {"y", "dimensionless", "i_f_y_gate", STATE},
-    {"h", "dimensionless", "i_Na_h_gate", STATE},
-    {"m", "dimensionless", "i_Na_m_gate", STATE},
-    {"s_Kur", "dimensionless", "i_Kur_sKur_gate", STATE},
-    {"r_Kur", "dimensionless", "i_Kur_rKur_gate", STATE},
-    {"fCa", "dimensionless", "i_CaL_fCa_gate", STATE},
-    {"fL", "dimensionless", "i_CaL_fL_gate", STATE},
-    {"dL", "dimensionless", "i_CaL_dL_gate", STATE},
-    {"fT", "dimensionless", "i_CaT_fT_gate", STATE},
-    {"dT", "dimensionless", "i_CaT_dT_gate", STATE},
-    {"r", "dimensionless", "i_to_r_gate", STATE},
-    {"q", "dimensionless", "i_to_q_gate", STATE},
-    {"piy", "dimensionless", "i_Kr_pi_gate", STATE},
-    {"paF", "dimensionless", "i_Kr_pa_gate", STATE},
-    {"paS", "dimensionless", "i_Kr_pa_gate", STATE},
-    {"n", "dimensionless", "i_Ks_n_gate", STATE},
-    {"a", "dimensionless", "i_KACh_a_gate", STATE}
+    {"Ca_sub", "millimolar", "Ca_dynamics"},
+    {"Nai_", "millimolar", "Nai_concentration"},
+    {"Ca_jsr", "millimolar", "Ca_dynamics"},
+    {"O", "dimensionless", "Ca_SR_release"},
+    {"R", "dimensionless", "Ca_SR_release"},
+    {"RI", "dimensionless", "Ca_SR_release"},
+    {"I", "dimensionless", "Ca_SR_release"},
+    {"Cai", "millimolar", "Ca_dynamics"},
+    {"Ca_nsr", "millimolar", "Ca_dynamics"},
+    {"fTC", "dimensionless", "Ca_buffering"},
+    {"fTMC", "dimensionless", "Ca_buffering"},
+    {"fTMM", "dimensionless", "Ca_buffering"},
+    {"fCMi", "dimensionless", "Ca_buffering"},
+    {"fCMs", "dimensionless", "Ca_buffering"},
+    {"fCQ", "dimensionless", "Ca_buffering"},
+    {"V_ode", "millivolt", "Membrane"},
+    {"y", "dimensionless", "i_f_y_gate"},
+    {"h", "dimensionless", "i_Na_h_gate"},
+    {"m", "dimensionless", "i_Na_m_gate"},
+    {"s_Kur", "dimensionless", "i_Kur_sKur_gate"},
+    {"r_Kur", "dimensionless", "i_Kur_rKur_gate"},
+    {"fCa", "dimensionless", "i_CaL_fCa_gate"},
+    {"fL", "dimensionless", "i_CaL_fL_gate"},
+    {"dL", "dimensionless", "i_CaL_dL_gate"},
+    {"fT", "dimensionless", "i_CaT_fT_gate"},
+    {"dT", "dimensionless", "i_CaT_dT_gate"},
+    {"r", "dimensionless", "i_to_r_gate"},
+    {"q", "dimensionless", "i_to_q_gate"},
+    {"piy", "dimensionless", "i_Kr_pi_gate"},
+    {"paF", "dimensionless", "i_Kr_pa_gate"},
+    {"paS", "dimensionless", "i_Kr_pa_gate"},
+    {"n", "dimensionless", "i_Ks_n_gate"},
+    {"a", "dimensionless", "i_KACh_a_gate"}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"ACh", "millimolar", "Rate_modulation_experiments", CONSTANT},
-    {"Iso_1_uM", "dimensionless", "Rate_modulation_experiments", CONSTANT},
-    {"E_Na", "millivolt", "Ionic_values", ALGEBRAIC},
-    {"RTONF", "millivolt", "Membrane", COMPUTED_CONSTANT},
-    {"Nao", "millimolar", "Ionic_values", CONSTANT},
-    {"Nai", "millimolar", "Nai_concentration", ALGEBRAIC},
-    {"E_K", "millivolt", "Ionic_values", COMPUTED_CONSTANT},
-    {"Ko", "millimolar", "Ionic_values", CONSTANT},
-    {"Ki", "millimolar", "Ionic_values", CONSTANT},
-    {"E_Ca", "millivolt", "Ionic_values", ALGEBRAIC},
-    {"Cao", "millimolar", "Ionic_values", CONSTANT},
-    {"Nai_clamp", "dimensionless", "Nai_concentration", CONSTANT},
-    {"i_Na", "nanoA", "i_Na", ALGEBRAIC},
-    {"i_NaCa", "nanoA", "i_NaCa", ALGEBRAIC},
-    {"i_NaK", "nanoA", "i_NaK", ALGEBRAIC},
-    {"i_siNa", "nanoA", "i_CaL", ALGEBRAIC},
-    {"i_fNa", "nanoA", "i_f", ALGEBRAIC},
-    {"F", "coulomb_per_mole", "Membrane", CONSTANT},
-    {"V_i", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
-    {"V_sub", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
-    {"Iso_increase", "dimensionless", "i_NaK", COMPUTED_CONSTANT},
-    {"V", "millivolt", "Membrane", ALGEBRAIC},
-    {"Km_Nap", "millimolar", "i_NaK", CONSTANT},
-    {"Km_Kp", "millimolar", "i_NaK", CONSTANT},
-    {"i_NaK_max", "nanoA", "i_NaK", CONSTANT},
-    {"blockade_NaCa", "dimensionless", "i_NaCa", CONSTANT},
-    {"x2", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k21", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"x1", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k12", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"K_NaCa", "nanoA", "i_NaCa", CONSTANT},
-    {"x4", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"x3", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k41", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k23", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k34", "dimensionless", "i_NaCa", COMPUTED_CONSTANT},
-    {"k43", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k32", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"k14", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"K3ni", "millimolar", "i_NaCa", CONSTANT},
-    {"Kci", "millimolar", "i_NaCa", CONSTANT},
-    {"Qci", "dimensionless", "i_NaCa", CONSTANT},
-    {"di", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"K1ni", "millimolar", "i_NaCa", CONSTANT},
-    {"K2ni", "millimolar", "i_NaCa", CONSTANT},
-    {"Qn", "dimensionless", "i_NaCa", CONSTANT},
-    {"Kcni", "millimolar", "i_NaCa", CONSTANT},
-    {"K3no", "millimolar", "i_NaCa", CONSTANT},
-    {"Kco", "millimolar", "i_NaCa", CONSTANT},
-    {"Qco", "dimensionless", "i_NaCa", CONSTANT},
-    {"do", "dimensionless", "i_NaCa", ALGEBRAIC},
-    {"K1no", "millimolar", "i_NaCa", CONSTANT},
-    {"K2no", "millimolar", "i_NaCa", CONSTANT},
-    {"j_SRCarel", "millimolar_per_second", "Ca_SR_release", ALGEBRAIC},
-    {"ks", "per_second", "Ca_SR_release", CONSTANT},
-    {"diff", "millimolar", "Ca_SR_release", ALGEBRAIC},
-    {"kCaSR", "dimensionless", "Ca_SR_release", ALGEBRAIC},
-    {"MaxSR", "dimensionless", "Ca_SR_release", CONSTANT},
-    {"MinSR", "dimensionless", "Ca_SR_release", CONSTANT},
-    {"EC50_SR", "millimolar", "Ca_SR_release", CONSTANT},
-    {"HSR", "dimensionless", "Ca_SR_release", CONSTANT},
-    {"koSRCa", "per_millimolar2_second", "Ca_SR_release", ALGEBRAIC},
-    {"koCa", "per_millimolar2_second", "Ca_SR_release", CONSTANT},
-    {"kiSRCa", "per_millimolar_second", "Ca_SR_release", ALGEBRAIC},
-    {"kiCa", "per_millimolar_second", "Ca_SR_release", CONSTANT},
-    {"kim", "per_second", "Ca_SR_release", CONSTANT},
-    {"kom", "per_second", "Ca_SR_release", CONSTANT},
-    {"P_tot", "dimensionless", "Ca_SR_release", ALGEBRAIC},
-    {"b_up", "dimensionless", "Ca_intracellular_fluxes", COMPUTED_CONSTANT},
-    {"P_up", "millimolar_per_second", "Ca_intracellular_fluxes", COMPUTED_CONSTANT},
-    {"P_up_basal", "millimolar_per_second", "Ca_intracellular_fluxes", CONSTANT},
-    {"j_Ca_dif", "millimolar_per_second", "Ca_intracellular_fluxes", ALGEBRAIC},
-    {"tau_dif_Ca", "second", "Ca_intracellular_fluxes", CONSTANT},
-    {"j_up", "millimolar_per_second", "Ca_intracellular_fluxes", ALGEBRAIC},
-    {"K_up", "millimolar", "Ca_intracellular_fluxes", CONSTANT},
-    {"slope_up", "millimolar", "Ca_intracellular_fluxes", CONSTANT},
-    {"j_tr", "millimolar_per_second", "Ca_intracellular_fluxes", ALGEBRAIC},
-    {"tau_tr", "second", "Ca_intracellular_fluxes", CONSTANT},
-    {"delta_fTC", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"kf_TC", "per_millimolar_second", "Ca_buffering", CONSTANT},
-    {"kb_TC", "per_second", "Ca_buffering", CONSTANT},
-    {"delta_fTMC", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"kf_TMC", "per_millimolar_second", "Ca_buffering", CONSTANT},
-    {"kb_TMC", "per_second", "Ca_buffering", CONSTANT},
-    {"delta_fTMM", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"kf_TMM", "per_millimolar_second", "Ca_buffering", CONSTANT},
-    {"Mgi", "millimolar", "Ca_buffering", CONSTANT},
-    {"kb_TMM", "per_second", "Ca_buffering", CONSTANT},
-    {"delta_fCMi", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"kf_CM", "per_millimolar_second", "Ca_buffering", CONSTANT},
-    {"kb_CM", "per_second", "Ca_buffering", CONSTANT},
-    {"delta_fCMs", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"delta_fCQ", "per_second", "Ca_buffering", ALGEBRAIC},
-    {"kf_CQ", "per_millimolar_second", "Ca_buffering", CONSTANT},
-    {"kb_CQ", "per_second", "Ca_buffering", CONSTANT},
-    {"TC_tot", "millimolar", "Ca_buffering", CONSTANT},
-    {"TMC_tot", "millimolar", "Ca_buffering", CONSTANT},
-    {"CM_tot", "millimolar", "Ca_buffering", CONSTANT},
-    {"CQ_tot", "millimolar", "Ca_buffering", CONSTANT},
-    {"V_nsr", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
-    {"V_jsr", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
-    {"i_siCa", "nanoA", "i_CaL", ALGEBRAIC},
-    {"i_CaT", "nanoA", "i_CaT", ALGEBRAIC},
-    {"V_cell", "millimetre3", "Cell_parameters", COMPUTED_CONSTANT},
-    {"L_cell", "micrometre", "Cell_parameters", CONSTANT},
-    {"R_cell", "micrometre", "Cell_parameters", CONSTANT},
-    {"L_sub", "micrometre", "Cell_parameters", CONSTANT},
-    {"V_jsr_part", "dimensionless", "Cell_parameters", CONSTANT},
-    {"V_i_part", "dimensionless", "Cell_parameters", CONSTANT},
-    {"V_nsr_part", "dimensionless", "Cell_parameters", CONSTANT},
-    {"i_tot", "nanoA", "Membrane", ALGEBRAIC},
-    {"i_f", "nanoA", "i_f", ALGEBRAIC},
-    {"i_Kur", "nanoA", "i_Kur", ALGEBRAIC},
-    {"i_KACh", "nanoA", "i_KACh", ALGEBRAIC},
-    {"i_CaL", "nanoA", "i_CaL", ALGEBRAIC},
-    {"i_to", "nanoA", "i_to", ALGEBRAIC},
-    {"i_Ks", "nanoA", "i_Ks", ALGEBRAIC},
-    {"i_Kr", "nanoA", "i_Kr", ALGEBRAIC},
-    {"C", "microF", "Membrane", CONSTANT},
-    {"R", "joule_per_kilomole_kelvin", "Membrane", CONSTANT},
-    {"T", "kelvin", "Membrane", CONSTANT},
-    {"V_clamp", "millivolt", "Voltage_clamp", ALGEBRAIC},
-    {"clamp_mode", "dimensionless", "Membrane", CONSTANT},
-    {"V_test", "millivolt", "Voltage_clamp", CONSTANT},
-    {"t_holding", "second", "Voltage_clamp", CONSTANT},
-    {"t_test", "second", "Voltage_clamp", CONSTANT},
-    {"V_holding", "millivolt", "Voltage_clamp", CONSTANT},
-    {"G_f", "microS", "i_f", COMPUTED_CONSTANT},
-    {"g_f", "microS", "i_f", CONSTANT},
-    {"Km_f", "millimolar", "i_f", CONSTANT},
-    {"G_f_K", "microS", "i_f", COMPUTED_CONSTANT},
-    {"alpha", "dimensionless", "i_f", CONSTANT},
-    {"G_f_Na", "microS", "i_f", COMPUTED_CONSTANT},
-    {"g_f_Na", "microS", "i_f", COMPUTED_CONSTANT},
-    {"g_f_K", "microS", "i_f", COMPUTED_CONSTANT},
-    {"blockade", "dimensionless", "i_f", CONSTANT},
-    {"i_fK", "nanoA", "i_f", ALGEBRAIC},
-    {"ACh_shift", "millivolt", "i_f_y_gate", COMPUTED_CONSTANT},
-    {"Iso_shift", "millivolt", "i_f_y_gate", COMPUTED_CONSTANT},
-    {"tau_y", "second", "i_f_y_gate", ALGEBRAIC},
-    {"y_infinity", "dimensionless", "i_f_y_gate", ALGEBRAIC},
-    {"y_shift", "millivolt", "i_f_y_gate", CONSTANT},
-    {"E_mh", "millivolt", "i_Na", ALGEBRAIC},
-    {"i_Na_", "nanoA", "i_Na", ALGEBRAIC},
-    {"g_Na", "microS", "i_Na", CONSTANT},
-    {"i_Na_L", "nanoA", "i_Na", ALGEBRAIC},
-    {"g_Na_L", "microS", "i_Na", CONSTANT},
-    {"m_infinity", "dimensionless", "i_Na_m_gate", ALGEBRAIC},
-    {"E0_m", "millivolt", "i_Na_m_gate", ALGEBRAIC},
-    {"alpha_m", "per_second", "i_Na_m_gate", ALGEBRAIC},
-    {"delta_m", "millivolt", "i_Na_m_gate", CONSTANT},
-    {"beta_m", "per_second", "i_Na_m_gate", ALGEBRAIC},
-    {"tau_m", "second", "i_Na_m_gate", ALGEBRAIC},
-    {"h_infinity", "dimensionless", "i_Na_h_gate", ALGEBRAIC},
-    {"alpha_h", "per_second", "i_Na_h_gate", ALGEBRAIC},
-    {"beta_h", "per_second", "i_Na_h_gate", ALGEBRAIC},
-    {"tau_h", "second", "i_Na_h_gate", ALGEBRAIC},
-    {"g_Kur", "microS", "i_Kur", CONSTANT},
-    {"r_Kur_infinity", "dimensionless", "i_Kur_rKur_gate", ALGEBRAIC},
-    {"tau_r_Kur", "second", "i_Kur_rKur_gate", ALGEBRAIC},
-    {"s_Kur_infinity", "dimensionless", "i_Kur_sKur_gate", ALGEBRAIC},
-    {"tau_s_Kur", "second", "i_Kur_sKur_gate", ALGEBRAIC},
-    {"Iso_increase", "dimensionless", "i_CaL", COMPUTED_CONSTANT},
-    {"P_CaL", "nanoA_per_millimolar", "i_CaL", CONSTANT},
-    {"i_siK", "nanoA", "i_CaL", ALGEBRAIC},
-    {"ACh_block", "dimensionless", "i_CaL", COMPUTED_CONSTANT},
-    {"Iso_shift_dL", "millivolt", "i_CaL_dL_gate", COMPUTED_CONSTANT},
-    {"Iso_slope_dL", "dimensionless", "i_CaL_dL_gate", COMPUTED_CONSTANT},
-    {"dL_infinity", "dimensionless", "i_CaL_dL_gate", ALGEBRAIC},
-    {"V_dL", "millivolt", "i_CaL_dL_gate", CONSTANT},
-    {"k_dL", "millivolt", "i_CaL_dL_gate", CONSTANT},
-    {"tau_dL", "second", "i_CaL_dL_gate", ALGEBRAIC},
-    {"alpha_dL", "per_second", "i_CaL_dL_gate", ALGEBRAIC},
-    {"beta_dL", "per_second", "i_CaL_dL_gate", ALGEBRAIC},
-    {"adVm", "millivolt", "i_CaL_dL_gate", ALGEBRAIC},
-    {"bdVm", "millivolt", "i_CaL_dL_gate", ALGEBRAIC},
-    {"fL_infinity", "dimensionless", "i_CaL_fL_gate", ALGEBRAIC},
-    {"shift_fL", "millivolt", "i_CaL_fL_gate", CONSTANT},
-    {"k_fL", "millivolt", "i_CaL_fL_gate", CONSTANT},
-    {"tau_fL", "second", "i_CaL_fL_gate", ALGEBRAIC},
-    {"fCa_infinity", "dimensionless", "i_CaL_fCa_gate", ALGEBRAIC},
-    {"Km_fCa", "millimolar", "i_CaL_fCa_gate", CONSTANT},
-    {"tau_fCa", "second", "i_CaL_fCa_gate", ALGEBRAIC},
-    {"alpha_fCa", "per_second", "i_CaL_fCa_gate", CONSTANT},
-    {"P_CaT", "nanoA_per_millimolar", "i_CaT", CONSTANT},
-    {"dT_infinity", "dimensionless", "i_CaT_dT_gate", ALGEBRAIC},
-    {"tau_dT", "second", "i_CaT_dT_gate", ALGEBRAIC},
-    {"fT_infinity", "dimensionless", "i_CaT_fT_gate", ALGEBRAIC},
-    {"tau_fT", "second", "i_CaT_fT_gate", ALGEBRAIC},
-    {"offset_fT", "second", "i_CaT_fT_gate", CONSTANT},
-    {"g_to", "microS", "i_to", CONSTANT},
-    {"q_infinity", "dimensionless", "i_to_q_gate", ALGEBRAIC},
-    {"tau_q", "second", "i_to_q_gate", ALGEBRAIC},
-    {"r_infinity", "dimensionless", "i_to_r_gate", ALGEBRAIC},
-    {"tau_r", "second", "i_to_r_gate", ALGEBRAIC},
-    {"g_Kr", "microS", "i_Kr", CONSTANT},
-    {"alfapaF", "per_second", "i_Kr_pa_gate", ALGEBRAIC},
-    {"betapaF", "per_second", "i_Kr_pa_gate", ALGEBRAIC},
-    {"pa_infinity", "dimensionless", "i_Kr_pa_gate", ALGEBRAIC},
-    {"tau_paS", "second", "i_Kr_pa_gate", ALGEBRAIC},
-    {"tau_paF", "second", "i_Kr_pa_gate", ALGEBRAIC},
-    {"tau_pi", "second", "i_Kr_pi_gate", ALGEBRAIC},
-    {"pi_infinity", "dimensionless", "i_Kr_pi_gate", ALGEBRAIC},
-    {"g_Ks", "microS", "i_Ks", COMPUTED_CONSTANT},
-    {"g_Ks_", "microS", "i_Ks", CONSTANT},
-    {"E_Ks", "millivolt", "i_Ks", ALGEBRAIC},
-    {"Iso_shift", "millivolt", "i_Ks_n_gate", COMPUTED_CONSTANT},
-    {"n_infinity", "dimensionless", "i_Ks_n_gate", ALGEBRAIC},
-    {"tau_n", "second", "i_Ks_n_gate", ALGEBRAIC},
-    {"alpha_n", "per_second", "i_Ks_n_gate", ALGEBRAIC},
-    {"beta_n", "per_second", "i_Ks_n_gate", ALGEBRAIC},
-    {"ACh_on", "dimensionless", "i_KACh", CONSTANT},
-    {"g_KACh", "microS", "i_KACh", CONSTANT},
-    {"alpha_a", "per_second", "i_KACh_a_gate", COMPUTED_CONSTANT},
-    {"beta_a", "per_second", "i_KACh_a_gate", ALGEBRAIC},
-    {"a_infinity", "dimensionless", "i_KACh_a_gate", ALGEBRAIC},
-    {"tau_a", "second", "i_KACh_a_gate", ALGEBRAIC}
+const VariableInfo CONSTANT_INFO[] = {
+    {"ACh", "millimolar", "Rate_modulation_experiments"},
+    {"Iso_1_uM", "dimensionless", "Rate_modulation_experiments"},
+    {"Nao", "millimolar", "Ionic_values"},
+    {"Ko", "millimolar", "Ionic_values"},
+    {"Ki", "millimolar", "Ionic_values"},
+    {"Cao", "millimolar", "Ionic_values"},
+    {"Nai_clamp", "dimensionless", "Nai_concentration"},
+    {"F", "coulomb_per_mole", "Membrane"},
+    {"Km_Nap", "millimolar", "i_NaK"},
+    {"Km_Kp", "millimolar", "i_NaK"},
+    {"i_NaK_max", "nanoA", "i_NaK"},
+    {"blockade_NaCa", "dimensionless", "i_NaCa"},
+    {"K_NaCa", "nanoA", "i_NaCa"},
+    {"K3ni", "millimolar", "i_NaCa"},
+    {"Kci", "millimolar", "i_NaCa"},
+    {"Qci", "dimensionless", "i_NaCa"},
+    {"K1ni", "millimolar", "i_NaCa"},
+    {"K2ni", "millimolar", "i_NaCa"},
+    {"Qn", "dimensionless", "i_NaCa"},
+    {"Kcni", "millimolar", "i_NaCa"},
+    {"K3no", "millimolar", "i_NaCa"},
+    {"Kco", "millimolar", "i_NaCa"},
+    {"Qco", "dimensionless", "i_NaCa"},
+    {"K1no", "millimolar", "i_NaCa"},
+    {"K2no", "millimolar", "i_NaCa"},
+    {"ks", "per_second", "Ca_SR_release"},
+    {"MaxSR", "dimensionless", "Ca_SR_release"},
+    {"MinSR", "dimensionless", "Ca_SR_release"},
+    {"EC50_SR", "millimolar", "Ca_SR_release"},
+    {"HSR", "dimensionless", "Ca_SR_release"},
+    {"koCa", "per_millimolar2_second", "Ca_SR_release"},
+    {"kiCa", "per_millimolar_second", "Ca_SR_release"},
+    {"kim", "per_second", "Ca_SR_release"},
+    {"kom", "per_second", "Ca_SR_release"},
+    {"P_up_basal", "millimolar_per_second", "Ca_intracellular_fluxes"},
+    {"tau_dif_Ca", "second", "Ca_intracellular_fluxes"},
+    {"K_up", "millimolar", "Ca_intracellular_fluxes"},
+    {"slope_up", "millimolar", "Ca_intracellular_fluxes"},
+    {"tau_tr", "second", "Ca_intracellular_fluxes"},
+    {"kf_TC", "per_millimolar_second", "Ca_buffering"},
+    {"kb_TC", "per_second", "Ca_buffering"},
+    {"kf_TMC", "per_millimolar_second", "Ca_buffering"},
+    {"kb_TMC", "per_second", "Ca_buffering"},
+    {"kf_TMM", "per_millimolar_second", "Ca_buffering"},
+    {"Mgi", "millimolar", "Ca_buffering"},
+    {"kb_TMM", "per_second", "Ca_buffering"},
+    {"kf_CM", "per_millimolar_second", "Ca_buffering"},
+    {"kb_CM", "per_second", "Ca_buffering"},
+    {"kf_CQ", "per_millimolar_second", "Ca_buffering"},
+    {"kb_CQ", "per_second", "Ca_buffering"},
+    {"TC_tot", "millimolar", "Ca_buffering"},
+    {"TMC_tot", "millimolar", "Ca_buffering"},
+    {"CM_tot", "millimolar", "Ca_buffering"},
+    {"CQ_tot", "millimolar", "Ca_buffering"},
+    {"L_cell", "micrometre", "Cell_parameters"},
+    {"R_cell", "micrometre", "Cell_parameters"},
+    {"L_sub", "micrometre", "Cell_parameters"},
+    {"V_jsr_part", "dimensionless", "Cell_parameters"},
+    {"V_i_part", "dimensionless", "Cell_parameters"},
+    {"V_nsr_part", "dimensionless", "Cell_parameters"},
+    {"C", "microF", "Membrane"},
+    {"R", "joule_per_kilomole_kelvin", "Membrane"},
+    {"T", "kelvin", "Membrane"},
+    {"clamp_mode", "dimensionless", "Membrane"},
+    {"V_test", "millivolt", "Voltage_clamp"},
+    {"t_holding", "second", "Voltage_clamp"},
+    {"t_test", "second", "Voltage_clamp"},
+    {"V_holding", "millivolt", "Voltage_clamp"},
+    {"g_f", "microS", "i_f"},
+    {"Km_f", "millimolar", "i_f"},
+    {"alpha", "dimensionless", "i_f"},
+    {"blockade", "dimensionless", "i_f"},
+    {"y_shift", "millivolt", "i_f_y_gate"},
+    {"g_Na", "microS", "i_Na"},
+    {"g_Na_L", "microS", "i_Na"},
+    {"delta_m", "millivolt", "i_Na_m_gate"},
+    {"g_Kur", "microS", "i_Kur"},
+    {"P_CaL", "nanoA_per_millimolar", "i_CaL"},
+    {"V_dL", "millivolt", "i_CaL_dL_gate"},
+    {"k_dL", "millivolt", "i_CaL_dL_gate"},
+    {"shift_fL", "millivolt", "i_CaL_fL_gate"},
+    {"k_fL", "millivolt", "i_CaL_fL_gate"},
+    {"Km_fCa", "millimolar", "i_CaL_fCa_gate"},
+    {"alpha_fCa", "per_second", "i_CaL_fCa_gate"},
+    {"P_CaT", "nanoA_per_millimolar", "i_CaT"},
+    {"offset_fT", "second", "i_CaT_fT_gate"},
+    {"g_to", "microS", "i_to"},
+    {"g_Kr", "microS", "i_Kr"},
+    {"g_Ks_", "microS", "i_Ks"},
+    {"ACh_on", "dimensionless", "i_KACh"},
+    {"g_KACh", "microS", "i_KACh"}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"RTONF", "millivolt", "Membrane"},
+    {"E_K", "millivolt", "Ionic_values"},
+    {"V_i", "millimetre3", "Cell_parameters"},
+    {"V_sub", "millimetre3", "Cell_parameters"},
+    {"Iso_increase", "dimensionless", "i_NaK"},
+    {"k34", "dimensionless", "i_NaCa"},
+    {"b_up", "dimensionless", "Ca_intracellular_fluxes"},
+    {"P_up", "millimolar_per_second", "Ca_intracellular_fluxes"},
+    {"V_nsr", "millimetre3", "Cell_parameters"},
+    {"V_jsr", "millimetre3", "Cell_parameters"},
+    {"V_cell", "millimetre3", "Cell_parameters"},
+    {"G_f", "microS", "i_f"},
+    {"G_f_K", "microS", "i_f"},
+    {"G_f_Na", "microS", "i_f"},
+    {"g_f_Na", "microS", "i_f"},
+    {"g_f_K", "microS", "i_f"},
+    {"ACh_shift", "millivolt", "i_f_y_gate"},
+    {"Iso_shift", "millivolt", "i_f_y_gate"},
+    {"Iso_increase", "dimensionless", "i_CaL"},
+    {"ACh_block", "dimensionless", "i_CaL"},
+    {"Iso_shift_dL", "millivolt", "i_CaL_dL_gate"},
+    {"Iso_slope_dL", "dimensionless", "i_CaL_dL_gate"},
+    {"g_Ks", "microS", "i_Ks"},
+    {"Iso_shift", "millivolt", "i_Ks_n_gate"},
+    {"alpha_a", "per_second", "i_KACh_a_gate"}
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
+    {"E_Na", "millivolt", "Ionic_values"},
+    {"Nai", "millimolar", "Nai_concentration"},
+    {"E_Ca", "millivolt", "Ionic_values"},
+    {"i_Na", "nanoA", "i_Na"},
+    {"i_NaCa", "nanoA", "i_NaCa"},
+    {"i_NaK", "nanoA", "i_NaK"},
+    {"i_siNa", "nanoA", "i_CaL"},
+    {"i_fNa", "nanoA", "i_f"},
+    {"V", "millivolt", "Membrane"},
+    {"x2", "dimensionless", "i_NaCa"},
+    {"k21", "dimensionless", "i_NaCa"},
+    {"x1", "dimensionless", "i_NaCa"},
+    {"k12", "dimensionless", "i_NaCa"},
+    {"x4", "dimensionless", "i_NaCa"},
+    {"x3", "dimensionless", "i_NaCa"},
+    {"k41", "dimensionless", "i_NaCa"},
+    {"k23", "dimensionless", "i_NaCa"},
+    {"k43", "dimensionless", "i_NaCa"},
+    {"k32", "dimensionless", "i_NaCa"},
+    {"k14", "dimensionless", "i_NaCa"},
+    {"di", "dimensionless", "i_NaCa"},
+    {"do", "dimensionless", "i_NaCa"},
+    {"j_SRCarel", "millimolar_per_second", "Ca_SR_release"},
+    {"diff", "millimolar", "Ca_SR_release"},
+    {"kCaSR", "dimensionless", "Ca_SR_release"},
+    {"koSRCa", "per_millimolar2_second", "Ca_SR_release"},
+    {"kiSRCa", "per_millimolar_second", "Ca_SR_release"},
+    {"P_tot", "dimensionless", "Ca_SR_release"},
+    {"j_Ca_dif", "millimolar_per_second", "Ca_intracellular_fluxes"},
+    {"j_up", "millimolar_per_second", "Ca_intracellular_fluxes"},
+    {"j_tr", "millimolar_per_second", "Ca_intracellular_fluxes"},
+    {"delta_fTC", "per_second", "Ca_buffering"},
+    {"delta_fTMC", "per_second", "Ca_buffering"},
+    {"delta_fTMM", "per_second", "Ca_buffering"},
+    {"delta_fCMi", "per_second", "Ca_buffering"},
+    {"delta_fCMs", "per_second", "Ca_buffering"},
+    {"delta_fCQ", "per_second", "Ca_buffering"},
+    {"i_siCa", "nanoA", "i_CaL"},
+    {"i_CaT", "nanoA", "i_CaT"},
+    {"i_tot", "nanoA", "Membrane"},
+    {"i_f", "nanoA", "i_f"},
+    {"i_Kur", "nanoA", "i_Kur"},
+    {"i_KACh", "nanoA", "i_KACh"},
+    {"i_CaL", "nanoA", "i_CaL"},
+    {"i_to", "nanoA", "i_to"},
+    {"i_Ks", "nanoA", "i_Ks"},
+    {"i_Kr", "nanoA", "i_Kr"},
+    {"V_clamp", "millivolt", "Voltage_clamp"},
+    {"i_fK", "nanoA", "i_f"},
+    {"tau_y", "second", "i_f_y_gate"},
+    {"y_infinity", "dimensionless", "i_f_y_gate"},
+    {"E_mh", "millivolt", "i_Na"},
+    {"i_Na_", "nanoA", "i_Na"},
+    {"i_Na_L", "nanoA", "i_Na"},
+    {"m_infinity", "dimensionless", "i_Na_m_gate"},
+    {"E0_m", "millivolt", "i_Na_m_gate"},
+    {"alpha_m", "per_second", "i_Na_m_gate"},
+    {"beta_m", "per_second", "i_Na_m_gate"},
+    {"tau_m", "second", "i_Na_m_gate"},
+    {"h_infinity", "dimensionless", "i_Na_h_gate"},
+    {"alpha_h", "per_second", "i_Na_h_gate"},
+    {"beta_h", "per_second", "i_Na_h_gate"},
+    {"tau_h", "second", "i_Na_h_gate"},
+    {"r_Kur_infinity", "dimensionless", "i_Kur_rKur_gate"},
+    {"tau_r_Kur", "second", "i_Kur_rKur_gate"},
+    {"s_Kur_infinity", "dimensionless", "i_Kur_sKur_gate"},
+    {"tau_s_Kur", "second", "i_Kur_sKur_gate"},
+    {"i_siK", "nanoA", "i_CaL"},
+    {"dL_infinity", "dimensionless", "i_CaL_dL_gate"},
+    {"tau_dL", "second", "i_CaL_dL_gate"},
+    {"alpha_dL", "per_second", "i_CaL_dL_gate"},
+    {"beta_dL", "per_second", "i_CaL_dL_gate"},
+    {"adVm", "millivolt", "i_CaL_dL_gate"},
+    {"bdVm", "millivolt", "i_CaL_dL_gate"},
+    {"fL_infinity", "dimensionless", "i_CaL_fL_gate"},
+    {"tau_fL", "second", "i_CaL_fL_gate"},
+    {"fCa_infinity", "dimensionless", "i_CaL_fCa_gate"},
+    {"tau_fCa", "second", "i_CaL_fCa_gate"},
+    {"dT_infinity", "dimensionless", "i_CaT_dT_gate"},
+    {"tau_dT", "second", "i_CaT_dT_gate"},
+    {"fT_infinity", "dimensionless", "i_CaT_fT_gate"},
+    {"tau_fT", "second", "i_CaT_fT_gate"},
+    {"q_infinity", "dimensionless", "i_to_q_gate"},
+    {"tau_q", "second", "i_to_q_gate"},
+    {"r_infinity", "dimensionless", "i_to_r_gate"},
+    {"tau_r", "second", "i_to_r_gate"},
+    {"alfapaF", "per_second", "i_Kr_pa_gate"},
+    {"betapaF", "per_second", "i_Kr_pa_gate"},
+    {"pa_infinity", "dimensionless", "i_Kr_pa_gate"},
+    {"tau_paS", "second", "i_Kr_pa_gate"},
+    {"tau_paF", "second", "i_Kr_pa_gate"},
+    {"tau_pi", "second", "i_Kr_pi_gate"},
+    {"pi_infinity", "dimensionless", "i_Kr_pi_gate"},
+    {"E_Ks", "millivolt", "i_Ks"},
+    {"n_infinity", "dimensionless", "i_Ks_n_gate"},
+    {"tau_n", "second", "i_Ks_n_gate"},
+    {"alpha_n", "per_second", "i_Ks_n_gate"},
+    {"beta_n", "per_second", "i_Ks_n_gate"},
+    {"beta_a", "per_second", "i_KACh_a_gate"},
+    {"a_infinity", "dimensionless", "i_KACh_a_gate"},
+    {"tau_a", "second", "i_KACh_a_gate"}
 };
 
 double * createStatesArray()
@@ -280,11 +288,33 @@ double * createStatesArray()
     return res;
 }
 
-double * createVariablesArray()
+double * createConstantsArray()
 {
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -296,99 +326,8 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *variables)
+void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    variables[0] = 0.0;
-    variables[1] = 0.0;
-    variables[4] = 140.0;
-    variables[7] = 5.4;
-    variables[8] = 140.0;
-    variables[10] = 1.8;
-    variables[11] = 1.0;
-    variables[17] = 96485.3415;
-    variables[22] = 14.0;
-    variables[23] = 1.4;
-    variables[24] = 0.08105;
-    variables[25] = 0.0;
-    variables[30] = 3.343;
-    variables[39] = 26.44;
-    variables[40] = 0.0207;
-    variables[41] = 0.1369;
-    variables[43] = 395.3;
-    variables[44] = 2.289;
-    variables[45] = 0.4315;
-    variables[46] = 26.44;
-    variables[47] = 4.663;
-    variables[48] = 3.663;
-    variables[49] = 0.0;
-    variables[51] = 1628.0;
-    variables[52] = 561.4;
-    variables[54] = 148041085.1;
-    variables[57] = 15.0;
-    variables[58] = 1.0;
-    variables[59] = 0.45;
-    variables[60] = 2.5;
-    variables[62] = 10000.0;
-    variables[64] = 500.0;
-    variables[65] = 5.0;
-    variables[66] = 660.0;
-    variables[70] = 5.0;
-    variables[72] = 5.469e-5;
-    variables[74] = 0.000286113;
-    variables[75] = 5.0e-5;
-    variables[77] = 0.04;
-    variables[79] = 88800.0;
-    variables[80] = 446.0;
-    variables[82] = 227700.0;
-    variables[83] = 7.51;
-    variables[85] = 2277.0;
-    variables[86] = 2.5;
-    variables[87] = 751.0;
-    variables[89] = 1.642e6;
-    variables[90] = 542.0;
-    variables[93] = 175.4;
-    variables[94] = 445.0;
-    variables[95] = 0.031;
-    variables[96] = 0.062;
-    variables[97] = 0.045;
-    variables[98] = 10.0;
-    variables[104] = 67.0;
-    variables[105] = 3.9;
-    variables[106] = 0.02;
-    variables[107] = 0.0012;
-    variables[108] = 0.46;
-    variables[109] = 0.0116;
-    variables[118] = 5.7e-5;
-    variables[119] = 8314.472;
-    variables[120] = 310.0;
-    variables[122] = 0.0;
-    variables[123] = -35.0;
-    variables[124] = 0.5;
-    variables[125] = 0.5;
-    variables[126] = -45.0;
-    variables[128] = 0.00427;
-    variables[129] = 45.0;
-    variables[131] = 0.5927;
-    variables[135] = 0.0;
-    variables[141] = 0.0;
-    variables[144] = 0.0223;
-    variables[146] = 0.0;
-    variables[150] = 1.0e-5;
-    variables[157] = 0.1539e-3;
-    variables[163] = 0.4578;
-    variables[169] = -16.4508;
-    variables[170] = 4.3371;
-    variables[177] = 0.0;
-    variables[178] = 0.0;
-    variables[181] = 0.000338;
-    variables[183] = 0.0075;
-    variables[184] = 0.04132;
-    variables[189] = 0.0;
-    variables[190] = 3.5e-3;
-    variables[195] = 0.00424;
-    variables[204] = 0.00065;
-    variables[211] = 1.0;
-    variables[212] = 0.00345;
     states[0] = 6.226104e-5;
     states[1] = 5.0;
     states[2] = 0.409551;
@@ -422,270 +361,361 @@ void initialiseVariables(double *states, double *rates, double *variables)
     states[30] = 0.283185;
     states[31] = 0.1162;
     states[32] = 0.00277;
+    constants[0] = 0.0;
+    constants[1] = 0.0;
+    constants[2] = 140.0;
+    constants[3] = 5.4;
+    constants[4] = 140.0;
+    constants[5] = 1.8;
+    constants[6] = 1.0;
+    constants[7] = 96485.3415;
+    constants[8] = 14.0;
+    constants[9] = 1.4;
+    constants[10] = 0.08105;
+    constants[11] = 0.0;
+    constants[12] = 3.343;
+    constants[13] = 26.44;
+    constants[14] = 0.0207;
+    constants[15] = 0.1369;
+    constants[16] = 395.3;
+    constants[17] = 2.289;
+    constants[18] = 0.4315;
+    constants[19] = 26.44;
+    constants[20] = 4.663;
+    constants[21] = 3.663;
+    constants[22] = 0.0;
+    constants[23] = 1628.0;
+    constants[24] = 561.4;
+    constants[25] = 148041085.1;
+    constants[26] = 15.0;
+    constants[27] = 1.0;
+    constants[28] = 0.45;
+    constants[29] = 2.5;
+    constants[30] = 10000.0;
+    constants[31] = 500.0;
+    constants[32] = 5.0;
+    constants[33] = 660.0;
+    constants[34] = 5.0;
+    constants[35] = 5.469e-5;
+    constants[36] = 0.000286113;
+    constants[37] = 5.0e-5;
+    constants[38] = 0.04;
+    constants[39] = 88800.0;
+    constants[40] = 446.0;
+    constants[41] = 227700.0;
+    constants[42] = 7.51;
+    constants[43] = 2277.0;
+    constants[44] = 2.5;
+    constants[45] = 751.0;
+    constants[46] = 1.642e6;
+    constants[47] = 542.0;
+    constants[48] = 175.4;
+    constants[49] = 445.0;
+    constants[50] = 0.031;
+    constants[51] = 0.062;
+    constants[52] = 0.045;
+    constants[53] = 10.0;
+    constants[54] = 67.0;
+    constants[55] = 3.9;
+    constants[56] = 0.02;
+    constants[57] = 0.0012;
+    constants[58] = 0.46;
+    constants[59] = 0.0116;
+    constants[60] = 5.7e-5;
+    constants[61] = 8314.472;
+    constants[62] = 310.0;
+    constants[63] = 0.0;
+    constants[64] = -35.0;
+    constants[65] = 0.5;
+    constants[66] = 0.5;
+    constants[67] = -45.0;
+    constants[68] = 0.00427;
+    constants[69] = 45.0;
+    constants[70] = 0.5927;
+    constants[71] = 0.0;
+    constants[72] = 0.0;
+    constants[73] = 0.0223;
+    constants[74] = 0.0;
+    constants[75] = 1.0e-5;
+    constants[76] = 0.1539e-3;
+    constants[77] = 0.4578;
+    constants[78] = -16.4508;
+    constants[79] = 4.3371;
+    constants[80] = 0.0;
+    constants[81] = 0.0;
+    constants[82] = 0.000338;
+    constants[83] = 0.0075;
+    constants[84] = 0.04132;
+    constants[85] = 0.0;
+    constants[86] = 3.5e-3;
+    constants[87] = 0.00424;
+    constants[88] = 0.00065;
+    constants[89] = 1.0;
+    constants[90] = 0.00345;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
-    variables[3] = variables[119]*variables[120]/variables[17];
-    variables[6] = variables[3]*log(variables[7]/variables[8]);
-    variables[20] = (variables[1] > 0.0)?1.2:1.0;
-    variables[35] = variables[4]/(variables[47]+variables[4]);
-    variables[68] = (variables[1] > 0.0)?-0.25:(variables[0] > 0.0)?0.7*variables[0]/(0.00009+variables[0]):0.0;
-    variables[69] = variables[70]*(1.0-variables[68]);
-    variables[103] = 0.000000001*3.14159265358979*pow(variables[105], 2.0)*variables[104];
-    variables[19] = 0.000000001*2.0*3.14159265358979*variables[106]*(variables[105]-variables[106]/2.0)*variables[104];
-    variables[100] = variables[107]*variables[103];
-    variables[18] = variables[108]*variables[103]-variables[19];
-    variables[99] = variables[109]*variables[103];
-    variables[127] = variables[128]/(variables[7]/(variables[7]+variables[129]));
-    variables[130] = variables[127]/(variables[131]+1.0);
-    variables[132] = variables[131]*variables[130];
-    variables[133] = variables[132]*variables[7]/(variables[7]+variables[129]);
-    variables[134] = variables[130]*variables[7]/(variables[7]+variables[129]);
-    variables[137] = (variables[0] > 0.0)?-1.0-9.898*pow(1.0*variables[0], 0.618)/(pow(1.0*variables[0], 0.618)+0.00122423):0.0;
-    variables[138] = (variables[1] > 0.0)?7.5:0.0;
-    variables[162] = (variables[1] > 0.0)?1.23:1.0;
-    variables[165] = 0.31*variables[0]/(variables[0]+0.00009);
-    variables[166] = (variables[1] > 0.0)?-8.0:0.0;
-    variables[167] = (variables[1] > 0.0)?-27.0:0.0;
-    variables[203] = (variables[1] > 0.0)?1.2*variables[204]:variables[204];
-    variables[206] = (variables[1] > 0.0)?-14.0:0.0;
-    variables[213] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*variables[0], 1.6951))+0.025641;
+    computedConstants[0] = constants[61]*constants[62]/constants[7];
+    computedConstants[1] = computedConstants[0]*log(constants[3]/constants[4]);
+    computedConstants[4] = (constants[1] > 0.0)?1.2:1.0;
+    computedConstants[5] = constants[2]/(constants[20]+constants[2]);
+    computedConstants[6] = (constants[1] > 0.0)?-0.25:(constants[0] > 0.0)?0.7*constants[0]/(0.00009+constants[0]):0.0;
+    computedConstants[7] = constants[34]*(1.0-computedConstants[6]);
+    computedConstants[10] = 0.000000001*3.14159265358979*pow(constants[55], 2.0)*constants[54];
+    computedConstants[3] = 0.000000001*2.0*3.14159265358979*constants[56]*(constants[55]-constants[56]/2.0)*constants[54];
+    computedConstants[9] = constants[57]*computedConstants[10];
+    computedConstants[2] = constants[58]*computedConstants[10]-computedConstants[3];
+    computedConstants[8] = constants[59]*computedConstants[10];
+    computedConstants[11] = constants[68]/(constants[3]/(constants[3]+constants[69]));
+    computedConstants[12] = computedConstants[11]/(constants[70]+1.0);
+    computedConstants[13] = constants[70]*computedConstants[12];
+    computedConstants[14] = computedConstants[13]*constants[3]/(constants[3]+constants[69]);
+    computedConstants[15] = computedConstants[12]*constants[3]/(constants[3]+constants[69]);
+    computedConstants[16] = (constants[0] > 0.0)?-1.0-9.898*pow(1.0*constants[0], 0.618)/(pow(1.0*constants[0], 0.618)+0.00122423):0.0;
+    computedConstants[17] = (constants[1] > 0.0)?7.5:0.0;
+    computedConstants[18] = (constants[1] > 0.0)?1.23:1.0;
+    computedConstants[19] = 0.31*constants[0]/(constants[0]+0.00009);
+    computedConstants[20] = (constants[1] > 0.0)?-8.0:0.0;
+    computedConstants[21] = (constants[1] > 0.0)?-27.0:0.0;
+    computedConstants[22] = (constants[1] > 0.0)?1.2*constants[88]:constants[88];
+    computedConstants[23] = (constants[1] > 0.0)?-14.0:0.0;
+    computedConstants[24] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*constants[0], 1.6951))+0.025641;
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    variables[5] = states[1];
-    variables[142] = variables[3]*log((variables[4]+0.12*variables[7])/(variables[5]+0.12*variables[8]));
-    variables[121] = ((voi > variables[124]) && (voi < variables[124]+variables[125]))?variables[123]:variables[126];
-    variables[21] = (variables[122] >= 1.0)?variables[121]:states[15];
-    variables[143] = variables[144]*pow(states[18], 3.0)*states[17]*(variables[21]-variables[142]);
-    variables[145] = variables[146]*pow(states[18], 3.0)*(variables[21]-variables[142]);
-    variables[12] = variables[143]+variables[145];
-    variables[15] = 0.0000185*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)/variables[3])))*(variables[5]-variables[4]*exp(-1.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[2] = variables[3]*log(variables[4]/variables[5]);
-    variables[16] = states[16]*variables[133]*(variables[21]-variables[2])*(1.0-variables[135]);
-    variables[14] = variables[20]*variables[24]*pow(1.0+pow(variables[23]/variables[7], 1.2), -1.0)*pow(1.0+pow(variables[22]/variables[5], 1.3), -1.0)*pow(1.0+exp(-(variables[21]-variables[2]+110.0)/20.0), -1.0);
-    variables[50] = 1.0+variables[10]/variables[48]*(1.0+exp(variables[49]*variables[21]/variables[3]))+variables[4]/variables[51]*(1.0+variables[4]/variables[52]*(1.0+variables[4]/variables[47]));
-    variables[27] = variables[10]/variables[48]*exp(variables[49]*variables[21]/variables[3])/variables[50];
-    variables[42] = 1.0+states[0]/variables[40]*(1.0+exp(-variables[41]*variables[21]/variables[3])+variables[5]/variables[46])+variables[5]/variables[43]*(1.0+variables[5]/variables[44]*(1.0+variables[5]/variables[39]));
-    variables[29] = states[0]/variables[40]*exp(-variables[41]*variables[21]/variables[3])/variables[42];
-    variables[36] = variables[5]/(variables[39]+variables[5]);
-    variables[37] = exp(variables[45]*variables[21]/(2.0*variables[3]));
-    variables[33] = exp(-variables[45]*variables[21]/(2.0*variables[3]));
-    variables[38] = variables[5]/variables[43]*variables[5]/variables[44]*(1.0+variables[5]/variables[39])*exp(variables[45]*variables[21]/(2.0*variables[3]))/variables[42];
-    variables[26] = variables[37]*variables[36]*(variables[38]+variables[29])+variables[33]*variables[29]*(variables[35]+variables[37]);
-    variables[34] = variables[4]/variables[51]*variables[4]/variables[52]*(1.0+variables[4]/variables[47])*exp(-variables[45]*variables[21]/(2.0*variables[3]))/variables[50];
-    variables[28] = variables[33]*variables[35]*(variables[34]+variables[27])+variables[27]*variables[37]*(variables[36]+variables[33]);
-    variables[31] = variables[34]*variables[35]*(variables[38]+variables[29])+variables[38]*variables[27]*(variables[35]+variables[37]);
-    variables[32] = variables[38]*variables[36]*(variables[34]+variables[27])+variables[29]*variables[34]*(variables[36]+variables[33]);
-    variables[13] = (1.0-variables[25])*variables[30]*(variables[26]*variables[27]-variables[28]*variables[29])/(variables[28]+variables[26]+variables[32]+variables[31]);
-    rates[1] = (1.0-variables[11])*-1.0*(variables[12]+variables[16]+variables[15]+3.0*variables[14]+3.0*variables[13])/(1.0*(variables[18]+variables[19])*variables[17]);
-    variables[56] = variables[57]-(variables[57]-variables[58])/(1.0+pow(variables[59]/states[2], variables[60]));
-    variables[63] = variables[64]*variables[56];
-    variables[61] = variables[62]/variables[56];
-    rates[4] = variables[65]*states[5]-variables[63]*states[0]*states[4]-(variables[61]*pow(states[0], 2.0)*states[4]-variables[66]*states[3]);
-    rates[3] = variables[61]*pow(states[0], 2.0)*states[4]-variables[66]*states[3]-(variables[63]*states[0]*states[3]-variables[65]*states[6]);
-    rates[6] = variables[63]*states[0]*states[3]-variables[65]*states[6]-(variables[66]*states[6]-variables[61]*pow(states[0], 2.0)*states[5]);
-    rates[5] = variables[66]*states[6]-variables[61]*pow(states[0], 2.0)*states[5]-(variables[65]*states[5]-variables[63]*states[0]*states[4]);
-    variables[78] = variables[79]*states[7]*(1.0-states[9])-variables[80]*states[9];
-    rates[9] = variables[78];
-    variables[81] = variables[82]*states[7]*(1.0-(states[10]+states[11]))-variables[83]*states[10];
-    rates[10] = variables[81];
-    variables[84] = variables[85]*variables[86]*(1.0-(states[10]+states[11]))-variables[87]*states[11];
-    rates[11] = variables[84];
-    variables[88] = variables[89]*states[7]*(1.0-states[12])-variables[90]*states[12];
-    rates[12] = variables[88];
-    variables[91] = variables[89]*states[0]*(1.0-states[13])-variables[90]*states[13];
-    rates[13] = variables[91];
-    variables[92] = variables[93]*states[2]*(1.0-states[14])-variables[94]*states[14];
-    rates[14] = variables[92];
-    variables[71] = (states[0]-states[7])/variables[72];
-    variables[73] = variables[69]/(1.0+exp((-states[7]+variables[74])/variables[75]));
-    rates[7] = 1.0*(variables[71]*variables[19]-variables[73]*variables[99])/variables[18]-(variables[97]*variables[88]+variables[95]*variables[78]+variables[96]*variables[81]);
-    variables[53] = variables[54]*states[3]*(states[2]-states[0]);
-    variables[101] = 2.0*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)*2.0/variables[3])))*(states[0]-variables[10]*exp(-2.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[102] = 2.0*variables[184]*variables[21]/(variables[3]*(1.0-exp(-1.0*variables[21]*2.0/variables[3])))*(states[0]-variables[10]*exp(-2.0*variables[21]/variables[3]))*states[25]*states[24];
-    rates[0] = variables[53]*variables[100]/variables[19]-((variables[101]+variables[102]-2.0*variables[13])/(2.0*variables[17]*variables[19])+variables[71]+variables[97]*variables[91]);
-    variables[76] = (states[8]-states[2])/variables[77];
-    rates[8] = variables[73]-variables[76]*variables[100]/variables[99];
-    rates[2] = variables[76]-(variables[53]+variables[98]*variables[92]);
-    variables[136] = states[16]*variables[134]*(variables[21]-variables[6])*(1.0-variables[135]);
-    variables[111] = variables[16]+variables[136];
-    variables[112] = variables[157]*states[20]*states[19]*(variables[21]-variables[6]);
-    variables[113] = (variables[0] > 0.0)?variables[211]*variables[212]*(variables[21]-variables[6])*(1.0+exp((variables[21]+20.0)/20.0))*states[32]:0.0;
-    variables[164] = 0.000365*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)/variables[3])))*(variables[8]-variables[7]*exp(-1.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[114] = (variables[101]+variables[164]+variables[15])*(1.0-variables[165])*1.0*variables[162];
-    variables[115] = variables[190]*(variables[21]-variables[6])*states[27]*states[26];
-    variables[205] = variables[3]*log((variables[7]+0.12*variables[4])/(variables[8]+0.12*variables[5]));
-    variables[116] = variables[203]*(variables[21]-variables[205])*pow(states[31], 2.0);
-    variables[117] = variables[195]*(variables[21]-variables[6])*(0.9*states[29]+0.1*states[30])*states[28];
-    variables[110] = variables[111]+variables[117]+variables[116]+variables[115]+variables[14]+variables[13]+variables[12]+variables[114]+variables[102]+variables[113]+variables[112];
-    rates[15] = -variables[110]/variables[118];
-    variables[140] = (variables[21] < -(80.0-variables[137]-variables[138]-variables[141]))?0.01329+0.99921/(1.0+exp((variables[21]+97.134-variables[137]-variables[138]-variables[141])/8.1752)):0.0002501*exp(-(variables[21]-variables[137]-variables[138]-variables[141])/12.861);
-    variables[139] = 1.0/(0.36*(variables[21]+148.8-variables[137]-variables[138])/(exp(0.066*(variables[21]+148.8-variables[137]-variables[138]))-1.0)+0.1*(variables[21]+87.3-variables[137]-variables[138])/(1.0-exp(-0.2*(variables[21]+87.3-variables[137]-variables[138]))))-0.054;
-    rates[16] = (variables[140]-states[16])/variables[139];
-    variables[147] = 1.0/(1.0+exp(-(variables[21]+42.0504)/8.3106));
-    variables[148] = variables[21]+41.0;
-    variables[149] = (fabs(variables[148]) < variables[150])?2000.0:200.0*variables[148]/(1.0-exp(-0.1*variables[148]));
-    variables[151] = 8000.0*exp(-0.056*(variables[21]+66.0));
-    variables[152] = 1.0/(variables[149]+variables[151]);
-    rates[18] = (variables[147]-states[18])/variables[152];
-    variables[153] = 1.0/(1.0+exp((variables[21]+69.804)/4.4565));
-    variables[154] = 20.0*exp(-0.125*(variables[21]+75.0));
-    variables[155] = 2000.0/(320.0*exp(-0.1*(variables[21]+75.0))+1.0);
-    variables[156] = 1.0/(variables[154]+variables[155]);
-    rates[17] = (variables[153]-states[17])/variables[156];
-    variables[158] = 1.0/(1.0+exp((variables[21]+6.0)/-8.6));
-    variables[159] = 0.009/(1.0+exp((variables[21]+5.0)/12.0))+0.0005;
-    rates[20] = (variables[158]-states[20])/variables[159];
-    variables[160] = 1.0/(1.0+exp((variables[21]+7.5)/10.0));
-    variables[161] = 0.59/(1.0+exp((variables[21]+60.0)/10.0))+3.05;
-    rates[19] = (variables[160]-states[19])/variables[161];
-    variables[168] = 1.0/(1.0+exp(-(variables[21]-variables[169]-variables[166])/(variables[170]*(1.0+variables[167]/100.0))));
-    variables[174] = (variables[21] == -41.8)?-41.80001:(variables[21] == 0.0)?0.0:(variables[21] == -6.8)?-6.80001:variables[21];
-    variables[172] = -0.02839*(variables[174]+41.8)/(exp(-(variables[174]+41.8)/2.5)-1.0)-0.0849*(variables[174]+6.8)/(exp(-(variables[174]+6.8)/4.8)-1.0);
-    variables[175] = (variables[21] == -1.8)?-1.80001:variables[21];
-    variables[173] = 0.01143*(variables[175]+1.8)/(exp((variables[175]+1.8)/2.5)-1.0);
-    variables[171] = 0.001/(variables[172]+variables[173]);
-    rates[23] = (variables[168]-states[23])/variables[171];
-    variables[176] = 1.0/(1.0+exp((variables[21]+37.4+variables[177])/(5.3+variables[178])));
-    variables[179] = 0.001*(44.3+230.0*exp(-pow((variables[21]+36.0)/10.0, 2.0)));
-    rates[22] = (variables[176]-states[22])/variables[179];
-    variables[180] = variables[181]/(variables[181]+states[0]);
-    variables[182] = 0.001*variables[180]/variables[183];
-    rates[21] = (variables[180]-states[21])/variables[182];
-    variables[185] = 1.0/(1.0+exp(-(variables[21]+38.3)/5.5));
-    variables[186] = 0.001/(1.068*exp((variables[21]+38.3)/30.0)+1.068*exp(-(variables[21]+38.3)/30.0));
-    rates[25] = (variables[185]-states[25])/variables[186];
-    variables[187] = 1.0/(1.0+exp((variables[21]+58.7)/3.8));
-    variables[188] = 1.0/(16.67*exp(-(variables[21]+75.0)/83.3)+16.67*exp((variables[21]+75.0)/15.38))+variables[189];
-    rates[24] = (variables[187]-states[24])/variables[188];
-    variables[191] = 1.0/(1.0+exp((variables[21]+49.0)/13.0));
-    variables[192] = 0.001*0.6*(65.17/(0.57*exp(-0.08*(variables[21]+44.0))+0.065*exp(0.1*(variables[21]+45.93)))+10.1);
-    rates[27] = (variables[191]-states[27])/variables[192];
-    variables[193] = 1.0/(1.0+exp(-(variables[21]-19.3)/15.0));
-    variables[194] = 0.001*0.66*1.4*(15.59/(1.037*exp(0.09*(variables[21]+30.61))+0.369*exp(-0.12*(variables[21]+23.84)))+2.98);
-    rates[26] = (variables[193]-states[26])/variables[194];
-    variables[198] = 1.0/(1.0+exp(-(variables[21]+10.0144)/7.6607));
-    variables[199] = 0.84655354/(4.2*exp(variables[21]/17.0)+0.15*exp(-variables[21]/21.6));
-    rates[30] = (variables[198]-states[30])/variables[199];
-    variables[200] = 1.0/(30.0*exp(variables[21]/10.0)+exp(-variables[21]/12.0));
-    rates[29] = (variables[198]-states[29])/variables[200];
-    variables[202] = 1.0/(1.0+exp((variables[21]+28.6)/17.1));
-    variables[201] = 1.0/(100.0*exp(-variables[21]/54.645)+656.0*exp(variables[21]/106.157));
-    rates[28] = (variables[202]-states[28])/variables[201];
-    variables[207] = sqrt(1.0/(1.0+exp(-(variables[21]+0.6383-variables[206])/10.7071)));
-    variables[209] = 28.0/(1.0+exp(-(variables[21]-40.0-variables[206])/3.0));
-    variables[210] = 1.0*exp(-(variables[21]-variables[206]-5.0)/25.0);
-    variables[208] = 1.0/(variables[209]+variables[210]);
-    rates[31] = (variables[207]-states[31])/variables[208];
-    variables[214] = 10.0*exp(0.0133*(variables[21]+40.0));
-    variables[215] = variables[213]/(variables[213]+variables[214]);
-    variables[216] = 1.0/(variables[213]+variables[214]);
-    rates[32] = (variables[215]-states[32])/variables[216];
+    algebraic[1] = states[1];
+    algebraic[51] = computedConstants[0]*log((constants[2]+0.12*constants[3])/(algebraic[1]+0.12*constants[4]));
+    algebraic[47] = ((voi > constants[65]) && (voi < constants[65]+constants[66]))?constants[64]:constants[67];
+    algebraic[8] = (constants[63] >= 1.0)?algebraic[47]:states[15];
+    algebraic[52] = constants[73]*pow(states[18], 3.0)*states[17]*(algebraic[8]-algebraic[51]);
+    algebraic[53] = constants[74]*pow(states[18], 3.0)*(algebraic[8]-algebraic[51]);
+    algebraic[3] = algebraic[52]+algebraic[53];
+    algebraic[6] = 0.0000185*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)/computedConstants[0])))*(algebraic[1]-constants[2]*exp(-1.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[0] = computedConstants[0]*log(constants[2]/algebraic[1]);
+    algebraic[7] = states[16]*computedConstants[14]*(algebraic[8]-algebraic[0])*(1.0-constants[71]);
+    algebraic[5] = computedConstants[4]*constants[10]*pow(1.0+pow(constants[9]/constants[3], 1.2), -1.0)*pow(1.0+pow(constants[8]/algebraic[1], 1.3), -1.0)*pow(1.0+exp(-(algebraic[8]-algebraic[0]+110.0)/20.0), -1.0);
+    algebraic[21] = 1.0+constants[5]/constants[21]*(1.0+exp(constants[22]*algebraic[8]/computedConstants[0]))+constants[2]/constants[23]*(1.0+constants[2]/constants[24]*(1.0+constants[2]/constants[20]));
+    algebraic[10] = constants[5]/constants[21]*exp(constants[22]*algebraic[8]/computedConstants[0])/algebraic[21];
+    algebraic[20] = 1.0+states[0]/constants[14]*(1.0+exp(-constants[15]*algebraic[8]/computedConstants[0])+algebraic[1]/constants[19])+algebraic[1]/constants[16]*(1.0+algebraic[1]/constants[17]*(1.0+algebraic[1]/constants[13]));
+    algebraic[12] = states[0]/constants[14]*exp(-constants[15]*algebraic[8]/computedConstants[0])/algebraic[20];
+    algebraic[17] = algebraic[1]/(constants[13]+algebraic[1]);
+    algebraic[18] = exp(constants[18]*algebraic[8]/(2.0*computedConstants[0]));
+    algebraic[15] = exp(-constants[18]*algebraic[8]/(2.0*computedConstants[0]));
+    algebraic[19] = algebraic[1]/constants[16]*algebraic[1]/constants[17]*(1.0+algebraic[1]/constants[13])*exp(constants[18]*algebraic[8]/(2.0*computedConstants[0]))/algebraic[20];
+    algebraic[9] = algebraic[18]*algebraic[17]*(algebraic[19]+algebraic[12])+algebraic[15]*algebraic[12]*(computedConstants[5]+algebraic[18]);
+    algebraic[16] = constants[2]/constants[23]*constants[2]/constants[24]*(1.0+constants[2]/constants[20])*exp(-constants[18]*algebraic[8]/(2.0*computedConstants[0]))/algebraic[21];
+    algebraic[11] = algebraic[15]*computedConstants[5]*(algebraic[16]+algebraic[10])+algebraic[10]*algebraic[18]*(algebraic[17]+algebraic[15]);
+    algebraic[13] = algebraic[16]*computedConstants[5]*(algebraic[19]+algebraic[12])+algebraic[19]*algebraic[10]*(computedConstants[5]+algebraic[18]);
+    algebraic[14] = algebraic[19]*algebraic[17]*(algebraic[16]+algebraic[10])+algebraic[12]*algebraic[16]*(algebraic[17]+algebraic[15]);
+    algebraic[4] = (1.0-constants[11])*constants[12]*(algebraic[9]*algebraic[10]-algebraic[11]*algebraic[12])/(algebraic[11]+algebraic[9]+algebraic[14]+algebraic[13]);
+    rates[1] = (1.0-constants[6])*-1.0*(algebraic[3]+algebraic[7]+algebraic[6]+3.0*algebraic[5]+3.0*algebraic[4])/(1.0*(computedConstants[2]+computedConstants[3])*constants[7]);
+    algebraic[24] = constants[26]-(constants[26]-constants[27])/(1.0+pow(constants[28]/states[2], constants[29]));
+    algebraic[26] = constants[31]*algebraic[24];
+    algebraic[25] = constants[30]/algebraic[24];
+    rates[4] = constants[32]*states[5]-algebraic[26]*states[0]*states[4]-(algebraic[25]*pow(states[0], 2.0)*states[4]-constants[33]*states[3]);
+    rates[3] = algebraic[25]*pow(states[0], 2.0)*states[4]-constants[33]*states[3]-(algebraic[26]*states[0]*states[3]-constants[32]*states[6]);
+    rates[6] = algebraic[26]*states[0]*states[3]-constants[32]*states[6]-(constants[33]*states[6]-algebraic[25]*pow(states[0], 2.0)*states[5]);
+    rates[5] = constants[33]*states[6]-algebraic[25]*pow(states[0], 2.0)*states[5]-(constants[32]*states[5]-algebraic[26]*states[0]*states[4]);
+    algebraic[31] = constants[39]*states[7]*(1.0-states[9])-constants[40]*states[9];
+    rates[9] = algebraic[31];
+    algebraic[32] = constants[41]*states[7]*(1.0-(states[10]+states[11]))-constants[42]*states[10];
+    rates[10] = algebraic[32];
+    algebraic[33] = constants[43]*constants[44]*(1.0-(states[10]+states[11]))-constants[45]*states[11];
+    rates[11] = algebraic[33];
+    algebraic[34] = constants[46]*states[7]*(1.0-states[12])-constants[47]*states[12];
+    rates[12] = algebraic[34];
+    algebraic[35] = constants[46]*states[0]*(1.0-states[13])-constants[47]*states[13];
+    rates[13] = algebraic[35];
+    algebraic[36] = constants[48]*states[2]*(1.0-states[14])-constants[49]*states[14];
+    rates[14] = algebraic[36];
+    algebraic[28] = (states[0]-states[7])/constants[35];
+    algebraic[29] = computedConstants[7]/(1.0+exp((-states[7]+constants[36])/constants[37]));
+    rates[7] = 1.0*(algebraic[28]*computedConstants[3]-algebraic[29]*computedConstants[8])/computedConstants[2]-(constants[52]*algebraic[34]+constants[50]*algebraic[31]+constants[51]*algebraic[32]);
+    algebraic[22] = constants[25]*states[3]*(states[2]-states[0]);
+    algebraic[37] = 2.0*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)*2.0/computedConstants[0])))*(states[0]-constants[5]*exp(-2.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[38] = 2.0*constants[84]*algebraic[8]/(computedConstants[0]*(1.0-exp(-1.0*algebraic[8]*2.0/computedConstants[0])))*(states[0]-constants[5]*exp(-2.0*algebraic[8]/computedConstants[0]))*states[25]*states[24];
+    rates[0] = algebraic[22]*computedConstants[9]/computedConstants[3]-((algebraic[37]+algebraic[38]-2.0*algebraic[4])/(2.0*constants[7]*computedConstants[3])+algebraic[28]+constants[52]*algebraic[35]);
+    algebraic[30] = (states[8]-states[2])/constants[38];
+    rates[8] = algebraic[29]-algebraic[30]*computedConstants[9]/computedConstants[8];
+    rates[2] = algebraic[30]-(algebraic[22]+constants[53]*algebraic[36]);
+    algebraic[48] = states[16]*computedConstants[15]*(algebraic[8]-computedConstants[1])*(1.0-constants[71]);
+    algebraic[40] = algebraic[7]+algebraic[48];
+    algebraic[41] = constants[76]*states[20]*states[19]*(algebraic[8]-computedConstants[1]);
+    algebraic[42] = (constants[0] > 0.0)?constants[89]*constants[90]*(algebraic[8]-computedConstants[1])*(1.0+exp((algebraic[8]+20.0)/20.0))*states[32]:0.0;
+    algebraic[67] = 0.000365*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)/computedConstants[0])))*(constants[4]-constants[3]*exp(-1.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[43] = (algebraic[37]+algebraic[67]+algebraic[6])*(1.0-computedConstants[19])*1.0*computedConstants[18];
+    algebraic[44] = constants[86]*(algebraic[8]-computedConstants[1])*states[27]*states[26];
+    algebraic[93] = computedConstants[0]*log((constants[3]+0.12*constants[2])/(constants[4]+0.12*algebraic[1]));
+    algebraic[45] = computedConstants[22]*(algebraic[8]-algebraic[93])*pow(states[31], 2.0);
+    algebraic[46] = constants[87]*(algebraic[8]-computedConstants[1])*(0.9*states[29]+0.1*states[30])*states[28];
+    algebraic[39] = algebraic[40]+algebraic[46]+algebraic[45]+algebraic[44]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[43]+algebraic[38]+algebraic[42]+algebraic[41];
+    rates[15] = -algebraic[39]/constants[60];
+    algebraic[50] = (algebraic[8] < -(80.0-computedConstants[16]-computedConstants[17]-constants[72]))?0.01329+0.99921/(1.0+exp((algebraic[8]+97.134-computedConstants[16]-computedConstants[17]-constants[72])/8.1752)):0.0002501*exp(-(algebraic[8]-computedConstants[16]-computedConstants[17]-constants[72])/12.861);
+    algebraic[49] = 1.0/(0.36*(algebraic[8]+148.8-computedConstants[16]-computedConstants[17])/(exp(0.066*(algebraic[8]+148.8-computedConstants[16]-computedConstants[17]))-1.0)+0.1*(algebraic[8]+87.3-computedConstants[16]-computedConstants[17])/(1.0-exp(-0.2*(algebraic[8]+87.3-computedConstants[16]-computedConstants[17]))))-0.054;
+    rates[16] = (algebraic[50]-states[16])/algebraic[49];
+    algebraic[54] = 1.0/(1.0+exp(-(algebraic[8]+42.0504)/8.3106));
+    algebraic[55] = algebraic[8]+41.0;
+    algebraic[56] = (fabs(algebraic[55]) < constants[75])?2000.0:200.0*algebraic[55]/(1.0-exp(-0.1*algebraic[55]));
+    algebraic[57] = 8000.0*exp(-0.056*(algebraic[8]+66.0));
+    algebraic[58] = 1.0/(algebraic[56]+algebraic[57]);
+    rates[18] = (algebraic[54]-states[18])/algebraic[58];
+    algebraic[59] = 1.0/(1.0+exp((algebraic[8]+69.804)/4.4565));
+    algebraic[60] = 20.0*exp(-0.125*(algebraic[8]+75.0));
+    algebraic[61] = 2000.0/(320.0*exp(-0.1*(algebraic[8]+75.0))+1.0);
+    algebraic[62] = 1.0/(algebraic[60]+algebraic[61]);
+    rates[17] = (algebraic[59]-states[17])/algebraic[62];
+    algebraic[63] = 1.0/(1.0+exp((algebraic[8]+6.0)/-8.6));
+    algebraic[64] = 0.009/(1.0+exp((algebraic[8]+5.0)/12.0))+0.0005;
+    rates[20] = (algebraic[63]-states[20])/algebraic[64];
+    algebraic[65] = 1.0/(1.0+exp((algebraic[8]+7.5)/10.0));
+    algebraic[66] = 0.59/(1.0+exp((algebraic[8]+60.0)/10.0))+3.05;
+    rates[19] = (algebraic[65]-states[19])/algebraic[66];
+    algebraic[68] = 1.0/(1.0+exp(-(algebraic[8]-constants[78]-computedConstants[20])/(constants[79]*(1.0+computedConstants[21]/100.0))));
+    algebraic[72] = (algebraic[8] == -41.8)?-41.80001:(algebraic[8] == 0.0)?0.0:(algebraic[8] == -6.8)?-6.80001:algebraic[8];
+    algebraic[70] = -0.02839*(algebraic[72]+41.8)/(exp(-(algebraic[72]+41.8)/2.5)-1.0)-0.0849*(algebraic[72]+6.8)/(exp(-(algebraic[72]+6.8)/4.8)-1.0);
+    algebraic[73] = (algebraic[8] == -1.8)?-1.80001:algebraic[8];
+    algebraic[71] = 0.01143*(algebraic[73]+1.8)/(exp((algebraic[73]+1.8)/2.5)-1.0);
+    algebraic[69] = 0.001/(algebraic[70]+algebraic[71]);
+    rates[23] = (algebraic[68]-states[23])/algebraic[69];
+    algebraic[74] = 1.0/(1.0+exp((algebraic[8]+37.4+constants[80])/(5.3+constants[81])));
+    algebraic[75] = 0.001*(44.3+230.0*exp(-pow((algebraic[8]+36.0)/10.0, 2.0)));
+    rates[22] = (algebraic[74]-states[22])/algebraic[75];
+    algebraic[76] = constants[82]/(constants[82]+states[0]);
+    algebraic[77] = 0.001*algebraic[76]/constants[83];
+    rates[21] = (algebraic[76]-states[21])/algebraic[77];
+    algebraic[78] = 1.0/(1.0+exp(-(algebraic[8]+38.3)/5.5));
+    algebraic[79] = 0.001/(1.068*exp((algebraic[8]+38.3)/30.0)+1.068*exp(-(algebraic[8]+38.3)/30.0));
+    rates[25] = (algebraic[78]-states[25])/algebraic[79];
+    algebraic[80] = 1.0/(1.0+exp((algebraic[8]+58.7)/3.8));
+    algebraic[81] = 1.0/(16.67*exp(-(algebraic[8]+75.0)/83.3)+16.67*exp((algebraic[8]+75.0)/15.38))+constants[85];
+    rates[24] = (algebraic[80]-states[24])/algebraic[81];
+    algebraic[82] = 1.0/(1.0+exp((algebraic[8]+49.0)/13.0));
+    algebraic[83] = 0.001*0.6*(65.17/(0.57*exp(-0.08*(algebraic[8]+44.0))+0.065*exp(0.1*(algebraic[8]+45.93)))+10.1);
+    rates[27] = (algebraic[82]-states[27])/algebraic[83];
+    algebraic[84] = 1.0/(1.0+exp(-(algebraic[8]-19.3)/15.0));
+    algebraic[85] = 0.001*0.66*1.4*(15.59/(1.037*exp(0.09*(algebraic[8]+30.61))+0.369*exp(-0.12*(algebraic[8]+23.84)))+2.98);
+    rates[26] = (algebraic[84]-states[26])/algebraic[85];
+    algebraic[88] = 1.0/(1.0+exp(-(algebraic[8]+10.0144)/7.6607));
+    algebraic[89] = 0.84655354/(4.2*exp(algebraic[8]/17.0)+0.15*exp(-algebraic[8]/21.6));
+    rates[30] = (algebraic[88]-states[30])/algebraic[89];
+    algebraic[90] = 1.0/(30.0*exp(algebraic[8]/10.0)+exp(-algebraic[8]/12.0));
+    rates[29] = (algebraic[88]-states[29])/algebraic[90];
+    algebraic[92] = 1.0/(1.0+exp((algebraic[8]+28.6)/17.1));
+    algebraic[91] = 1.0/(100.0*exp(-algebraic[8]/54.645)+656.0*exp(algebraic[8]/106.157));
+    rates[28] = (algebraic[92]-states[28])/algebraic[91];
+    algebraic[94] = sqrt(1.0/(1.0+exp(-(algebraic[8]+0.6383-computedConstants[23])/10.7071)));
+    algebraic[96] = 28.0/(1.0+exp(-(algebraic[8]-40.0-computedConstants[23])/3.0));
+    algebraic[97] = 1.0*exp(-(algebraic[8]-computedConstants[23]-5.0)/25.0);
+    algebraic[95] = 1.0/(algebraic[96]+algebraic[97]);
+    rates[31] = (algebraic[94]-states[31])/algebraic[95];
+    algebraic[98] = 10.0*exp(0.0133*(algebraic[8]+40.0));
+    algebraic[99] = computedConstants[24]/(computedConstants[24]+algebraic[98]);
+    algebraic[100] = 1.0/(computedConstants[24]+algebraic[98]);
+    rates[32] = (algebraic[99]-states[32])/algebraic[100];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    variables[5] = states[1];
-    variables[2] = variables[3]*log(variables[4]/variables[5]);
-    variables[9] = 0.5*variables[3]*log(variables[10]/states[0]);
-    variables[21] = (variables[122] >= 1.0)?variables[121]:states[15];
-    variables[14] = variables[20]*variables[24]*pow(1.0+pow(variables[23]/variables[7], 1.2), -1.0)*pow(1.0+pow(variables[22]/variables[5], 1.3), -1.0)*pow(1.0+exp(-(variables[21]-variables[2]+110.0)/20.0), -1.0);
-    variables[50] = 1.0+variables[10]/variables[48]*(1.0+exp(variables[49]*variables[21]/variables[3]))+variables[4]/variables[51]*(1.0+variables[4]/variables[52]*(1.0+variables[4]/variables[47]));
-    variables[27] = variables[10]/variables[48]*exp(variables[49]*variables[21]/variables[3])/variables[50];
-    variables[42] = 1.0+states[0]/variables[40]*(1.0+exp(-variables[41]*variables[21]/variables[3])+variables[5]/variables[46])+variables[5]/variables[43]*(1.0+variables[5]/variables[44]*(1.0+variables[5]/variables[39]));
-    variables[29] = states[0]/variables[40]*exp(-variables[41]*variables[21]/variables[3])/variables[42];
-    variables[36] = variables[5]/(variables[39]+variables[5]);
-    variables[37] = exp(variables[45]*variables[21]/(2.0*variables[3]));
-    variables[33] = exp(-variables[45]*variables[21]/(2.0*variables[3]));
-    variables[38] = variables[5]/variables[43]*variables[5]/variables[44]*(1.0+variables[5]/variables[39])*exp(variables[45]*variables[21]/(2.0*variables[3]))/variables[42];
-    variables[26] = variables[37]*variables[36]*(variables[38]+variables[29])+variables[33]*variables[29]*(variables[35]+variables[37]);
-    variables[34] = variables[4]/variables[51]*variables[4]/variables[52]*(1.0+variables[4]/variables[47])*exp(-variables[45]*variables[21]/(2.0*variables[3]))/variables[50];
-    variables[28] = variables[33]*variables[35]*(variables[34]+variables[27])+variables[27]*variables[37]*(variables[36]+variables[33]);
-    variables[31] = variables[34]*variables[35]*(variables[38]+variables[29])+variables[38]*variables[27]*(variables[35]+variables[37]);
-    variables[32] = variables[38]*variables[36]*(variables[34]+variables[27])+variables[29]*variables[34]*(variables[36]+variables[33]);
-    variables[13] = (1.0-variables[25])*variables[30]*(variables[26]*variables[27]-variables[28]*variables[29])/(variables[28]+variables[26]+variables[32]+variables[31]);
-    variables[53] = variables[54]*states[3]*(states[2]-states[0]);
-    variables[55] = states[2]-states[0];
-    variables[56] = variables[57]-(variables[57]-variables[58])/(1.0+pow(variables[59]/states[2], variables[60]));
-    variables[61] = variables[62]/variables[56];
-    variables[63] = variables[64]*variables[56];
-    variables[67] = states[4]+states[3]+states[6]+states[5];
-    variables[71] = (states[0]-states[7])/variables[72];
-    variables[73] = variables[69]/(1.0+exp((-states[7]+variables[74])/variables[75]));
-    variables[76] = (states[8]-states[2])/variables[77];
-    variables[78] = variables[79]*states[7]*(1.0-states[9])-variables[80]*states[9];
-    variables[81] = variables[82]*states[7]*(1.0-(states[10]+states[11]))-variables[83]*states[10];
-    variables[84] = variables[85]*variables[86]*(1.0-(states[10]+states[11]))-variables[87]*states[11];
-    variables[88] = variables[89]*states[7]*(1.0-states[12])-variables[90]*states[12];
-    variables[91] = variables[89]*states[0]*(1.0-states[13])-variables[90]*states[13];
-    variables[92] = variables[93]*states[2]*(1.0-states[14])-variables[94]*states[14];
-    variables[16] = states[16]*variables[133]*(variables[21]-variables[2])*(1.0-variables[135]);
-    variables[136] = states[16]*variables[134]*(variables[21]-variables[6])*(1.0-variables[135]);
-    variables[111] = variables[16]+variables[136];
-    variables[112] = variables[157]*states[20]*states[19]*(variables[21]-variables[6]);
-    variables[113] = (variables[0] > 0.0)?variables[211]*variables[212]*(variables[21]-variables[6])*(1.0+exp((variables[21]+20.0)/20.0))*states[32]:0.0;
-    variables[102] = 2.0*variables[184]*variables[21]/(variables[3]*(1.0-exp(-1.0*variables[21]*2.0/variables[3])))*(states[0]-variables[10]*exp(-2.0*variables[21]/variables[3]))*states[25]*states[24];
-    variables[101] = 2.0*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)*2.0/variables[3])))*(states[0]-variables[10]*exp(-2.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[15] = 0.0000185*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)/variables[3])))*(variables[5]-variables[4]*exp(-1.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[164] = 0.000365*variables[163]*(variables[21]-0.0)/(variables[3]*(1.0-exp(-1.0*(variables[21]-0.0)/variables[3])))*(variables[8]-variables[7]*exp(-1.0*(variables[21]-0.0)/variables[3]))*states[23]*states[22]*states[21];
-    variables[114] = (variables[101]+variables[164]+variables[15])*(1.0-variables[165])*1.0*variables[162];
-    variables[142] = variables[3]*log((variables[4]+0.12*variables[7])/(variables[5]+0.12*variables[8]));
-    variables[143] = variables[144]*pow(states[18], 3.0)*states[17]*(variables[21]-variables[142]);
-    variables[145] = variables[146]*pow(states[18], 3.0)*(variables[21]-variables[142]);
-    variables[12] = variables[143]+variables[145];
-    variables[115] = variables[190]*(variables[21]-variables[6])*states[27]*states[26];
-    variables[205] = variables[3]*log((variables[7]+0.12*variables[4])/(variables[8]+0.12*variables[5]));
-    variables[116] = variables[203]*(variables[21]-variables[205])*pow(states[31], 2.0);
-    variables[117] = variables[195]*(variables[21]-variables[6])*(0.9*states[29]+0.1*states[30])*states[28];
-    variables[110] = variables[111]+variables[117]+variables[116]+variables[115]+variables[14]+variables[13]+variables[12]+variables[114]+variables[102]+variables[113]+variables[112];
-    variables[139] = 1.0/(0.36*(variables[21]+148.8-variables[137]-variables[138])/(exp(0.066*(variables[21]+148.8-variables[137]-variables[138]))-1.0)+0.1*(variables[21]+87.3-variables[137]-variables[138])/(1.0-exp(-0.2*(variables[21]+87.3-variables[137]-variables[138]))))-0.054;
-    variables[140] = (variables[21] < -(80.0-variables[137]-variables[138]-variables[141]))?0.01329+0.99921/(1.0+exp((variables[21]+97.134-variables[137]-variables[138]-variables[141])/8.1752)):0.0002501*exp(-(variables[21]-variables[137]-variables[138]-variables[141])/12.861);
-    variables[147] = 1.0/(1.0+exp(-(variables[21]+42.0504)/8.3106));
-    variables[148] = variables[21]+41.0;
-    variables[149] = (fabs(variables[148]) < variables[150])?2000.0:200.0*variables[148]/(1.0-exp(-0.1*variables[148]));
-    variables[151] = 8000.0*exp(-0.056*(variables[21]+66.0));
-    variables[152] = 1.0/(variables[149]+variables[151]);
-    variables[153] = 1.0/(1.0+exp((variables[21]+69.804)/4.4565));
-    variables[154] = 20.0*exp(-0.125*(variables[21]+75.0));
-    variables[155] = 2000.0/(320.0*exp(-0.1*(variables[21]+75.0))+1.0);
-    variables[156] = 1.0/(variables[154]+variables[155]);
-    variables[158] = 1.0/(1.0+exp((variables[21]+6.0)/-8.6));
-    variables[159] = 0.009/(1.0+exp((variables[21]+5.0)/12.0))+0.0005;
-    variables[160] = 1.0/(1.0+exp((variables[21]+7.5)/10.0));
-    variables[161] = 0.59/(1.0+exp((variables[21]+60.0)/10.0))+3.05;
-    variables[168] = 1.0/(1.0+exp(-(variables[21]-variables[169]-variables[166])/(variables[170]*(1.0+variables[167]/100.0))));
-    variables[174] = (variables[21] == -41.8)?-41.80001:(variables[21] == 0.0)?0.0:(variables[21] == -6.8)?-6.80001:variables[21];
-    variables[172] = -0.02839*(variables[174]+41.8)/(exp(-(variables[174]+41.8)/2.5)-1.0)-0.0849*(variables[174]+6.8)/(exp(-(variables[174]+6.8)/4.8)-1.0);
-    variables[175] = (variables[21] == -1.8)?-1.80001:variables[21];
-    variables[173] = 0.01143*(variables[175]+1.8)/(exp((variables[175]+1.8)/2.5)-1.0);
-    variables[171] = 0.001/(variables[172]+variables[173]);
-    variables[176] = 1.0/(1.0+exp((variables[21]+37.4+variables[177])/(5.3+variables[178])));
-    variables[179] = 0.001*(44.3+230.0*exp(-pow((variables[21]+36.0)/10.0, 2.0)));
-    variables[180] = variables[181]/(variables[181]+states[0]);
-    variables[182] = 0.001*variables[180]/variables[183];
-    variables[185] = 1.0/(1.0+exp(-(variables[21]+38.3)/5.5));
-    variables[186] = 0.001/(1.068*exp((variables[21]+38.3)/30.0)+1.068*exp(-(variables[21]+38.3)/30.0));
-    variables[187] = 1.0/(1.0+exp((variables[21]+58.7)/3.8));
-    variables[188] = 1.0/(16.67*exp(-(variables[21]+75.0)/83.3)+16.67*exp((variables[21]+75.0)/15.38))+variables[189];
-    variables[191] = 1.0/(1.0+exp((variables[21]+49.0)/13.0));
-    variables[192] = 0.001*0.6*(65.17/(0.57*exp(-0.08*(variables[21]+44.0))+0.065*exp(0.1*(variables[21]+45.93)))+10.1);
-    variables[193] = 1.0/(1.0+exp(-(variables[21]-19.3)/15.0));
-    variables[194] = 0.001*0.66*1.4*(15.59/(1.037*exp(0.09*(variables[21]+30.61))+0.369*exp(-0.12*(variables[21]+23.84)))+2.98);
-    variables[196] = 1.0/(1.0+exp(-(variables[21]+23.2)/6.6))/(0.84655354/(37.2*exp(variables[21]/11.9)+0.96*exp(-variables[21]/18.5)));
-    variables[197] = 4.0*((37.2*exp(variables[21]/15.9)+0.96*exp(-variables[21]/22.5))/0.84655354-1.0/(1.0+exp(-(variables[21]+23.2)/10.6))/(0.84655354/(37.2*exp(variables[21]/15.9)+0.96*exp(-variables[21]/22.5))));
-    variables[198] = 1.0/(1.0+exp(-(variables[21]+10.0144)/7.6607));
-    variables[199] = 0.84655354/(4.2*exp(variables[21]/17.0)+0.15*exp(-variables[21]/21.6));
-    variables[200] = 1.0/(30.0*exp(variables[21]/10.0)+exp(-variables[21]/12.0));
-    variables[201] = 1.0/(100.0*exp(-variables[21]/54.645)+656.0*exp(variables[21]/106.157));
-    variables[202] = 1.0/(1.0+exp((variables[21]+28.6)/17.1));
-    variables[207] = sqrt(1.0/(1.0+exp(-(variables[21]+0.6383-variables[206])/10.7071)));
-    variables[209] = 28.0/(1.0+exp(-(variables[21]-40.0-variables[206])/3.0));
-    variables[210] = 1.0*exp(-(variables[21]-variables[206]-5.0)/25.0);
-    variables[208] = 1.0/(variables[209]+variables[210]);
-    variables[214] = 10.0*exp(0.0133*(variables[21]+40.0));
-    variables[215] = variables[213]/(variables[213]+variables[214]);
-    variables[216] = 1.0/(variables[213]+variables[214]);
+    algebraic[1] = states[1];
+    algebraic[0] = computedConstants[0]*log(constants[2]/algebraic[1]);
+    algebraic[2] = 0.5*computedConstants[0]*log(constants[5]/states[0]);
+    algebraic[8] = (constants[63] >= 1.0)?algebraic[47]:states[15];
+    algebraic[5] = computedConstants[4]*constants[10]*pow(1.0+pow(constants[9]/constants[3], 1.2), -1.0)*pow(1.0+pow(constants[8]/algebraic[1], 1.3), -1.0)*pow(1.0+exp(-(algebraic[8]-algebraic[0]+110.0)/20.0), -1.0);
+    algebraic[21] = 1.0+constants[5]/constants[21]*(1.0+exp(constants[22]*algebraic[8]/computedConstants[0]))+constants[2]/constants[23]*(1.0+constants[2]/constants[24]*(1.0+constants[2]/constants[20]));
+    algebraic[10] = constants[5]/constants[21]*exp(constants[22]*algebraic[8]/computedConstants[0])/algebraic[21];
+    algebraic[20] = 1.0+states[0]/constants[14]*(1.0+exp(-constants[15]*algebraic[8]/computedConstants[0])+algebraic[1]/constants[19])+algebraic[1]/constants[16]*(1.0+algebraic[1]/constants[17]*(1.0+algebraic[1]/constants[13]));
+    algebraic[12] = states[0]/constants[14]*exp(-constants[15]*algebraic[8]/computedConstants[0])/algebraic[20];
+    algebraic[17] = algebraic[1]/(constants[13]+algebraic[1]);
+    algebraic[18] = exp(constants[18]*algebraic[8]/(2.0*computedConstants[0]));
+    algebraic[15] = exp(-constants[18]*algebraic[8]/(2.0*computedConstants[0]));
+    algebraic[19] = algebraic[1]/constants[16]*algebraic[1]/constants[17]*(1.0+algebraic[1]/constants[13])*exp(constants[18]*algebraic[8]/(2.0*computedConstants[0]))/algebraic[20];
+    algebraic[9] = algebraic[18]*algebraic[17]*(algebraic[19]+algebraic[12])+algebraic[15]*algebraic[12]*(computedConstants[5]+algebraic[18]);
+    algebraic[16] = constants[2]/constants[23]*constants[2]/constants[24]*(1.0+constants[2]/constants[20])*exp(-constants[18]*algebraic[8]/(2.0*computedConstants[0]))/algebraic[21];
+    algebraic[11] = algebraic[15]*computedConstants[5]*(algebraic[16]+algebraic[10])+algebraic[10]*algebraic[18]*(algebraic[17]+algebraic[15]);
+    algebraic[13] = algebraic[16]*computedConstants[5]*(algebraic[19]+algebraic[12])+algebraic[19]*algebraic[10]*(computedConstants[5]+algebraic[18]);
+    algebraic[14] = algebraic[19]*algebraic[17]*(algebraic[16]+algebraic[10])+algebraic[12]*algebraic[16]*(algebraic[17]+algebraic[15]);
+    algebraic[4] = (1.0-constants[11])*constants[12]*(algebraic[9]*algebraic[10]-algebraic[11]*algebraic[12])/(algebraic[11]+algebraic[9]+algebraic[14]+algebraic[13]);
+    algebraic[22] = constants[25]*states[3]*(states[2]-states[0]);
+    algebraic[23] = states[2]-states[0];
+    algebraic[24] = constants[26]-(constants[26]-constants[27])/(1.0+pow(constants[28]/states[2], constants[29]));
+    algebraic[25] = constants[30]/algebraic[24];
+    algebraic[26] = constants[31]*algebraic[24];
+    algebraic[27] = states[4]+states[3]+states[6]+states[5];
+    algebraic[28] = (states[0]-states[7])/constants[35];
+    algebraic[29] = computedConstants[7]/(1.0+exp((-states[7]+constants[36])/constants[37]));
+    algebraic[30] = (states[8]-states[2])/constants[38];
+    algebraic[31] = constants[39]*states[7]*(1.0-states[9])-constants[40]*states[9];
+    algebraic[32] = constants[41]*states[7]*(1.0-(states[10]+states[11]))-constants[42]*states[10];
+    algebraic[33] = constants[43]*constants[44]*(1.0-(states[10]+states[11]))-constants[45]*states[11];
+    algebraic[34] = constants[46]*states[7]*(1.0-states[12])-constants[47]*states[12];
+    algebraic[35] = constants[46]*states[0]*(1.0-states[13])-constants[47]*states[13];
+    algebraic[36] = constants[48]*states[2]*(1.0-states[14])-constants[49]*states[14];
+    algebraic[7] = states[16]*computedConstants[14]*(algebraic[8]-algebraic[0])*(1.0-constants[71]);
+    algebraic[48] = states[16]*computedConstants[15]*(algebraic[8]-computedConstants[1])*(1.0-constants[71]);
+    algebraic[40] = algebraic[7]+algebraic[48];
+    algebraic[41] = constants[76]*states[20]*states[19]*(algebraic[8]-computedConstants[1]);
+    algebraic[42] = (constants[0] > 0.0)?constants[89]*constants[90]*(algebraic[8]-computedConstants[1])*(1.0+exp((algebraic[8]+20.0)/20.0))*states[32]:0.0;
+    algebraic[38] = 2.0*constants[84]*algebraic[8]/(computedConstants[0]*(1.0-exp(-1.0*algebraic[8]*2.0/computedConstants[0])))*(states[0]-constants[5]*exp(-2.0*algebraic[8]/computedConstants[0]))*states[25]*states[24];
+    algebraic[37] = 2.0*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)*2.0/computedConstants[0])))*(states[0]-constants[5]*exp(-2.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[6] = 0.0000185*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)/computedConstants[0])))*(algebraic[1]-constants[2]*exp(-1.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[67] = 0.000365*constants[77]*(algebraic[8]-0.0)/(computedConstants[0]*(1.0-exp(-1.0*(algebraic[8]-0.0)/computedConstants[0])))*(constants[4]-constants[3]*exp(-1.0*(algebraic[8]-0.0)/computedConstants[0]))*states[23]*states[22]*states[21];
+    algebraic[43] = (algebraic[37]+algebraic[67]+algebraic[6])*(1.0-computedConstants[19])*1.0*computedConstants[18];
+    algebraic[51] = computedConstants[0]*log((constants[2]+0.12*constants[3])/(algebraic[1]+0.12*constants[4]));
+    algebraic[52] = constants[73]*pow(states[18], 3.0)*states[17]*(algebraic[8]-algebraic[51]);
+    algebraic[53] = constants[74]*pow(states[18], 3.0)*(algebraic[8]-algebraic[51]);
+    algebraic[3] = algebraic[52]+algebraic[53];
+    algebraic[44] = constants[86]*(algebraic[8]-computedConstants[1])*states[27]*states[26];
+    algebraic[93] = computedConstants[0]*log((constants[3]+0.12*constants[2])/(constants[4]+0.12*algebraic[1]));
+    algebraic[45] = computedConstants[22]*(algebraic[8]-algebraic[93])*pow(states[31], 2.0);
+    algebraic[46] = constants[87]*(algebraic[8]-computedConstants[1])*(0.9*states[29]+0.1*states[30])*states[28];
+    algebraic[39] = algebraic[40]+algebraic[46]+algebraic[45]+algebraic[44]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[43]+algebraic[38]+algebraic[42]+algebraic[41];
+    algebraic[49] = 1.0/(0.36*(algebraic[8]+148.8-computedConstants[16]-computedConstants[17])/(exp(0.066*(algebraic[8]+148.8-computedConstants[16]-computedConstants[17]))-1.0)+0.1*(algebraic[8]+87.3-computedConstants[16]-computedConstants[17])/(1.0-exp(-0.2*(algebraic[8]+87.3-computedConstants[16]-computedConstants[17]))))-0.054;
+    algebraic[50] = (algebraic[8] < -(80.0-computedConstants[16]-computedConstants[17]-constants[72]))?0.01329+0.99921/(1.0+exp((algebraic[8]+97.134-computedConstants[16]-computedConstants[17]-constants[72])/8.1752)):0.0002501*exp(-(algebraic[8]-computedConstants[16]-computedConstants[17]-constants[72])/12.861);
+    algebraic[54] = 1.0/(1.0+exp(-(algebraic[8]+42.0504)/8.3106));
+    algebraic[55] = algebraic[8]+41.0;
+    algebraic[56] = (fabs(algebraic[55]) < constants[75])?2000.0:200.0*algebraic[55]/(1.0-exp(-0.1*algebraic[55]));
+    algebraic[57] = 8000.0*exp(-0.056*(algebraic[8]+66.0));
+    algebraic[58] = 1.0/(algebraic[56]+algebraic[57]);
+    algebraic[59] = 1.0/(1.0+exp((algebraic[8]+69.804)/4.4565));
+    algebraic[60] = 20.0*exp(-0.125*(algebraic[8]+75.0));
+    algebraic[61] = 2000.0/(320.0*exp(-0.1*(algebraic[8]+75.0))+1.0);
+    algebraic[62] = 1.0/(algebraic[60]+algebraic[61]);
+    algebraic[63] = 1.0/(1.0+exp((algebraic[8]+6.0)/-8.6));
+    algebraic[64] = 0.009/(1.0+exp((algebraic[8]+5.0)/12.0))+0.0005;
+    algebraic[65] = 1.0/(1.0+exp((algebraic[8]+7.5)/10.0));
+    algebraic[66] = 0.59/(1.0+exp((algebraic[8]+60.0)/10.0))+3.05;
+    algebraic[68] = 1.0/(1.0+exp(-(algebraic[8]-constants[78]-computedConstants[20])/(constants[79]*(1.0+computedConstants[21]/100.0))));
+    algebraic[72] = (algebraic[8] == -41.8)?-41.80001:(algebraic[8] == 0.0)?0.0:(algebraic[8] == -6.8)?-6.80001:algebraic[8];
+    algebraic[70] = -0.02839*(algebraic[72]+41.8)/(exp(-(algebraic[72]+41.8)/2.5)-1.0)-0.0849*(algebraic[72]+6.8)/(exp(-(algebraic[72]+6.8)/4.8)-1.0);
+    algebraic[73] = (algebraic[8] == -1.8)?-1.80001:algebraic[8];
+    algebraic[71] = 0.01143*(algebraic[73]+1.8)/(exp((algebraic[73]+1.8)/2.5)-1.0);
+    algebraic[69] = 0.001/(algebraic[70]+algebraic[71]);
+    algebraic[74] = 1.0/(1.0+exp((algebraic[8]+37.4+constants[80])/(5.3+constants[81])));
+    algebraic[75] = 0.001*(44.3+230.0*exp(-pow((algebraic[8]+36.0)/10.0, 2.0)));
+    algebraic[76] = constants[82]/(constants[82]+states[0]);
+    algebraic[77] = 0.001*algebraic[76]/constants[83];
+    algebraic[78] = 1.0/(1.0+exp(-(algebraic[8]+38.3)/5.5));
+    algebraic[79] = 0.001/(1.068*exp((algebraic[8]+38.3)/30.0)+1.068*exp(-(algebraic[8]+38.3)/30.0));
+    algebraic[80] = 1.0/(1.0+exp((algebraic[8]+58.7)/3.8));
+    algebraic[81] = 1.0/(16.67*exp(-(algebraic[8]+75.0)/83.3)+16.67*exp((algebraic[8]+75.0)/15.38))+constants[85];
+    algebraic[82] = 1.0/(1.0+exp((algebraic[8]+49.0)/13.0));
+    algebraic[83] = 0.001*0.6*(65.17/(0.57*exp(-0.08*(algebraic[8]+44.0))+0.065*exp(0.1*(algebraic[8]+45.93)))+10.1);
+    algebraic[84] = 1.0/(1.0+exp(-(algebraic[8]-19.3)/15.0));
+    algebraic[85] = 0.001*0.66*1.4*(15.59/(1.037*exp(0.09*(algebraic[8]+30.61))+0.369*exp(-0.12*(algebraic[8]+23.84)))+2.98);
+    algebraic[86] = 1.0/(1.0+exp(-(algebraic[8]+23.2)/6.6))/(0.84655354/(37.2*exp(algebraic[8]/11.9)+0.96*exp(-algebraic[8]/18.5)));
+    algebraic[87] = 4.0*((37.2*exp(algebraic[8]/15.9)+0.96*exp(-algebraic[8]/22.5))/0.84655354-1.0/(1.0+exp(-(algebraic[8]+23.2)/10.6))/(0.84655354/(37.2*exp(algebraic[8]/15.9)+0.96*exp(-algebraic[8]/22.5))));
+    algebraic[88] = 1.0/(1.0+exp(-(algebraic[8]+10.0144)/7.6607));
+    algebraic[89] = 0.84655354/(4.2*exp(algebraic[8]/17.0)+0.15*exp(-algebraic[8]/21.6));
+    algebraic[90] = 1.0/(30.0*exp(algebraic[8]/10.0)+exp(-algebraic[8]/12.0));
+    algebraic[91] = 1.0/(100.0*exp(-algebraic[8]/54.645)+656.0*exp(algebraic[8]/106.157));
+    algebraic[92] = 1.0/(1.0+exp((algebraic[8]+28.6)/17.1));
+    algebraic[94] = sqrt(1.0/(1.0+exp(-(algebraic[8]+0.6383-computedConstants[23])/10.7071)));
+    algebraic[96] = 28.0/(1.0+exp(-(algebraic[8]-40.0-computedConstants[23])/3.0));
+    algebraic[97] = 1.0*exp(-(algebraic[8]-computedConstants[23]-5.0)/25.0);
+    algebraic[95] = 1.0/(algebraic[96]+algebraic[97]);
+    algebraic[98] = 10.0*exp(0.0133*(algebraic[8]+40.0));
+    algebraic[99] = computedConstants[24]/(computedConstants[24]+algebraic[98]);
+    algebraic[100] = 1.0/(computedConstants[24]+algebraic[98]);
 }

@@ -5,29 +5,74 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 10;
+const size_t CONSTANT_COUNT = 8;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 1;
+const size_t EXTERNAL_COUNT = 1;
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC},
-    {"E", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_0", "per_fmol_sec4", "SLC_template3_ss", CONSTANT},
-    {"q_Ao", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_1", "per_fmol_sec4", "SLC_template3_ss", CONSTANT},
-    {"q_Ai", "fmol", "SLC_template3_ss", CONSTANT},
-    {"P_2", "per_fmol_sec3", "SLC_template3_ss", CONSTANT},
-    {"P_5", "per_sec3", "SLC_template3_ss", CONSTANT},
-    {"P_4", "per_fmol2_sec3", "SLC_template3_ss", CONSTANT},
-    {"P_3", "per_fmol_sec3", "SLC_template3_ss", EXTERNAL}
+const VariableInfo CONSTANT_INFO[] = {
+    {"E", "fmol", "SLC_template3_ss"},
+    {"P_0", "per_fmol_sec4", "SLC_template3_ss"},
+    {"q_Ao", "fmol", "SLC_template3_ss"},
+    {"P_1", "per_fmol_sec4", "SLC_template3_ss"},
+    {"q_Ai", "fmol", "SLC_template3_ss"},
+    {"P_2", "per_fmol_sec3", "SLC_template3_ss"},
+    {"P_5", "per_sec3", "SLC_template3_ss"},
+    {"P_4", "per_fmol2_sec3", "SLC_template3_ss"}
 };
 
-double * createVariablesArray()
-{
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+const VariableInfo ALGEBRAIC_INFO[] = {
+    {"v", "fmol_per_sec", "SLC_template3_ss"}
+};
+
+const VariableInfo EXTERNAL_INFO[] = {
+    {"P_3", "per_fmol_sec3", "SLC_template3_ss"}
+};
+
+double * createConstantsArray()
+{
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createExternalsArray()
+{
+    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -39,25 +84,24 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
 {
-    variables[1] = 1.1;
-    variables[2] = 21262500.0;
-    variables[3] = 150.0;
-    variables[4] = 3402000.0;
-    variables[5] = 2.0;
-    variables[6] = 2902500.0;
-    variables[7] = 810000.0;
-    variables[8] = 247140.0;
-    variables[9] = externalVariable(variables, 9);
+    constants[0] = 1.1;
+    constants[1] = 21262500.0;
+    constants[2] = 150.0;
+    constants[3] = 3402000.0;
+    constants[4] = 2.0;
+    constants[5] = 2902500.0;
+    constants[6] = 810000.0;
+    constants[7] = 247140.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *variables, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    variables[9] = externalVariable(variables, 9);
-    variables[0] = variables[1]*(variables[2]*variables[3]-variables[4]*variables[5])/(variables[6]*variables[5]+variables[9]*variables[3]+variables[8]*variables[5]*variables[3]+variables[7]);
+    externals[0] = externalVariable(constants, computedConstants, algebraic, externals, 0);
+    algebraic[0] = constants[0]*(constants[1]*constants[2]-constants[3]*constants[4])/(constants[5]*constants[4]+externals[0]*constants[2]+constants[7]*constants[4]*constants[2]+constants[6]);
 }
