@@ -68,6 +68,76 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
+     * @brief Track the given @p variable.
+     *
+     * Track the given @p variable. This will add the variable to the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel containing the variable to track.
+     * @param variable The pointer to the @ref Variable to track.
+     *
+     * @return @c true if the variable was tracked, @c false otherwise.
+     */
+    bool trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+
+    /**
+     * @brief Untrack the given @p variable.
+     *
+     * Untrack the given @p variable. This will remove the variable from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel containing the variable to untrack.
+     * @param variable The pointer to the @ref Variable to untrack.
+     *
+     * @return @c true if the variable was untracked, @c false otherwise.
+     */
+    bool untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+
+    /**
+     * @brief Track all the variables in the given @p model.
+     *
+     * Track all the variables in the given @p model. This will add all the variables in the model to the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the variables are to be tracked.
+     *
+     * @return @c true if all the variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllVariables(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the variables in the given @p model.
+     *
+     * Untrack all the variables in the given @p model. This will remove all the variables in the model from the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the variables are to be untracked.
+     *
+     * @return @c true if all the variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllVariables(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked variables in the given @p model.
+     *
+     * Get the number of tracked variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked variables.
+     *
+     * @return The number of tracked variables in the model.
+     */
+    size_t trackedVariableCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked variables in the given @p model.
+     *
+     * Get the number of untracked variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked variables.
+     *
+     * @return The number of untracked variables in the model.
+     */
+    size_t untrackedVariableCount(const AnalyserModelPtr &model);
+
+    /**
      * @brief Get the interface code for the @ref AnalyserModel.
      *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.

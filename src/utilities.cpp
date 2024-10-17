@@ -1317,21 +1317,25 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model, bool allVariables)
 {
     std::vector<AnalyserVariablePtr> res;
 
-    if (model->voi() != nullptr) {
-        res.push_back(model->voi());
+    if (allVariables) {
+        if (model->voi() != nullptr) {
+            res.push_back(model->voi());
+        }
+
+        auto states = model->states();
+
+        res.insert(res.end(), states.begin(), states.end());
     }
 
-    auto states = model->states();
     auto constants = model->constants();
     auto computedConstants = model->computedConstants();
     auto algebraic = model->algebraic();
     auto externals = model->externals();
 
-    res.insert(res.end(), states.begin(), states.end());
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraic.begin(), algebraic.end());

@@ -876,10 +876,11 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
  * Return the variables in the given model.
  *
  * @param model The model for which we want the variables.
+ * @param allVariables Whether to return all variables or just the ones that can be untracked.
  *
  * @return The variables in the given model.
  */
-std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model);
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model, bool allVariables = true);
 
 /**
  * @brief Return the variables in the given equation.
