@@ -263,6 +263,17 @@ public:
     AnalyserVariablePtr external(size_t index) const;
 
     /**
+     * @brief Get the analyser variable for the given @p variable.
+     *
+     * Return the analyser variable for the given @p variable in this @ref AnalyserModel.
+     *
+     * @param variable The variable for which to return the analyser variable.
+     *
+     * @return The analyser variable for the given @p variable on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr variable(const VariablePtr &variable);
+
+    /**
      * @brief Get the number of equations.
      *
      * Return the number of equations in the @ref AnalyserModel.

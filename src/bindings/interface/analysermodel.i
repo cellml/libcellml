@@ -70,6 +70,9 @@
 %feature("docstring") libcellml::AnalyserModel::external
 "Returns the external variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
+%feature("docstring") libcellml::AnalyserModel::variable
+"Returns the :class:`AnalyserVariable` for the given variable.";
+
 %feature("docstring") libcellml::AnalyserModel::equationCount
 "Returns the number of equations contained by this :class:`AnalyserModel` object.";
 

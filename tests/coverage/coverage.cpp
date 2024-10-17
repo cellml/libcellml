@@ -466,6 +466,8 @@ TEST(Coverage, analyser)
     EXPECT_EQ(size_t(0), analyserModel->externals().size());
     EXPECT_EQ(nullptr, analyserModel->external(0));
 
+    EXPECT_EQ(nullptr, analyserModel->variable(nullptr));
+
     EXPECT_EQ(size_t(0), analyserModel->equationCount());
     EXPECT_EQ(size_t(0), analyserModel->equations().size());
     EXPECT_EQ(nullptr, analyserModel->equation(0));
@@ -506,8 +508,36 @@ TEST(Coverage, analyser)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("coverage/analyser.cellml"));
+    auto otherVariable = model->component("my_component")->variable("x");
 
     analyser->analyseModel(model);
+
+    model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    analyserModel = analyser->model();
+
+    EXPECT_TRUE(analyserModel->isValid());
+
+    EXPECT_EQ(nullptr, analyserModel->variable(nullptr));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("environment")->variable("time")));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("sodium_channel_m_gate")->variable("m")));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("Cm")));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("leakage_current")->variable("E_L")));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("i_Stim")));
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("V")));
+    EXPECT_EQ(nullptr, analyserModel->variable(otherVariable));
+
+    model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    analyser->analyseModel(model);
+
+    analyserModel = analyser->model();
+
+    EXPECT_NE(nullptr, analyserModel->variable(model->component("my_algebraic_eqn")->variable("x")));
 }
 
 TEST(Coverage, analyserConvertToInt)
