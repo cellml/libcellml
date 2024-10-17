@@ -78,30 +78,27 @@ struct Generator::GeneratorImpl
 
     void addStateAndVariableCountCode(const AnalyserModelPtr &model, bool interface = false);
 
-    void addVariableTypeObjectCode(const AnalyserModelPtr &model);
-
     std::string generateVariableInfoObjectCode(const AnalyserModelPtr &model, const std::string &objectString) const;
 
     void addVariableInfoObjectCode(const AnalyserModelPtr &model);
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component,
-                                              const std::string &type) const;
+                                              const std::string &component) const;
 
-    void addInterfaceVoiStateAndVariableInfoCode(const AnalyserModelPtr &model);
-    void addImplementationVoiInfoCode(const AnalyserModelPtr &model);
-    void addImplementationStateInfoCode(const AnalyserModelPtr &model);
+    void addInterfaceVariableInfoCode(const AnalyserModelPtr &model);
+
+    void doAddImplementationVariableInfoCode(const std::string &variableInfoString,
+                                             const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
     void addImplementationVariableInfoCode(const AnalyserModelPtr &model);
 
     void addArithmeticFunctionsCode(const AnalyserModelPtr &model);
     void addTrigonometricFunctionsCode(const AnalyserModelPtr &model);
 
     void addInterfaceCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model);
+    void addImplementationCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model);
+
     void addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &model);
-    void addImplementationCreateStatesArrayMethodCode(const AnalyserModelPtr &model);
-    void addImplementationCreateVariablesArrayMethodCode();
-    void addImplementationDeleteArrayMethodCode();
 
     void addRootFindingInfoObjectCode(const AnalyserModelPtr &model);
     void addExternNlaSolveMethodCode(const AnalyserModelPtr &model);
@@ -141,6 +138,9 @@ struct Generator::GeneratorImpl
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 
     void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model);
+    std::string generateConstantInitialisationCode(const AnalyserModelPtr &model,
+                                                   const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
                                                         std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &model,
