@@ -43,6 +43,37 @@ void Generator::GeneratorImpl::reset()
     mCode = {};
 }
 
+bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked)
+{
+    if (variable == nullptr) {
+        return false;
+    }
+
+    auto model = variable->model();
+
+    for (const auto &modelVariable : variables(model, false)) {
+        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())) {
+            if (mTrackedVariables[model].find(modelVariable) == mTrackedVariables[model].end()) {
+                mTrackedVariables[model][modelVariable] = true;
+            }
+
+            return mTrackedVariables[model][modelVariable] == tracked;
+        }
+    }
+
+    return false;
+}
+
+bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &variable)
+{
+    return doIsTrackedVariable(variable, true);
+}
+
+bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &variable)
+{
+    return doIsTrackedVariable(variable, false);
+}
+
 bool Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variable, bool tracked)
 {
     if (variable == nullptr) {
@@ -51,9 +82,9 @@ bool Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variab
 
     auto model = variable->model();
 
-    for (const auto &untrackableVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(variable->variable(), untrackableVariable->variable())) {
-            mTrackedVariables[variable->model()][variable] = tracked;
+    for (const auto &modelVariable : variables(model, false)) {
+        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())) {
+            mTrackedVariables[modelVariable->model()][modelVariable] = tracked;
 
             return true;
         }
@@ -2259,6 +2290,16 @@ GeneratorProfilePtr Generator::profile()
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
     mPimpl->mProfile = profile;
+}
+
+bool Generator::isTrackedVariable(const AnalyserVariablePtr &variable)
+{
+    return mPimpl->isTrackedVariable(variable);
+}
+
+bool Generator::isUntrackedVariable(const AnalyserVariablePtr &variable)
+{
+    return mPimpl->isUntrackedVariable(variable);
 }
 
 bool Generator::trackVariable(const AnalyserVariablePtr &variable)

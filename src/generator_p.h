@@ -41,6 +41,11 @@ struct Generator::GeneratorImpl
 
     void reset();
 
+    bool doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked);
+
+    bool isTrackedVariable(const AnalyserVariablePtr &variable);
+    bool isUntrackedVariable(const AnalyserVariablePtr &variable);
+
     bool doTrackVariable(const AnalyserVariablePtr &variable, bool tracked);
 
     bool trackVariable(const AnalyserVariablePtr &variable);
