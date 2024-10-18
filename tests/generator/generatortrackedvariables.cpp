@@ -234,16 +234,22 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
+    EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllConstants(analyserModel);
 
+    EXPECT_EQ(size_t(0), generator->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(5), generator->untrackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(13), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(5), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllConstants(analyserModel);
 
+    EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
@@ -259,16 +265,22 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
+    EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllComputedConstants(analyserModel);
 
+    EXPECT_EQ(size_t(0), generator->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(3), generator->untrackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(15), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllComputedConstants(analyserModel);
 
+    EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
@@ -284,16 +296,22 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
+    EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllAlgebraic(analyserModel);
 
+    EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(analyserModel));
+    EXPECT_EQ(size_t(10), generator->untrackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(8), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(10), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllAlgebraic(analyserModel);
 
+    EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
@@ -313,16 +331,22 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllExternalVariables)
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
+    EXPECT_EQ(size_t(3), generator->trackedExternalCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedExternalCount(analyserModel));
     EXPECT_EQ(size_t(21), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllExternals(analyserModel);
 
+    EXPECT_EQ(size_t(0), generator->trackedExternalCount(analyserModel));
+    EXPECT_EQ(size_t(3), generator->untrackedExternalCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllExternals(analyserModel);
 
+    EXPECT_EQ(size_t(3), generator->trackedExternalCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedExternalCount(analyserModel));
     EXPECT_EQ(size_t(21), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }

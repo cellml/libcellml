@@ -46,32 +46,37 @@ struct Generator::GeneratorImpl
     bool trackVariable(const AnalyserVariablePtr &variable);
     bool untrackVariable(const AnalyserVariablePtr &variable);
 
-    bool doTrackAllConstants(const AnalyserModelPtr &model, bool tracked);
+    bool doTrackVariables(const std::vector<AnalyserVariablePtr> &variables, bool tracked);
 
     bool trackAllConstants(const AnalyserModelPtr &model);
     bool untrackAllConstants(const AnalyserModelPtr &model);
 
-    bool doTrackAllComputedConstants(const AnalyserModelPtr &model, bool tracked);
-
     bool trackAllComputedConstants(const AnalyserModelPtr &model);
     bool untrackAllComputedConstants(const AnalyserModelPtr &model);
-
-    bool doTrackAllAlgebraic(const AnalyserModelPtr &model, bool tracked);
 
     bool trackAllAlgebraic(const AnalyserModelPtr &model);
     bool untrackAllAlgebraic(const AnalyserModelPtr &model);
 
-    bool doTrackAllExternals(const AnalyserModelPtr &model, bool tracked);
-
     bool trackAllExternals(const AnalyserModelPtr &model);
     bool untrackAllExternals(const AnalyserModelPtr &model);
-
-    bool doTrackAllVariables(const AnalyserModelPtr &model, bool tracked);
 
     bool trackAllVariables(const AnalyserModelPtr &model);
     bool untrackAllVariables(const AnalyserModelPtr &model);
 
-    size_t doTrackedVariableCount(const AnalyserModelPtr &model, bool tracked);
+    size_t doTrackedVariableCount(const AnalyserModelPtr &model, const std::vector<AnalyserVariablePtr> &variables,
+                                  bool tracked);
+
+    size_t trackedConstantCount(const AnalyserModelPtr &model);
+    size_t untrackedConstantCount(const AnalyserModelPtr &model);
+
+    size_t trackedComputedConstantCount(const AnalyserModelPtr &model);
+    size_t untrackedComputedConstantCount(const AnalyserModelPtr &model);
+
+    size_t trackedAlgebraicCount(const AnalyserModelPtr &model);
+    size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
+
+    size_t trackedExternalCount(const AnalyserModelPtr &model);
+    size_t untrackedExternalCount(const AnalyserModelPtr &model);
 
     size_t trackedVariableCount(const AnalyserModelPtr &model);
     size_t untrackedVariableCount(const AnalyserModelPtr &model);
