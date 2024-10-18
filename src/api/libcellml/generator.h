@@ -210,6 +210,94 @@ public:
     bool untrackAllVariables(const AnalyserModelPtr &model);
 
     /**
+     * @brief Get the number of tracked constants in the given @p model.
+     *
+     * Get the number of tracked constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked constants.
+     *
+     * @return The number of tracked constants in the model.
+     */
+    size_t trackedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked constants in the given @p model.
+     *
+     * Get the number of untracked constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked constants.
+     *
+     * @return The number of untracked constants in the model.
+     */
+    size_t untrackedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked computed constants in the given @p model.
+     *
+     * Get the number of tracked computed constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked computed constants.
+     *
+     * @return The number of tracked computed constants in the model.
+     */
+    size_t trackedComputedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked computed constants in the given @p model.
+     *
+     * Get the number of untracked computed constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked computed constants.
+     *
+     * @return The number of untracked computed constants in the model.
+     */
+    size_t untrackedComputedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked algebraic variables in the given @p model.
+     *
+     * Get the number of tracked algebraic variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked algebraic variables.
+     *
+     * @return The number of tracked algebraic variables in the model.
+     */
+    size_t trackedAlgebraicCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked algebraic variables in the given @p model.
+     *
+     * Get the number of untracked algebraic variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked algebraic variables.
+     *
+     * @return The number of untracked algebraic variables in the model.
+     */
+    size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked external variables in the given @p model.
+     *
+     * Get the number of tracked external variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked external variables.
+     *
+     * @return The number of tracked external variables in the model.
+     */
+    size_t trackedExternalCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked external variables in the given @p model.
+     *
+     * Get the number of untracked external variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked external variables.
+     *
+     * @return The number of untracked external variables in the model.
+     */
+    size_t untrackedExternalCount(const AnalyserModelPtr &model);
+
+    /**
      * @brief Get the number of tracked variables in the given @p model.
      *
      * Get the number of tracked variables in the given @p model.
