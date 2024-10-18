@@ -72,6 +72,98 @@ bool Generator::GeneratorImpl::untrackVariable(const AnalyserVariablePtr &variab
     return doTrackVariable(variable, false);
 }
 
+bool Generator::GeneratorImpl::doTrackAllConstants(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return false;
+    }
+
+    for (const auto &constant : model->constants()) {
+        doTrackVariable(constant, tracked);
+    }
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &model)
+{
+    return doTrackAllConstants(model, true);
+}
+
+bool Generator::GeneratorImpl::untrackAllConstants(const AnalyserModelPtr &model)
+{
+    return doTrackAllConstants(model, false);
+}
+
+bool Generator::GeneratorImpl::doTrackAllComputedConstants(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return false;
+    }
+
+    for (const auto &computedConstant : model->computedConstants()) {
+        doTrackVariable(computedConstant, tracked);
+    }
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    return doTrackAllComputedConstants(model, true);
+}
+
+bool Generator::GeneratorImpl::untrackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    return doTrackAllComputedConstants(model, false);
+}
+
+bool Generator::GeneratorImpl::doTrackAllAlgebraic(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return false;
+    }
+
+    for (const auto &algebraic : model->algebraic()) {
+        doTrackVariable(algebraic, tracked);
+    }
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::trackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    return doTrackAllAlgebraic(model, true);
+}
+
+bool Generator::GeneratorImpl::untrackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    return doTrackAllAlgebraic(model, false);
+}
+
+bool Generator::GeneratorImpl::doTrackAllExternals(const AnalyserModelPtr &model, bool tracked)
+{
+    if (model == nullptr) {
+        return false;
+    }
+
+    for (const auto &external : model->externals()) {
+        doTrackVariable(external, tracked);
+    }
+
+    return true;
+}
+
+bool Generator::GeneratorImpl::trackAllExternals(const AnalyserModelPtr &model)
+{
+    return doTrackAllExternals(model, true);
+}
+
+bool Generator::GeneratorImpl::untrackAllExternals(const AnalyserModelPtr &model)
+{
+    return doTrackAllExternals(model, false);
+}
+
 bool Generator::GeneratorImpl::doTrackAllVariables(const AnalyserModelPtr &model, bool tracked)
 {
     if (model == nullptr) {
@@ -2114,6 +2206,46 @@ bool Generator::trackVariable(const AnalyserVariablePtr &variable)
 bool Generator::untrackVariable(const AnalyserVariablePtr &variable)
 {
     return mPimpl->untrackVariable(variable);
+}
+
+bool Generator::trackAllConstants(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackAllConstants(model);
+}
+
+bool Generator::untrackAllConstants(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackAllConstants(model);
+}
+
+bool Generator::trackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackAllComputedConstants(model);
+}
+
+bool Generator::untrackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackAllComputedConstants(model);
+}
+
+bool Generator::trackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackAllAlgebraic(model);
+}
+
+bool Generator::untrackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackAllAlgebraic(model);
+}
+
+bool Generator::trackAllExternals(const AnalyserModelPtr &model)
+{
+    return mPimpl->trackAllExternals(model);
+}
+
+bool Generator::untrackAllExternals(const AnalyserModelPtr &model)
+{
+    return mPimpl->untrackAllExternals(model);
 }
 
 bool Generator::trackAllVariables(const AnalyserModelPtr &model)

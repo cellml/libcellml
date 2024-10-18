@@ -46,6 +46,26 @@ struct Generator::GeneratorImpl
     bool trackVariable(const AnalyserVariablePtr &variable);
     bool untrackVariable(const AnalyserVariablePtr &variable);
 
+    bool doTrackAllConstants(const AnalyserModelPtr &model, bool tracked);
+
+    bool trackAllConstants(const AnalyserModelPtr &model);
+    bool untrackAllConstants(const AnalyserModelPtr &model);
+
+    bool doTrackAllComputedConstants(const AnalyserModelPtr &model, bool tracked);
+
+    bool trackAllComputedConstants(const AnalyserModelPtr &model);
+    bool untrackAllComputedConstants(const AnalyserModelPtr &model);
+
+    bool doTrackAllAlgebraic(const AnalyserModelPtr &model, bool tracked);
+
+    bool trackAllAlgebraic(const AnalyserModelPtr &model);
+    bool untrackAllAlgebraic(const AnalyserModelPtr &model);
+
+    bool doTrackAllExternals(const AnalyserModelPtr &model, bool tracked);
+
+    bool trackAllExternals(const AnalyserModelPtr &model);
+    bool untrackAllExternals(const AnalyserModelPtr &model);
+
     bool doTrackAllVariables(const AnalyserModelPtr &model, bool tracked);
 
     bool trackAllVariables(const AnalyserModelPtr &model);
