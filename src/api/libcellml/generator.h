@@ -72,24 +72,22 @@ public:
      *
      * Track the given @p variable. This will add the variable to the list of tracked variables.
      *
-     * @param model The pointer to the @ref AnalyserModel containing the variable to track.
-     * @param variable The pointer to the @ref Variable to track.
+     * @param variable The pointer to the @ref AnalyserVariable to track.
      *
      * @return @c true if the variable was tracked, @c false otherwise.
      */
-    bool trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+    bool trackVariable(const AnalyserVariablePtr &variable);
 
     /**
      * @brief Untrack the given @p variable.
      *
      * Untrack the given @p variable. This will remove the variable from the list of tracked variables.
      *
-     * @param model The pointer to the @ref AnalyserModel containing the variable to untrack.
-     * @param variable The pointer to the @ref Variable to untrack.
+     * @param variable The pointer to the @ref AnalyserVariable to untrack.
      *
      * @return @c true if the variable was untracked, @c false otherwise.
      */
-    bool untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+    bool untrackVariable(const AnalyserVariablePtr &variable);
 
     /**
      * @brief Track all the variables in the given @p model.

@@ -1049,7 +1049,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                         mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
-                                                               0, nullptr, voi, {});
+                                                               0, nullptr, voi, mModel, {});
                     }
                 }
             } while (voi == nullptr);
@@ -2945,8 +2945,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    (variableType == AnalyserVariable::Type::EXTERNAL) ?
                                        nullptr :
                                        internalVariable->mInitialisingVariable,
-                                   internalVariable->mVariable,
-                                   equations);
+                                   internalVariable->mVariable, mModel, equations);
 
         aiv2avMappings.emplace(internalVariable, variable);
         v2avMappings.emplace(internalVariable->mVariable, variable);

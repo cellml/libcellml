@@ -120,6 +120,15 @@ public:
     VariablePtr variable() const;
 
     /**
+     * @brief Get the @ref AnalyserModel for this @ref AnalyserVariable.
+     *
+     * Return the @ref AnalyserModel for this @ref AnalyserVariable.
+     *
+     * @return The @ref AnalyserModel.
+     */
+    AnalyserModelPtr model() const;
+
+    /**
      * @brief Get the number of equations used to compute this @ref AnalyserVariable.
      *
      * Return the number of equations used to compute this @ref AnalyserVariable.
