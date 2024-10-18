@@ -68,6 +68,28 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
+     * @brief Test if the given @p variable is tracked.
+     *
+     * Test if the given @p variable is tracked.
+     *
+     * @param variable The pointer to the @ref AnalyserVariable to test.
+     *
+     * @return @c true if the variable is tracked, @c false otherwise.
+     */
+    bool isTrackedVariable(const AnalyserVariablePtr &variable);
+
+    /**
+     * @brief Test if the given @p variable is untracked.
+     *
+     * Test if the given @p variable is untracked.
+     *
+     * @param variable The pointer to the @ref AnalyserVariable to test.
+     *
+     * @return @c true if the variable is untracked, @c false otherwise.
+     */
+    bool isUntrackedVariable(const AnalyserVariablePtr &variable);
+
+    /**
      * @brief Track the given @p variable.
      *
      * Track the given @p variable. This will add the variable to the list of tracked variables.
