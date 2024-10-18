@@ -90,6 +90,102 @@ public:
     bool untrackVariable(const AnalyserVariablePtr &variable);
 
     /**
+     * @brief Track all the constants in the given @p model.
+     *
+     * Track all the constants in the given @p model. This will add all the constants in the model to the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the constants are to be tracked.
+     *
+     * @return @c true if all the constants in the model were tracked, @c false otherwise.
+     */
+    bool trackAllConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the constants in the given @p model.
+     *
+     * Untrack all the constants in the given @p model. This will remove all the constants in the model from the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the constants are to be untracked.
+     *
+     * @return @c true if all the constants in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the computed constants in the given @p model.
+     *
+     * Track all the computed constants in the given @p model. This will add all the computed constants in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be tracked.
+     *
+     * @return @c true if all the computed constants in the model were tracked, @c false otherwise.
+     */
+    bool trackAllComputedConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the computed constants in the given @p model.
+     *
+     * Untrack all the computed constants in the given @p model. This will remove all the computed constants in the model
+     * from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be untracked.
+     *
+     * @return @c true if all the computed constants in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllComputedConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the algebraic variables in the given @p model.
+     *
+     * Track all the algebraic variables in the given @p model. This will add all the algebraic variables in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be tracked.
+     *
+     * @return @c true if all the algebraic variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllAlgebraic(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the algebraic variables in the given @p model.
+     *
+     * Untrack all the algebraic variables in the given @p model. This will remove all the algebraic variables in the
+     * model from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be untracked.
+     *
+     * @return @c true if all the algebraic variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllAlgebraic(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the external variables in the given @p model.
+     *
+     * Track all the external variables in the given @p model. This will add all the external variables in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be tracked.
+     *
+     * @return @c true if all the external variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllExternals(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the external variables in the given @p model.
+     *
+     * Untrack all the external variables in the given @p model. This will remove all the external variables in the model
+     * from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be untracked.
+     *
+     * @return @c true if all the external variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllExternals(const AnalyserModelPtr &model);
+
+    /**
      * @brief Track all the variables in the given @p model.
      *
      * Track all the variables in the given @p model. This will add all the variables in the model to the list of
