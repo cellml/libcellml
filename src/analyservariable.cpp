@@ -34,13 +34,14 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,
                                                       const VariablePtr &variable,
+                                                      const AnalyserModelPtr &model,
                                                       const std::vector<AnalyserEquationPtr> &equations)
 {
     mType = type;
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mComponent = owningComponent(mVariable);
+    mModel = model;
 
     std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
@@ -86,6 +87,11 @@ VariablePtr AnalyserVariable::initialisingVariable() const
 VariablePtr AnalyserVariable::variable() const
 {
     return mPimpl->mVariable;
+}
+
+AnalyserModelPtr AnalyserVariable::model() const
+{
+    return mPimpl->mModel.lock();
 }
 
 size_t AnalyserVariable::equationCount() const

@@ -43,42 +43,33 @@ void Generator::GeneratorImpl::reset()
     mCode = {};
 }
 
-bool Generator::GeneratorImpl::doTrackVariable(const ModelPtr &model, const VariablePtr &variable, bool tracked)
+bool Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variable, bool tracked)
 {
-    mTrackedVariables[model][variable] = tracked;
-
-    return true;
-}
-
-bool Generator::GeneratorImpl::doTrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable, bool tracked)
-{
-    if ((model == nullptr) || (variable == nullptr)) {
+    if (variable == nullptr) {
         return false;
     }
 
-    auto owningModel = libcellml::owningModel(variable);
-
-    if (owningModel == nullptr) {
-        return false;
-    }
+    auto model = variable->model();
 
     for (const auto &untrackableVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(variable, untrackableVariable->variable())) {
-            return doTrackVariable(owningModel, variable, tracked);
+        if (model->areEquivalentVariables(variable->variable(), untrackableVariable->variable())) {
+            mTrackedVariables[variable->model()][variable] = tracked;
+
+            return true;
         }
     }
 
     return false;
 }
 
-bool Generator::GeneratorImpl::trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+bool Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &variable)
 {
-    return doTrackVariable(model, variable, true);
+    return doTrackVariable(variable, true);
 }
 
-bool Generator::GeneratorImpl::untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+bool Generator::GeneratorImpl::untrackVariable(const AnalyserVariablePtr &variable)
 {
-    return doTrackVariable(model, variable, false);
+    return doTrackVariable(variable, false);
 }
 
 bool Generator::GeneratorImpl::doTrackAllVariables(const AnalyserModelPtr &model, bool tracked)
@@ -88,7 +79,7 @@ bool Generator::GeneratorImpl::doTrackAllVariables(const AnalyserModelPtr &model
     }
 
     for (const auto &variable : variables(model, false)) {
-        doTrackVariable(model->mPimpl->mModel, variable->variable(), tracked);
+        doTrackVariable(variable, tracked);
     }
 
     return true;
@@ -113,11 +104,11 @@ size_t Generator::GeneratorImpl::doTrackedVariableCount(const AnalyserModelPtr &
     size_t res = 0;
 
     for (const auto &variable : variables(model, false)) {
-        if (mTrackedVariables[model->mPimpl->mModel].find(variable->variable()) == mTrackedVariables[model->mPimpl->mModel].end()) {
-            mTrackedVariables[model->mPimpl->mModel][variable->variable()] = true;
+        if (mTrackedVariables[model].find(variable) == mTrackedVariables[model].end()) {
+            mTrackedVariables[model][variable] = true;
         }
 
-        if (mTrackedVariables[model->mPimpl->mModel][variable->variable()] == tracked) {
+        if (mTrackedVariables[model][variable] == tracked) {
             ++res;
         }
     }
@@ -2115,14 +2106,14 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
     mPimpl->mProfile = profile;
 }
 
-bool Generator::trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+bool Generator::trackVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->trackVariable(model, variable);
+    return mPimpl->trackVariable(variable);
 }
 
-bool Generator::untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
+bool Generator::untrackVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->untrackVariable(model, variable);
+    return mPimpl->untrackVariable(variable);
 }
 
 bool Generator::trackAllVariables(const AnalyserModelPtr &model)

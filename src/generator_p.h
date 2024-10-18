@@ -37,15 +37,14 @@ struct Generator::GeneratorImpl
 
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
-    std::map<ModelPtr, std::map<VariablePtr, bool>> mTrackedVariables;
+    std::map<AnalyserModelPtr, std::map<AnalyserVariablePtr, bool>> mTrackedVariables;
 
     void reset();
 
-    bool doTrackVariable(const ModelPtr &model, const VariablePtr &variable, bool tracked);
-    bool doTrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable, bool tracked);
+    bool doTrackVariable(const AnalyserVariablePtr &variable, bool tracked);
 
-    bool trackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
-    bool untrackVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+    bool trackVariable(const AnalyserVariablePtr &variable);
+    bool untrackVariable(const AnalyserVariablePtr &variable);
 
     bool doTrackAllVariables(const AnalyserModelPtr &model, bool tracked);
 
