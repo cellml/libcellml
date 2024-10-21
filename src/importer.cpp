@@ -396,7 +396,7 @@ bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importS
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description);
         issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT_INFOSET);
         addIssue(issue);
         return true;
     }

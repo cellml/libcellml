@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.5.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.0. */
 
 #pragma once
 
@@ -20,7 +20,7 @@ typedef enum {
 
 typedef struct {
     char name[2];
-    char units[3];
+    char units[7];
     char component[12];
     VariableType type;
 } VariableInfo;

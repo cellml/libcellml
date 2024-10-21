@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.5.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.0.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.4.0"
-LIBCELLML_VERSION = "0.5.0"
+LIBCELLML_VERSION = "0.6.0"
 
 STATE_COUNT = 33
 VARIABLE_COUNT = 217
@@ -434,6 +434,7 @@ def initialise_variables(states, rates, variables):
 
 
 def compute_computed_constants(variables):
+    variables[3] = variables[119]*variables[120]/variables[17]
     variables[6] = variables[3]*log(variables[7]/variables[8])
     variables[20] = 1.2 if gt_func(variables[1], 0.0) else 1.0
     variables[35] = variables[4]/(variables[47]+variables[4])
@@ -444,7 +445,6 @@ def compute_computed_constants(variables):
     variables[100] = variables[107]*variables[103]
     variables[18] = variables[108]*variables[103]-variables[19]
     variables[99] = variables[109]*variables[103]
-    variables[3] = variables[119]*variables[120]/variables[17]
     variables[127] = variables[128]/(variables[7]/(variables[7]+variables[129]))
     variables[130] = variables[127]/(variables[131]+1.0)
     variables[132] = variables[131]*variables[130]

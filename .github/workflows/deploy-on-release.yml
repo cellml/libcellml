@@ -99,19 +99,19 @@ jobs:
 
     steps:
     - name: Checkout libCellML
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: OpenCMISS-Dependencies/zlib
         path: zlib
         ref: v1.2.3
 
     - name: Checkout LibXml2
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
@@ -254,10 +254,8 @@ jobs:
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
-        # softprops action requires a list of newline separated files.
-        # The %0A will be converted by GitHub actions into '\n'.
-        string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
-        file(APPEND $ENV{GITHUB_OUTPUT} "files=${_DIST_FILES}")
+        string(REPLACE ";" "\n" _DIST_FILES "${_DIST_FILES}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "files<<EOF\n${_DIST_FILES}\nEOF")
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
@@ -281,7 +279,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-12, ubuntu-20.04, windows-2019]
-        py: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        py: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
         include:
           - name: 'Windows'
             os: windows-2019
@@ -295,7 +293,7 @@ jobs:
 
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -329,7 +327,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -378,20 +376,20 @@ jobs:
     runs-on: macos-12
     steps:
       - name: Checkout libCellML
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: libcellml
           ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: OpenCMISS-Dependencies/zlib
           path: zlib
           ref: v1.2.3
 
       - name: Checkout LibXml2
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: OpenCMISS-Dependencies/libxml2
           path: libxml2

@@ -1,4 +1,4 @@
-/* The content of this file was generated using a modified C profile of libCellML 0.5.0. */
+/* The content of this file was generated using a modified C profile of libCellML 0.6.0. */
 
 double xor(double x, double y)
 {
@@ -116,7 +116,7 @@ typedef struct {
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
-                     double *u, int n, void *data);
+                     double *u, size_t n, void *data);
 
 void objectiveFunction0(double *u, double *f, void *data)
 {

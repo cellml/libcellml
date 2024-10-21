@@ -24,6 +24,8 @@ limitations under the License.
 
 namespace libcellml {
 
+std::string generateDoubleCode(const std::string &value);
+
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -109,7 +111,6 @@ struct Generator::GeneratorImpl
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleCode(const std::string &value) const;
     std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          bool state = true) const;
@@ -127,13 +128,15 @@ struct Generator::GeneratorImpl
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
-    bool isSomeConstant(const AnalyserEquationPtr &equation) const;
+    bool isSomeConstant(const AnalyserEquationPtr &equation,
+                        bool includeComputedConstants) const;
 
     std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     std::vector<AnalyserEquationPtr> &equationsForComputeVariables);
+                                     std::vector<AnalyserEquationPtr> &equationsForDependencies,
+                                     bool includeComputedConstants);
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 

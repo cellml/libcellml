@@ -1,13 +1,13 @@
-# The content of this file was generated using the Python profile of libCellML 0.5.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.0.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.4.0"
-LIBCELLML_VERSION = "0.5.0"
+LIBCELLML_VERSION = "0.6.0"
 
-STATE_COUNT = 2
+STATE_COUNT = 3
 VARIABLE_COUNT = 0
 
 
@@ -19,11 +19,12 @@ class VariableType(Enum):
     ALGEBRAIC = 4
 
 
-VOI_INFO = {"name": "t", "units": "ms", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
+VOI_INFO = {"name": "t", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "x", "units": "mM", "component": "t_in_ms", "type": VariableType.STATE},
-    {"name": "x", "units": "mM", "component": "t_in_s", "type": VariableType.STATE}
+    {"name": "x", "units": "metre", "component": "t_in_s", "type": VariableType.STATE},
+    {"name": "x", "units": "metre", "component": "t_in_ms", "type": VariableType.STATE},
+    {"name": "x", "units": "metre", "component": "t_in_ks", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -41,6 +42,7 @@ def create_variables_array():
 def initialise_variables(states, rates, variables):
     states[0] = 3.0
     states[1] = 7.0
+    states[2] = 11.0
 
 
 def compute_computed_constants(variables):
@@ -50,6 +52,7 @@ def compute_computed_constants(variables):
 def compute_rates(voi, states, rates, variables):
     rates[0] = 5.0
     rates[1] = 1000.0*9.0
+    rates[2] = 0.001*13.0
 
 
 def compute_variables(voi, states, rates, variables):

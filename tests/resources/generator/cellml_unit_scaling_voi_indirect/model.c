@@ -1,21 +1,22 @@
-/* The content of this file was generated using the C profile of libCellML 0.5.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.0. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.4.0";
-const char LIBCELLML_VERSION[] = "0.5.0";
+const char VERSION[] = "0.5.0";
+const char LIBCELLML_VERSION[] = "0.6.0";
 
-const size_t STATE_COUNT = 2;
+const size_t STATE_COUNT = 3;
 const size_t VARIABLE_COUNT = 0;
 
-const VariableInfo VOI_INFO = {"t", "ms", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "second", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "mM", "t_in_ms", STATE},
-    {"x", "mM", "t_in_s", STATE}
+    {"x", "metre", "t_in_s", STATE},
+    {"x", "metre", "t_in_ms", STATE},
+    {"x", "metre", "t_in_ks", STATE}
 };
 
 const VariableInfo VARIABLE_INFO[] = {
@@ -52,6 +53,7 @@ void initialiseVariables(double *states, double *rates, double *variables)
 {
     states[0] = 3.0;
     states[1] = 7.0;
+    states[2] = 11.0;
 }
 
 void computeComputedConstants(double *variables)
@@ -62,6 +64,7 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 {
     rates[0] = 5.0;
     rates[1] = 1000.0*9.0;
+    rates[2] = 0.001*13.0;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)

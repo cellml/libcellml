@@ -14,6 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#ifdef _WIN32
+#    define _USE_MATH_DEFINES
+#endif
+
 #include "libcellml/analyser.h"
 
 #include <cmath>
@@ -38,6 +42,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "anycellmlelement_p.h"
 #include "commonutils.h"
+#include "generator_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
@@ -473,7 +478,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
 
         // An ODE equation may have a dependency on the state of that ODE (e.g.,
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
-        // its unknown variables. Either way, we must remove our "depenencies"
+        // its unknown variables. Either way, we must remove our "dependencies"
         // on our unknown variables or we will end up in a circular dependency.
 
         for (const auto &unknownVariable : mUnknownVariables) {
@@ -502,6 +507,16 @@ using UnitsMultipliers = std::vector<double>;
 class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
 public:
+    class PowerData
+    {
+    public:
+        bool mDimensionlessBase;
+        bool mExponentValueAvailable = true;
+        bool mExponentValueChangeable = false;
+        double mExponentValue;
+        AnalyserEquationAstPtr mExponentAst;
+    };
+
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
@@ -573,7 +588,7 @@ public:
                                double unitsExponent = 1.0,
                                double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
-    double powerValue(const AnalyserEquationAstPtr &ast);
+    double powerValue(const AnalyserEquationAstPtr &ast, PowerData &powerData);
     std::string expression(const AnalyserEquationAstPtr &ast,
                            bool includeHierarchy = true);
     std::string expressionUnits(const UnitsMaps &unitsMaps,
@@ -588,7 +603,7 @@ public:
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMaps &unitsMaps, UnitsMaps &userUnitsMaps,
                               UnitsMultipliers &unitsMultipliers,
-                              Strings &issueDescriptions);
+                              std::string &issueDescription, PowerData &powerData);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1661,38 +1676,230 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
     return res;
 }
 
-double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
+double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
+                                          PowerData &powerData)
 {
-    // Return the power value for the given AST.
+    // Make sure that we have an AST to process.
+
+    static const double NAN = std::numeric_limits<double>::quiet_NaN();
 
     if (ast == nullptr) {
+        return NAN;
+    }
+
+    // Retrieve the power value of the LHS and RHS of the given AST.
+
+    auto lhs = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
+
+    if (!powerData.mExponentValueAvailable) {
+        return lhs;
+    }
+
+    auto rhs = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
+
+    if (!powerData.mExponentValueAvailable) {
+        return rhs;
+    }
+
+    // Return the power value for the given AST.
+
+    switch (ast->mPimpl->mType) {
+        // Relational and logical operators.
+
+    case AnalyserEquationAst::Type::EQ:
+        return lhs == rhs;
+    case AnalyserEquationAst::Type::NEQ:
+        return lhs != rhs;
+    case AnalyserEquationAst::Type::LT:
+        return lhs < rhs;
+    case AnalyserEquationAst::Type::LEQ:
+        return lhs <= rhs;
+    case AnalyserEquationAst::Type::GT:
+        return lhs > rhs;
+    case AnalyserEquationAst::Type::GEQ:
+        return lhs >= rhs;
+    case AnalyserEquationAst::Type::AND:
+        return lhs && rhs;
+    case AnalyserEquationAst::Type::OR:
+        return lhs || rhs;
+    case AnalyserEquationAst::Type::XOR:
+        return (lhs != 0.0) ^ (rhs != 0.0);
+    case AnalyserEquationAst::Type::NOT:
+        return !lhs;
+
+        // Arithmetic operators.
+
+    case AnalyserEquationAst::Type::PLUS:
+        if (ast->mPimpl->mOwnedRightChild != nullptr) {
+            return lhs + rhs;
+        }
+
+        return lhs;
+    case AnalyserEquationAst::Type::MINUS:
+        if (ast->mPimpl->mOwnedRightChild != nullptr) {
+            return lhs - rhs;
+        }
+
+        return -lhs;
+    case AnalyserEquationAst::Type::TIMES:
+        return lhs * rhs;
+    case AnalyserEquationAst::Type::DIVIDE:
+        return lhs / rhs;
+    case AnalyserEquationAst::Type::POWER:
+        return std::pow(lhs, rhs);
+    case AnalyserEquationAst::Type::ROOT:
+        if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+            return std::pow(rhs, 1.0 / lhs);
+        }
+
+        return std::pow(lhs, 1.0 / 2.0);
+    case AnalyserEquationAst::Type::ABS:
+        return std::abs(lhs);
+    case AnalyserEquationAst::Type::EXP:
+        return std::exp(lhs);
+    case AnalyserEquationAst::Type::LN:
+        return std::log(lhs);
+    case AnalyserEquationAst::Type::LOG:
+        if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::LOGBASE) {
+            auto logBase = lhs;
+
+            if (areNearlyEqual(logBase, 10.0)) {
+                return std::log10(rhs);
+            }
+
+            return std::log(rhs) / std::log(logBase);
+        }
+
+        return std::log10(lhs);
+    case AnalyserEquationAst::Type::CEILING:
+        return std::ceil(lhs);
+    case AnalyserEquationAst::Type::FLOOR:
+        return std::floor(lhs);
+    case AnalyserEquationAst::Type::MIN:
+        return (lhs < rhs) ? lhs : rhs;
+    case AnalyserEquationAst::Type::MAX:
+        return (lhs > rhs) ? lhs : rhs;
+    case AnalyserEquationAst::Type::REM:
+        return std::fmod(lhs, rhs);
+
+        // Trigonometric operators.
+
+    case AnalyserEquationAst::Type::SIN:
+        return std::sin(lhs);
+    case AnalyserEquationAst::Type::COS:
+        return std::cos(lhs);
+    case AnalyserEquationAst::Type::TAN:
+        return std::tan(lhs);
+    case AnalyserEquationAst::Type::SEC:
+        return 1.0 / std::cos(lhs);
+    case AnalyserEquationAst::Type::CSC:
+        return 1.0 / std::sin(lhs);
+    case AnalyserEquationAst::Type::COT:
+        return 1.0 / std::tan(lhs);
+    case AnalyserEquationAst::Type::SINH:
+        return std::sinh(lhs);
+    case AnalyserEquationAst::Type::COSH:
+        return std::cosh(lhs);
+    case AnalyserEquationAst::Type::TANH:
+        return std::tanh(lhs);
+    case AnalyserEquationAst::Type::SECH:
+        return 1.0 / std::cosh(lhs);
+    case AnalyserEquationAst::Type::CSCH:
+        return 1.0 / std::sinh(lhs);
+    case AnalyserEquationAst::Type::COTH:
+        return 1.0 / std::tanh(lhs);
+    case AnalyserEquationAst::Type::ASIN:
+        return std::asin(lhs);
+    case AnalyserEquationAst::Type::ACOS:
+        return std::acos(lhs);
+    case AnalyserEquationAst::Type::ATAN:
+        return std::atan(lhs);
+    case AnalyserEquationAst::Type::ASEC:
+        return std::acos(1.0 / lhs);
+    case AnalyserEquationAst::Type::ACSC:
+        return std::asin(1.0 / lhs);
+    case AnalyserEquationAst::Type::ACOT:
+        return std::atan(1.0 / lhs);
+    case AnalyserEquationAst::Type::ASINH:
+        return std::asinh(lhs);
+    case AnalyserEquationAst::Type::ACOSH:
+        return std::acosh(lhs);
+    case AnalyserEquationAst::Type::ATANH:
+        return std::atanh(lhs);
+    case AnalyserEquationAst::Type::ASECH: {
+        auto xInv = 1.0 / lhs;
+
+        return std::log(xInv + std::sqrt(xInv * xInv - 1.0));
+    }
+    case AnalyserEquationAst::Type::ACSCH: {
+        auto xInv = 1.0 / lhs;
+
+        return std::log(xInv + std::sqrt(xInv * xInv + 1.0));
+    }
+    case AnalyserEquationAst::Type::ACOTH: {
+        auto xInv = 1.0 / lhs;
+
+        return 0.5 * std::log((1.0 + xInv) / (1.0 - xInv));
+    }
+
+        // Token elements.
+
+    case AnalyserEquationAst::Type::CI: {
+        auto initialValue = ast->variable()->initialValue();
+
+        if (initialValue.empty()) {
+            powerData.mExponentValueAvailable = false;
+
+            return NAN;
+        }
+
+        powerData.mExponentValueChangeable = true;
+
+        return std::stod(initialValue);
+    }
+    case AnalyserEquationAst::Type::CN:
+        return std::stod(ast->value());
+
+        // Qualifier elements.
+
+    case AnalyserEquationAst::Type::DEGREE:
+    case AnalyserEquationAst::Type::LOGBASE:
+        return lhs;
+
+        // Constants.
+
+    case AnalyserEquationAst::Type::TRUE:
+        return 1.0;
+    case AnalyserEquationAst::Type::FALSE:
         return 0.0;
+    case AnalyserEquationAst::Type::E: {
+        static const double E = exp(1.0);
+
+        return E;
     }
+    case AnalyserEquationAst::Type::PI:
+        return M_PI;
+    case AnalyserEquationAst::Type::INF: {
+        static const double INF = std::numeric_limits<double>::infinity();
 
-    if (ast->value().empty()) {
-        if (ast->mPimpl->mOwnedLeftChild == nullptr) {
-            return 0.0;
-        }
-
-        switch (ast->mPimpl->mType) {
-        case AnalyserEquationAst::Type::TIMES:
-            return powerValue(ast->mPimpl->mOwnedLeftChild) * powerValue(ast->mPimpl->mOwnedRightChild);
-        case AnalyserEquationAst::Type::DIVIDE:
-            return areNearlyEqual(powerValue(ast->mPimpl->mOwnedRightChild), 0.0) ?
-                       0.0 :
-                       powerValue(ast->mPimpl->mOwnedLeftChild) / powerValue(ast->mPimpl->mOwnedRightChild);
-        case AnalyserEquationAst::Type::PLUS:
-            return powerValue(ast->mPimpl->mOwnedLeftChild) + powerValue(ast->mPimpl->mOwnedRightChild);
-        case AnalyserEquationAst::Type::MINUS:
-            return powerValue(ast->mPimpl->mOwnedLeftChild) - powerValue(ast->mPimpl->mOwnedRightChild);
-        case AnalyserEquationAst::Type::DEGREE:
-            return powerValue(ast->mPimpl->mOwnedLeftChild);
-        default:
-            return 0.0;
-        }
+        return INF;
     }
+    case AnalyserEquationAst::Type::NAN:
+        return NAN;
+    default:
+        // This corresponds to one of the following cases:
+        //  - AnalyserEquationAst::Type::EQUALITY (we should never come across this case);
+        //  - AnalyserEquationAst::Type::DIFF,
+        //    AnalyserEquationAst::Type::BVAR; and
+        //  - AnalyserEquationAst::Type::PIECEWISE,
+        //    AnalyserEquationAst::Type::PIECE,
+        //    AnalyserEquationAst::Type::OTHERWISE.
+        // In all these cases, we may not have a constant (power) value.
 
-    return std::stod(ast->value());
+        powerData.mExponentValueAvailable = false;
+
+        return NAN;
+    }
 }
 
 std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast,
@@ -1824,7 +2031,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   UnitsMaps &unitsMaps,
                                                   UnitsMaps &userUnitsMaps,
                                                   UnitsMultipliers &unitsMultipliers,
-                                                  Strings &issueDescriptions)
+                                                  std::string &issueDescription,
+                                                  PowerData &powerData)
 {
     // Analyse the units used with different MathML elements (table 2.1 of the
     // CellML 2.0 normative specification; see https://bit.ly/3vBbyO5):
@@ -1911,13 +2119,21 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     // Check the left and right children.
 
-    auto oldNbOfIssueDescriptions = issueDescriptions.size();
+    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescription, powerData);
+
+    if (!issueDescription.empty()) {
+        return;
+    }
+
     UnitsMaps rightUnitsMaps;
     UnitsMaps rightUserUnitsMaps;
     UnitsMultipliers rightUnitsMultipliers;
 
-    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescriptions);
-    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescriptions);
+    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescription, powerData);
+
+    if (!issueDescription.empty()) {
+        return;
+    }
 
     switch (ast->mPimpl->mType) {
     case AnalyserEquationAst::Type::EQUALITY:
@@ -1934,10 +2150,11 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::REM: {
         auto sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
-        auto sameUnitsMultipliers = rightUnitsMaps.empty()
+        auto sameUnitsMultipliers = rightUnitsMultipliers.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
+        auto sameUnits = sameUnitsMaps && sameUnitsMultipliers;
 
-        if (sameUnitsMaps && sameUnitsMultipliers) {
+        if (sameUnits && powerData.mExponentValueAvailable && !powerData.mExponentValueChangeable) {
             // Relational operators result in a dimensionless unit.
 
             switch (ast->mPimpl->mType) {
@@ -1953,15 +2170,21 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             default:
                 break;
             }
-        } else if (issueDescriptions.size() == oldNbOfIssueDescriptions) {
-            // Only report inner issues.
-
-            std::string issueDescription = "The units in " + expression(ast) + " are not equivalent. ";
-
-            issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
-                                + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
-
-            issueDescriptions.push_back(issueDescription);
+        } else if (powerData.mExponentValueAvailable) {
+            if (sameUnits) {
+                if (!powerData.mDimensionlessBase) {
+                    issueDescription = "The units in " + expression(ast) + " are equivalent as long as the value of "
+                                       + expression(powerData.mExponentAst, false) + " is equal to '" + generateDoubleCode(convertToString(powerData.mExponentValue)) + "'.";
+                }
+            } else {
+                issueDescription = "The units in " + expression(ast) + " are not equivalent. "
+                                   + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
+                                   + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
+            }
+        } else if (!isDimensionlessUnitsMaps(unitsMaps)) {
+            issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
+                               + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
+                               + expression(ast->mPimpl->mOwnedRightChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(ast->mPimpl->mOwnedRightChild, false) + " having different units.";
         }
     } break;
     case AnalyserEquationAst::Type::PIECEWISE:
@@ -1978,9 +2201,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         break;
     case AnalyserEquationAst::Type::PIECE:
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps)) {
-            issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedRightChild)
-                                        + " is not dimensionless. "
-                                        + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".");
+            issueDescription = "The unit of " + expression(ast->mPimpl->mOwnedRightChild) + " is not dimensionless. "
+                               + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
         }
 
         break;
@@ -1995,7 +2217,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!isDimensionlessUnitsMaps) {
             auto isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
-            std::string issueDescription = "The unit";
+            issueDescription = "The unit";
 
             if (!isDimensionlessRightUnitsMaps) {
                 issueDescription += "s";
@@ -2022,8 +2244,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
 
             issueDescription += ".";
-
-            issueDescriptions.push_back(issueDescription);
         }
     } break;
     case AnalyserEquationAst::Type::TIMES:
@@ -2037,59 +2257,67 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::POWER:
     case AnalyserEquationAst::Type::ROOT: {
         auto isPower = ast->mPimpl->mType == AnalyserEquationAst::Type::POWER;
+
+        // Determine whether we are dealing with a dimensionless base.
+
+        if (isPower) {
+            powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+        } else {
+            if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+                powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
+            } else {
+                powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+            }
+        }
+
+        // Determine whether we are dealing with a dimensionless exponent and report it if not.
+
         auto isDimensionlessExponent = true;
 
         if (isPower
             || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
+            powerData.mExponentAst = isPower ?
+                                         ast->mPimpl->mOwnedRightChild :
+                                         ast->mPimpl->mOwnedLeftChild;
             isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(isPower ?
                                                                                            rightUnitsMaps :
                                                                                            unitsMaps);
 
             if (!isDimensionlessExponent) {
-                auto baseAst = isPower ?
-                                   ast->mPimpl->mOwnedRightChild :
-                                   ast->mPimpl->mOwnedLeftChild;
-                auto exponentUnitsMaps = isPower ?
-                                             rightUnitsMaps :
-                                             unitsMaps;
-                auto exponentUserUnitsMaps = isPower ?
-                                                 rightUserUnitsMaps :
-                                                 userUnitsMaps;
-                auto exponentUnitsMultipliers = isPower ?
-                                                    rightUnitsMultipliers :
-                                                    unitsMultipliers;
+                auto exponentUnitsMaps = isPower ? rightUnitsMaps : unitsMaps;
+                auto exponentUserUnitsMaps = isPower ? rightUserUnitsMaps : userUnitsMaps;
+                auto exponentUnitsMultipliers = isPower ? rightUnitsMultipliers : unitsMultipliers;
 
-                issueDescriptions.push_back("The unit of " + expression(baseAst)
-                                            + " is not dimensionless. "
-                                            + expressionUnits(baseAst, exponentUnitsMaps, exponentUserUnitsMaps, exponentUnitsMultipliers) + ".");
+                issueDescription = "The unit of " + expression(powerData.mExponentAst) + " is not dimensionless. "
+                                   + expressionUnits(powerData.mExponentAst, exponentUnitsMaps, exponentUserUnitsMaps, exponentUnitsMultipliers) + ".";
             }
         }
 
         // Retrieve the exponent and apply it to our units maps and multipliers.
 
         if (isDimensionlessExponent) {
-            auto powerRootValue = 0.0;
-
             if (isPower) {
-                powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
+                powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
             } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
                     unitsMultipliers = rightUnitsMultipliers;
 
-                    powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+                    powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
                 } else {
                     // No DEGREE element, which means that we are dealing with a
                     // square root.
 
-                    powerRootValue = 2.0;
+                    powerData.mExponentValue = 2.0;
                 }
             }
 
-            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue, isPower);
-            userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue, isPower);
-            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue, isPower);
+            if (powerData.mExponentValueAvailable) {
+                unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerData.mExponentValue, isPower);
+                userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerData.mExponentValue, isPower);
+                unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerData.mExponentValue, isPower);
+            }
         }
     } break;
     case AnalyserEquationAst::Type::SIN:
@@ -2117,9 +2345,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::ACSCH:
     case AnalyserEquationAst::Type::ACOTH:
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps)) {
-            issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
-                                        + " is not dimensionless. "
-                                        + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + ".");
+            issueDescription = "The unit of " + expression(ast->mPimpl->mOwnedLeftChild) + " is not dimensionless. "
+                               + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + ".";
         }
 
         break;
@@ -2226,7 +2453,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
                 auto astGrandparent = astParent->parent();
 
                 if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::EQUALITY) {
-                    scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
+                    scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, scalingFactor);
                 } else {
                     scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
                 }
@@ -2485,13 +2712,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         UnitsMaps unitsMaps;
         UnitsMaps userUnitsMaps;
         UnitsMultipliers unitsMultipliers;
-        Strings issueDescriptions;
+        std::string issueDescription;
+        PowerData powerData;
 
-        analyseEquationUnits(internalEquation->mAst, unitsMaps,
-                             userUnitsMaps, unitsMultipliers,
-                             issueDescriptions);
+        analyseEquationUnits(internalEquation->mAst, unitsMaps, userUnitsMaps, unitsMultipliers,
+                             issueDescription, powerData);
 
-        for (const auto &issueDescription : issueDescriptions) {
+        if (!issueDescription.empty()) {
             auto issue = Issue::IssueImpl::create();
 
             issue->mPimpl->setDescription(issueDescription);

@@ -205,8 +205,8 @@ TEST(Analyser, undefinedVariables)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
                                                                    expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::MATH),
                                                                    expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REF),
-                                                                   expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB12.html?issue=MATH_CI_VARIABLE_REF"),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REFERENCE),
+                                                                   expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB12.html?issue=MATH_CI_VARIABLE_REFERENCE"),
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
@@ -280,8 +280,8 @@ TEST(Analyser, nonExistingInitialisingVariable)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
                                                                    expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
                                                                    expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE),
-                                                                   expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB08.html?issue=VARIABLE_INITIAL_VALUE"),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE_VALUE),
+                                                                   expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB08.html?issue=VARIABLE_INITIAL_VALUE_VALUE"),
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
