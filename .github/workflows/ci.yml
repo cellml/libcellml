@@ -197,7 +197,7 @@ jobs:
       - name: Install LLVM
         run: |
           brew install --overwrite llvm
-          brew info llvm
+          echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.bash_profile
       - name: Configure libCellML
         run: |
           mkdir build
