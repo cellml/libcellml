@@ -49,7 +49,7 @@ if(SPHINX_FOUND)
     COMMENT "Building HTML documentation with Sphinx")
 endif()
 
-if(DOXYGEN_FOUND)
+if(DOXYGEN_FOUND AND DOT_EXE)
   set(DOXYGEN_DOCS_TARGET api_docs)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in.config ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
   add_custom_target(${DOXYGEN_DOCS_TARGET}
@@ -76,7 +76,7 @@ if(LIBCELLML_COVERAGE)
     COMMENT "Running coverage tests with html output")
 endif()
 
-if(SPHINX_FOUND OR DOXYGEN_FOUND OR LIBCELLML_COVERAGE)
+if(SPHINX_FOUND AND DOXYGEN_FOUND AND LIBCELLML_COVERAGE)
   add_custom_target(docs
     DEPENDS ${SPHINX_DOCS_TARGET} ${DOXYGEN_DOCS_TARGET} ${COVERAGE_DOCS_TARGET} ${DOXYGEN_API_XML_DOCS_TARGET}
     COMMENT "Generating documentation")
@@ -86,4 +86,3 @@ if(SPHINX_FOUND OR DOXYGEN_FOUND OR LIBCELLML_COVERAGE)
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/_doctrees
     COMMENT "Cleaning documentation")
 endif()
-
