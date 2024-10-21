@@ -257,9 +257,7 @@ public:
 
     void analyseModel(const ModelPtr &model);
 
-    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const ModelPtr &model,
-                                                                      const std::string &componentName,
-                                                                      const std::string &variableName) const;
+    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const VariablePtr &variable) const;
     AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 };
 
