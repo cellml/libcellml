@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "analyserequationast_p.h"
 
-#include "libcellml/undefines.h"
-
 namespace libcellml {
 
 void AnalyserEquationAst::AnalyserEquationAstImpl::populate(AnalyserEquationAst::Type type,
