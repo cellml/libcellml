@@ -1,0 +1,267 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  BUILDCACHE_ACCURACY: STRICT
+  BUILDCACHE_COMPRESS_FORMAT: ZSTD
+  BUILDCACHE_DEBUG: -1
+  BUILDCACHE_LOG_FILE: ""
+
+jobs:
+  cpp_python:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'Windows static - C++/Python'
+            os: windows-latest
+            bindings_python: ON
+            build_shared: OFF
+            unit_tests: ON
+            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
+            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+          - name: 'Windows shared - C++/Python'
+            os: windows-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
+            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+          - name: 'Linux static - C++ (build only)'
+            os: ubuntu-latest
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: OFF
+          - name: 'Linux shared - C++/Python'
+            os: ubuntu-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+          - name: 'macOS static - C++ (Intel)'
+            os: macos-13
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: ON
+          - name: 'macOS shared - C++/Python (Intel)'
+            os: macos-13
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+          - name: 'macOS static - C++ (ARM)'
+            os: macos-latest
+            bindings_python: OFF
+            build_shared: OFF
+            unit_tests: ON
+          - name: 'macOS shared - C++/Python (ARM)'
+            os: macos-latest
+            bindings_python: ON
+            build_shared: ON
+            unit_tests: ON
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install Python (if needed)
+        if: ${{ matrix.bindings_python == 'ON' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+        with:
+          cache_key: ${{ matrix.os }}-${{ matrix.build_shared }}
+      - name: Configure MSVC (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install libxml2 (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/libxml2.zip -OutFile libxml2.zip
+          Expand-Archive -LiteralPath libxml2.zip -DestinationPath C:\
+      - name: Install SWIG (macOS only and if needed)
+        if: ${{ runner.os == 'macOS' && matrix.bindings_python == 'ON' }}
+        run: |
+          brew install swig
+      - name: Install zlib (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/zlib.zip -OutFile zlib.zip
+          Expand-Archive -LiteralPath zlib.zip -DestinationPath C:\
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          ${{ matrix.set_path }}
+          cmake -G Ninja -DBINDINGS_PYTHON=${{ matrix.bindings_python }} -DBUILD_SHARED=${{ matrix.build_shared }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=${{ matrix.unit_tests }} ${{ matrix.additional_cmake_options }} ..
+      - name: Build libCellML
+        run: |
+          cd build
+          ninja
+      - name: Unit testing
+        if: ${{ matrix.unit_tests == 'ON' }}
+        run: |
+          cd build
+          ninja test
+  javascript:
+    name: JavaScript
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    env:
+      LIBCELLML_WASM_DIR: wasm
+      LIBXML2_VERSION: 2.9.10
+      ZLIB_VERSION: 1.2.3
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install Emscripten
+        run: |
+          brew install --overwrite emscripten
+      - name: Set up the build directory
+        run: |
+          mkdir build
+      - name: Build zlib
+        run: |
+          cd build
+          ZLIB_BUILD_DIR=zlib-wasm
+          git clone https://github.com/OpenCMISS-Dependencies/zlib.git -b v${ZLIB_VERSION}
+          mkdir ${ZLIB_BUILD_DIR}
+          emcmake cmake -G Ninja -S zlib -B ${ZLIB_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DBUILD_SHARED_LIBS=OFF
+          cmake --build ${ZLIB_BUILD_DIR}
+          cmake --install ${ZLIB_BUILD_DIR}
+      - name: Build libxml2
+        run: |
+          cd build
+          LIBXML2_BUILD_DIR=libxml2-wasm
+          git clone https://github.com/OpenCMISS-Dependencies/libxml2.git -b v${LIBXML2_VERSION}
+          mkdir ${LIBXML2_BUILD_DIR}
+          emcmake cmake -G Ninja -S libxml2 -B ${LIBXML2_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DZLIB_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/ZLIB-${ZLIB_VERSION} -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+          cmake --build ${LIBXML2_BUILD_DIR}
+          cmake --install ${LIBXML2_BUILD_DIR}
+      - name: Build libCellML
+        run: |
+          cd build
+          mkdir ${LIBCELLML_WASM_DIR}
+          emcmake cmake -G Ninja -S .. -B ${LIBCELLML_WASM_DIR} -DLibXml2_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/libxml2-${LIBXML2_VERSION} -DBUILD_TYPE=Release
+          cmake --build ${LIBCELLML_WASM_DIR}
+      - name: Unit testing
+        run: |
+          cd build
+          cmake --build ${LIBCELLML_WASM_DIR} --target jest_test
+  code_formatting:
+    name: Code formatting
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install ClangFormat
+        run: |
+          sudo apt update
+          sudo apt install clang-format
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja ..
+      - name: Code formatting
+        run: |
+          cd build
+          ninja test_clang_format
+  coverage:
+    name: Code coverage
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install LLVM
+        run: |
+          brew install --overwrite llvm
+          brew info llvm
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DBINDINGS_PYTHON=OFF ..
+      - name: Code coverage
+        run: |
+          cd build
+          ninja llvm_coverage
+          if [ `ninja llvm_coverage | grep TOTAL | sed 's/ /\n/g' | grep "100.00%" | wc -l | sed 's/ //g'` -eq 4 ]; then exit 0; else exit 1; fi
+  memory_leaks:
+    name: Memory leaks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install Valgrind
+        run: |
+          sudo apt update
+          sudo apt install valgrind
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DBINDINGS_PYTHON=OFF ..
+      - name: Memory leaks
+        run: |
+          cd build
+          ninja memcheck
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: mikehardy/buildcache-action@v2
+      - name: Install dot
+        run: |
+          sudo apt update
+          sudo apt install graphviz
+      - name: Install Doxygen
+        run: |
+          sudo apt update
+          sudo apt install doxygen
+      - name: Install Sphinx
+        run: |
+          pip3 install sphinx
+      - name: Configure libCellML
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DBINDINGS_PYTHON=OFF ..
+      - name: Documentation
+        run: |
+          cd build
+          ninja docs
