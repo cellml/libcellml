@@ -104,6 +104,7 @@ void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(con
                                                                              const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
                                                                              const std::vector<std::string> &urls,
                                                                              const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualFileContents(const std::string &fileName, const std::string &fileContents);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
@@ -128,3 +129,7 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
 #define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(issues, cellmlElementTypes, levels, referenceRules, urls, logger) \
     SCOPED_TRACE("Issue occurred here."); \
     expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(issues, cellmlElementTypes, levels, referenceRules, urls, logger)
+
+#define EXPECT_EQ_FILE_CONTENTS(fileName, fileContents) \
+    SCOPED_TRACE("Issue occurred here."); \
+    expectEqualFileContents(fileName, fileContents)

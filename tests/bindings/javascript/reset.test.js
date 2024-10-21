@@ -41,7 +41,7 @@ describe("Reset tests", () => {
         const r = new libcellml.Reset()
         const v = new libcellml.Variable()
 
-        expect(r.variable()).toBe(null)
+        expect(r.variable()).toBeNull()
 
         r.setVariable(v)
         expect(r.variable()).toStrictEqual(v)
@@ -50,7 +50,7 @@ describe("Reset tests", () => {
         const r = new libcellml.Reset()
         const v = new libcellml.Variable()
 
-        expect(r.testVariable()).toBe(null)
+        expect(r.testVariable()).toBeNull()
 
         r.setTestVariable(v)
         expect(r.testVariable()).toStrictEqual(v)

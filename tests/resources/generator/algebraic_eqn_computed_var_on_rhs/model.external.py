@@ -4,37 +4,53 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-VARIABLE_COUNT = 2
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 1
+EXTERNAL_COUNT = 1
 
+CONSTANT_INFO = [
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
+COMPUTED_CONSTANT_INFO = [
+]
 
+ALGEBRAIC_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn"}
+]
 
-VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC},
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL}
+EXTERNAL_INFO = [
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn"}
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
+def create_algebraic_array():
+    return [nan]*ALGEBRAIC_COUNT
+
+
+def create_externals_array():
+    return [nan]*EXTERNAL_COUNT
+
+
+def initialise_variables(constants, computed_constants, algebraic):
     pass
 
 
-def compute_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
-    variables[0] = variables[1]
+def compute_computed_constants(constants, computed_constants):
+    pass
+
+
+def compute_variables(constants, computed_constants, algebraic, externals, external_variable):
+    externals[0] = external_variable(constants, computed_constants, algebraic, externals, 0)
+    algebraic[0] = externals[0]

@@ -80,30 +80,27 @@ struct Generator::GeneratorImpl
 
     void addStateAndVariableCountCode(bool interface = false);
 
-    void addVariableTypeObjectCode();
-
     std::string generateVariableInfoObjectCode(const std::string &objectString) const;
 
     void addVariableInfoObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component,
-                                              const std::string &type) const;
+                                              const std::string &component) const;
 
-    void addInterfaceVoiStateAndVariableInfoCode();
-    void addImplementationVoiInfoCode();
-    void addImplementationStateInfoCode();
+    void addInterfaceVariableInfoCode();
+
+    void doAddImplementationVariableInfoCode(const std::string &variableInfoString,
+                                             const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
     void addImplementationVariableInfoCode();
 
     void addArithmeticFunctionsCode();
     void addTrigonometricFunctionsCode();
 
     void addInterfaceCreateDeleteArrayMethodsCode();
+    void addImplementationCreateDeleteArrayMethodsCode();
+
     void addExternalVariableMethodTypeDefinitionCode();
-    void addImplementationCreateStatesArrayMethodCode();
-    void addImplementationCreateVariablesArrayMethodCode();
-    void addImplementationDeleteArrayMethodCode();
 
     void addRootFindingInfoObjectCode();
     void addExternNlaSolveMethodCode();
@@ -141,6 +138,8 @@ struct Generator::GeneratorImpl
                                      std::vector<AnalyserEquationPtr> &remainingEquations);
 
     void addInterfaceComputeModelMethodsCode();
+    std::string generateConstantInitialisationCode(const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
