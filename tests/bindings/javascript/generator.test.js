@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { basicModel } = require('./resources')
+const { basicModel, hhSquidAxon1952 } = require('./resources')
 
 let libcellml = null
 
@@ -33,6 +33,80 @@ describe("Generator tests", () => {
         g.setProfile(gP)
 
         expect(g.profile().commentString()).toBe("# [CODE]\n")
+    })
+    test('Checking Generator tracking/untracking of variables.', () => {
+        const p = new libcellml.Parser(true)
+        const m = p.parseModel(hhSquidAxon1952)
+        const v = m.componentByName("membrane", true).variableByName("Cm")
+        const aev = new libcellml.AnalyserExternalVariable(v)
+        const a = new libcellml.Analyser()
+
+        a.addExternalVariable(aev)
+        a.analyseModel(m)
+
+        const am = a.model()
+        const g = new libcellml.Generator()
+        const av = am.variable(v)
+
+        g.untrackVariable(av)
+
+        expect(g.isTrackedVariable(av)).toBe(false)
+        expect(g.isUntrackedVariable(av)).toBe(true)
+
+        g.trackVariable(av)
+
+        expect(g.isTrackedVariable(av)).toBe(true)
+        expect(g.isUntrackedVariable(av)).toBe(false)
+
+        g.untrackAllConstants(am)
+
+        expect(g.trackedConstantCount(am)).toBe(0)
+        expect(g.untrackedConstantCount(am)).toBe(4)
+
+        g.trackAllConstants(am)
+
+        expect(g.trackedConstantCount(am)).toBe(4)
+        expect(g.untrackedConstantCount(am)).toBe(0)
+
+        g.untrackAllComputedConstants(am)
+
+        expect(g.trackedComputedConstantCount(am)).toBe(0)
+        expect(g.untrackedComputedConstantCount(am)).toBe(3)
+
+        g.trackAllComputedConstants(am)
+
+        expect(g.trackedComputedConstantCount(am)).toBe(3)
+        expect(g.untrackedComputedConstantCount(am)).toBe(0)
+
+        g.untrackAllAlgebraic(am)
+
+        expect(g.trackedAlgebraicCount(am)).toBe(0)
+        expect(g.untrackedAlgebraicCount(am)).toBe(10)
+
+        g.trackAllAlgebraic(am)
+
+        expect(g.trackedAlgebraicCount(am)).toBe(10)
+        expect(g.untrackedAlgebraicCount(am)).toBe(0)
+
+        g.untrackAllExternals(am)
+
+        expect(g.trackedExternalCount(am)).toBe(0)
+        expect(g.untrackedExternalCount(am)).toBe(1)
+
+        g.trackAllExternals(am)
+
+        expect(g.trackedExternalCount(am)).toBe(1)
+        expect(g.untrackedExternalCount(am)).toBe(0)
+
+        g.untrackAllVariables(am)
+
+        expect(g.trackedVariableCount(am)).toBe(0)
+        expect(g.untrackedVariableCount(am)).toBe(18)
+
+        g.trackAllVariables(am)
+
+        expect(g.trackedVariableCount(am)).toBe(18)
+        expect(g.untrackedVariableCount(am)).toBe(0)
     })
     test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()

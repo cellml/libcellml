@@ -49,6 +49,86 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual("x = a", Generator.equationCode(am.equation(0).ast()))
         self.assertEqual("x = a", Generator_equationCode(am.equation(0).ast()))
 
+    def test_tracked_untracked_variables(self):
+        from libcellml import Analyser
+        from libcellml import AnalyserExternalVariable
+        from libcellml import Generator
+        from libcellml import Parser
+        from test_resources import file_contents
+
+        p = Parser()
+        m = p.parseModel(file_contents('generator/hodgkin_huxley_squid_axon_model_1952/model.cellml'))
+        v = m.component("membrane").variable("Cm")
+        aev = AnalyserExternalVariable(v)
+        a = Analyser()
+
+        a.addExternalVariable(aev)
+        a.analyseModel(m)
+
+        am = a.model()
+        g = Generator()
+        av = am.variable(v)
+
+        g.untrackVariable(av)
+
+        self.assertFalse(g.isTrackedVariable(av))
+        self.assertTrue(g.isUntrackedVariable(av))
+
+        g.trackVariable(av)
+
+        self.assertTrue(g.isTrackedVariable(av))
+        self.assertFalse(g.isUntrackedVariable(av))
+
+        g.untrackAllConstants(am)
+
+        self.assertEqual(0, g.trackedConstantCount(am))
+        self.assertEqual(4, g.untrackedConstantCount(am))
+
+        g.trackAllConstants(am)
+
+        self.assertEqual(4, g.trackedConstantCount(am))
+        self.assertEqual(0, g.untrackedConstantCount(am))
+
+        g.untrackAllComputedConstants(am)
+
+        self.assertEqual(0, g.trackedComputedConstantCount(am))
+        self.assertEqual(3, g.untrackedComputedConstantCount(am))
+
+        g.trackAllComputedConstants(am)
+
+        self.assertEqual(3, g.trackedComputedConstantCount(am))
+        self.assertEqual(0, g.untrackedComputedConstantCount(am))
+
+        g.untrackAllAlgebraic(am)
+
+        self.assertEqual(0, g.trackedAlgebraicCount(am))
+        self.assertEqual(10, g.untrackedAlgebraicCount(am))
+
+        g.trackAllAlgebraic(am)
+
+        self.assertEqual(10, g.trackedAlgebraicCount(am))
+        self.assertEqual(0, g.untrackedAlgebraicCount(am))
+
+        g.untrackAllExternals(am)
+
+        self.assertEqual(0, g.trackedExternalCount(am))
+        self.assertEqual(1, g.untrackedExternalCount(am))
+
+        g.trackAllExternals(am)
+
+        self.assertEqual(1, g.trackedExternalCount(am))
+        self.assertEqual(0, g.untrackedExternalCount(am))
+
+        g.untrackAllVariables(am)
+
+        self.assertEqual(0, g.trackedVariableCount(am))
+        self.assertEqual(18, g.untrackedVariableCount(am))
+
+        g.trackAllVariables(am)
+
+        self.assertEqual(18, g.trackedVariableCount(am))
+        self.assertEqual(0, g.untrackedVariableCount(am))
+
 
 if __name__ == '__main__':
     unittest.main()

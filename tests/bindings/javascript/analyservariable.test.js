@@ -59,6 +59,10 @@ describe("Analyser Variable tests", () => {
         const av = am.algebraicVariable(3)
         expect(av.variable().name()).toBe("i_Na")
     });
+    test('Checking Analyser Variable model.', () => {
+        const av = am.algebraicVariable(3)
+        expect(av.model()).toStrictEqual(am)
+    });
     test('Checking Analyser Equation equationCount.', () => {
         const av = am.computedConstant(1)
         expect(av.equationCount()).toBe(1)
