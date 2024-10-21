@@ -45,10 +45,11 @@ else ()
   endif()
   find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
   find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
+  find_program(DOT_EXE NAMES ${PREFERRED_FIND_NAMES} dot)
   find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
   find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
-  find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
-  find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+  find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov)
+  find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata)
   find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
   find_program(INSTALL_NAME_TOOL_EXE NAMES ${PREFERRED_INSTALL_NAME_TOOL_NAMES} install_name_tool)
 
@@ -93,6 +94,7 @@ else ()
     BUILDCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
+    DOT_EXE
     FIND_EXE
     GCC_COVERAGE_COMPILER_FLAGS_OK
     GCOV_EXE
