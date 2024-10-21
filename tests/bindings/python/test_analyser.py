@@ -168,6 +168,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(3, av.index())
         self.assertIsNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
+        self.assertIsNotNone(av.model())
         self.assertEqual(1, av.equationCount())
         self.assertIsNotNone(av.equations())
         self.assertIsNotNone(av.equation(0))
