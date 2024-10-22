@@ -9,7 +9,6 @@
 
 %import "analysermodel.i"
 %import "createconstructor.i"
-%import "numpy.i"
 
 %feature("docstring") libcellml::Interpreter
 "Creates a :class:`Interpreter` object.";

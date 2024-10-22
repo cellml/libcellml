@@ -16,8 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <memory>
-
 #include "libcellml/analysermodel.h"
 
 #include "interpreterstatement.h"

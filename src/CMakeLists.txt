@@ -227,8 +227,6 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-apply_libxml2_settings(cellml_debug_utilities)
-
 target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
 target_include_directories(cellml_debug_utilities
