@@ -104,6 +104,7 @@ void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(con
                                                                              const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
                                                                              const std::vector<std::string> &urls,
                                                                              const libcellml::LoggerPtr &logger);
+
 void TEST_EXPORT expectEqualFileContents(const std::string &fileName, const std::string &fileContents);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");

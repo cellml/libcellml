@@ -259,6 +259,22 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
+}
+
 libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -415,20 +431,4 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
     }
     EXPECT_EQ(r1->testValueId(), r2->testValueId());
     EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
-}
-
-void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
-{
-    // Uncomment the below when you want to generate the expected file contents.
-    // #define NEW_GENERATOR
-
-#ifdef NEW_GENERATOR
-    std::ofstream file(resourcePath(fileName));
-
-    file << fileContents;
-
-    file.close();
-#endif
-
-    EXPECT_EQ(::fileContents(fileName), fileContents);
 }
