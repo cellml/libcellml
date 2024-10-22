@@ -268,54 +268,6 @@ bool areEqual(double a, double b)
     return convertToString(a + 0.0) == convertToString(b + 0.0);
 }
 
-uint64_t ulpsDistance(double a, double b)
-{
-    static const auto max = std::numeric_limits<uint64_t>::max();
-
-    // Max distance for NaN.
-    if (std::isnan(a) || std::isnan(b)) {
-        return max;
-    }
-
-    // If one's infinite and they're not equal, max distance.
-    if (std::isinf(a) != std::isinf(b)) {
-        return max;
-    }
-
-    static const int SIZE_OF_DOUBLE = sizeof(double);
-
-    uint64_t ia;
-    uint64_t ib;
-    memcpy(&ia, &a, SIZE_OF_DOUBLE);
-    memcpy(&ib, &b, SIZE_OF_DOUBLE);
-
-    // Return the absolute value of the distance in ULPs.
-    uint64_t distance = max;
-    if (ia < ib) {
-        distance = ib + ~ia + 1;
-    } else {
-        distance = ia + ~ib + 1;
-    }
-    return distance;
-}
-
-bool areNearlyEqual(double a, double b)
-{
-    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
-    static const ptrdiff_t ulpsEpsilon = 1;
-
-    if (fabs(a - b) <= fixedEpsilon) {
-        return true;
-    }
-
-    // If they are not the same sign then return false.
-    if ((a < 0.0) != (b < 0.0)) {
-        return false;
-    }
-
-    return ulpsDistance(a, b) <= ulpsEpsilon;
-}
-
 std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity)
 {
     std::vector<ComponentPtr> importedComponents;

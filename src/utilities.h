@@ -334,23 +334,6 @@ bool isCellMLReal(const std::string &candidate);
 bool areEqual(double a, double b);
 
 /**
- * @brief Decide if two doubles are nearly equal.
- *
- * Test two doubles to determine if they are close enough
- * to be considered equal.
- *
- * Uses a modified form of comparing floats:
- *
- *   https://bitbashing.io/comparing-floats.html
- *
- * @param a A @c double to test.
- * @param b A @c double to test.
- *
- * @return @c true if the given doubles are considered close, @c false otherwise.
- */
-bool areNearlyEqual(double a, double b);
-
-/**
  * @brief Compare strings to determine if they are equal.
  *
  * Compare the given strings to determine if they are equal or not.
