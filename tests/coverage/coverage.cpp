@@ -20,10 +20,10 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "libcellml/undefines.h"
+
 #include "../generator/generator.macros.h"
 #include "../generator/generator.models.h"
-
-#include "libcellml/undefines.h"
 
 /*
  * The tests in this file are here to catch any branches of code that

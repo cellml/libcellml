@@ -22,10 +22,10 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include "libcellml/undefines.h"
+
 #include "generator.macros.h"
 #include "generator.models.h"
-
-#include "libcellml/undefines.h"
 
 static const std::string EMPTY_STRING;
 
