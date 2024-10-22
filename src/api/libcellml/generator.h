@@ -116,8 +116,7 @@ public:
      *
      * @return The equation code as a @c std::string.
      */
-    static std::string equationCode(const AnalyserEquationAstPtr &ast,
-                                    const GeneratorProfilePtr &profile);
+    static std::string equationCode(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile);
 
     /**
      * @brief Get the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
