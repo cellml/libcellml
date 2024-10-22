@@ -3101,16 +3101,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                          const std::string &componentName,
-                                                                                          const std::string &variableName) const
+AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
-        auto variable = ev->variable();
-
-        return (owningModel(variable) == model)
-               && (owningComponent(variable)->name() == componentName)
-               && (variable->name() == variableName);
+        return ev->variable() == variable;
     });
 }
 
@@ -3198,6 +3192,19 @@ void Analyser::analyseModel(const ModelPtr &model)
     }
 }
 
+bool Analyser::addExternalVariable(const VariablePtr &variable)
+{
+    for (const auto &externalVariable : pFunc()->mExternalVariables) {
+        if (externalVariable->variable() == variable) {
+            return false;
+        }
+    }
+
+    pFunc()->mExternalVariables.push_back(AnalyserExternalVariable::create(variable));
+
+    return true;
+}
+
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
     if (std::find(pFunc()->mExternalVariables.begin(), pFunc()->mExternalVariables.end(), externalVariable) == pFunc()->mExternalVariables.end()) {
@@ -3220,11 +3227,9 @@ bool Analyser::removeExternalVariable(size_t index)
     return false;
 }
 
-bool Analyser::removeExternalVariable(const ModelPtr &model,
-                                      const std::string &componentName,
-                                      const std::string &variableName)
+bool Analyser::removeExternalVariable(const VariablePtr &variable)
 {
-    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(variable);
 
     if (result != pFunc()->mExternalVariables.end()) {
         pFunc()->mExternalVariables.erase(result);
@@ -3253,11 +3258,9 @@ void Analyser::removeAllExternalVariables()
     pFunc()->mExternalVariables.clear();
 }
 
-bool Analyser::containsExternalVariable(const ModelPtr &model,
-                                        const std::string &componentName,
-                                        const std::string &variableName) const
+bool Analyser::containsExternalVariable(const VariablePtr &variable) const
 {
-    return pFunc()->findExternalVariable(model, componentName, variableName) != pFunc()->mExternalVariables.end();
+    return pFunc()->findExternalVariable(variable) != pFunc()->mExternalVariables.end();
 }
 
 bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
@@ -3274,11 +3277,9 @@ AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
     return nullptr;
 }
 
-AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
-                                                       const std::string &componentName,
-                                                       const std::string &variableName) const
+AnalyserExternalVariablePtr Analyser::externalVariable(const VariablePtr &variable) const
 {
-    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(variable);
 
     if (result != pFunc()->mExternalVariables.end()) {
         return *result;
