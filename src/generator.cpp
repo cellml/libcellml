@@ -27,7 +27,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
-#include "commonutils.h"
 #include "generator_p.h"
 #include "generatorprofilesha1values.h"
 #include "generatorprofiletools.h"
@@ -2152,13 +2151,12 @@ std::string Generator::implementationCode() const
     return mPimpl->mCode;
 }
 
-std::string Generator::equationCode(const AnalyserEquationAstPtr &ast,
-                                    const GeneratorProfilePtr &generatorProfile)
+std::string Generator::equationCode(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile)
 {
     GeneratorPtr generator = libcellml::Generator::create();
 
-    if (generatorProfile != nullptr) {
-        generator->setProfile(generatorProfile);
+    if (profile != nullptr) {
+        generator->setProfile(profile);
     }
 
     return generator->mPimpl->generateCode(ast);

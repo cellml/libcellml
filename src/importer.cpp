@@ -32,7 +32,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
-#include "commonutils.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"

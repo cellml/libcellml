@@ -26,6 +26,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "internaltypes.h"
 #include "xmldoc.h"
 
