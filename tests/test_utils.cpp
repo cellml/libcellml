@@ -259,6 +259,22 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
+}
+
 double roundValue(double value, int precision)
 {
     return std::round(value * std::pow(10.0, precision)) / std::pow(10.0, precision);
@@ -283,22 +299,6 @@ testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, c
                                        << "    Which is: " << expectedValues[i] << std::endl
                                        << "  values[" << i << "]" << std::endl
                                        << "    Which is: " << values[i];
-}
-
-void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
-{
-    // Uncomment the below when you want to generate the expected file contents.
-    // #define NEW_GENERATOR
-
-#ifdef NEW_GENERATOR
-    std::ofstream file(resourcePath(fileName));
-
-    file << fileContents;
-
-    file.close();
-#endif
-
-    EXPECT_EQ(::fileContents(fileName), fileContents);
 }
 
 void expectEqualValues(const std::vector<double> &expectedValues, double *values, size_t valueCount)
