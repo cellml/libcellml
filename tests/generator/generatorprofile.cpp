@@ -88,8 +88,8 @@ TEST(GeneratorProfile, defaultArithmeticOperatorValues)
     EXPECT_EQ("log10", generatorProfile->commonLogarithmString());
     EXPECT_EQ("ceil", generatorProfile->ceilingString());
     EXPECT_EQ("floor", generatorProfile->floorString());
-    EXPECT_EQ("min", generatorProfile->minString());
-    EXPECT_EQ("max", generatorProfile->maxString());
+    EXPECT_EQ("fmin", generatorProfile->minString());
+    EXPECT_EQ("fmax", generatorProfile->maxString());
     EXPECT_EQ("fmod", generatorProfile->remString());
 
     EXPECT_EQ(false, generatorProfile->hasPowerOperator());
@@ -167,16 +167,8 @@ TEST(GeneratorProfile, defaultArithmeticFunctionValues)
               "}\n",
               generatorProfile->xorFunctionString());
     EXPECT_EQ("", generatorProfile->notFunctionString());
-    EXPECT_EQ("double min(double x, double y)\n"
-              "{\n"
-              "    return (x < y)?x:y;\n"
-              "}\n",
-              generatorProfile->minFunctionString());
-    EXPECT_EQ("double max(double x, double y)\n"
-              "{\n"
-              "    return (x > y)?x:y;\n"
-              "}\n",
-              generatorProfile->maxFunctionString());
+    EXPECT_EQ("", generatorProfile->minFunctionString());
+    EXPECT_EQ("", generatorProfile->maxFunctionString());
 }
 
 TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
@@ -230,23 +222,17 @@ TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
               generatorProfile->acotFunctionString());
     EXPECT_EQ("double asech(double x)\n"
               "{\n"
-              "    double oneOverX = 1.0/x;\n"
-              "\n"
-              "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+              "    return acosh(1.0/x);\n"
               "}\n",
               generatorProfile->asechFunctionString());
     EXPECT_EQ("double acsch(double x)\n"
               "{\n"
-              "    double oneOverX = 1.0/x;\n"
-              "\n"
-              "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+              "    return asinh(1.0/x);\n"
               "}\n",
               generatorProfile->acschFunctionString());
     EXPECT_EQ("double acoth(double x)\n"
               "{\n"
-              "    double oneOverX = 1.0/x;\n"
-              "\n"
-              "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+              "    return atanh(1.0/x);\n"
               "}\n",
               generatorProfile->acothFunctionString());
 }

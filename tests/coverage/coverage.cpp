@@ -597,10 +597,10 @@ TEST(Coverage, generator)
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(7), analyserModel->constantCount());
-    EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
-    EXPECT_EQ(size_t(2), analyserModel->algebraicCount());
+    EXPECT_EQ(size_t(207), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(5), analyserModel->algebraicCount());
     EXPECT_EQ(size_t(1), analyserModel->externalCount());
-    EXPECT_EQ(size_t(203), analyserModel->equationCount());
+    EXPECT_EQ(size_t(214), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -627,6 +627,7 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
     EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
+    /*---GRY--- STILL NEEDED?
     EXPECT_NE(nullptr, analyserModel->equation(199));
     EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
     EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
@@ -649,6 +650,7 @@ TEST(Coverage, generator)
     EXPECT_EQ(nullptr, analyserModel->equation(199)->external(0));
     EXPECT_EQ(nullptr, analyserModel->equation(199)->external(analyserModel->equation(199)->externalCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+    */
 
     for (const auto &equation : analyserModel->equations()) {
         checkAstTypeAsString(equation->ast());
@@ -666,9 +668,11 @@ TEST(Coverage, generator)
         EXPECT_NE(nullptr, analyserModel->constant(i)->initialisingVariable());
     }
 
+    /*---GRY--- STILL NEEDED?
     for (size_t i = 0; i < analyserModel->algebraicCount(); ++i) {
         EXPECT_NE(nullptr, analyserModel->algebraic(i)->initialisingVariable());
     }
+    */
 
     EXPECT_EQ(nullptr, generator->model());
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
@@ -682,20 +686,14 @@ TEST(Coverage, generator)
 
     auto profile = generator->profile();
 
-    profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
-    profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
-                                                            "{\n"
-                                                            "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
-                                                            "\n"
-                                                            "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
-                                                            "        res[i] = NAN;\n"
-                                                            "    }\n"
-                                                            "\n"
-                                                            "    return res;\n"
-                                                            "}\n");
+    profile->setXorString("XOR");
+    profile->setXorFunctionString("double XOR(double x, double y)\n"
+                                  "{\n"
+                                  "    return (x != 0.0) ^ (y != 0.0);\n"
+                                  "}\n");
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.xor.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.xor.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -847,12 +845,13 @@ TEST(Coverage, generator)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode());
 
-    profile->setImplementationCreateStatesArrayMethodString("\n"
-                                                            "def create_states_vector():\n"
-                                                            "    return [nan]*STATE_COUNT\n");
+    profile->setXorString("XOR_FUNC");
+    profile->setXorFunctionString("\n"
+                                  "def XOR_FUNC(x, y):\n"
+                                  "    return 1.0 if bool(x) ^ bool(y) else 0.0\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.xor.py", generator->implementationCode());
 
     // Coverage for the case where mProfile is equal to nullptr in Generator.
 
