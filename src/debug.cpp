@@ -26,6 +26,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
+#include "generator_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -76,7 +77,8 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
         Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
 
         if (eqn->ast() != nullptr) {
-            Debug() << "\n" << astAsCode(eqn->ast());
+            Debug() << "\n"
+                    << astAsCode(eqn->ast());
         } else {
             Debug() << "\nNo equation";
         }
@@ -336,7 +338,29 @@ std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
     return res + trunk->mStr;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
+std::string ciValue(const AnalyserVariablePtr &analyserVariable, bool rate)
+{
+    std::string res = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
+                          (rate ?
+                               "rates" :
+                               "states") :
+                          ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT) ?
+                               "constants" :
+                               ((analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                    "computedConstants" :
+                                    ((analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC) ?
+                                         "algebraic" :
+                                         "externals")));
+    auto variable = analyserVariable->variable();
+
+    res += "[" + std::to_string(analyserVariable->index()) + "] | "
+           + owningComponent(variable)->name() + " | "
+           + variable->name() + std::string(rate ? "'" : "");
+
+    return res;
+}
+
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
     std::string res;
 
@@ -577,15 +601,11 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
 
         // Token elements.
 
-    case AnalyserEquationAst::Type::CI: {
-        auto astVariable = ast->variable();
-
-        if (astVariable != nullptr) {
-            res = astVariable->name();
-        }
+    case AnalyserEquationAst::Type::CI:
+        res = ciValue(libcellml::analyserVariable(model, ast->variable()),
+                      ast->parent()->type() == AnalyserEquationAst::Type::DIFF);
 
         break;
-    }
     case AnalyserEquationAst::Type::CN:
         res = ast->value();
 
@@ -637,7 +657,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
     return res;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast,
                              AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
@@ -650,7 +670,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     auto astLeftChild = ast->leftChild();
 
     if (astLeftChild != nullptr) {
-        res += doPrintAstAsTree(astLeftChild, &trunk, true);
+        res += doPrintAstAsTree(model, astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -663,7 +683,15 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
         prevTrunk->mStr = prevStr;
     }
 
-    res += doPrintAstAsTree(&trunk) + doPrintAstAsTree(ast) + "\n";
+    auto astRightChild = ast->rightChild();
+
+    res += doPrintAstAsTree(&trunk);
+
+    if (astLeftChild != nullptr) {
+        res += (astRightChild != nullptr) ? "┤" : "┘";
+    }
+
+    res += " " + doPrintAstAsTree(model, ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -671,18 +699,16 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
 
     trunk.mStr = TRUNK;
 
-    auto astRightChild = ast->rightChild();
-
     if (astRightChild != nullptr) {
-        res += doPrintAstAsTree(astRightChild, &trunk, false);
+        res += doPrintAstAsTree(model, astRightChild, &trunk, false);
     }
 
     return res;
 }
 
-void printAstAsTree(const AnalyserEquationAstPtr &ast)
+void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
-    Debug() << doPrintAstAsTree(ast, nullptr, false);
+    Debug() << doPrintAstAsTree(model, ast, nullptr, false);
 }
 
 void printAstAsCode(const AnalyserEquationAstPtr &ast)

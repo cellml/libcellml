@@ -63,22 +63,22 @@ bool Generator::GeneratorImpl::modelHasNlas() const
     }
 }
 
-AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
+AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
 {
     // Find and return the analyser variable associated with the given variable.
 
     AnalyserVariablePtr res;
-    auto modelVoi = mModel->voi();
-    VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
+    auto modelVoi = model->voi();
+    auto modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
 
     if ((modelVoiVariable != nullptr)
-        && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
+        && model->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
         // Normally, we would have something like:
         //
-        //     for (const auto &modelVariable : variables(mModel)) {
-        //         if (mModel->areEquivalentVariables(variable, modelVariable->variable())) {
+        //     for (const auto &modelVariable : variables(model)) {
+        //         if (model->areEquivalentVariables(variable, modelVariable->variable())) {
         //             res = modelVariable;
         //
         //             break;
@@ -88,11 +88,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         // but we always have variables, so llvm-cov will complain that the false branch of our for loop is never
         // reached. The below code is a bit more verbose but at least it makes llvm-cov happy.
 
-        auto modelVariables = variables(mModel);
+        auto modelVariables = variables(model);
         auto modelVariable = modelVariables.begin();
 
         do {
-            if (mModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
+            if (model->areEquivalentVariables(variable, (*modelVariable)->variable())) {
                 res = *modelVariable;
             } else {
                 ++modelVariable;
@@ -108,12 +108,12 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) cons
     // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by
     // another variable which initial value may be defined in a different component.
 
-    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
+    auto analyserVariable = libcellml::analyserVariable(mModel, variable);
 
     if ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT)
         && !isCellMLReal(variable->initialValue())) {
         auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
-        auto initialValueAnalyserVariable = Generator::GeneratorImpl::analyserVariable(initialValueVariable);
+        auto initialValueAnalyserVariable = libcellml::analyserVariable(mModel, initialValueVariable);
 
         if (owningComponent(variable) != owningComponent(initialValueAnalyserVariable->variable())) {
             return Units::scalingFactor(initialValueVariable->units(), variable->units());
@@ -889,7 +889,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     }
 
     auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserVariable(initialValueVariable);
+    auto analyserInitialValueVariable = analyserVariable(mModel, initialValueVariable);
 
     return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
 }
@@ -906,7 +906,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
         return variable->name();
     }
 
-    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
+    auto analyserVariable = libcellml::analyserVariable(mModel, variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();

@@ -26,6 +26,8 @@ namespace libcellml {
 
 std::string generateDoubleCode(const std::string &value);
 
+AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -43,8 +45,6 @@ struct Generator::GeneratorImpl
 
     bool modelHasOdes() const;
     bool modelHasNlas() const;
-
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
     double scalingFactor(const VariablePtr &variable) const;
 
