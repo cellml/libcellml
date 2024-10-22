@@ -137,8 +137,7 @@ public:
     std::vector<InterpreterStatementPtr> computeVariablesStatements() const;
 
 private:
-    GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
-                         const std::string &code); /**< Constructor, @private. */
+    GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile, const std::string &code); /**< Constructor, @private. */
     GeneratorInterpreter(const AnalyserModelPtr &model); /**< Constructor, @private. */
     GeneratorInterpreter(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile); /**< Constructor, @private. */
 

@@ -80,19 +80,14 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          bool rate = false) const;
 
-    std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast,
+    std::string generateOperatorCode(const std::string &op, const AnalyserEquationAstPtr &ast,
                                      const InterpreterStatementPtr &statement = nullptr) const;
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast,
-                                       const InterpreterStatementPtr &statement) const;
-    std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast,
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast, const InterpreterStatementPtr &statement) const;
+    std::string generateOneParameterFunctionCode(const std::string &function, const AnalyserEquationAstPtr &ast,
                                                  const InterpreterStatementPtr &statement = nullptr) const;
-    std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast,
+    std::string generateTwoParameterFunctionCode(const std::string &function, const AnalyserEquationAstPtr &ast,
                                                  const InterpreterStatementPtr &statement = nullptr) const;
-    std::string generatePiecewiseIfCode(const std::string &condition,
-                                        const std::string &value) const;
+    std::string generatePiecewiseIfCode(const std::string &condition, const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::tuple<std::string, InterpreterStatementPtr> generateCode(const AnalyserEquationAstPtr &ast) const;
 

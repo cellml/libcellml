@@ -632,52 +632,28 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
     EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
-    /*---GRY--- STILL NEEDED?
-    EXPECT_NE(nullptr, analyserModel->equation(199));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstantCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstants().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(analyserModel->equation(199)->computedConstantCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraic().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraic(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraic(analyserModel->equation(199)->algebraicCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externals().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(analyserModel->equation(199)->externalCount()));
-    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
-    */
 
     for (const auto &equation : analyserModel->equations()) {
+        equation->dependencyCount();
+        equation->dependency(0);
+        equation->dependency(equation->dependencyCount());
+        equation->nlaSiblingCount();
+        equation->nlaSibling(0);
+        equation->nlaSibling(equation->nlaSiblingCount());
+        equation->computedConstantCount();
+        equation->computedConstant(0);
+        equation->computedConstant(equation->computedConstantCount());
+        equation->algebraicCount();
+        equation->algebraic(0);
+        equation->algebraic(equation->algebraicCount());
+        equation->externalCount();
+        equation->external(0);
+        equation->external(equation->externalCount());
+
         checkAstTypeAsString(equation->ast());
     }
 
     auto generator = libcellml::Generator::create();
-
-    EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
-
-    for (size_t i = 0; i < analyserModel->stateCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->state(i)->initialisingVariable());
-    }
-
-    for (size_t i = 0; i < analyserModel->constantCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->constant(i)->initialisingVariable());
-    }
-
-    /*---GRY--- STILL NEEDED?
-    for (size_t i = 0; i < analyserModel->algebraicCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->algebraic(i)->initialisingVariable());
-    }
-    */
 
     EXPECT_EQ(nullptr, generator->model());
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());

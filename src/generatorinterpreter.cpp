@@ -1590,8 +1590,7 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialiseVariables(std::ve
             methodBody += generateInitialisationCode(state);
         }
 
-        // Use an initial guess of zero for rates computed using an NLA system
-        // (see the note below).
+        // Use an initial guess of zero for rates computed using an NLA system (see the note below).
 
         for (const auto &state : mModel->states()) {
             if (state->equation(0)->type() == AnalyserEquation::Type::NLA) {

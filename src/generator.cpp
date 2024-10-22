@@ -21,7 +21,6 @@ limitations under the License.
 #include "libcellml/analyservariable.h"
 #include "libcellml/version.h"
 
-#include "commonutils.h"
 #include "generator_p.h"
 #include "generatorinterpreter_p.h"
 #include "generatorprofilesha1values.h"
