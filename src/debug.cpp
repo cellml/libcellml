@@ -26,7 +26,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#include "generator_p.h"
+#include "generatorinterpreter_p.h"
 #include "utilities.h"
 
 namespace libcellml {

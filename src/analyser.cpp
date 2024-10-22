@@ -34,6 +34,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "commonutils.h"
 #include "generator_p.h"
+#include "generatorinterpreter_p.h"
 #include "xmlutils.h"
 
 namespace libcellml {
