@@ -79,8 +79,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
-        mMinString = "min";
-        mMaxString = "max";
+        mMinString = "fmin";
+        mMaxString = "fmax";
         mRemString = "fmod";
 
         mHasPowerOperator = false;
@@ -123,7 +123,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mTrueString = "1.0";
         mFalseString = "0.0";
-        mEString = convertToString(exp(1.0));
+        mEString = convertToString(M_E);
         mPiString = convertToString(M_PI);
         mInfString = "INFINITY";
         mNanString = "NAN";
@@ -143,14 +143,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                              "    return (x != 0.0) ^ (y != 0.0);\n"
                              "}\n";
         mNotFunctionString = "";
-        mMinFunctionString = "double min(double x, double y)\n"
-                             "{\n"
-                             "    return (x < y)?x:y;\n"
-                             "}\n";
-        mMaxFunctionString = "double max(double x, double y)\n"
-                             "{\n"
-                             "    return (x > y)?x:y;\n"
-                             "}\n";
+        mMinFunctionString = "";
+        mMaxFunctionString = "";
 
         // Trigonometric functions.
 
@@ -192,21 +186,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "}\n";
         mAsechFunctionString = "double asech(double x)\n"
                                "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+                               "    return acosh(1.0/x);\n"
                                "}\n";
         mAcschFunctionString = "double acsch(double x)\n"
                                "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+                               "    return asinh(1.0/x);\n"
                                "}\n";
         mAcothFunctionString = "double acoth(double x)\n"
                                "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+                               "    return atanh(1.0/x);\n"
                                "}\n";
 
         // Miscellaneous.
@@ -636,7 +624,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mTrueString = "1.0";
         mFalseString = "0.0";
-        mEString = convertToString(exp(1.0));
+        mEString = convertToString(M_E);
         mPiString = convertToString(M_PI);
         mInfString = "inf";
         mNanString = "nan";
@@ -711,19 +699,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "    return atan(1.0/x)\n";
         mAsechFunctionString = "\n"
                                "def asech(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n";
+                               "    return acosh(1.0/x)\n";
         mAcschFunctionString = "\n"
                                "def acsch(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n";
+                               "    return asinh(1.0/x)\n";
         mAcothFunctionString = "\n"
                                "def acoth(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n";
+                               "    return atanh(1.0/x)\n";
 
         // Miscellaneous.
 
