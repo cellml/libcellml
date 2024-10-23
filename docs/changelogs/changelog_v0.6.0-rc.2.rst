@@ -1,4 +1,4 @@
-libCellML v0.6.0-rc.1 Changelog
+libCellML v0.6.0-rc.2 Changelog
 ===============================
 
 Analyser
@@ -30,6 +30,7 @@ Imports
 Infrastructure
 --------------
 
+* Update `cibuildwheel` by `@hsorby <https://github.com/hsorby>`_ [`#1264 <https://github.com/cellml/libcellml/pull/1264>`_].
 * Add Codespell GitHub action by `@hsorby <https://github.com/hsorby>`_ [`#1234 <https://github.com/cellml/libcellml/pull/1234>`_].
 * Remove FindPython* files by `@hsorby <https://github.com/hsorby>`_ [`#1236 <https://github.com/cellml/libcellml/pull/1236>`_].
 * Update GitHub actions action to newer versions by `@hsorby <https://github.com/hsorby>`_ [`#1224 <https://github.com/cellml/libcellml/pull/1224>`_].
@@ -55,11 +56,11 @@ Validation
 Contributors
 ------------
 
-.. image:: https://avatars.githubusercontent.com/u/602265?v=4
-   :target: https://github.com/agarny
-   :height: 32
-   :width: 32
 .. image:: https://avatars.githubusercontent.com/u/778048?v=4
    :target: https://github.com/hsorby
+   :height: 32
+   :width: 32
+.. image:: https://avatars.githubusercontent.com/u/602265?v=4
+   :target: https://github.com/agarny
    :height: 32
    :width: 32
