@@ -278,7 +278,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, ubuntu-20.04, windows-2019]
+        os: [macos-13, ubuntu-20.04, windows-2019]
         py: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
         include:
           - name: 'Windows'
@@ -286,9 +286,11 @@ jobs:
           - name: 'Linux'
             os: ubuntu-20.04
           - name: 'macOS'
-            os: macos-12
+            os: macos-13
         exclude:
-          - os: macos-12
+          - os: macos-13
+            py: '3.7'
+          - os: ubuntu-20.04
             py: '3.7'
 
     steps:
@@ -313,29 +315,27 @@ jobs:
             if [[ "${{ matrix.py }}" == "3.8" ]]; then
               echo "Setting macos_archs as: macos_archs='x86_64'"
               echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=10.15" >> $GITHUB_OUTPUT
             else
               echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
-              echo 'MACOS_ARCHS=x86_64 arm64' >> $GITHUB_OUTPUT
+              echo 'macos_archs=x86_64 arm64' >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=11.0" >> $GITHUB_OUTPUT
             fi
           else
             echo "Setting macos_archs as: macos_archs='x86_64'"
             echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
           fi
 
-      - name: Configure MSVC
+      - name: Configure MSVC (Windows)
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.11.2
+      - name: Install SWIG (macOS)
+        if: runner.os == 'macOS'
+        run: brew install swig
 
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse src/bindings/python/
+        uses: pypa/cibuildwheel@v2.21.3
         env:
           #CIBW_BUILD_VERBOSITY: 1
           CIBW_ARCHS: auto64
@@ -346,11 +346,13 @@ jobs:
           CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
           CIBW_ENVIRONMENT: LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
           CIBW_ENVIRONMENT_MACOS: >
-            MACOSX_DEPLOYMENT_TARGET=10.15
-            LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
+            MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
+        with:
+          output-dir: wheelhouse
+          package-dir: src/bindings/python/
 
       - name: Upload Python wheels as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
