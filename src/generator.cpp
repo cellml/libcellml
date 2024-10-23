@@ -616,7 +616,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceConstantCountString() :
                     replace(mProfile->implementationConstantCountString(),
-                            "[CONSTANT_COUNT]", std::to_string(model->constantCount()));
+                            "[CONSTANT_COUNT]", std::to_string(trackedConstantCount(model)));
     }
 
     if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
@@ -624,7 +624,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceComputedConstantCountString() :
                     replace(mProfile->implementationComputedConstantCountString(),
-                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(model->computedConstantCount()));
+                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(trackedComputedConstantCount(model)));
     }
 
     if ((interface && !mProfile->interfaceAlgebraicCountString().empty())
@@ -632,7 +632,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceAlgebraicCountString() :
                     replace(mProfile->implementationAlgebraicCountString(),
-                            "[ALGEBRAIC_COUNT]", std::to_string(model->algebraicCount()));
+                            "[ALGEBRAIC_COUNT]", std::to_string(trackedAlgebraicCount(model)));
     }
 
     if ((model->externalCount() != 0)
@@ -641,7 +641,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceExternalCountString() :
                     replace(mProfile->implementationExternalCountString(),
-                            "[EXTERNAL_COUNT]", std::to_string(model->externalCount()));
+                            "[EXTERNAL_COUNT]", std::to_string(trackedExternalCount(model)));
     }
 
     if (!code.empty()) {
@@ -732,16 +732,18 @@ void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::st
         std::string infoElementsCode;
 
         for (const auto &variable : variables) {
-            if (!infoElementsCode.empty()) {
-                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
+            if (isTrackedVariable(variable)) {
+                if (!infoElementsCode.empty()) {
+                    infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
+                }
+
+                auto variableVariable = variable->variable();
+
+                infoElementsCode += (voiVariable ? "" : mProfile->indentString())
+                                    + generateVariableInfoEntryCode(variableVariable->name(),
+                                                                    variableVariable->units()->name(),
+                                                                    owningComponent(variableVariable)->name());
             }
-
-            auto variableVariable = variable->variable();
-
-            infoElementsCode += (voiVariable ? "" : mProfile->indentString())
-                                + generateVariableInfoEntryCode(variableVariable->name(),
-                                                                variableVariable->units()->name(),
-                                                                owningComponent(variableVariable)->name());
         }
 
         if (!voiVariable && !infoElementsCode.empty()) {
@@ -1967,8 +1969,12 @@ std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const Analy
 }
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserModelPtr &model,
-                                                                 const AnalyserVariablePtr &variable) const
+                                                                 const AnalyserVariablePtr &variable)
 {
+    if (!isTrackedVariable(variable)) {
+        return {};
+    }
+
     auto initialisingVariable = variable->initialisingVariable();
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(model, initialisingVariable);
     std::string scalingFactorCode;
@@ -2202,7 +2208,8 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
         std::string methodBody;
 
         for (const auto &equation : model->equations()) {
-            if (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT) {
+            if ((equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)
+                && isTrackedVariable(equation->computedConstants().front())) {
                 methodBody += generateEquationCode(model, equation, remainingEquations);
             }
         }
@@ -2255,8 +2262,10 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
 
         for (const auto &equation : equations) {
-            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || isToBeComputedAgain(equation)) {
+            if (((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+                 || isToBeComputedAgain(equation))
+                && (equation->algebraicCount() == 1)
+                && isTrackedVariable(equation->algebraic(0))) {
                 methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations, false);
             }
         }

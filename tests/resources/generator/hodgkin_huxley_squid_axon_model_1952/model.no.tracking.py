@@ -8,9 +8,9 @@ __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.0"
 
 STATE_COUNT = 4
-CONSTANT_COUNT = 5
-COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 10
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 0
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
