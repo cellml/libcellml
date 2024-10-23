@@ -634,7 +634,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("    ", generatorProfile->indentString());
 
-    EXPECT_EQ("double [CODE];", generatorProfile->variableDeclarationString());
+    EXPECT_EQ("double [CODE]", generatorProfile->variableDeclarationString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
     EXPECT_EQ("]", generatorProfile->closeArrayString());

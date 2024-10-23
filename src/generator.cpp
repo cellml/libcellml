@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
+#include "analyserequation_p.h"
 #include "analysermodel_p.h"
 #include "commonutils.h"
 #include "generator_p.h"
@@ -49,11 +50,6 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
         return false;
     }
 
-    if ((variable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION)
-        || (variable->type() == AnalyserVariable::Type::STATE)) {
-        return tracked;
-    }
-
     auto model = variable->model();
 
     for (const auto &modelVariable : variables(model, false)) {
@@ -66,7 +62,7 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
         }
     }
 
-    return true;
+    return tracked;
 }
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &variable)
@@ -339,58 +335,17 @@ bool Generator::GeneratorImpl::modelHasNlas(const AnalyserModelPtr &model) const
     }
 }
 
-AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const AnalyserModelPtr &model,
-                                                               const VariablePtr &variable) const
-{
-    // Find and return the analyser variable associated with the given variable.
-
-    AnalyserVariablePtr res;
-    auto modelVoi = model->voi();
-    VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
-
-    if ((modelVoiVariable != nullptr)
-        && model->areEquivalentVariables(variable, modelVoiVariable)) {
-        res = modelVoi;
-    } else {
-        // Normally, we would have something like:
-        //
-        //     for (const auto &modelVariable : variables(model)) {
-        //         if (model->areEquivalentVariables(variable, modelVariable->variable())) {
-        //             res = modelVariable;
-        //
-        //             break;
-        //         }
-        //     }
-        //
-        // but we always have variables, so llvm-cov will complain that the false branch of our for loop is never
-        // reached. The below code is a bit more verbose but at least it makes llvm-cov happy.
-
-        auto modelVariables = variables(model);
-        auto modelVariable = modelVariables.begin();
-
-        do {
-            if (model->areEquivalentVariables(variable, (*modelVariable)->variable())) {
-                res = *modelVariable;
-            } else {
-                ++modelVariable;
-            }
-        } while (res == nullptr);
-    }
-
-    return res;
-}
-
 double Generator::GeneratorImpl::scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by
     // another variable which initial value may be defined in a different component.
 
-    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(model, variable);
+    auto analyserVariable = model->variable(variable);
 
     if ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT)
         && !isCellMLReal(variable->initialValue())) {
         auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
-        auto initialValueAnalyserVariable = Generator::GeneratorImpl::analyserVariable(model, initialValueVariable);
+        auto initialValueAnalyserVariable = model->variable(initialValueVariable);
 
         if (owningComponent(variable) != owningComponent(initialValueAnalyserVariable->variable())) {
             return Units::scalingFactor(initialValueVariable->units(), variable->units());
@@ -1170,14 +1125,14 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     }
 
     auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserVariable(model, initialValueVariable);
+    auto analyserInitialValueVariable = model->variable(initialValueVariable);
 
     return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserModelPtr &model,
                                                                const VariablePtr &variable,
-                                                               bool state) const
+                                                               bool state)
 {
     // Generate some code for a variable name, but only if we have a model. If
     // we don't have a model, it means that we are using the generator from the
@@ -1188,10 +1143,16 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
         return variable->name();
     }
 
-    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(model, variable);
+    auto analyserVariable = model->variable(variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
+    }
+
+    if (isUntrackedVariable(analyserVariable)) {
+        auto var = analyserVariable->variable();
+
+        return owningComponent(var)->name() + "_" + var->name();
     }
 
     std::string arrayName;
@@ -1214,7 +1175,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const AnalyserModelPtr &model, const std::string &op,
-                                                           const AnalyserEquationAstPtr &ast) const
+                                                           const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left and right branches of the given AST.
 
@@ -1494,7 +1455,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const AnalyserModelPt
 }
 
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserModelPtr &model,
-                                                             const AnalyserEquationAstPtr &ast) const
+                                                             const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left branch of the given AST.
 
@@ -1516,14 +1477,14 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserModel
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const AnalyserModelPtr &model,
                                                                        const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast) const
+                                                                       const AnalyserEquationAstPtr &ast)
 {
     return function + "(" + generateCode(model, ast->leftChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const AnalyserModelPtr &model,
                                                                        const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast) const
+                                                                       const AnalyserEquationAstPtr &ast)
 {
     return function + "(" + generateCode(model, ast->leftChild()) + ", " + generateCode(model, ast->rightChild()) + ")";
 }
@@ -1547,7 +1508,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
 }
 
 std::string Generator::GeneratorImpl::generateCode(const AnalyserModelPtr &model,
-                                                   const AnalyserEquationAstPtr &ast) const
+                                                   const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the given AST.
     // Note: AnalyserEquationAst::Type::BVAR is only relevant when there is no
@@ -1895,6 +1856,12 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserModelPtr &model
     case AnalyserEquationAst::Type::CI:
         code = generateVariableNameCode(model, ast->variable(), ast->parent()->type() != AnalyserEquationAst::Type::DIFF);
 
+        if ((model != nullptr)
+            && (ast->parent()->type() == AnalyserEquationAst::Type::EQUALITY)
+            && isUntrackedVariable(model->variable(ast->variable()))) {
+            code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
+        }
+
         break;
     case AnalyserEquationAst::Type::CN:
         code = generateDoubleCode(ast->value());
@@ -1938,17 +1905,27 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserModelPtr &model
     return code;
 }
 
-bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &equation) const
+bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &equation)
 {
-    // NLA and algebraic equations that are state/rate-based and external
-    // equations are to be computed again (in the computeVariables() method).
+    // NLA and algebraic equations that are state/rate-based and external equations are to be computed again (in the
+    // computeVariables() method) unless the variables they compute are not tracked.
 
     switch (equation->type()) {
     case AnalyserEquation::Type::NLA:
     case AnalyserEquation::Type::ALGEBRAIC:
-        return equation->isStateRateBased();
+        if (equation->isStateRateBased()) {
+            for (const auto &variable : variables(equation)) {
+                if (isTrackedVariable(variable)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return false;
     case AnalyserEquation::Type::EXTERNAL:
-        return true;
+        return isTrackedVariable(equation->externals().front());
     default:
         return false;
     }
@@ -1964,7 +1941,7 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserModelPtr &model,
-                                                                     const AnalyserVariablePtr &variable) const
+                                                                     const AnalyserVariablePtr &variable)
 {
     return mProfile->indentString()
            + generateVariableNameCode(model, variable->variable(), false)
@@ -1974,9 +1951,9 @@ std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const Analy
 }
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserModelPtr &model,
-                                                                 const AnalyserVariablePtr &variable)
+                                                                 const AnalyserVariablePtr &variable, bool force)
 {
-    if (!isTrackedVariable(variable)) {
+    if (!force && isUntrackedVariable(variable)) {
         return {};
     }
 
@@ -1988,17 +1965,24 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserM
         scalingFactorCode = generateDoubleCode(convertToString(scalingFactor)) + mProfile->timesString();
     }
 
+    auto code = generateVariableNameCode(model, variable->variable())
+                + mProfile->equalityString()
+                + scalingFactorCode + generateDoubleOrConstantVariableNameCode(model, initialisingVariable)
+                + mProfile->commandSeparatorString() + "\n";
+
+    if (isUntrackedVariable(variable)) {
+        code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
+    }
+
     return mProfile->indentString()
-           + generateVariableNameCode(model, variable->variable())
-           + mProfile->equalityString()
-           + scalingFactorCode + generateDoubleOrConstantVariableNameCode(model, initialisingVariable)
-           + mProfile->commandSeparatorString() + "\n";
+           + code;
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPtr &model,
                                                            const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
                                                            std::vector<AnalyserEquationPtr> &equationsForDependencies,
+                                                           std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
                                                            bool includeComputedConstants)
 {
     std::string res;
@@ -2017,6 +2001,15 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
         // Generate any dependency that this equation may have.
 
+        for (const auto &constantDependency : equation->mPimpl->mConstantDependencies) {
+            if (isUntrackedVariable(constantDependency)
+                && (std::find(generatedConstantDependencies.begin(), generatedConstantDependencies.end(), constantDependency) == generatedConstantDependencies.end())) {
+                res += generateInitialisationCode(model, constantDependency, true);
+
+                generatedConstantDependencies.push_back(constantDependency);
+            }
+        }
+
         if (!isSomeConstant(equation, includeComputedConstants)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
@@ -2024,7 +2017,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                     && (equationsForDependencies.empty()
                         || isToBeComputedAgain(dependency)
                         || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end()))) {
-                    res += generateEquationCode(model, dependency, remainingEquations, equationsForDependencies, includeComputedConstants);
+                    res += generateEquationCode(model, dependency, remainingEquations, equationsForDependencies,
+                                                generatedConstantDependencies, includeComputedConstants);
                 }
             }
         }
@@ -2066,8 +2060,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                                                            std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     std::vector<AnalyserEquationPtr> dummyEquationsForComputeVariables;
+    std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
-    return generateEquationCode(model, equation, remainingEquations, dummyEquationsForComputeVariables, true);
+    return generateEquationCode(model, equation, remainingEquations, dummyEquationsForComputeVariables,
+                                generatedConstantDependencies, true);
 }
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model)
@@ -2265,13 +2261,13 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
         std::string methodBody;
         auto equations = model->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
+        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &equation : equations) {
-            if (((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                 || isToBeComputedAgain(equation))
-                && (equation->algebraicCount() == 1)
-                && isTrackedVariable(equation->algebraic(0))) {
-                methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations, false);
+            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+                || isToBeComputedAgain(equation)) {
+                methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations,
+                                                   generatedConstantDependencies, false);
             }
         }
 

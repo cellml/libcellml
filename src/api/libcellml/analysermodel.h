@@ -18,6 +18,10 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::AnalyserModel>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -27,6 +31,9 @@ namespace libcellml {
  * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserModel
+#ifndef SWIG
+    : public std::enable_shared_from_this<AnalyserModel>
+#endif
 {
     friend class Analyser;
     friend class Generator;

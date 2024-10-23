@@ -29,20 +29,26 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+bool AnalyserEquation::AnalyserEquationImpl::isDummyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto variables = libcellml::variables(dependency.lock());
-
-    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
-        return false;
-    }
-
-    return true;
+    return libcellml::variables(dependency.lock()).empty();
 }
 
-void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+void AnalyserEquation::AnalyserEquationImpl::removeDummyDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
+    // Keep track of our constant dependencies, so that we can generate some code for them, should they be untracked.
+
+    for (const auto &dependency : mDependencies) {
+        auto constantDependency = dependency.lock()->mPimpl->mConstant;
+
+        if (isDummyDependency(dependency)) {
+            mConstantDependencies.push_back(constantDependency);
+        }
+    }
+
+    // Effectively remove our dummy dependencies.
+
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isDummyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()

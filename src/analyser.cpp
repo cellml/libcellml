@@ -2777,7 +2777,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Add a dummy equation for each of our true (i.e. non-computed) constants.
+    // Add a dummy equation for each of our true constants.
     // Note: this is so that a constant can be marked as an external variable.
 
     for (const auto &internalVariable : mInternalVariables) {
@@ -2797,9 +2797,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> aie2aeMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
-        auto equation = AnalyserEquation::AnalyserEquationImpl::create();
-
-        aie2aeMappings.emplace(internalEquation, equation);
+        aie2aeMappings.emplace(internalEquation, AnalyserEquation::AnalyserEquationImpl::create());
     }
 
     // Start making our internal equations available through our API.
@@ -2850,11 +2848,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 break;
             default: // AnalyserEquation::Type::UNKNOWN.
-                // The equation type is unknown, which means that it is a dummy
-                // equation for a true (i.e. non-computed) constant (so that it
-                // could have been marked as an external variable), so we skip
-                // it since the constant wasn't marked as an external variable.
-
                 continue;
             }
         }
@@ -3029,6 +3022,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             if (variable != nullptr) {
                 for (const auto &equation : variable->equations()) {
                     if (std::find(equationDependencies.begin(), equationDependencies.end(), equation) == equationDependencies.end()) {
+                        if (variable->type() == AnalyserVariable::Type::CONSTANT) {
+                            // This is a constant, so keep track of it in case it is untracked and in case we need to
+                            // generate some code for it.
+
+                            equation->mPimpl->mConstant = variable;
+                        }
+
                         equationDependencies.push_back(equation);
                     }
                 }
@@ -3080,15 +3080,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         mModel->mPimpl->mEquations.push_back(equation);
     }
 
-    // Clean up our equations' dependencies.
-    // Note: indeed, some equations may have a dependency on the variable of
-    //       integration (for which there is no equation) and/or one or several
-    //       true (i.e. non-computed) constants (for which there are no proper
-    //       equations). So, we need to remove those dependencies, and obviously
-    //       this can only be done once all our equations are ready.
+    // Remove the dummy equations for our constants.
+    // Note: indeed, some equations may have a dependency on one or several constants (for which there are no proper
+    //       equations). So, we need to remove those dependencies, and obviously this can only be done once all our
+    //       equations are ready.
 
     for (const auto &equation : mModel->mPimpl->mEquations) {
-        equation->mPimpl->cleanUpDependencies();
+        equation->mPimpl->removeDummyDependencies();
     }
 
     // Determine whether our equations are state/rate based.

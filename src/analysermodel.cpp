@@ -237,39 +237,9 @@ AnalyserVariablePtr AnalyserModel::variable(const VariablePtr &variable)
         return {};
     }
 
-    if (mPimpl->mVoi != nullptr) {
-        if (areEquivalentVariables(mPimpl->mVoi->variable(), variable)) {
-            return mPimpl->mVoi;
-        }
-    }
-
-    for (const auto &state : mPimpl->mStates) {
-        if (areEquivalentVariables(state->variable(), variable)) {
-            return state;
-        }
-    }
-
-    for (const auto &constant : mPimpl->mConstants) {
-        if (areEquivalentVariables(constant->variable(), variable)) {
-            return constant;
-        }
-    }
-
-    for (const auto &computedConstant : mPimpl->mComputedConstants) {
-        if (areEquivalentVariables(computedConstant->variable(), variable)) {
-            return computedConstant;
-        }
-    }
-
-    for (const auto &algebraic : mPimpl->mAlgebraic) {
-        if (areEquivalentVariables(algebraic->variable(), variable)) {
-            return algebraic;
-        }
-    }
-
-    for (const auto &external : mPimpl->mExternals) {
-        if (areEquivalentVariables(external->variable(), variable)) {
-            return external;
+    for (const auto &modelVariable : variables(shared_from_this())) {
+        if (areEquivalentVariables(variable, modelVariable->variable())) {
+            return modelVariable;
         }
     }
 

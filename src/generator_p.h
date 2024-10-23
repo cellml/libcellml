@@ -89,8 +89,6 @@ struct Generator::GeneratorImpl
     bool modelHasOdes(const AnalyserModelPtr &model) const;
     bool modelHasNlas(const AnalyserModelPtr &model) const;
 
-    AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable) const;
-
     double scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const;
 
     bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
@@ -156,30 +154,32 @@ struct Generator::GeneratorImpl
     std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &model,
                                                          const VariablePtr &variable) const;
     std::string generateVariableNameCode(const AnalyserModelPtr &model, const VariablePtr &variable,
-                                         bool state = true) const;
+                                         bool state = true);
 
     std::string generateOperatorCode(const AnalyserModelPtr &model, const std::string &op,
-                                     const AnalyserEquationAstPtr &ast) const;
-    std::string generateMinusUnaryCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast) const;
+                                     const AnalyserEquationAstPtr &ast);
+    std::string generateMinusUnaryCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
     std::string generateOneParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generateTwoParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast) const;
+    std::string generateCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
 
-    bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
+    bool isToBeComputedAgain(const AnalyserEquationPtr &equation);
     bool isSomeConstant(const AnalyserEquationPtr &equation,
                         bool includeComputedConstants) const;
 
     std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
-                                               const AnalyserVariablePtr &variable) const;
-    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable);
+                                               const AnalyserVariablePtr &variable);
+    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
+                                           bool force = false);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
+                                     std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
                                      bool includeComputedConstants);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations);

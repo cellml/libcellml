@@ -29,6 +29,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserEquation
 {
     friend class Analyser;
+    friend class Generator;
 
 public:
     /**
