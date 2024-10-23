@@ -92,8 +92,8 @@ jobs:
             build_type: "Release", cc: "gcc", cxx: "g++"
           }
         - {
-            name: "macOS 12 Clang",
-            os: macos-12,
+            name: "macOS 13 Clang",
+            os: macos-13,
             cc: "clang", cxx: "clang++"
           }
 
@@ -375,7 +375,7 @@ jobs:
     needs: setup-jobs
     if: needs.setup-jobs.outputs.allowed-jobs == 'Javascript' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: libcellml.js
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout libCellML
         uses: actions/checkout@v4
