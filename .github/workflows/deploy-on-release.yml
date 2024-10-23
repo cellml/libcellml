@@ -118,7 +118,7 @@ jobs:
         ref: v2.9.10
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.1
+      uses: microsoft/setup-msbuild@v2
       if: runner.os == 'Windows'
 
     - name: Prepare Windows environment
@@ -269,11 +269,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         path: ./build/dist/*
+        name: ${{ matrix.config.os }}
 
   wheels:
     needs: setup-jobs
     if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
-    name: ${{ matrix.name }} ${{ matrix.py }} wheels
+    name: ${{ matrix.name }} ${{ matrix.py }} wheel
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -359,6 +360,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
+          name: ${{ matrix.name }}-${{ matrix.py }}-wheel
 
       - name: Publish Python wheels
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
@@ -440,6 +442,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ${{ steps.package-javascript.outputs.files }}
+          name: libcellml.js
 
       - name: Publish libcellml.js
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
