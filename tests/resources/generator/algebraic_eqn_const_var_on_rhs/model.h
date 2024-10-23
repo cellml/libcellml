@@ -7,26 +7,26 @@
 extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
-extern const size_t VARIABLE_COUNT;
-
-typedef enum {
-    CONSTANT,
-    COMPUTED_CONSTANT,
-    ALGEBRAIC
-} VariableType;
+extern const size_t CONSTANT_COUNT;
+extern const size_t COMPUTED_CONSTANT_COUNT;
+extern const size_t ALGEBRAIC_COUNT;
 
 typedef struct {
     char name[2];
     char units[14];
     char component[17];
-    VariableType type;
 } VariableInfo;
 
-extern const VariableInfo VARIABLE_INFO[];
+extern const VariableInfo CONSTANT_INFO[];
+extern const VariableInfo COMPUTED_CONSTANT_INFO[];
+extern const VariableInfo ALGEBRAIC_INFO[];
 
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicArray();
+
 void deleteArray(double *array);
 
-void initialiseVariables(double *variables);
-void computeComputedConstants(double *variables);
-void computeVariables(double *variables);
+void initialiseVariables(double *constants, double *computedConstants, double *algebraic);
+void computeComputedConstants(double *constants, double *computedConstants);
+void computeVariables(double *constants, double *computedConstants, double *algebraic);
