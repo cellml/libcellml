@@ -41,7 +41,7 @@ describe("Generator tests", () => {
         const aev = new libcellml.AnalyserExternalVariable(v)
         const a = new libcellml.Analyser()
 
-        a.addExternalVariable(aev)
+        a.addExternalVariableByExternalVariable(aev)
         a.analyseModel(m)
 
         const am = a.model()

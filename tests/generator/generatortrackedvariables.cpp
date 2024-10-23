@@ -461,3 +461,15 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952NoTracking)
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.no.tracking.py", generator->implementationCode(analyserModel));
 }
+
+/**
+ * Need the following tests:
+ * - ODE HH52 + No tracking
+ * - ODE HH52 + No tracking + Externals (with some dependencies on untracked variables)
+ * - ODE HH52 + Some tracking (with some dependencies on untracked variables)
+ * - ODE HH52 + Some tracking (with some dependencies on untracked variables) + Externals (with some dependencies on untracked variables)
+ * - DAE HH52 + No tracking
+ * - DAE HH52 + No tracking + Externals (with some dependencies on untracked variables)
+ * - DAE HH52 + Some tracking (with some dependencies on untracked variables)
+ * - DAE HH52 + Some tracking (with some dependencies on untracked variables) + Externals (with some dependencies on untracked variables)
+ */
