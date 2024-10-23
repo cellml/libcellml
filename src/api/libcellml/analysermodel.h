@@ -27,6 +27,9 @@ namespace libcellml {
  * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserModel
+#ifndef SWIG
+    : public std::enable_shared_from_this<AnalyserModel>
+#endif
 {
     friend class Analyser;
     friend class Generator;
