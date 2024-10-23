@@ -68,49 +68,307 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
-     * @brief Get the @ref AnalyserModel.
+     * @brief Test if the given @p variable is tracked.
      *
-     * Get the @ref AnalyserModel used by this @ref Generator.
+     * Test if the given @p variable is tracked.
      *
-     * @return The @ref AnalyserModel used.
+     * @param variable The pointer to the @ref AnalyserVariable to test.
+     *
+     * @return @c true if the variable is tracked, @c false otherwise.
      */
-    AnalyserModelPtr model();
+    bool isTrackedVariable(const AnalyserVariablePtr &variable);
 
     /**
-     * @brief Set the @ref AnalyserModel.
+     * @brief Test if the given @p variable is untracked.
      *
-     * Set the @ref AnalyserModel to be used by this @ref Generator.
+     * Test if the given @p variable is untracked.
      *
-     * @param model The @ref AnalyserModel to set.
+     * @param variable The pointer to the @ref AnalyserVariable to test.
+     *
+     * @return @c true if the variable is untracked, @c false otherwise.
      */
-    void setModel(const AnalyserModelPtr &model);
+    bool isUntrackedVariable(const AnalyserVariablePtr &variable);
+
+    /**
+     * @brief Track the given @p variable.
+     *
+     * Track the given @p variable. This will add the variable to the list of tracked variables.
+     *
+     * @param variable The pointer to the @ref AnalyserVariable to track.
+     *
+     * @return @c true if the variable was tracked, @c false otherwise.
+     */
+    bool trackVariable(const AnalyserVariablePtr &variable);
+
+    /**
+     * @brief Untrack the given @p variable.
+     *
+     * Untrack the given @p variable. This will remove the variable from the list of tracked variables.
+     *
+     * @param variable The pointer to the @ref AnalyserVariable to untrack.
+     *
+     * @return @c true if the variable was untracked, @c false otherwise.
+     */
+    bool untrackVariable(const AnalyserVariablePtr &variable);
+
+    /**
+     * @brief Track all the constants in the given @p model.
+     *
+     * Track all the constants in the given @p model. This will add all the constants in the model to the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the constants are to be tracked.
+     *
+     * @return @c true if all the constants in the model were tracked, @c false otherwise.
+     */
+    bool trackAllConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the constants in the given @p model.
+     *
+     * Untrack all the constants in the given @p model. This will remove all the constants in the model from the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the constants are to be untracked.
+     *
+     * @return @c true if all the constants in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the computed constants in the given @p model.
+     *
+     * Track all the computed constants in the given @p model. This will add all the computed constants in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be tracked.
+     *
+     * @return @c true if all the computed constants in the model were tracked, @c false otherwise.
+     */
+    bool trackAllComputedConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the computed constants in the given @p model.
+     *
+     * Untrack all the computed constants in the given @p model. This will remove all the computed constants in the model
+     * from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be untracked.
+     *
+     * @return @c true if all the computed constants in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllComputedConstants(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the algebraic variables in the given @p model.
+     *
+     * Track all the algebraic variables in the given @p model. This will add all the algebraic variables in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be tracked.
+     *
+     * @return @c true if all the algebraic variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllAlgebraic(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the algebraic variables in the given @p model.
+     *
+     * Untrack all the algebraic variables in the given @p model. This will remove all the algebraic variables in the
+     * model from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be untracked.
+     *
+     * @return @c true if all the algebraic variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllAlgebraic(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the external variables in the given @p model.
+     *
+     * Track all the external variables in the given @p model. This will add all the external variables in the model to
+     * the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be tracked.
+     *
+     * @return @c true if all the external variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllExternals(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the external variables in the given @p model.
+     *
+     * Untrack all the external variables in the given @p model. This will remove all the external variables in the model
+     * from the list of tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be untracked.
+     *
+     * @return @c true if all the external variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllExternals(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Track all the variables in the given @p model.
+     *
+     * Track all the variables in the given @p model. This will add all the variables in the model to the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the variables are to be tracked.
+     *
+     * @return @c true if all the variables in the model were tracked, @c false otherwise.
+     */
+    bool trackAllVariables(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Untrack all the variables in the given @p model.
+     *
+     * Untrack all the variables in the given @p model. This will remove all the variables in the model from the list of
+     * tracked variables.
+     *
+     * @param model The pointer to the @ref AnalyserModel which all the variables are to be untracked.
+     *
+     * @return @c true if all the variables in the model were untracked, @c false otherwise.
+     */
+    bool untrackAllVariables(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked constants in the given @p model.
+     *
+     * Get the number of tracked constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked constants.
+     *
+     * @return The number of tracked constants in the model.
+     */
+    size_t trackedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked constants in the given @p model.
+     *
+     * Get the number of untracked constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked constants.
+     *
+     * @return The number of untracked constants in the model.
+     */
+    size_t untrackedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked computed constants in the given @p model.
+     *
+     * Get the number of tracked computed constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked computed constants.
+     *
+     * @return The number of tracked computed constants in the model.
+     */
+    size_t trackedComputedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked computed constants in the given @p model.
+     *
+     * Get the number of untracked computed constants in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked computed constants.
+     *
+     * @return The number of untracked computed constants in the model.
+     */
+    size_t untrackedComputedConstantCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked algebraic variables in the given @p model.
+     *
+     * Get the number of tracked algebraic variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked algebraic variables.
+     *
+     * @return The number of tracked algebraic variables in the model.
+     */
+    size_t trackedAlgebraicCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked algebraic variables in the given @p model.
+     *
+     * Get the number of untracked algebraic variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked algebraic variables.
+     *
+     * @return The number of untracked algebraic variables in the model.
+     */
+    size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked external variables in the given @p model.
+     *
+     * Get the number of tracked external variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked external variables.
+     *
+     * @return The number of tracked external variables in the model.
+     */
+    size_t trackedExternalCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked external variables in the given @p model.
+     *
+     * Get the number of untracked external variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked external variables.
+     *
+     * @return The number of untracked external variables in the model.
+     */
+    size_t untrackedExternalCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of tracked variables in the given @p model.
+     *
+     * Get the number of tracked variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked variables.
+     *
+     * @return The number of tracked variables in the model.
+     */
+    size_t trackedVariableCount(const AnalyserModelPtr &model);
+
+    /**
+     * @brief Get the number of untracked variables in the given @p model.
+     *
+     * Get the number of untracked variables in the given @p model.
+     *
+     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked variables.
+     *
+     * @return The number of untracked variables in the model.
+     */
+    size_t untrackedVariableCount(const AnalyserModelPtr &model);
 
     /**
      * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Return the interface code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param model The @ref AnalyserModel for which we want to generate some interface code.
      *
      * @return The interface code as a @c std::string.
      */
-    std::string interfaceCode() const;
+    std::string interfaceCode(const AnalyserModelPtr &model) const;
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
-     * Return the implementation code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param model The @ref AnalyserModel for which we want to generate some implementation code.
      *
      * @return The implementation code as a @c std::string.
      */
-    std::string implementationCode() const;
+    std::string implementationCode(const AnalyserModelPtr &model) const;
 
     /**
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      * @param generatorProfile The @ref GeneratorProfile, if any, to use to generate the equation code. If no
      * @ref GeneratorProfile is provided then the default @ref GeneratorProfile is used.
      *
@@ -124,7 +382,7 @@ public:
      *
      * Return the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      *
      * @return The equation code as a @c std::string.
      */
