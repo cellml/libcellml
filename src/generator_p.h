@@ -176,7 +176,7 @@ struct Generator::GeneratorImpl
 
     std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
                                                const AnalyserVariablePtr &variable) const;
-    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
