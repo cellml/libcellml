@@ -61,7 +61,7 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
         }
     }
 
-    return false;
+    return true;
 }
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &variable)
