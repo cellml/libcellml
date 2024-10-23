@@ -40,7 +40,6 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mComponent = owningComponent(mVariable);
 
     std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
