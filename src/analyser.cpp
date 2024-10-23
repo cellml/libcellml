@@ -336,11 +336,11 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model, bool checkNl
 
                 break;
             case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
-                mType = Type::TRUE_CONSTANT;
+                mType = Type::CONSTANT;
 
                 break;
             case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-                mType = Type::VARIABLE_BASED_CONSTANT;
+                mType = Type::COMPUTED_CONSTANT;
 
                 break;
             default:
@@ -2698,7 +2698,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     for (const auto &internalEquation : mInternalEquations) {
         switch (internalEquation->mType) {
-        case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT: {
+        case AnalyserInternalEquation::Type::COMPUTED_CONSTANT: {
             auto unknownVariable = internalEquation->mUnknownVariables.front();
 
             for (const auto &variable : internalEquation->mAllVariables) {
@@ -2829,12 +2829,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserEquation::Type::EXTERNAL;
         } else {
             switch (internalEquation->mType) {
-            case AnalyserInternalEquation::Type::TRUE_CONSTANT:
-                type = AnalyserEquation::Type::TRUE_CONSTANT;
+            case AnalyserInternalEquation::Type::CONSTANT:
+                type = AnalyserEquation::Type::CONSTANT;
 
                 break;
-            case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT:
-                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+            case AnalyserInternalEquation::Type::COMPUTED_CONSTANT:
+                type = AnalyserEquation::Type::COMPUTED_CONSTANT;
 
                 break;
             case AnalyserInternalEquation::Type::ODE:

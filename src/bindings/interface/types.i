@@ -121,7 +121,7 @@ Provides support for shared pointers declared in types.h.
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast($type::TRUE_CONSTANT, int) || %static_cast($type::EXTERNAL, int) < val) {
+    if (val < %static_cast($type::CONSTANT, int) || %static_cast($type::EXTERNAL, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val, $basetype);

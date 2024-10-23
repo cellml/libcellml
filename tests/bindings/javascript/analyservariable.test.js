@@ -73,6 +73,6 @@ describe("Analyser Variable tests", () => {
     });
     test('Checking Analyser Variable equation.', () => {
         const av = am.computedConstant(1)
-        expect(av.equation(0).type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
+        expect(av.equation(0).type().value).toBe(libcellml.AnalyserEquation.Type.COMPUTED_CONSTANT.value)
     });
  })

@@ -79,8 +79,8 @@ struct AnalyserInternalEquation
     enum struct Type
     {
         UNKNOWN,
-        TRUE_CONSTANT,
-        VARIABLE_BASED_CONSTANT,
+        CONSTANT,
+        COMPUTED_CONSTANT,
         ODE,
         NLA,
         ALGEBRAIC

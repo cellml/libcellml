@@ -34,18 +34,17 @@ public:
     /**
      * @brief The type of an equation.
      *
-     * The type of an equation, i.e. whether it is used to compute a true
-     * constant, a variable-based constant, a rate, an algebraic variable,
-     * or whether it is placeholder for an external variable.
+     * The type of an equation, i.e. whether it is used to compute a (true) constant, a computed constant, a rate, an
+     * algebraic variable, or whether it is a placeholder for an external variable.
      */
     enum class Type
     {
-        TRUE_CONSTANT, /**< An equation that defines a true constant, e.g. x = 3. */
-        VARIABLE_BASED_CONSTANT, /**< An equation that describes a variable-based constant, e.g. x = y+z where y and z are true constants. */
-        ODE, /**< An equation that describes an ordinary differential equation, e.g. d(y)/dt = f(t, x). */
-        NLA, /**< An equation that is used to compute one or several algebraic variables, e.g. x+y = f(z) where x and y are known, but not z. */
-        ALGEBRAIC, /**< An equation that is used to compute an algebraic variable, e.g. y = f(x). */
-        EXTERNAL /**< A placeholder equation to capture the dependency of the model on an external variable. */
+        CONSTANT, /**< An equation that computes a (true) constant (e.g. x = 3). */
+        COMPUTED_CONSTANT, /**< An equation that computes a computed constant (e.g., x = 3+5, x = 3+z, x = y+z where y and z are constants). */
+        ODE, /**< An equation that computes an ordinary differential equation (e.g., d(y)/dt = f(t, x)). */
+        NLA, /**< An equation that computes one or several algebraic variables (e.g., x+y = f(z) where x and y are known, but not z). */
+        ALGEBRAIC, /**< An equation that computes an algebraic variable (e.g., y = f(x)). */
+        EXTERNAL /**< A placeholder equation that captures the dependency of the model on an external variable. */
     };
 
     ~AnalyserEquation(); /**< Destructor, @private. */

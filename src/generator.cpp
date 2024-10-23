@@ -1954,8 +1954,8 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
 {
     auto type = equation->type();
 
-    return (type == AnalyserEquation::Type::TRUE_CONSTANT)
-           || (!includeComputedConstants && (type == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT));
+    return (type == AnalyserEquation::Type::CONSTANT)
+           || (!includeComputedConstants && (type == AnalyserEquation::Type::COMPUTED_CONSTANT));
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserModelPtr &model,
@@ -2175,7 +2175,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
         auto equations = model->equations();
 
         for (const auto &equation : equations) {
-            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
+            if (equation->type() == AnalyserEquation::Type::CONSTANT) {
                 methodBody += generateEquationCode(model, equation, remainingEquations);
             }
         }
@@ -2208,7 +2208,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
         std::string methodBody;
 
         for (const auto &equation : model->equations()) {
-            if ((equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)
+            if ((equation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                 && isTrackedVariable(equation->computedConstants().front())) {
                 methodBody += generateEquationCode(model, equation, remainingEquations);
             }
