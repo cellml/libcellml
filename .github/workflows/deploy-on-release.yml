@@ -266,7 +266,7 @@ jobs:
 
     - name: Upload libraries as artifacts
       if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         path: ./build/dist/*
 
@@ -356,7 +356,7 @@ jobs:
 
       - name: Upload Python wheels as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
 
@@ -437,7 +437,7 @@ jobs:
 
       - name: Upload libcellml.js as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ steps.package-javascript.outputs.files }}
 
