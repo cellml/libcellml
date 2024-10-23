@@ -30,7 +30,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
-#include "commonutils.h"
 #include "component_p.h"
 #include "componententity_p.h"
 #include "internaltypes.h"

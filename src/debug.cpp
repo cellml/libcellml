@@ -23,12 +23,16 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
+#include "libcellml/interpreter.h"
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
+#include "generatorinterpreter_p.h"
+#include "utilities.h"
+
 #include "libcellml/undefines.h"
 
-#include "commonutils.h"
+#include "interpreterstatement_debug.cpp"
 
 namespace libcellml {
 
@@ -78,21 +82,52 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
         Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
 
         if (eqn->ast() != nullptr) {
-            Debug() << "\n" << astAsCode(eqn->ast());
+            Debug() << "\n"
+                    << astAsCode(eqn->ast());
         } else {
             Debug() << "\nNo equation";
         }
 
         Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
 
-        if (eqn->variableCount() != 0) {
-            Debug() << "\nVariables:";
+        if (eqn->stateCount() != 0) {
+            Debug() << "\nStates:";
 
-            for (const auto &var : eqn->variables()) {
+            for (const auto &var : eqn->states()) {
                 Debug() << " - " << var->variable()->name();
             }
         } else {
-            Debug() << "\nNo variables";
+            Debug() << "\nNo states";
+        }
+
+        if (eqn->computedConstantCount() != 0) {
+            Debug() << "\nComputed constants:";
+
+            for (const auto &var : eqn->computedConstants()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo computed constants";
+        }
+
+        if (eqn->algebraicCount() != 0) {
+            Debug() << "\nAlgebraic variables:";
+
+            for (const auto &var : eqn->algebraic()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo algebraic variables";
+        }
+
+        if (eqn->externalCount() != 0) {
+            Debug() << "\nExternal variables:";
+
+            for (const auto &var : eqn->externals()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo external variables";
         }
 
         if (eqn->dependencyCount() != 0) {
@@ -102,7 +137,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                 if (dep->ast() != nullptr) {
                     Debug() << " - " << astAsCode(dep->ast());
                 } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << dep->variable(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << dep->external(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
                 }
@@ -119,7 +154,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                     if (nlaSibling->ast() != nullptr) {
                         Debug() << " - " << astAsCode(nlaSibling->ast());
                     } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
-                        Debug() << " - External equation for '" << nlaSibling->variable(0)->variable()->name() << "'";
+                        Debug() << " - External equation for '" << nlaSibling->external(0)->variable()->name() << "'";
                     } else {
                         Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
                     }
@@ -137,8 +172,8 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
 {
     size_t varNb = 0;
 
-    for (const auto &var : model->variables()) {
-        Debug() << "\n---------------------------------------[API variable " << ++varNb << "]";
+    for (const auto &var : variables(model)) {
+        Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
 
@@ -149,7 +184,7 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
                 if (eqn->ast() != nullptr) {
                     Debug() << " - " << astAsCode(eqn->ast());
                 } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << eqn->variable(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << eqn->external(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
                 }
@@ -165,7 +200,6 @@ void printHistory(const History &history)
     for (const auto &h : history) {
         printHistoryEpoch(h);
     }
-
 }
 
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
@@ -205,7 +239,8 @@ void printEquivalenceMap(const EquivalenceMap &map)
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
 {
     for (const auto &iter : map) {
-        auto key = iter.first;    Debug(false) << "key: ";
+        auto key = iter.first;
+        Debug(false) << "key: ";
         printStackWithModelInfo(key, model);
         auto vector = iter.second;
         for (const auto &vectorIt : vector) {
@@ -308,7 +343,29 @@ std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
     return res + trunk->mStr;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
+std::string ciValue(const AnalyserVariablePtr &analyserVariable, bool rate)
+{
+    std::string res = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
+                          (rate ?
+                               "rates" :
+                               "states") :
+                          ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT) ?
+                               "constants" :
+                               ((analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                    "computedConstants" :
+                                    ((analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC) ?
+                                         "algebraic" :
+                                         "externals")));
+    auto variable = analyserVariable->variable();
+
+    res += "[" + std::to_string(analyserVariable->index()) + "] | "
+           + owningComponent(variable)->name() + " | "
+           + variable->name() + std::string(rate ? "'" : "");
+
+    return res;
+}
+
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
     std::string res;
 
@@ -549,15 +606,11 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
 
         // Token elements.
 
-    case AnalyserEquationAst::Type::CI: {
-        auto astVariable = ast->variable();
-
-        if (astVariable != nullptr) {
-            res = astVariable->name();
-        }
+    case AnalyserEquationAst::Type::CI:
+        res = ciValue(libcellml::analyserVariable(model, ast->variable()),
+                      ast->parent()->type() == AnalyserEquationAst::Type::DIFF);
 
         break;
-    }
     case AnalyserEquationAst::Type::CN:
         res = ast->value();
 
@@ -609,7 +662,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
     return res;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast,
                              AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
@@ -622,7 +675,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     auto astLeftChild = ast->leftChild();
 
     if (astLeftChild != nullptr) {
-        res += doPrintAstAsTree(astLeftChild, &trunk, true);
+        res += doPrintAstAsTree(model, astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -635,7 +688,15 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
         prevTrunk->mStr = prevStr;
     }
 
-    res += doPrintAstAsTree(&trunk) + doPrintAstAsTree(ast) + "\n";
+    auto astRightChild = ast->rightChild();
+
+    res += doPrintAstAsTree(&trunk);
+
+    if (astLeftChild != nullptr) {
+        res += (astRightChild != nullptr) ? "┤" : "┘";
+    }
+
+    res += " " + doPrintAstAsTree(model, ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -643,23 +704,413 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
 
     trunk.mStr = TRUNK;
 
-    auto astRightChild = ast->rightChild();
-
     if (astRightChild != nullptr) {
-        res += doPrintAstAsTree(astRightChild, &trunk, false);
+        res += doPrintAstAsTree(model, astRightChild, &trunk, false);
     }
 
     return res;
 }
 
-void printAstAsTree(const AnalyserEquationAstPtr &ast)
+void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
-    Debug() << doPrintAstAsTree(ast, nullptr, false);
+    Debug() << doPrintAstAsTree(model, ast, nullptr, false);
 }
 
 void printAstAsCode(const AnalyserEquationAstPtr &ast)
 {
     Debug() << astAsCode(ast);
+}
+
+struct InterpreterStatementTrunk
+{
+    InterpreterStatementTrunk *mPrev;
+    std::string mStr;
+
+    InterpreterStatementTrunk(InterpreterStatementTrunk *prev,
+                              const std::string &str);
+};
+
+InterpreterStatementTrunk::InterpreterStatementTrunk(InterpreterStatementTrunk *prev,
+                                                     const std::string &str)
+    : mPrev(prev)
+    , mStr(str)
+{
+}
+
+std::string doPrintInterpreterStatement(InterpreterStatementTrunk *trunk)
+{
+    if (trunk == nullptr) {
+        return {};
+    }
+
+    auto res = doPrintInterpreterStatement(trunk->mPrev);
+
+    if ((trunk->mPrev != nullptr) && (trunk->mPrev->mStr == SPACES)
+        && ((trunk->mStr == SPACES) || (trunk->mStr == TRUNK))) {
+        res += " ";
+    }
+
+    return res + trunk->mStr;
+}
+
+std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpreterStatement)
+{
+    std::string res;
+
+    switch (interpreterStatement->type()) {
+        // Equality.
+
+    case InterpreterStatement::Type::EQUALITY:
+        res = "EQUALITY";
+
+        break;
+
+        // Relational and logical operators.
+
+    case InterpreterStatement::Type::EQ:
+        res = "EQ";
+
+        break;
+    case InterpreterStatement::Type::NEQ:
+        res = "NEQ";
+
+        break;
+    case InterpreterStatement::Type::LT:
+        res = "LT";
+
+        break;
+    case InterpreterStatement::Type::LEQ:
+        res = "LEQ";
+
+        break;
+    case InterpreterStatement::Type::GT:
+        res = "GT";
+
+        break;
+    case InterpreterStatement::Type::GEQ:
+        res = "LEQ";
+
+        break;
+    case InterpreterStatement::Type::AND:
+        res = "AND";
+
+        break;
+    case InterpreterStatement::Type::OR:
+        res = "OR";
+
+        break;
+    case InterpreterStatement::Type::XOR:
+        res = "XOR";
+
+        break;
+    case InterpreterStatement::Type::NOT:
+        res = "NOT";
+
+        break;
+
+        // Arithmetic operators.
+
+    case InterpreterStatement::Type::PLUS:
+        res = "PLUS";
+
+        break;
+    case InterpreterStatement::Type::MINUS:
+        res = "MINUS";
+
+        break;
+    case InterpreterStatement::Type::TIMES:
+        res = "TIMES";
+
+        break;
+    case InterpreterStatement::Type::DIVIDE:
+        res = "DIVIDE";
+
+        break;
+    case InterpreterStatement::Type::POWER:
+        res = "POWER";
+
+        break;
+    case InterpreterStatement::Type::SQUARE_ROOT:
+        res = "SQUARE_ROOT";
+
+        break;
+    case InterpreterStatement::Type::SQUARE:
+        res = "SQUARE";
+
+        break;
+    case InterpreterStatement::Type::ABS:
+        res = "ABS";
+
+        break;
+    case InterpreterStatement::Type::EXP:
+        res = "EXP";
+
+        break;
+    case InterpreterStatement::Type::LN:
+        res = "LN";
+
+        break;
+    case InterpreterStatement::Type::LOG:
+        res = "LOG";
+
+        break;
+    case InterpreterStatement::Type::CEILING:
+        res = "CEILING";
+
+        break;
+    case InterpreterStatement::Type::FLOOR:
+        res = "FLOOR";
+
+        break;
+    case InterpreterStatement::Type::MIN:
+        res = "MIN";
+
+        break;
+    case InterpreterStatement::Type::MAX:
+        res = "MAX";
+
+        break;
+    case InterpreterStatement::Type::REM:
+        res = "REM";
+
+        break;
+
+        // Trigonometric operators.
+
+    case InterpreterStatement::Type::SIN:
+        res = "SIN";
+
+        break;
+    case InterpreterStatement::Type::COS:
+        res = "COS";
+
+        break;
+    case InterpreterStatement::Type::TAN:
+        res = "TAN";
+
+        break;
+    case InterpreterStatement::Type::SEC:
+        res = "SEC";
+
+        break;
+    case InterpreterStatement::Type::CSC:
+        res = "CSC";
+
+        break;
+    case InterpreterStatement::Type::COT:
+        res = "COT";
+
+        break;
+    case InterpreterStatement::Type::SINH:
+        res = "SINH";
+
+        break;
+    case InterpreterStatement::Type::COSH:
+        res = "COSH";
+
+        break;
+    case InterpreterStatement::Type::TANH:
+        res = "TANH";
+
+        break;
+    case InterpreterStatement::Type::SECH:
+        res = "SECH";
+
+        break;
+    case InterpreterStatement::Type::CSCH:
+        res = "CSCH";
+
+        break;
+    case InterpreterStatement::Type::COTH:
+        res = "COTH";
+
+        break;
+    case InterpreterStatement::Type::ASIN:
+        res = "ASIN";
+
+        break;
+    case InterpreterStatement::Type::ACOS:
+        res = "ACOS";
+
+        break;
+    case InterpreterStatement::Type::ATAN:
+        res = "ATAN";
+
+        break;
+    case InterpreterStatement::Type::ASEC:
+        res = "ASEC";
+
+        break;
+    case InterpreterStatement::Type::ACSC:
+        res = "ACSC";
+
+        break;
+    case InterpreterStatement::Type::ACOT:
+        res = "ACOT";
+
+        break;
+    case InterpreterStatement::Type::ASINH:
+        res = "ASINH";
+
+        break;
+    case InterpreterStatement::Type::ACOSH:
+        res = "ACOSH";
+
+        break;
+    case InterpreterStatement::Type::ATANH:
+        res = "ATANH";
+
+        break;
+    case InterpreterStatement::Type::ASECH:
+        res = "ASECH";
+
+        break;
+    case InterpreterStatement::Type::ACSCH:
+        res = "ACSCH";
+
+        break;
+    case InterpreterStatement::Type::ACOTH:
+        res = "ACOTH";
+
+        break;
+
+        // Piecewise statement.
+
+    case InterpreterStatement::Type::PIECEWISE:
+        res = "PIECEWISE";
+
+        break;
+    case InterpreterStatement::Type::PIECE:
+        res = "PIECE";
+
+        break;
+
+        // Token elements.
+
+    case InterpreterStatement::Type::VOI:
+        res = "VOI";
+
+        break;
+    case InterpreterStatement::Type::STATE:
+    case InterpreterStatement::Type::RATE:
+    case InterpreterStatement::Type::CONSTANT:
+    case InterpreterStatement::Type::COMPUTED_CONSTANT:
+    case InterpreterStatement::Type::ALGEBRAIC:
+    case InterpreterStatement::Type::EXTERNAL:
+        res = ciValue(interpreterStatement->variable(),
+                      interpreterStatement->type() == InterpreterStatement::Type::RATE);
+
+        break;
+    case InterpreterStatement::Type::NUMBER:
+        res = convertToString(interpreterStatement->value());
+
+        break;
+
+        // Qualifier elements.
+
+    case InterpreterStatement::Type::DEGREE:
+        res = "DEGREE";
+
+        break;
+    case InterpreterStatement::Type::LOGBASE:
+        res = "LOGBASE";
+
+        break;
+    case InterpreterStatement::Type::BVAR:
+        res = "BVAR";
+
+        break;
+
+        // Constants.
+
+    case InterpreterStatement::Type::TRUE:
+        res = "TRUE";
+
+        break;
+    case InterpreterStatement::Type::FALSE:
+        res = "FALSE";
+
+        break;
+    case InterpreterStatement::Type::E:
+        res = "E";
+
+        break;
+    case InterpreterStatement::Type::PI:
+        res = "PI";
+
+        break;
+    case InterpreterStatement::Type::INF:
+        res = "INF";
+
+        break;
+    case InterpreterStatement::Type::NAN:
+        res = "NAN";
+
+        break;
+
+        // Miscellaneous.
+
+    case InterpreterStatement::Type::EXTERNAL_VARIABLE_CALL:
+        res = "externalVariable(" + convertToString(interpreterStatement->index()) + ")";
+
+        break;
+    }
+
+    return res;
+}
+
+std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpreterStatement,
+                                        InterpreterStatementTrunk *prevTrunk, bool isLeft)
+{
+    if (interpreterStatement == nullptr) {
+        return {};
+    }
+
+    std::string res;
+    std::string prevStr = SPACES;
+    InterpreterStatementTrunk trunk(prevTrunk, prevStr);
+    auto astLeftChild = interpreterStatement->leftChild();
+
+    if (astLeftChild != nullptr) {
+        res += doPrintInterpreterStatement(astLeftChild, &trunk, true);
+    }
+
+    if (prevTrunk == nullptr) {
+        trunk.mStr = "──";
+    } else if (isLeft) {
+        trunk.mStr = "╭──";
+        prevStr = TRUNK;
+    } else {
+        trunk.mStr = "╰──";
+        prevTrunk->mStr = prevStr;
+    }
+
+    auto astRightChild = interpreterStatement->rightChild();
+
+    res += doPrintInterpreterStatement(&trunk);
+
+    if (astLeftChild != nullptr) {
+        res += (astRightChild != nullptr) ? "┤" : "┘";
+    }
+
+    res += " " + doPrintInterpreterStatement(interpreterStatement) + "\n";
+
+    if (prevTrunk != nullptr) {
+        prevTrunk->mStr = prevStr;
+    }
+
+    trunk.mStr = TRUNK;
+
+    if (astRightChild != nullptr) {
+        res += doPrintInterpreterStatement(astRightChild, &trunk, false);
+    }
+
+    return res;
+}
+
+void printInterpreterStatement(const InterpreterStatementPtr &interpreterStatement)
+{
+    Debug() << doPrintInterpreterStatement(interpreterStatement, nullptr, false);
 }
 
 void printImportLibrary(const ImportLibrary &importlibrary)

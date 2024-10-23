@@ -33,7 +33,6 @@ struct AnalyserVariable::AnalyserVariableImpl
     size_t mIndex = 0;
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    ComponentPtr mComponent;
     std::vector<AnalyserEquationWeakPtr> mEquations;
 
     static AnalyserVariablePtr create();
