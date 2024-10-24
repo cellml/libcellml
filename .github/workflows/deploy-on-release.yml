@@ -364,14 +364,14 @@ jobs:
 
       - name: Publish Python wheels
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-        shell: bash
         env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          python -m pip install twine
-          twine upload --skip-existing ./wheelhouse/*.whl
-
+          name: pypi
+          url: https://pypi.org/p/libcellml
+        permissions:
+          id-token: write
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ./wheelhouse/
 
   emscripten:
     needs: setup-jobs
