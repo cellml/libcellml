@@ -1,4 +1,4 @@
-libCellML v0.6.0-rc.2 Changelog
+libCellML v0.6.0-rc.3 Changelog
 ===============================
 
 Analyser
@@ -39,6 +39,7 @@ Infrastructure
 No category
 -----------
 
+* CI build fixes by `@hsorby <https://github.com/hsorby>`_ [`#1268 <https://github.com/cellml/libcellml/pull/1268>`_].
 * Generator: `computeComputedConstants()` may not generate some dependencies in the right place by `@agarny <https://github.com/agarny>`_ [`#1217 <https://github.com/cellml/libcellml/pull/1217>`_].
 * Generator: use `size_t` rather than `int` in `nlaSolve()` by `@agarny <https://github.com/agarny>`_ [`#1202 <https://github.com/cellml/libcellml/pull/1202>`_].
 
