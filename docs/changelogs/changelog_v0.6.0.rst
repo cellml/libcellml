@@ -1,5 +1,5 @@
-libCellML v0.6.0-rc.3 Changelog
-===============================
+libCellML v0.6.0 Changelog
+==========================
 
 Analyser
 --------
