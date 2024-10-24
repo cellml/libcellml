@@ -1,5 +1,5 @@
-libCellML v0.6.0-rc.3 Changelog
-===============================
+libCellML v0.6.0 Changelog
+==========================
 
 Analyser
 --------
@@ -21,6 +21,8 @@ Generator
 ---------
 
 * Code generation: unit scaling for rate computation is the other way round by `@agarny <https://github.com/agarny>`_ [`#1241 <https://github.com/cellml/libcellml/pull/1241>`_].
+* Generator: `computeComputedConstants()` may not generate some dependencies in the right place by `@agarny <https://github.com/agarny>`_ [`#1217 <https://github.com/cellml/libcellml/pull/1217>`_].
+* Generator: use `size_t` rather than `int` in `nlaSolve()` by `@agarny <https://github.com/agarny>`_ [`#1202 <https://github.com/cellml/libcellml/pull/1202>`_].
 
 Imports
 -------
@@ -30,18 +32,12 @@ Imports
 Infrastructure
 --------------
 
+* CI build fixes by `@hsorby <https://github.com/hsorby>`_ [`#1268 <https://github.com/cellml/libcellml/pull/1268>`_].
 * Update `cibuildwheel` by `@hsorby <https://github.com/hsorby>`_ [`#1264 <https://github.com/cellml/libcellml/pull/1264>`_].
 * Add Codespell GitHub action by `@hsorby <https://github.com/hsorby>`_ [`#1234 <https://github.com/cellml/libcellml/pull/1234>`_].
 * Remove FindPython* files by `@hsorby <https://github.com/hsorby>`_ [`#1236 <https://github.com/cellml/libcellml/pull/1236>`_].
 * Update GitHub actions action to newer versions by `@hsorby <https://github.com/hsorby>`_ [`#1224 <https://github.com/cellml/libcellml/pull/1224>`_].
 * Switch to using Here document by `@hsorby <https://github.com/hsorby>`_ [`#1200 <https://github.com/cellml/libcellml/pull/1200>`_].
-
-No category
------------
-
-* CI build fixes by `@hsorby <https://github.com/hsorby>`_ [`#1268 <https://github.com/cellml/libcellml/pull/1268>`_].
-* Generator: `computeComputedConstants()` may not generate some dependencies in the right place by `@agarny <https://github.com/agarny>`_ [`#1217 <https://github.com/cellml/libcellml/pull/1217>`_].
-* Generator: use `size_t` rather than `int` in `nlaSolve()` by `@agarny <https://github.com/agarny>`_ [`#1202 <https://github.com/cellml/libcellml/pull/1202>`_].
 
 Python bindings
 ---------------
