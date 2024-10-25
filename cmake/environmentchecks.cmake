@@ -33,7 +33,6 @@ else ()
   endif()
 
   test_undefined_symbols_allowed()
-  test_libxml2_const_error_structured_error_callback()
 
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
@@ -239,4 +238,8 @@ endif()
 
 if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
+endif()
+
+if(NOT EMSCRIPTEN)
+    test_libxml2_const_error_structured_error_callback()
 endif()

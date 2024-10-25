@@ -73,11 +73,11 @@ void function()
       CMAKE_FLAGS
         "-DCMAKE_SHARED_LINKER_FLAGS='${CMAKE_SHARED_LINKER_FLAGS}'"
         ${_rpath_arg}
-      OUTPUT_VARIABLE output)
+      OUTPUT_VARIABLE _OUTPUT)
 
     set(${_HASH_VAR_NAME} "${cmake_flags_hash}" CACHE INTERNAL  "hashed try_compile flags")
     message(STATUS "Output:\n${output}")
-    message(STATUS "OUTPUT_:\n${OUTPUT_}")
+    message(STATUS "OUTPUT_:\n${_OUTPUT}")
     message(STATUS "Output:\n${OUTPUT}")
 
     if(${_VAR_NAME})
@@ -86,7 +86,7 @@ void function()
       message(STATUS "Performing Test ${_VAR_NAME} - Failed")
       file(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
         "Performing Test ${_VAR_NAME} failed with the following output:\n"
-        "${OUTPUT}\n")
+        "${_OUTPUT}\n")
     endif()
   endif()
 endfunction()
