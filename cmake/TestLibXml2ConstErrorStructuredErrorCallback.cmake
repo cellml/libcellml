@@ -46,6 +46,9 @@ target_compile_definitions(foo PUBLIC ${LIBXML2_DEFINITIONS})
 
     file(WRITE "${test_project_dir}/foo.cpp"
 "
+#include <libxml/tree.h>
+#include <libxml/xmlerror.h>
+
 void structuredErrorCallback(void *userData, const xmlError *error)
 {
 }
@@ -56,7 +59,7 @@ void function()
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(\"basically empty\"), \"/\", nullptr, 0);
+    //xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(\"basically empty\"), \"/\", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
@@ -70,7 +73,7 @@ void function()
       CMAKE_FLAGS
         "-DCMAKE_SHARED_LINKER_FLAGS='${CMAKE_SHARED_LINKER_FLAGS}'"
         ${_rpath_arg}
-      OUTPUT_ _VAR_NAME output)
+      OUTPUT_VARIABLE output)
 
     set(${_HASH_VAR_NAME} "${cmake_flags_hash}" CACHE INTERNAL  "hashed try_compile flags")
     message(STATUS "Output:\n${output}")
