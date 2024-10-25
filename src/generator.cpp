@@ -49,6 +49,11 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
         return false;
     }
 
+    if ((variable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION)
+        || (variable->type() == AnalyserVariable::Type::STATE)) {
+        return tracked;
+    }
+
     auto model = variable->model();
 
     for (const auto &modelVariable : variables(model, false)) {
