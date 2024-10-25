@@ -59,7 +59,6 @@ void function()
 {
     xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     //xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(\"basically empty\"), \"/\", nullptr, 0);
     xmlFreeParserCtxt(context);
