@@ -73,6 +73,9 @@ void function()
       OUTPUT_ _VAR_NAME output)
 
     set(${_HASH_VAR_NAME} "${cmake_flags_hash}" CACHE INTERNAL  "hashed try_compile flags")
+    message(STATUS "Output:\n${output}")
+    message(STATUS "OUTPUT_:\n${OUTPUT_}")
+    message(STATUS "Output:\n${OUTPUT}")
 
     if(${_VAR_NAME})
       message(STATUS "Performing Test ${_VAR_NAME} - Success")
