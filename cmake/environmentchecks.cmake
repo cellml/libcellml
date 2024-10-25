@@ -14,6 +14,7 @@
 
 include(CheckCXXCompilerFlag)
 include(TestUndefinedSymbolsAllowed)
+include(TestLibXml2ConstErrorStructuredErrorCallback)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -32,6 +33,7 @@ else ()
   endif()
 
   test_undefined_symbols_allowed()
+  test_libxml2_const_error_structured_error_callback()
 
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
