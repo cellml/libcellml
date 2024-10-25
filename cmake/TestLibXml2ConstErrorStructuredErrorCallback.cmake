@@ -33,6 +33,7 @@ add_library(foo SHARED \"foo.cpp\")
     if(HAVE_LIBXML2_CONFIG)
       file(APPEND "${test_project_dir}/CMakeLists.txt"
 "
+set(LibXml2_DIR \"${LibXml2_DIR}\")
 find_package(LibXml2 CONFIG)
 target_link_libraries(foo PUBLIC ${LIBXML2_TARGET_NAME})
 ")
@@ -77,9 +78,6 @@ void function()
       OUTPUT_VARIABLE _OUTPUT)
 
     set(${_HASH_VAR_NAME} "${cmake_flags_hash}" CACHE INTERNAL  "hashed try_compile flags")
-    message(STATUS "Output:\n${output}")
-    message(STATUS "OUTPUT_:\n${_OUTPUT}")
-    message(STATUS "Output:\n${OUTPUT}")
 
     if(${_VAR_NAME})
       message(STATUS "Performing Test ${_VAR_NAME} - Success")
