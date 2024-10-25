@@ -33,11 +33,13 @@ add_library(foo SHARED \"foo.cpp\")
     if(HAVE_LIBXML2_CONFIG)
       file(APPEND "${test_project_dir}/CMakeLists.txt"
 "
+find_package(LibXml2 CONFIG)
 target_link_libraries(foo PUBLIC ${LIBXML2_TARGET_NAME})
 ")
     else()
       file(APPEND "${test_project_dir}/CMakeLists.txt"
 "
+find_package(LibXml2)
 target_include_directories(foo PUBLIC ${LIBXML2_INCLUDE_DIR})
 target_link_libraries(foo PUBLIC ${LIBXML2_LIBRARIES})
 target_compile_definitions(foo PUBLIC ${LIBXML2_DEFINITIONS})
