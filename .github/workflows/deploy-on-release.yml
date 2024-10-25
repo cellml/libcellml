@@ -345,8 +345,8 @@ jobs:
           CIBW_TEST_SKIP: "*_arm64"
           CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
           CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
-          CIBW_ENVIRONMENT: LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
-          CIBW_ENVIRONMENT_MACOS: >
+          CIBW_ENVIRONMENT: >
+            LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
             MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
