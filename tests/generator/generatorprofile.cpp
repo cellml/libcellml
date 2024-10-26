@@ -634,15 +634,10 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("    ", generatorProfile->indentString());
 
-    EXPECT_EQ("{", generatorProfile->openArrayInitialiserString());
-    EXPECT_EQ("}", generatorProfile->closeArrayInitialiserString());
-
     EXPECT_EQ("[", generatorProfile->openArrayString());
     EXPECT_EQ("]", generatorProfile->closeArrayString());
 
     EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
-
-    EXPECT_EQ("\"", generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
@@ -1080,15 +1075,10 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setIndentString(value);
 
-    generatorProfile->setOpenArrayInitialiserString(value);
-    generatorProfile->setCloseArrayInitialiserString(value);
-
     generatorProfile->setOpenArrayString(value);
     generatorProfile->setCloseArrayString(value);
 
     generatorProfile->setArrayElementSeparatorString(value);
-
-    generatorProfile->setStringDelimiterString(value);
 
     generatorProfile->setCommandSeparatorString(value);
 
@@ -1237,15 +1227,10 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->indentString());
 
-    EXPECT_EQ(value, generatorProfile->openArrayInitialiserString());
-    EXPECT_EQ(value, generatorProfile->closeArrayInitialiserString());
-
     EXPECT_EQ(value, generatorProfile->openArrayString());
     EXPECT_EQ(value, generatorProfile->closeArrayString());
 
     EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
-
-    EXPECT_EQ(value, generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
 }

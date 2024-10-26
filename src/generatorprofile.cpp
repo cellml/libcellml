@@ -533,15 +533,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitialiserString = "{";
-        mCloseArrayInitialiserString = "}";
-
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
-
-        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = ";";
     } else { // GeneratorProfile::Profile::PYTHON.
@@ -962,15 +957,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitialiserString = "[";
-        mCloseArrayInitialiserString = "]";
-
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
-
-        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = "";
     }
@@ -2954,26 +2944,6 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     mPimpl->mIndentString = indentString;
 }
 
-std::string GeneratorProfile::openArrayInitialiserString() const
-{
-    return mPimpl->mOpenArrayInitialiserString;
-}
-
-void GeneratorProfile::setOpenArrayInitialiserString(const std::string &openArrayInitialiserString)
-{
-    mPimpl->mOpenArrayInitialiserString = openArrayInitialiserString;
-}
-
-std::string GeneratorProfile::closeArrayInitialiserString() const
-{
-    return mPimpl->mCloseArrayInitialiserString;
-}
-
-void GeneratorProfile::setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString)
-{
-    mPimpl->mCloseArrayInitialiserString = closeArrayInitialiserString;
-}
-
 std::string GeneratorProfile::openArrayString() const
 {
     return mPimpl->mOpenArrayString;
@@ -3002,16 +2972,6 @@ std::string GeneratorProfile::arrayElementSeparatorString() const
 void GeneratorProfile::setArrayElementSeparatorString(const std::string &arrayElementSeparatorString)
 {
     mPimpl->mArrayElementSeparatorString = arrayElementSeparatorString;
-}
-
-std::string GeneratorProfile::stringDelimiterString() const
-{
-    return mPimpl->mStringDelimiterString;
-}
-
-void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
-{
-    mPimpl->mStringDelimiterString = stringDelimiterString;
 }
 
 std::string GeneratorProfile::commandSeparatorString() const

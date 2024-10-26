@@ -3968,44 +3968,6 @@ public:
     void setIndentString(const std::string &indentString);
 
     /**
-     * @brief Get the @c std::string for opening an array initialiser.
-     *
-     * Return the @c std::string for opening an array initialiser.
-     *
-     * @return The @c std::string for opening an array initialiser.
-     */
-    std::string openArrayInitialiserString() const;
-
-    /**
-     * @brief Set the @c std::string for opening an array initialiser.
-     *
-     * Set the @c std::string for opening an array initialiser.
-     *
-     * @param openArrayInitialiserString The @c std::string to use for opening
-     * an array initialiser.
-     */
-    void setOpenArrayInitialiserString(const std::string &openArrayInitialiserString);
-
-    /**
-     * @brief Get the @c std::string for closing an array initialiser.
-     *
-     * Return the @c std::string for closing an array initialiser.
-     *
-     * @return The @c std::string for closing an array initialiser.
-     */
-    std::string closeArrayInitialiserString() const;
-
-    /**
-     * @brief Set the @c std::string for closing an array initialiser.
-     *
-     * Set the @c std::string for closing an array initialiser.
-     *
-     * @param closeArrayInitialiserString The @c std::string to use for closing
-     *  an array initialiser.
-     */
-    void setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString);
-
-    /**
      * @brief Get the @c std::string for opening an array.
      *
      * Return the @c std::string for opening an array.
@@ -4059,25 +4021,6 @@ public:
      * separating elements in an array.
      */
     void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
-
-    /**
-     * @brief Get the @c std::string for a string delimiter.
-     *
-     * Return the @c std::string for a string delimiter.
-     *
-     * @return The @c std::string for a string delimiter.
-     */
-    std::string stringDelimiterString() const;
-
-    /**
-     * @brief Set the @c std::string for a string delimiter.
-     *
-     * Set the @c std::string for a string delimiter.
-     *
-     * @param stringDelimiterString The @c std::string to use for a string
-     * delimiter.
-     */
-    void setStringDelimiterString(const std::string &stringDelimiterString);
 
     /**
      * @brief Get the @c std::string for a command separator.
