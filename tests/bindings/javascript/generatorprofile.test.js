@@ -1131,6 +1131,12 @@ describe("GeneratorProfile tests", () => {
     x.setIndentString("something")
     expect(x.indentString()).toBe("something")
   });
+  test("Checking GeneratorProfile.variableDeclarationString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setVariableDeclarationString("something")
+    expect(x.variableDeclarationString()).toBe("something")
+  });
   test("Checking GeneratorProfile.openArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 

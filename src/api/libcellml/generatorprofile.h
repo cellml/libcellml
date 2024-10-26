@@ -3968,6 +3968,25 @@ public:
     void setIndentString(const std::string &indentString);
 
     /**
+     * @brief Get the @c std::string for declaring a variable.
+     *
+     * Return the @c std::string for declaring a variable.
+     *
+     * @return The @c std::string for declaring a variable.
+     */
+    std::string variableDeclarationString() const;
+
+    /**
+     * @brief Set the @c std::string for declaring a variable.
+     *
+     * Set the @c std::string for declaring a variable. To be useful, the string should contain the [CODE] tag, which
+     * will be replaced with the variable declaration.
+     *
+     * @param variableDeclarationString The @c std::string to use for declaring an untracked variable.
+     */
+    void setVariableDeclarationString(const std::string &variableDeclarationString);
+
+    /**
      * @brief Get the @c std::string for opening an array.
      *
      * Return the @c std::string for opening an array.

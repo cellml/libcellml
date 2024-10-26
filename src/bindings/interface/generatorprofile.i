@@ -1072,6 +1072,12 @@ tag, which will be replaced with some code to create the externals array.";
 %feature("docstring") libcellml::GeneratorProfile::setIndentString
 "Sets the string for an indent.";
 
+%feature("docstring") libcellml::GeneratorProfile::variableDeclarationString
+"Returns the string for declaring a variable.";
+
+%feature("docstring") libcellml::GeneratorProfile::setVariableDeclarationString
+"Sets the string for declaring a variable.";
+
 %feature("docstring") libcellml::GeneratorProfile::openArrayString
 "Returns the string for opening an array.";
 
