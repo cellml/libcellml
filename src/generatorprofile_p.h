@@ -302,6 +302,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
+    std::string mVariableDeclarationString;
+
     std::string mOpenArrayString;
     std::string mCloseArrayString;
 

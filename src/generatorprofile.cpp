@@ -533,6 +533,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
+        mVariableDeclarationString = "double [CODE]";
+
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
@@ -956,6 +958,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mEmptyMethodString = "pass\n";
 
         mIndentString = "    ";
+
+        mVariableDeclarationString = "[CODE]";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
@@ -2942,6 +2946,16 @@ std::string GeneratorProfile::indentString() const
 void GeneratorProfile::setIndentString(const std::string &indentString)
 {
     mPimpl->mIndentString = indentString;
+}
+
+std::string GeneratorProfile::variableDeclarationString() const
+{
+    return mPimpl->mVariableDeclarationString;
+}
+
+void GeneratorProfile::setVariableDeclarationString(const std::string &variableDeclarationString)
+{
+    mPimpl->mVariableDeclarationString = variableDeclarationString;
 }
 
 std::string GeneratorProfile::openArrayString() const

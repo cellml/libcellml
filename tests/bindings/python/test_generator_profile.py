@@ -1370,6 +1370,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setNotString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.notString())
 
+    def test_double_declaration_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('double [CODE]', g.variableDeclarationString())
+        g.setVariableDeclarationString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableDeclarationString())
+
     def test_open_array_string(self):
         from libcellml import GeneratorProfile
 
