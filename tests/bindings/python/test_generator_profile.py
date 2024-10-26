@@ -333,15 +333,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setCeilingString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.ceilingString())
 
-    def test_close_array_initialiser_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('}', g.closeArrayInitialiserString())
-        g.setCloseArrayInitialiserString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.closeArrayInitialiserString())
-
     def test_close_array_string(self):
         from libcellml import GeneratorProfile
 
@@ -1379,15 +1370,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setNotString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.notString())
 
-    def test_open_array_initialiser_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('{', g.openArrayInitialiserString())
-        g.setOpenArrayInitialiserString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.openArrayInitialiserString())
-
     def test_open_array_string(self):
         from libcellml import GeneratorProfile
 
@@ -1569,15 +1551,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('states', g.statesArrayString())
         g.setStatesArrayString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.statesArrayString())
-
-    def test_string_delimiter_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('"', g.stringDelimiterString())
-        g.setStringDelimiterString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.stringDelimiterString())
 
     def test_tan_string(self):
         from libcellml import GeneratorProfile

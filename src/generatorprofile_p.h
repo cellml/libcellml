@@ -302,15 +302,10 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
-    std::string mOpenArrayInitialiserString;
-    std::string mCloseArrayInitialiserString;
-
     std::string mOpenArrayString;
     std::string mCloseArrayString;
 
     std::string mArrayElementSeparatorString;
-
-    std::string mStringDelimiterString;
 
     std::string mCommandSeparatorString;
 
