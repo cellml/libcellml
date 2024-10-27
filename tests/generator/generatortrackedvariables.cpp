@@ -439,31 +439,80 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
+enum class TrackingType
+{
+    VARIABLES,
+    CONSTANTS,
+    COMPUTED_CONSTANTS,
+    ALGEBRAIC,
+    EXTERNALS
+};
+
+void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::GeneratorPtr &generator, TrackingType trackingType)
+{
+    switch (trackingType) {
+    case TrackingType::VARIABLES:
+        generator->untrackAllVariables(model);
+
+        break;
+    case TrackingType::CONSTANTS:
+        generator->untrackAllConstants(model);
+
+        break;
+    case TrackingType::COMPUTED_CONSTANTS:
+        generator->untrackAllComputedConstants(model);
+
+        break;
+    case TrackingType::ALGEBRAIC:
+        generator->untrackAllAlgebraic(model);
+
+        break;
+    case TrackingType::EXTERNALS:
+        generator->untrackAllExternals(model);
+
+        break;
+    }
+}
+
+void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType trackingType)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae") + ".cellml"));
     auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    auto analyserModel = analyser->model();
+    libcellml::AnalyserModelPtr analyserModel;
     auto generator = libcellml::Generator::create();
+    libcellml::GeneratorProfilePtr profile;
+    std::string modelType = ode ? "model" : "model.dae";
+    std::string variableType = (trackingType == TrackingType::VARIABLES) ?
+                                   "variables" :
+                                   ((trackingType == TrackingType::CONSTANTS) ?
+                                        "constants" :
+                                        ((trackingType == TrackingType::COMPUTED_CONSTANTS) ?
+                                             "computed.constants" :
+                                             ((trackingType == TrackingType::ALGEBRAIC) ?
+                                                  "algebraic" :
+                                                  "externals")));
 
-    generator->untrackAllVariables(analyserModel);
+    if (trackingType != TrackingType::EXTERNALS) {
+        analyser->analyseModel(model);
 
-    auto profile = generator->profile();
+        analyserModel = analyser->model();
 
-    profile->setInterfaceFileNameString("model.untracked.variables.h");
+        untrack(analyserModel, generator, trackingType);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.c", generator->implementationCode(analyserModel));
+        profile = generator->profile();
 
-    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+        profile->setInterfaceFileNameString(modelType + ".untracked." + variableType + ".h");
 
-    generator->setProfile(profile);
+        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".h", generator->interfaceCode(analyserModel));
+        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".c", generator->implementationCode(analyserModel));
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.py", generator->implementationCode(analyserModel));
+        profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+        generator->setProfile(profile);
+
+        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".py", generator->implementationCode(analyserModel));
+    }
 
     // With some external variables.
 
@@ -481,113 +530,70 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariable
 
     analyserModel = analyser->model();
 
-    generator->untrackAllVariables(analyserModel);
+    untrack(analyserModel, generator, trackingType);
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
 
     generator->setProfile(profile);
 
-    profile->setInterfaceFileNameString("model.untracked.variables.with.externals.h");
+    profile->setInterfaceFileNameString(modelType + ".untracked." + variableType + ".with.externals.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.c", generator->implementationCode(analyserModel));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    auto analyserModel = analyser->model();
-    auto generator = libcellml::Generator::create();
-
-    generator->untrackAllConstants(analyserModel);
-
-    auto profile = generator->profile();
-
-    profile->setInterfaceFileNameString("model.untracked.constants.h");
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.c", generator->implementationCode(analyserModel));
-
-    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.py", generator->implementationCode(analyserModel));
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    auto analyserModel = analyser->model();
-    auto generator = libcellml::Generator::create();
-
-    generator->untrackAllComputedConstants(analyserModel);
-
-    auto profile = generator->profile();
-
-    profile->setInterfaceFileNameString("model.untracked.computed.constants.h");
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.c", generator->implementationCode(analyserModel));
-
-    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.py", generator->implementationCode(analyserModel));
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    auto analyserModel = analyser->model();
-    auto generator = libcellml::Generator::create();
-
-    generator->untrackAllAlgebraic(analyserModel);
-
-    auto profile = generator->profile();
-
-    profile->setInterfaceFileNameString("model.untracked.algebraic.variables.h");
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.c", generator->implementationCode(analyserModel));
-
-    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.py", generator->implementationCode(analyserModel));
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC);
 }
 
-/**
- * Need the following tests:
- * - ODE HH52 + No tracking -- DONE
- * - ODE HH52 + No tracking + Externals -- DONE
- * - ODE HH52 + Some tracking (with some dependencies on untracked variables) -- DONE
- * - ODE HH52 + Some tracking (with some dependencies on untracked variables) + Externals
- * - DAE HH52 + No tracking
- * - DAE HH52 + No tracking + Externals
- * - DAE HH52 + Some tracking (with some dependencies on untracked variables)
- * - DAE HH52 + Some tracking (with some dependencies on untracked variables) + Externals
- */
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedExternalVariables)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::EXTERNALS);
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES);
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS);
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS);
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC);
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedExternalVariables)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::EXTERNALS);
+}

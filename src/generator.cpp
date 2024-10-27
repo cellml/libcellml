@@ -44,6 +44,43 @@ void Generator::GeneratorImpl::reset()
     mCode = {};
 }
 
+bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked)
+{
+    switch (equation->type()) {
+    case AnalyserEquation::Type::COMPUTED_CONSTANT:
+        return isTrackedVariable(equation->computedConstants().front()) == tracked;
+    case AnalyserEquation::Type::NLA: {
+        if (!equation->states().empty()) {
+            return true;
+        }
+
+        for (const auto &variable : equation->algebraic()) {
+            if (isTrackedVariable(variable) == tracked) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    case AnalyserEquation::Type::ALGEBRAIC:
+        return isTrackedVariable(equation->algebraic().front()) == tracked;
+    case AnalyserEquation::Type::EXTERNAL:
+        return isTrackedVariable(equation->externals().front()) == tracked;
+    default:
+        return false;
+    }
+}
+
+bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &equation)
+{
+    return doIsTrackedEquation(equation, true);
+}
+
+bool Generator::GeneratorImpl::isUntrackedEquation(const AnalyserEquationPtr &equation)
+{
+    return doIsTrackedEquation(equation, false);
+}
+
 bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked)
 {
     if (variable == nullptr) {
@@ -611,14 +648,16 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const AnalyserModelPtr &model,
-                                                                     const std::string &objectString) const
+                                                                     const std::string &objectString)
 {
     size_t componentSize = 0;
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
     for (const auto &variable : variables(model)) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+        if (isTrackedVariable(variable)) {
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+        }
     }
 
     return replace(replace(replace(objectString,
@@ -1932,7 +1971,7 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &eq
 
         return false;
     case AnalyserEquation::Type::EXTERNAL:
-        return isTrackedVariable(equation->externals().front());
+        return isTrackedEquation(equation);
     default:
         return false;
     }
@@ -2020,7 +2059,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
         if (!isSomeConstant(equation, includeComputedConstants)) {
             for (const auto &dependency : equation->dependencies()) {
                 if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
-                     && isUntrackedVariable(dependency->computedConstants().front()))
+                     && isUntrackedEquation(dependency))
                     || ((dependency->type() != AnalyserEquation::Type::ODE)
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (equationsForDependencies.empty()
@@ -2043,7 +2082,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                                       "[INDEX]", convertToString(variable->index()))
                             + mProfile->commandSeparatorString() + "\n";
 
-                code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
+                if (isUntrackedVariable(variable)) {
+                    code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
+                }
 
                 res += mProfile->indentString()
                        + code;
@@ -2224,7 +2265,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
         for (const auto &equation : model->equations()) {
             if ((equation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
-                && isTrackedVariable(equation->computedConstants().front())) {
+                && isTrackedEquation(equation)) {
                 methodBody += generateEquationCode(model, equation, remainingEquations, generatedConstantDependencies);
             }
         }
@@ -2281,10 +2322,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
         for (const auto &equation : equations) {
             if (((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
                  || isToBeComputedAgain(equation))
-                && (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
-                     && isTrackedVariable(equation->algebraic().front()))
-                    || ((equation->type() == AnalyserEquation::Type::EXTERNAL)
-                        && isTrackedVariable(equation->externals().front())))) {
+                && isTrackedEquation(equation)) {
                 methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations,
                                                    generatedConstantDependencies, false);
             }
