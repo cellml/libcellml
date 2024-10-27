@@ -71,13 +71,12 @@ set(_PACKAGE_JSON "\{
   \"version\": \"${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}\",
   \"repository\": \{
     \"type\": \"git\",
-    \"url\": \"https://github.com/cellml/libcellml.git\"
+    \"url\": \"git+https://github.com/cellml/libcellml.git\"
   },
   \"description\": \"libcellml.js javascript web assembly for libCellML.\",
   \"main\": \"libcellml.js\",
   \"files\": [\"libcellml.common.js\", \"libcellml.common.wasm\", \"libcellml.js\", \"libcellml.wasm\", \"README.md\", \"vue-app-with-libcellml.png\"],
   \"author\": \"libCellML Developers <developers@libcellml.org>\",
-  \"repository\": \"https://github.com/cellml/libcellml\",
   \"license\": \"Apache-2.0\"
 }
 ")
