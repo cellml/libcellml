@@ -969,6 +969,23 @@ TEST(Coverage, generator)
     libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
 }
 
+TEST(Coverage, generatorWithNoTracking)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->untrackAllVariables(analyserModel);
+
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));
+}
+
 TEST(CoverageValidator, degreeElementWithOneSibling)
 {
     const std::string math =

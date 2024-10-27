@@ -182,7 +182,8 @@ struct Generator::GeneratorImpl
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
                                      bool includeComputedConstants);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
-                                     std::vector<AnalyserEquationPtr> &remainingEquations);
+                                     std::vector<AnalyserEquationPtr> &remainingEquations,
+                                     std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
 
     void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model);
     std::string generateConstantInitialisationCode(const AnalyserModelPtr &model,

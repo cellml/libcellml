@@ -62,7 +62,8 @@ public:
      * @brief Add a @ref VariablePtr as an external variable to this @ref Analyser.
      *
      * Add the given @ref VariablePtr as an external variable to this @ref Analyser, but only if it has not already been
-     * added.
+     * added. Please note that it is your responsibility to ensure that all the variables on which an external variable
+     * depends are tracked.
      *
      * @param variable The @ref Variable to add as an external variable.
      *
@@ -76,6 +77,8 @@ public:
      * @brief Add an @ref AnalyserExternalVariable to this @ref Analyser.
      *
      * Add the given @ref AnalyserExternalVariable to this @ref Analyser, but only if it has not already been added.
+     * Please note that it is your responsibility to ensure that all the variables on which an external variable depends
+     * are tracked.
      *
      * @param externalVariable The @ref AnalyserExternalVariable to add.
      *
