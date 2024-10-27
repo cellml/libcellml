@@ -41,6 +41,11 @@ struct Generator::GeneratorImpl
 
     void reset();
 
+    bool doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked);
+
+    bool isTrackedEquation(const AnalyserEquationPtr &equation);
+    bool isUntrackedEquation(const AnalyserEquationPtr &equation);
+
     bool doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked);
 
     bool isTrackedVariable(const AnalyserVariablePtr &variable);
@@ -123,7 +128,7 @@ struct Generator::GeneratorImpl
 
     void addStateAndVariableCountCode(const AnalyserModelPtr &model, bool interface = false);
 
-    std::string generateVariableInfoObjectCode(const AnalyserModelPtr &model, const std::string &objectString) const;
+    std::string generateVariableInfoObjectCode(const AnalyserModelPtr &model, const std::string &objectString);
 
     void addVariableInfoObjectCode(const AnalyserModelPtr &model);
 
