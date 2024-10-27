@@ -439,7 +439,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952NoTracking)
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -452,24 +452,142 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952NoTracking)
 
     generator->untrackAllVariables(analyserModel);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.no.tracking.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.no.tracking.c", generator->implementationCode(analyserModel));
+    auto profile = generator->profile();
 
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile->setInterfaceFileNameString("model.untracked.variables.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.c", generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.no.tracking.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.py", generator->implementationCode(analyserModel));
+
+    // With some external variables.
+
+    auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
+    auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
+
+    external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
+    external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(external_sodium_channel_i_Na);
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
+
+    analyser->analyseModel(model);
+
+    analyserModel = analyser->model();
+
+    generator->untrackAllVariables(analyserModel);
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
+
+    generator->setProfile(profile);
+
+    profile->setInterfaceFileNameString("model.untracked.variables.with.externals.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.c", generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.variables.with.externals.py", generator->implementationCode(analyserModel));
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->untrackAllConstants(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.untracked.constants.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.c", generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.constants.py", generator->implementationCode(analyserModel));
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->untrackAllComputedConstants(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.untracked.computed.constants.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.c", generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.computed.constants.py", generator->implementationCode(analyserModel));
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->untrackAllAlgebraic(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.untracked.algebraic.variables.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.c", generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.untracked.algebraic.variables.py", generator->implementationCode(analyserModel));
 }
 
 /**
  * Need the following tests:
- * - ODE HH52 + No tracking
- * - ODE HH52 + No tracking + Externals (with some dependencies on untracked variables)
- * - ODE HH52 + Some tracking (with some dependencies on untracked variables)
- * - ODE HH52 + Some tracking (with some dependencies on untracked variables) + Externals (with some dependencies on untracked variables)
+ * - ODE HH52 + No tracking -- DONE
+ * - ODE HH52 + No tracking + Externals -- DONE
+ * - ODE HH52 + Some tracking (with some dependencies on untracked variables) -- DONE
+ * - ODE HH52 + Some tracking (with some dependencies on untracked variables) + Externals
  * - DAE HH52 + No tracking
- * - DAE HH52 + No tracking + Externals (with some dependencies on untracked variables)
+ * - DAE HH52 + No tracking + Externals
  * - DAE HH52 + Some tracking (with some dependencies on untracked variables)
- * - DAE HH52 + Some tracking (with some dependencies on untracked variables) + Externals (with some dependencies on untracked variables)
+ * - DAE HH52 + Some tracking (with some dependencies on untracked variables) + Externals
  */

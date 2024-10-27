@@ -1853,16 +1853,23 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserModelPtr &model
         code = generateCode(model, ast->leftChild());
 
         break;
-    case AnalyserEquationAst::Type::CI:
+    case AnalyserEquationAst::Type::CI: {
         code = generateVariableNameCode(model, ast->variable(), ast->parent()->type() != AnalyserEquationAst::Type::DIFF);
 
+        auto astParent = ast->parent();
+
         if ((model != nullptr)
-            && (ast->parent()->type() == AnalyserEquationAst::Type::EQUALITY)
+            && (astParent->type() == AnalyserEquationAst::Type::EQUALITY)
+            && (astParent->leftChild() == ast)
             && isUntrackedVariable(model->variable(ast->variable()))) {
+            // Note: we want this AST to be its parent's left child since a declaration is always of the form x = RHS,
+            //       not LHS = x.
+
             code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
         }
+    }
 
-        break;
+    break;
     case AnalyserEquationAst::Type::CN:
         code = generateDoubleCode(ast->value());
 
@@ -2012,11 +2019,13 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
         if (!isSomeConstant(equation, includeComputedConstants)) {
             for (const auto &dependency : equation->dependencies()) {
-                if ((dependency->type() != AnalyserEquation::Type::ODE)
-                    && !isSomeConstant(dependency, includeComputedConstants)
-                    && (equationsForDependencies.empty()
-                        || isToBeComputedAgain(dependency)
-                        || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end()))) {
+                if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                     && isUntrackedVariable(dependency->computedConstants().front()))
+                    || ((dependency->type() != AnalyserEquation::Type::ODE)
+                        && !isSomeConstant(dependency, includeComputedConstants)
+                        && (equationsForDependencies.empty()
+                            || isToBeComputedAgain(dependency)
+                            || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end())))) {
                     res += generateEquationCode(model, dependency, remainingEquations, equationsForDependencies,
                                                 generatedConstantDependencies, includeComputedConstants);
                 }
@@ -2028,12 +2037,16 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
             for (const auto &variable : variables(equation)) {
+                auto code = generateVariableNameCode(model, variable->variable())
+                            + mProfile->equalityString()
+                            + replace(mProfile->externalVariableMethodCallString(modelHasOdes(model)),
+                                      "[INDEX]", convertToString(variable->index()))
+                            + mProfile->commandSeparatorString() + "\n";
+
+                code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
+
                 res += mProfile->indentString()
-                       + generateVariableNameCode(model, variable->variable())
-                       + mProfile->equalityString()
-                       + replace(mProfile->externalVariableMethodCallString(modelHasOdes(model)),
-                                 "[INDEX]", convertToString(variable->index()))
-                       + mProfile->commandSeparatorString() + "\n";
+                       + code;
             }
 
             break;
@@ -2057,10 +2070,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPtr &model,
                                                            const AnalyserEquationPtr &equation,
-                                                           std::vector<AnalyserEquationPtr> &remainingEquations)
+                                                           std::vector<AnalyserEquationPtr> &remainingEquations,
+                                                           std::vector<AnalyserVariablePtr> &generatedConstantDependencies)
 {
     std::vector<AnalyserEquationPtr> dummyEquationsForComputeVariables;
-    std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
     return generateEquationCode(model, equation, remainingEquations, dummyEquationsForComputeVariables,
                                 generatedConstantDependencies, true);
@@ -2173,11 +2186,11 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
         // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
         // initial value of 3).
 
-        auto equations = model->equations();
+        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
-        for (const auto &equation : equations) {
+        for (const auto &equation : model->equations()) {
             if (equation->type() == AnalyserEquation::Type::CONSTANT) {
-                methodBody += generateEquationCode(model, equation, remainingEquations);
+                methodBody += generateEquationCode(model, equation, remainingEquations, generatedConstantDependencies);
             }
         }
 
@@ -2207,11 +2220,12 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 {
     if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
         std::string methodBody;
+        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &equation : model->equations()) {
             if ((equation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                 && isTrackedVariable(equation->computedConstants().front())) {
-                methodBody += generateEquationCode(model, equation, remainingEquations);
+                methodBody += generateEquationCode(model, equation, remainingEquations, generatedConstantDependencies);
             }
         }
 
@@ -2229,6 +2243,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(const Ana
     if (modelHasOdes(model)
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
+        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &equation : model->equations()) {
             // A rate is computed either through an ODE equation or through an
@@ -2241,7 +2256,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(const Ana
                 || ((equation->type() == AnalyserEquation::Type::NLA)
                     && (variables.size() == 1)
                     && (variables[0]->type() == AnalyserVariable::Type::STATE))) {
-                methodBody += generateEquationCode(model, equation, remainingEquations);
+                methodBody += generateEquationCode(model, equation, remainingEquations, generatedConstantDependencies);
             }
         }
 
@@ -2264,8 +2279,12 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &equation : equations) {
-            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || isToBeComputedAgain(equation)) {
+            if (((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+                 || isToBeComputedAgain(equation))
+                && (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+                     && isTrackedVariable(equation->algebraic().front()))
+                    || ((equation->type() == AnalyserEquation::Type::EXTERNAL)
+                        && isTrackedVariable(equation->externals().front())))) {
                 methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations,
                                                    generatedConstantDependencies, false);
             }
