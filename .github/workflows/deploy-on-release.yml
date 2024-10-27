@@ -345,8 +345,8 @@ jobs:
           CIBW_TEST_SKIP: "*_arm64"
           CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
           CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
-          CIBW_ENVIRONMENT: LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
-          CIBW_ENVIRONMENT_MACOS: >
+          CIBW_ENVIRONMENT: >
+            LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
             MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
@@ -364,14 +364,14 @@ jobs:
 
       - name: Publish Python wheels
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-        shell: bash
         env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          python -m pip install twine
-          twine upload --skip-existing ./wheelhouse/*.whl
-
+          name: pypi
+          url: https://pypi.org/p/libcellml
+        permissions:
+          id-token: write
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ./wheelhouse/
 
   emscripten:
     needs: setup-jobs
@@ -446,9 +446,7 @@ jobs:
 
       - name: Publish libcellml.js
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-        shell: bash
-        env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: |
-          cd build-libcellml-release/src/bindings/javascript
-          npm publish --access public
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: build-libcellml-release/src/bindings/javascript
