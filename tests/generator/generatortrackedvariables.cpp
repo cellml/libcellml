@@ -490,8 +490,8 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
                                         ((trackingType == TrackingType::COMPUTED_CONSTANTS) ?
                                              "computed.constants" :
                                              ((trackingType == TrackingType::ALGEBRAIC) ?
-                                                  "algebraic" :
-                                                  "externals")));
+                                                  "algebraic.variables" :
+                                                  "external.variables")));
 
     if (trackingType != TrackingType::EXTERNALS) {
         analyser->analyseModel(model);
