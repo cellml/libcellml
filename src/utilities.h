@@ -26,6 +26,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "internaltypes.h"
 #include "xmldoc.h"
 
@@ -331,23 +332,6 @@ bool isCellMLReal(const std::string &candidate);
  * @return @c true if @p a and @p b are equal and @c false otherwise.
  */
 bool areEqual(double a, double b);
-
-/**
- * @brief Decide if two doubles are nearly equal.
- *
- * Test two doubles to determine if they are close enough
- * to be considered equal.
- *
- * Uses a modified form of comparing floats:
- *
- *   https://bitbashing.io/comparing-floats.html
- *
- * @param a A @c double to test.
- * @param b A @c double to test.
- *
- * @return @c true if the given doubles are considered close, @c false otherwise.
- */
-bool areNearlyEqual(double a, double b);
 
 /**
  * @brief Compare strings to determine if they are equal.
@@ -869,5 +853,27 @@ size_t mathmlChildCount(const XmlNodePtr &node);
  * @return The @p index'th MathML child.
  */
 XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
+
+/**
+ * @brief Return the variables in the given model.
+ *
+ * Return the variables in the given model.
+ *
+ * @param model The model for which we want the variables.
+ *
+ * @return The variables in the given model.
+ */
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model);
+
+/**
+ * @brief Return the variables in the given equation.
+ *
+ * Return the variables in the given equation.
+ *
+ * @param equation The equation for which we want the variables.
+ *
+ * @return The variables in the given equation.
+ */
+std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation);
 
 } // namespace libcellml
