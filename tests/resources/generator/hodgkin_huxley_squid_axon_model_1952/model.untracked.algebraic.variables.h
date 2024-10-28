@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.1. */
 
 #pragma once
 
@@ -13,8 +13,8 @@ extern const size_t COMPUTED_CONSTANT_COUNT;
 extern const size_t ALGEBRAIC_COUNT;
 
 typedef struct {
-    char name[8];
-    char units[16];
+    char name[5];
+    char units[15];
     char component[25];
 } VariableInfo;
 
