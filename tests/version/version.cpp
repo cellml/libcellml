@@ -5,8 +5,8 @@
 TEST(Version, versionMatch)
 {
     unsigned int version = libcellml::version();
-    EXPECT_EQ(0x000600U, version);
+    EXPECT_EQ(0x000601U, version);
 
     std::string versionString = libcellml::versionString();
-    EXPECT_EQ("0.6.0", versionString);
+    EXPECT_EQ("0.6.1", versionString);
 }
