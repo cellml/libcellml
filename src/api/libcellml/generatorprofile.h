@@ -2462,218 +2462,196 @@ public:
     void setImplementationStateCountString(const std::string &implementationStateCountString);
 
     /**
-     * @brief Get the @c std::string for the interface of the variable count
+     * @brief Get the @c std::string for the interface of the constant count
      * constant.
      *
-     * Return the @c std::string for the interface of the variable count
+     * Return the @c std::string for the interface of the constant count
      * constant.
      *
-     * @return The @c std::string for the interface of the variable count
+     * @return The @c std::string for the interface of the constant count
      * constant.
      */
-    std::string interfaceVariableCountString() const;
+    std::string interfaceConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the interface of the variable count
+     * @brief Set the @c std::string for the interface of the constant count
      * constant.
      *
-     * Set the @c std::string for the interface of the variable count constant.
+     * Set the @c std::string for the interface of the constant count constant.
      *
-     * @param interfaceVariableCountString The @c std::string to use for the
-     * interface of the variable count constant.
+     * @param interfaceConstantCountString The @c std::string to use for the
+     * interface of the constant count constant.
      */
-    void setInterfaceVariableCountString(const std::string &interfaceVariableCountString);
+    void setInterfaceConstantCountString(const std::string &interfaceConstantCountString);
 
     /**
-     * @brief Get the @c std::string for the implementation of the variable
+     * @brief Get the @c std::string for the implementation of the constant
      * count constant.
      *
-     * Return the @c std::string for the implementation of the variable count
+     * Return the @c std::string for the implementation of the constant count
      * constant.
      *
-     * @return The @c std::string for the implementation of the variable count
+     * @return The @c std::string for the implementation of the constant count
      * constant.
      */
-    std::string implementationVariableCountString() const;
+    std::string implementationConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the implementation of the variable
+     * @brief Set the @c std::string for the implementation of the constant
      * count constant.
      *
-     * Set the @c std::string for the implementation of the variable count
-     * constant. To be useful, the string should contain the [VARIABLE_COUNT]
+     * Set the @c std::string for the implementation of the constant count
+     * constant. To be useful, the string should contain the [CONSTANT_COUNT]
      * tag, which will be replaced with the number of states in the model.
      *
-     * @param implementationVariableCountString The @c std::string to use for
-     * the implementation of the variable count constant.
+     * @param implementationConstantCountString The @c std::string to use for
+     * the implementation of the constant count constant.
      */
-    void setImplementationVariableCountString(const std::string &implementationVariableCountString);
+    void setImplementationConstantCountString(const std::string &implementationConstantCountString);
 
     /**
-     * @brief Get the @c std::string for the data structure for the variable
-     * type object.
+     * @brief Get the @c std::string for the interface of the computed constant count
+     * constant.
      *
-     * Return the @c std::string for the data structure for the variable type
-     * object.
+     * Return the @c std::string for the interface of the computed constant count
+     * constant.
      *
-     * @param forDifferentialModel Whether the data structure is for a
-     * differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the data structure is for a model
-     * with external variables.
-     *
-     * @return The @c std::string for the data structure for the variable type
-     * object.
+     * @return The @c std::string for the interface of the computed constant count
+     * constant.
      */
-    std::string variableTypeObjectString(bool forDifferentialModel,
-                                         bool withExternalVariables) const;
+    std::string interfaceComputedConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the data structure for the variable
-     * type object.
+     * @brief Set the @c std::string for the interface of the computed constant count
+     * constant.
      *
-     * Set the @c std::string for the data structure for the variable type
-     * object.
+     * Set the @c std::string for the interface of the computed constant count constant.
      *
-     * @sa variableTypeObjectString
-     *
-     * @param forDifferentialModel Whether the data structure is for a
-     * differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the data structure is for a model
-     * with external variables.
-     * @param variableTypeObjectString The @c std::string to use for the data
-     * structure for the variable type object.
+     * @param interfaceComputedConstantCountString The @c std::string to use for the
+     * interface of the computed constant count constant.
      */
-    void setVariableTypeObjectString(bool forDifferentialModel,
-                                     bool withExternalVariables,
-                                     const std::string &variableTypeObjectString);
+    void setInterfaceComputedConstantCountString(const std::string &interfaceComputedConstantCountString);
 
     /**
-     * @brief Get the @c std::string for the name of the variable of integration
-     * variable type.
+     * @brief Get the @c std::string for the implementation of the computed constant
+     * count constant.
      *
-     * Return the @c std::string for the name of the variable of integration
-     * variable type that is used in a differential model.
+     * Return the @c std::string for the implementation of the computed constant count
+     * constant.
      *
-     * @return The @c std::string for the name of the variable of integration
-     * variable type.
+     * @return The @c std::string for the implementation of the computed constant count
+     * constant.
      */
-    std::string variableOfIntegrationVariableTypeString() const;
+    std::string implementationComputedConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the variable of integration
-     * variable type.
+     * @brief Set the @c std::string for the implementation of the computed constant
+     * count constant.
      *
-     * Set the @c std::string for the name of the variable of integration
-     * variable type that is used in a differential model.
+     * Set the @c std::string for the implementation of the computed constant count
+     * constant. To be useful, the string should contain the [COMPUTED_CONSTANT_COUNT]
+     * tag, which will be replaced with the number of states in the model.
      *
-     * @param variableOfIntegrationVariableTypeString The @c std::string to use
-     * for the name of the variable of integration variable type.
+     * @param implementationComputedConstantCountString The @c std::string to use for
+     * the implementation of the computed constant count constant.
      */
-    void setVariableOfIntegrationVariableTypeString(const std::string &variableOfIntegrationVariableTypeString);
+    void setImplementationComputedConstantCountString(const std::string &implementationComputedConstantCountString);
 
     /**
-     * @brief Get the @c std::string for the name of the state variable type.
+     * @brief Get the @c std::string for the interface of the algebraic count
+     * constant.
      *
-     * Return the @c std::string for the name of the state variable type that is
-     * used in a differential model.
+     * Return the @c std::string for the interface of the algebraic count
+     * constant.
      *
-     * @return The @c std::string for the name of the state variable type.
+     * @return The @c std::string for the interface of the algebraic count
+     * constant.
      */
-    std::string stateVariableTypeString() const;
+    std::string interfaceAlgebraicCountString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the state variable type.
+     * @brief Set the @c std::string for the interface of the algebraic count
+     * constant.
      *
-     * Set the @c std::string for the name of the state variable type that is
-     * used in a differential model.
+     * Set the @c std::string for the interface of the algebraic count constant.
      *
-     * @param stateTypeString The @c std::string to use for the name of the
-     * state variable type.
+     * @param interfaceAlgebraicCountString The @c std::string to use for the
+     * interface of the algebraic count constant.
      */
-    void setStateVariableTypeString(const std::string &stateVariableTypeString);
+    void setInterfaceAlgebraicCountString(const std::string &interfaceAlgebraicCountString);
 
     /**
-     * @brief Get the @c std::string for the name of the constant variable type.
+     * @brief Get the @c std::string for the implementation of the algebraic
+     * count constant.
      *
-     * Return the @c std::string for the name of the constant variable type.
+     * Return the @c std::string for the implementation of the algebraic count
+     * constant.
      *
-     * @return The @c std::string for the name of the constant variable type.
+     * @return The @c std::string for the implementation of the algebraic count
+     * constant.
      */
-    std::string constantVariableTypeString() const;
+    std::string implementationAlgebraicCountString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the constant variable type.
+     * @brief Set the @c std::string for the implementation of the algebraic
+     * count constant.
      *
-     * Set the @c std::string for the name of the constant variable type.
+     * Set the @c std::string for the implementation of the algebraic count
+     * constant. To be useful, the string should contain the [ALGEBRAIC_COUNT]
+     * tag, which will be replaced with the number of states in the model.
      *
-     * @param constantVariableTypeString The @c std::string to use for the name of the
-     * constant variable type.
+     * @param implementationAlgebraicCountString The @c std::string to use for
+     * the implementation of the algebraic count constant.
      */
-    void setConstantVariableTypeString(const std::string &constantVariableTypeString);
+    void setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString);
 
     /**
-     * @brief Get the @c std::string for the name of the computed constant
-     * variable type.
+     * @brief Get the @c std::string for the interface of the external count
+     * constant.
      *
-     * Return the @c std::string for the name of the computed constant variable
-     * type.
+     * Return the @c std::string for the interface of the external count
+     * constant.
      *
-     * @return The @c std::string for the name of the computed constant variable
-     * type.
+     * @return The @c std::string for the interface of the external count
+     * constant.
      */
-    std::string computedConstantVariableTypeString() const;
+    std::string interfaceExternalCountString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the computed constant
-     * variable type.
+     * @brief Set the @c std::string for the interface of the external count
+     * constant.
      *
-     * Set the @c std::string for the name of the computed constant variable
-     * type.
+     * Set the @c std::string for the interface of the external count constant.
      *
-     * @param computedConstantVariableTypeString The @c std::string to use for the name of the
-     * computed constant variable type.
+     * @param interfaceExternalCountString The @c std::string to use for the
+     * interface of the external count constant.
      */
-    void setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString);
+    void setInterfaceExternalCountString(const std::string &interfaceExternalCountString);
 
     /**
-     * @brief Get the @c std::string for the name of the algebraic variable
-     * type.
+     * @brief Get the @c std::string for the implementation of the external
+     * count constant.
      *
-     * Return the @c std::string for the name of the algebraic variable type.
+     * Return the @c std::string for the implementation of the external count
+     * constant.
      *
-     * @return The @c std::string for the name of the algebraic variable type.
+     * @return The @c std::string for the implementation of the external count
+     * constant.
      */
-    std::string algebraicVariableTypeString() const;
+    std::string implementationExternalCountString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the algebraic variable
-     * type.
+     * @brief Set the @c std::string for the implementation of the external
+     * count constant.
      *
-     * Set the @c std::string for the name of the algebraic variable type.
+     * Set the @c std::string for the implementation of the external count
+     * constant. To be useful, the string should contain the [EXTERNAL_COUNT]
+     * tag, which will be replaced with the number of states in the model.
      *
-     * @param algebraicVariableTypeString The @c std::string to use for the name of the
-     * algebraic variable type.
+     * @param implementationExternalCountString The @c std::string to use for
+     * the implementation of the external count constant.
      */
-    void setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString);
-
-    /**
-     * @brief Get the @c std::string for the name of the external variable type.
-     *
-     * Return the @c std::string for the name of the external variable type.
-     *
-     * @return The @c std::string for the name of the external variable type.
-     */
-    std::string externalVariableTypeString() const;
-
-    /**
-     * @brief Set the @c std::string for the name of the external variable type.
-     *
-     * Set this @c std::string for the name of the external variable type.
-     *
-     * @param externalVariableTypeString The @c std::string to use for the name of the
-     * external variable type.
-     */
-    void setExternalVariableTypeString(const std::string &externalVariableTypeString);
+    void setImplementationExternalCountString(const std::string &implementationExternalCountString);
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
@@ -2804,53 +2782,203 @@ public:
 
     /**
      * @brief Get the @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      *
      * Return the @c std::string for the interface of some information about the
-     * different variables.
+     * different constants.
      *
      * @return The @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      */
-    std::string interfaceVariableInfoString() const;
+    std::string interfaceConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
-     * the different variables.
+     * the different constants.
      *
      * Set the @c std::string for the interface of some information about the
-     * different variables.
+     * different constants.
      *
-     * @param interfaceVariableInfoString The @c std::string to use for the
-     * interface of some information about the different variables.
+     * @param interfaceConstantInfoString The @c std::string to use for the
+     * interface of some information about the different constants.
      */
-    void setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString);
+    void setInterfaceConstantInfoString(const std::string &interfaceConstantInfoString);
 
     /**
      * @brief Get the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * Return the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * @return The @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      */
-    std::string implementationVariableInfoString() const;
+    std::string implementationConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
-     * about the different variables.
+     * about the different constants.
      *
      * Set the @c std::string for the implementation of some information about
-     * the different variables. To be useful, the string should contain the
-     * [CODE] tag, which will be replaced with some information about the
-     * different variables.
+     * the different constants. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * constants.
      *
-     * @param implementationVariableInfoString The @c std::string to use for the
-     * implementation of some information about the different variables.
+     * @param implementationConstantInfoString The @c std::string to use for the
+     * implementation of some information about the different constants.
      */
-    void setImplementationVariableInfoString(const std::string &implementationVariableInfoString);
+    void setImplementationConstantInfoString(const std::string &implementationConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different computed constants.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different computed constants.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different computed constants.
+     */
+    std::string interfaceComputedConstantInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different computed constants.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different computed constants.
+     *
+     * @param interfaceComputedConstantInfoString The @c std::string to use for the
+     * interface of some information about the different computed constants.
+     */
+    void setInterfaceComputedConstantInfoString(const std::string &interfaceComputedConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different computed constants.
+     */
+    std::string implementationComputedConstantInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different computed constants.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different computed constants. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * computed constants.
+     *
+     * @param implementationComputedConstantInfoString The @c std::string to use for the
+     * implementation of some information about the different computed constants.
+     */
+    void setImplementationComputedConstantInfoString(const std::string &implementationComputedConstantInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different algebraic variables.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different algebraic variables.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different algebraic variables.
+     */
+    std::string interfaceAlgebraicInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different algebraic variables.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different algebraic variables.
+     *
+     * @param interfaceAlgebraicInfoString The @c std::string to use for the
+     * interface of some information about the different algebraic variables.
+     */
+    void setInterfaceAlgebraicInfoString(const std::string &interfaceAlgebraicInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     */
+    std::string implementationAlgebraicInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different algebraic variables.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different algebraic variables. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * algebraic variables.
+     *
+     * @param implementationAlgebraicInfoString The @c std::string to use for the
+     * implementation of some information about the different algebraic variables.
+     */
+    void setImplementationAlgebraicInfoString(const std::string &implementationAlgebraicInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different external variables.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different external variables.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different external variables.
+     */
+    std::string interfaceExternalInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different external variables.
+     *
+     * Set the @c std::string for the interface of some information about the
+     * different external variables.
+     *
+     * @param interfaceExternalInfoString The @c std::string to use for the
+     * interface of some information about the different external variables.
+     */
+    void setInterfaceExternalInfoString(const std::string &interfaceExternalInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * @return The @c std::string for the implementation of some information
+     * about the different external variables.
+     */
+    std::string implementationExternalInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different external variables.
+     *
+     * Set the @c std::string for the implementation of some information about
+     * the different external variables. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some information about the different
+     * external variables.
+     *
+     * @param implementationExternalInfoString The @c std::string to use for the
+     * implementation of some information about the different external variables.
+     */
+    void setImplementationExternalInfoString(const std::string &implementationExternalInfoString);
 
     /**
      * @brief Get the @c std::string for an entry in an array for some
@@ -2938,23 +3066,80 @@ public:
     void setRatesArrayString(const std::string &ratesArrayString);
 
     /**
-     * @brief Get the @c std::string for the name of the variables array.
+     * @brief Get the @c std::string for the name of the constants array.
      *
-     * Return the @c std::string for the name of the variables array.
+     * Return the @c std::string for the name of the constants array.
      *
-     * @return The @c std::string for the name of the variables array.
+     * @return The @c std::string for the name of the constants array.
      */
-    std::string variablesArrayString() const;
+    std::string constantsArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the variables array.
+     * @brief Set the @c std::string for the name of the constants array.
      *
-     * Set the @c std::string for the name of the variables array.
+     * Set the @c std::string for the name of the constants array.
      *
-     * @param variablesArrayString The @c std::string to use for the name of the
-     * variables array.
+     * @param constantsArrayString The @c std::string to use for the name of the
+     * constants array.
      */
-    void setVariablesArrayString(const std::string &variablesArrayString);
+    void setConstantsArrayString(const std::string &constantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the computed constants array.
+     *
+     * Return the @c std::string for the name of the computed constants array.
+     *
+     * @return The @c std::string for the name of the computed constants array.
+     */
+    std::string computedConstantsArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the computed constants array.
+     *
+     * Set the @c std::string for the name of the computed constants array.
+     *
+     * @param computedConstantsArrayString The @c std::string to use for the name of the
+     * computed constants array.
+     */
+    void setComputedConstantsArrayString(const std::string &computedConstantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the algebraic array.
+     *
+     * Return the @c std::string for the name of the algebraic array.
+     *
+     * @return The @c std::string for the name of the algebraic array.
+     */
+    std::string algebraicArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the algebraic array.
+     *
+     * Set the @c std::string for the name of the algebraic array.
+     *
+     * @param algebraicArrayString The @c std::string to use for the name of the
+     * algebraic array.
+     */
+    void setAlgebraicArrayString(const std::string &algebraicArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the external array.
+     *
+     * Return the @c std::string for the name of the external array.
+     *
+     * @return The @c std::string for the name of the external array.
+     */
+    std::string externalArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the external array.
+     *
+     * Set the @c std::string for the name of the external array.
+     *
+     * @param externalArrayString The @c std::string to use for the name of the
+     * external array.
+     */
+    void setExternalArrayString(const std::string &externalArrayString);
 
     /**
      * @brief Get the @c std::string for the type definition of an external
@@ -3027,11 +3212,14 @@ public:
      * @param forDifferentialModel Whether the call to the root finding
      * information object is for a differential model, as opposed to an
      * algebraic model.
+     * @param withExternalVariables Whether the call to the root finding
+     * information object is for a model with external variables.
      *
      * @return The @c std::string for the data structure for the root finding
      * information object.
      */
-    std::string rootFindingInfoObjectString(bool forDifferentialModel) const;
+    std::string rootFindingInfoObjectString(bool forDifferentialModel,
+                                            bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the data structure for the root finding
@@ -3043,10 +3231,13 @@ public:
      * @param forDifferentialModel Whether the call to the root finding
      * information object is for a differential model, as opposed to an
      * algebraic model.
+     * @param withExternalVariables Whether the call to the root finding
+     * information object is for a model with external variables.
      * @param rootFindingInfoObjectString The @c std::string to use for the data
      * structure for the root finding information object.
      */
     void setRootFindingInfoObjectString(bool forDifferentialModel,
+                                        bool withExternalVariables,
                                         const std::string &rootFindingInfoObjectString);
 
     /**
@@ -3075,10 +3266,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the call to the find root method.
      */
-    std::string findRootCallString(bool forDifferentialModel) const;
+    std::string findRootCallString(bool forDifferentialModel,
+                                   bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the find root method.
@@ -3089,10 +3283,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      * @param findRootCallString The @c std::string to use for the call to the
      * find root method.
      */
     void setFindRootCallString(bool forDifferentialModel,
+                               bool withExternalVariables,
                                const std::string &findRootCallString);
 
     /**
@@ -3102,10 +3299,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the find root method.
      */
-    std::string findRootMethodString(bool forDifferentialModel) const;
+    std::string findRootMethodString(bool forDifferentialModel,
+                                     bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the find root method.
@@ -3120,10 +3320,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the find root method is
+     * for a model with external variables.
      * @param findRootMethodString The @c std::string to use for the find root
      * method.
      */
     void setFindRootMethodString(bool forDifferentialModel,
+                                 bool withExternalVariables,
                                  const std::string &findRootMethodString);
 
     /**
@@ -3133,10 +3336,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the NLA solve method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the NLA solve method is
+     * for a model with external variables.
      *
      * @return The @c std::string for the call to the NLA solve method.
      */
-    std::string nlaSolveCallString(bool forDifferentialModel) const;
+    std::string nlaSolveCallString(bool forDifferentialModel,
+                                   bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the NLA solve method.
@@ -3150,10 +3356,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the NLA solve method is
      * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the NLA solve method is
+     * for a model with external variables.
      * @param nlaSolveCallString The @c std::string to use for the call to the
      * NLA solve method.
      */
     void setNlaSolveCallString(bool forDifferentialModel,
+                               bool withExternalVariables,
                                const std::string &nlaSolveCallString);
 
     /**
@@ -3163,10 +3372,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the objective function
      * method is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the objective function
+     * method is for a model with external variables.
      *
      * @return The @c std::string for the objective function method.
      */
-    std::string objectiveFunctionMethodString(bool forDifferentialModel) const;
+    std::string objectiveFunctionMethodString(bool forDifferentialModel,
+                                              bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the objective function method.
@@ -3178,10 +3390,13 @@ public:
      *
      * @param forDifferentialModel Whether the call to the objective function
      * method is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the call to the objective function
+     * method is for a model with external variables.
      * @param objectiveFunctionMethodString The @c std::string to use for the
      * objective function method.
      */
     void setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                          bool withExternalVariables,
                                           const std::string &objectiveFunctionMethodString);
 
     /**
@@ -3281,49 +3496,180 @@ public:
     void setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the interface to create variables
+     * @brief Get the @c std::string for the interface to create the constants
      * array.
      *
-     * Return the @c std::string for the interface to create variables array.
+     * Return the @c std::string for the interface to create the constants array.
      *
-     * @return The @c std::string for the interface to create variables array.
+     * @return The @c std::string for the interface to create the constants array.
      */
-    std::string interfaceCreateVariablesArrayMethodString() const;
+    std::string interfaceCreateConstantsArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the interface to create variables
+     * @brief Set the @c std::string for the interface to create the constants
      * array.
      *
-     * Set the @c std::string for the interface to create variables array.
+     * Set the @c std::string for the interface to create the constants array.
      *
-     * @param interfaceCreateVariablesArrayMethodString The @c std::string to
-     * use for the interface to create variables array.
+     * @param interfaceCreateConstantsArrayMethodString The @c std::string to use
+     * for the interface to create the constants array.
      */
-    void setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString);
+    void setInterfaceCreateConstantsArrayMethodString(const std::string &interfaceCreateConstantsArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the implementation to create the
-     * variables array.
-     *
-     * Return the @c std::string for the implementation to create the variables
+     * @brief Get the @c std::string for the implementation to create the constants
      * array.
      *
-     * @return The @c std::string for the implementation to create the variables
+     * Return the @c std::string for the implementation to create the constants
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the constants
      * array.
      */
-    std::string implementationCreateVariablesArrayMethodString() const;
+    std::string implementationCreateConstantsArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the implementation to create the
-     * variables array.
-     *
-     * Set the @c std::string for the implementation to create the variables
+     * @brief Set the @c std::string for the implementation to create the constants
      * array.
      *
-     * @param implementationCreateVariablesArrayMethodString The @c std::string
-     * to use for the implementation to create the variables array.
+     * Set the @c std::string for the implementation to create the constants array.
+     *
+     * @param implementationCreateConstantsArrayMethodString The @c std::string to
+     * use for the implementation to create the constants array.
      */
-    void setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString);
+    void setImplementationCreateConstantsArrayMethodString(const std::string &implementationCreateConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the computed constants
+     * array.
+     *
+     * Return the @c std::string for the interface to create the computed constants array.
+     *
+     * @return The @c std::string for the interface to create the computed constants array.
+     */
+    std::string interfaceCreateComputedConstantsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the computed constants
+     * array.
+     *
+     * Set the @c std::string for the interface to create the computed constants array.
+     *
+     * @param interfaceCreateComputedConstantsArrayMethodString The @c std::string to use
+     * for the interface to create the computed constants array.
+     */
+    void setInterfaceCreateComputedConstantsArrayMethodString(const std::string &interfaceCreateComputedConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the computed constants
+     * array.
+     */
+    std::string implementationCreateComputedConstantsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the computed constants
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the computed constants array.
+     *
+     * @param implementationCreateComputedConstantsArrayMethodString The @c std::string to
+     * use for the implementation to create the computed constants array.
+     */
+    void setImplementationCreateComputedConstantsArrayMethodString(const std::string &implementationCreateComputedConstantsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the algebraic variables
+     * array.
+     *
+     * Return the @c std::string for the interface to create the algebraic variables array.
+     *
+     * @return The @c std::string for the interface to create the algebraic variables array.
+     */
+    std::string interfaceCreateAlgebraicArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the algebraic variables
+     * array.
+     *
+     * Set the @c std::string for the interface to create the algebraic variables array.
+     *
+     * @param interfaceCreateAlgebraicArrayMethodString The @c std::string to use
+     * for the interface to create the algebraic variables array.
+     */
+    void setInterfaceCreateAlgebraicArrayMethodString(const std::string &interfaceCreateAlgebraicArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the algebraic variables
+     * array.
+     */
+    std::string implementationCreateAlgebraicArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the algebraic variables
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the algebraic variables array.
+     *
+     * @param implementationCreateAlgebraicArrayMethodString The @c std::string to
+     * use for the implementation to create the algebraic variables array.
+     */
+    void setImplementationCreateAlgebraicArrayMethodString(const std::string &implementationCreateAlgebraicArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to create the external variables
+     * array.
+     *
+     * Return the @c std::string for the interface to create the external variables array.
+     *
+     * @return The @c std::string for the interface to create the external variables array.
+     */
+    std::string interfaceCreateExternalsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to create the external variables
+     * array.
+     *
+     * Set the @c std::string for the interface to create the external variables array.
+     *
+     * @param interfaceCreateExternalsArrayMethodString The @c std::string to use
+     * for the interface to create the external variables array.
+     */
+    void setInterfaceCreateExternalsArrayMethodString(const std::string &interfaceCreateExternalsArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * Return the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the external variables
+     * array.
+     */
+    std::string implementationCreateExternalsArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the external variables
+     * array.
+     *
+     * Set the @c std::string for the implementation to create the external variables array.
+     *
+     * @param implementationCreateExternalsArrayMethodString The @c std::string to
+     * use for the implementation to create the external variables array.
+     */
+    void setImplementationCreateExternalsArrayMethodString(const std::string &implementationCreateExternalsArrayMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to delete an array.
@@ -3370,13 +3716,10 @@ public:
      *
      * @param forDifferentialModel Whether the interface to initialise variables
      * is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the interface to initialise
-     * variables is for a model with external variables.
      *
      * @return The @c std::string for the interface to initialise variables.
      */
-    std::string interfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                         bool withExternalVariables) const;
+    std::string interfaceInitialiseVariablesMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to initialise variables.
@@ -3385,13 +3728,10 @@ public:
      *
      * @param forDifferentialModel Whether the interface to initialise variables
      * is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the interface to initialise
-     * variables is for a model with external variables.
      * @param interfaceInitialiseVariablesMethodString The @c std::string to use
      * for the interface to initialise variables.
      */
     void setInterfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                     bool withExternalVariables,
                                                      const std::string &interfaceInitialiseVariablesMethodString);
 
     /**
@@ -3402,14 +3742,11 @@ public:
      *
      * @param forDifferentialModel Whether the implementation to initialise
      * variables is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the implementation to initialise
-     * variables is for a model with external variables.
      *
      * @return The @c std::string for the implementation to initialise
      * variables.
      */
-    std::string implementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                              bool withExternalVariables) const;
+    std::string implementationInitialiseVariablesMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise
@@ -3421,13 +3758,10 @@ public:
      *
      * @param forDifferentialModel Whether the implementation to initialise
      * variables is for a differential model, as opposed to an algebraic model.
-     * @param withExternalVariables Whether the implementation to initialise
-     * variables is for a model with external variables.
      * @param implementationInitialiseVariablesMethodString The @c std::string
      * to use for the implementation to initialise variables.
      */
     void setImplementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                          bool withExternalVariables,
                                                           const std::string &implementationInitialiseVariablesMethodString);
 
     /**
