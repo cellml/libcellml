@@ -174,6 +174,9 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp PROPERTIES
+  COMPILE_DEFINITIONS XML_ERROR_CALLBACK_ARGUMENT_TYPE=${CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE})
+
 generate_export_header(cellml EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
