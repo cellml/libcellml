@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <libxml/parser.h>
 
-void structuredErrorCallback(void *userData, xmlErrorPtr error)
+void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE error)
 {
     if (userData != nullptr && error != nullptr) {
         // Suppress any error messages raised from using LibXml2.
