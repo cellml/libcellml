@@ -1020,7 +1020,11 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
 
         for (const auto &equation : model->equations()) {
             if ((equation->type() == AnalyserEquation::Type::NLA)
-                && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())) {
+                && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())
+                && isTrackedEquation(equation)) {
+                // 1) Generate some code for the objectiveFunction[INDEX]() method.
+                //     a) Retrieve the values from our NLA solver's u array.
+
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
                 auto variables = libcellml::variables(equation);
@@ -1037,7 +1041,34 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
-                methodBody += newLineIfNeeded();
+                //     b) Initialise any untracked constant / computed constant that is needed by our NLA system.
+
+                methodBody += "\n";
+
+                auto methodBodySize = methodBody.size();
+
+                for (const auto &constantDependency : equation->mPimpl->mConstantDependencies) {
+                    if (isUntrackedVariable(constantDependency)) {
+                        methodBody += generateInitialisationCode(model, constantDependency, true);
+                    }
+                }
+
+                std::vector<AnalyserEquationPtr> dummyRemainingEquations = model->equations();
+                std::vector<AnalyserEquationPtr> dummyEquationsForDependencies = model->equations();
+                std::vector<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
+
+                for (const auto &dependency : equation->dependencies()) {
+                    if ((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                        && isUntrackedEquation(dependency)) {
+                        methodBody += generateEquationCode(model, dependency, dummyRemainingEquations,
+                                                           dummyEquationsForDependencies,
+                                                           dummyGeneratedConstantDependencies, true);
+                    }
+                }
+
+                //     c) Generate our NLA system's objective functions.
+
+                methodBody += (methodBody.size() == methodBodySize) ? "" : "\n";
 
                 i = MAX_SIZE_T;
 
@@ -1064,6 +1095,9 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                            "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                    "[CODE]", generateMethodBodyCode(methodBody));
 
+                // 2) Generate some code for the findRoot[INDEX]() method.
+                //     a) Assign the values to our NLA solver's u array.
+
                 methodBody = {};
 
                 i = MAX_SIZE_T;
@@ -1080,17 +1114,21 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
+                //     b) Call our NLA solver.
+
                 auto variablesCount = variables.size();
 
-                methodBody += newLineIfNeeded()
+                methodBody += "\n"
                               + mProfile->indentString()
                               + replace(replace(mProfile->nlaSolveCallString(modelHasOdes(model), model->hasExternalVariables()),
                                                 "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                         "[SIZE]", convertToString(variablesCount));
 
-                methodBody += newLineIfNeeded();
+                //     c) Retrieve the values from our NLA solver's u array.
 
                 i = MAX_SIZE_T;
+
+                methodBody += "\n";
 
                 for (const auto &variable : variables) {
                     auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
@@ -2074,7 +2112,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
             break;
         case AnalyserEquation::Type::NLA:
-            if (!mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
+            if (!mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()).empty()
+                && isTrackedEquation(equation)) {
                 res += mProfile->indentString()
                        + replace(mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
@@ -2227,7 +2266,8 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
         for (const auto &algebraic : model->algebraic()) {
             if (algebraic->initialisingVariable() != nullptr) {
                 methodBody += generateInitialisationCode(model, algebraic);
-            } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
+            } else if ((algebraic->equation(0)->type() == AnalyserEquation::Type::NLA)
+                       && isTrackedVariable(algebraic)) {
                 methodBody += generateZeroInitialisationCode(model, algebraic);
             }
         }
@@ -2555,8 +2595,23 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
 
     // Add code for the NLA solver.
 
-    mPimpl->addRootFindingInfoObjectCode(model);
-    mPimpl->addExternNlaSolveMethodCode(model);
+    auto needNlaSolving = false;
+
+    for (const auto &equation : model->equations()) {
+        if (equation->type() == AnalyserEquation::Type::NLA) {
+            if (mPimpl->isTrackedEquation(equation)) {
+                needNlaSolving = true;
+
+                break;
+            }
+        }
+    }
+
+    if (needNlaSolving) {
+        mPimpl->addRootFindingInfoObjectCode(model);
+        mPimpl->addExternNlaSolveMethodCode(model);
+    }
+
     mPimpl->addNlaSystemsCode(model);
 
     // Add code for the implementation to initialise our variables.

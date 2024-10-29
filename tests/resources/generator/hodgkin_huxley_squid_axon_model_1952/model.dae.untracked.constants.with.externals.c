@@ -160,6 +160,8 @@ void objectiveFunction2(double *u, double *f, void *data)
 
     algebraic[3] = u[0];
 
+    double membrane_E_R = 0.0;
+
     f[0] = algebraic[3]-(membrane_E_R-10.613)-0.0;
 }
 
@@ -187,6 +189,8 @@ void objectiveFunction3(double *u, double *f, void *data)
 
     algebraic[1] = u[0];
 
+    double leakage_current_g_L = 0.3;
+
     f[0] = algebraic[1]-leakage_current_g_L*(externals[0]-algebraic[3])-0.0;
 }
 
@@ -213,6 +217,8 @@ void objectiveFunction4(double *u, double *f, void *data)
     double *externals = ((RootFindingInfo *) data)->externals;
 
     algebraic[4] = u[0];
+
+    double membrane_E_R = 0.0;
 
     f[0] = algebraic[4]-(membrane_E_R-115.0)-0.0;
 }
@@ -403,6 +409,8 @@ void objectiveFunction12(double *u, double *f, void *data)
 
     algebraic[9] = u[0];
 
+    double membrane_E_R = 0.0;
+
     f[0] = algebraic[9]-(membrane_E_R+12.0)-0.0;
 }
 
@@ -429,6 +437,8 @@ void objectiveFunction13(double *u, double *f, void *data)
     double *externals = ((RootFindingInfo *) data)->externals;
 
     algebraic[2] = u[0];
+
+    double potassium_channel_g_K = 36.0;
 
     f[0] = algebraic[2]-potassium_channel_g_K*pow(states[2], 4.0)*(externals[0]-algebraic[9])-0.0;
 }

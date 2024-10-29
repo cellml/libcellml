@@ -118,6 +118,8 @@ def objective_function_2(u, f, data):
 
     algebraic[3] = u[0]
 
+    membrane_E_R = 0.0
+
     f[0] = algebraic[3]-(membrane_E_R-10.613)-0.0
 
 
@@ -142,6 +144,8 @@ def objective_function_3(u, f, data):
 
     algebraic[1] = u[0]
 
+    leakage_current_g_L = 0.3
+
     f[0] = algebraic[1]-leakage_current_g_L*(externals[0]-algebraic[3])-0.0
 
 
@@ -165,6 +169,8 @@ def objective_function_4(u, f, data):
     externals = data[6]
 
     algebraic[4] = u[0]
+
+    membrane_E_R = 0.0
 
     f[0] = algebraic[4]-(membrane_E_R-115.0)-0.0
 
@@ -334,6 +340,8 @@ def objective_function_12(u, f, data):
 
     algebraic[9] = u[0]
 
+    membrane_E_R = 0.0
+
     f[0] = algebraic[9]-(membrane_E_R+12.0)-0.0
 
 
@@ -357,6 +365,8 @@ def objective_function_13(u, f, data):
     externals = data[6]
 
     algebraic[2] = u[0]
+
+    potassium_channel_g_K = 36.0
 
     f[0] = algebraic[2]-potassium_channel_g_K*pow(states[2], 4.0)*(externals[0]-algebraic[9])-0.0
 
