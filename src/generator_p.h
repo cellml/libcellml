@@ -82,9 +82,6 @@ struct Generator::GeneratorImpl
     size_t trackedAlgebraicCount(const AnalyserModelPtr &model);
     size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
 
-    size_t trackedExternalCount(const AnalyserModelPtr &model);
-    size_t untrackedExternalCount(const AnalyserModelPtr &model);
-
     size_t trackedVariableCount(const AnalyserModelPtr &model);
     size_t untrackedVariableCount(const AnalyserModelPtr &model);
 

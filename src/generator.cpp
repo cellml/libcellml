@@ -296,24 +296,6 @@ size_t Generator::GeneratorImpl::untrackedAlgebraicCount(const AnalyserModelPtr 
     return doTrackedVariableCount(model, model->algebraic(), false);
 }
 
-size_t Generator::GeneratorImpl::trackedExternalCount(const AnalyserModelPtr &model)
-{
-    if (model == nullptr) {
-        return 0;
-    }
-
-    return doTrackedVariableCount(model, model->externals(), true);
-}
-
-size_t Generator::GeneratorImpl::untrackedExternalCount(const AnalyserModelPtr &model)
-{
-    if (model == nullptr) {
-        return 0;
-    }
-
-    return doTrackedVariableCount(model, model->externals(), false);
-}
-
 size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &model)
 {
     if (model == nullptr) {
@@ -620,7 +602,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceExternalCountString() :
                     replace(mProfile->implementationExternalCountString(),
-                            "[EXTERNAL_COUNT]", std::to_string(trackedExternalCount(model)));
+                            "[EXTERNAL_COUNT]", std::to_string(model->externalCount()));
     }
 
     if (!code.empty()) {
@@ -2096,18 +2078,12 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
             for (const auto &variable : variables(equation)) {
-                auto code = generateVariableNameCode(model, variable->variable())
-                            + mProfile->equalityString()
-                            + replace(mProfile->externalVariableMethodCallString(modelHasOdes(model)),
-                                      "[INDEX]", convertToString(variable->index()))
-                            + mProfile->commandSeparatorString() + "\n";
-
-                if (isUntrackedVariable(variable)) {
-                    code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
-                }
-
                 res += mProfile->indentString()
-                       + code;
+                       + generateVariableNameCode(model, variable->variable())
+                       + mProfile->equalityString()
+                       + replace(mProfile->externalVariableMethodCallString(modelHasOdes(model)),
+                                 "[INDEX]", convertToString(variable->index()))
+                       + mProfile->commandSeparatorString() + "\n";
             }
 
             break;
@@ -2469,16 +2445,6 @@ size_t Generator::trackedAlgebraicCount(const AnalyserModelPtr &model)
 size_t Generator::untrackedAlgebraicCount(const AnalyserModelPtr &model)
 {
     return mPimpl->untrackedAlgebraicCount(model);
-}
-
-size_t Generator::trackedExternalCount(const AnalyserModelPtr &model)
-{
-    return mPimpl->trackedExternalCount(model);
-}
-
-size_t Generator::untrackedExternalCount(const AnalyserModelPtr &model)
-{
-    return mPimpl->untrackedExternalCount(model);
 }
 
 size_t Generator::trackedVariableCount(const AnalyserModelPtr &model)

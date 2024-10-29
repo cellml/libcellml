@@ -58,9 +58,6 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(nullptr));
     EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(nullptr));
 
-    EXPECT_EQ(size_t(0), generator->trackedExternalCount(nullptr));
-    EXPECT_EQ(size_t(0), generator->untrackedExternalCount(nullptr));
-
     EXPECT_EQ(size_t(0), generator->trackedVariableCount(nullptr));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(nullptr));
 }
