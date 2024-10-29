@@ -142,6 +142,8 @@ void objectiveFunction1(double *u, double *f, void *data)
 
     rates[0] = u[0];
 
+    double membrane_Cm = 1.0;
+
     f[0] = rates[0]-(-(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/membrane_Cm)-0.0;
 }
 
@@ -167,6 +169,8 @@ void objectiveFunction2(double *u, double *f, void *data)
     double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[4] = u[0];
+
+    double membrane_E_R = 0.0;
 
     f[0] = algebraic[4]-(membrane_E_R-10.613)-0.0;
 }
@@ -194,6 +198,8 @@ void objectiveFunction3(double *u, double *f, void *data)
 
     algebraic[1] = u[0];
 
+    double leakage_current_g_L = 0.3;
+
     f[0] = algebraic[1]-leakage_current_g_L*(states[0]-algebraic[4])-0.0;
 }
 
@@ -220,6 +226,8 @@ void objectiveFunction4(double *u, double *f, void *data)
 
     algebraic[5] = u[0];
 
+    double membrane_E_R = 0.0;
+
     f[0] = algebraic[5]-(membrane_E_R-115.0)-0.0;
 }
 
@@ -245,6 +253,8 @@ void objectiveFunction5(double *u, double *f, void *data)
     double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[3] = u[0];
+
+    double sodium_channel_g_Na = 120.0;
 
     f[0] = algebraic[3]-sodium_channel_g_Na*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5])-0.0;
 }
@@ -428,6 +438,8 @@ void objectiveFunction12(double *u, double *f, void *data)
 
     algebraic[10] = u[0];
 
+    double membrane_E_R = 0.0;
+
     f[0] = algebraic[10]-(membrane_E_R+12.0)-0.0;
 }
 
@@ -453,6 +465,8 @@ void objectiveFunction13(double *u, double *f, void *data)
     double *algebraic = ((RootFindingInfo *) data)->algebraic;
 
     algebraic[2] = u[0];
+
+    double potassium_channel_g_K = 36.0;
 
     f[0] = algebraic[2]-potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-algebraic[10])-0.0;
 }
