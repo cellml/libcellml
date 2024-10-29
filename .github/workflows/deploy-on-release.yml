@@ -264,7 +264,7 @@ jobs:
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.package.outputs.files }}
         tag_name: ${{ github.event.release.tag_name }}
@@ -383,10 +383,6 @@ jobs:
           path: wheelhouse/
           pattern: '*-wheel'
           merge-multiple: true
-
-      - name: Display downloaded wheels
-        run: |
-          ls wheelhouse
 
       - name: Publish Python wheels
         env:
