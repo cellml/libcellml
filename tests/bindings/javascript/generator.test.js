@@ -38,15 +38,13 @@ describe("Generator tests", () => {
         const p = new libcellml.Parser(true)
         const m = p.parseModel(hhSquidAxon1952)
         const v = m.componentByName("membrane", true).variableByName("Cm")
-        const aev = new libcellml.AnalyserExternalVariable(v)
         const a = new libcellml.Analyser()
 
-        a.addExternalVariableByExternalVariable(aev)
         a.analyseModel(m)
 
         const am = a.model()
-        const g = new libcellml.Generator()
         const av = am.variable(v)
+        const g = new libcellml.Generator()
 
         g.untrackVariable(av)
 
@@ -61,11 +59,11 @@ describe("Generator tests", () => {
         g.untrackAllConstants(am)
 
         expect(g.trackedConstantCount(am)).toBe(0)
-        expect(g.untrackedConstantCount(am)).toBe(4)
+        expect(g.untrackedConstantCount(am)).toBe(5)
 
         g.trackAllConstants(am)
 
-        expect(g.trackedConstantCount(am)).toBe(4)
+        expect(g.trackedConstantCount(am)).toBe(5)
         expect(g.untrackedConstantCount(am)).toBe(0)
 
         g.untrackAllComputedConstants(am)
