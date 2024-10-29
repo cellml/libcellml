@@ -11,7 +11,7 @@ STATE_COUNT = 3
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 0
-EXTERNAL_COUNT = 0
+EXTERNAL_COUNT = 3
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -31,6 +31,9 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
+    {"name": "V", "units": "millivolt", "component": "membrane"},
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
 
@@ -77,17 +80,19 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    membrane_V = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    sodium_channel_m_gate_alpha_m = 0.1*(membrane_V+25.0)/(exp((membrane_V+25.0)/10.0)-1.0)
-    sodium_channel_m_gate_beta_m = 4.0*exp(membrane_V/18.0)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    sodium_channel_m_gate_alpha_m = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)
+    sodium_channel_m_gate_beta_m = 4.0*exp(externals[0]/18.0)
     rates[1] = sodium_channel_m_gate_alpha_m*(1.0-states[1])-sodium_channel_m_gate_beta_m*states[1]
-    sodium_channel_h_gate_alpha_h = 0.07*exp(membrane_V/20.0)
-    sodium_channel_h_gate_beta_h = 1.0/(exp((membrane_V+30.0)/10.0)+1.0)
+    sodium_channel_h_gate_alpha_h = 0.07*exp(externals[0]/20.0)
+    sodium_channel_h_gate_beta_h = 1.0/(exp((externals[0]+30.0)/10.0)+1.0)
     rates[0] = sodium_channel_h_gate_alpha_h*(1.0-states[0])-sodium_channel_h_gate_beta_h*states[0]
-    potassium_channel_n_gate_alpha_n = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    potassium_channel_n_gate_beta_n = 0.125*exp(membrane_V/80.0)
-    rates[2] = potassium_channel_n_gate_alpha_n*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2]
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
+    potassium_channel_n_gate_beta_n = 0.125*exp(externals[0]/80.0)
+    rates[2] = externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    pass
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)

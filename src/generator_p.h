@@ -67,9 +67,6 @@ struct Generator::GeneratorImpl
     bool trackAllAlgebraic(const AnalyserModelPtr &model);
     bool untrackAllAlgebraic(const AnalyserModelPtr &model);
 
-    bool trackAllExternals(const AnalyserModelPtr &model);
-    bool untrackAllExternals(const AnalyserModelPtr &model);
-
     bool trackAllVariables(const AnalyserModelPtr &model);
     bool untrackAllVariables(const AnalyserModelPtr &model);
 

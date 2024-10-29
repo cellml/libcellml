@@ -46,9 +46,6 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     EXPECT_FALSE(generator->trackAllAlgebraic(nullptr));
     EXPECT_FALSE(generator->untrackAllAlgebraic(nullptr));
 
-    EXPECT_FALSE(generator->trackAllExternals(nullptr));
-    EXPECT_FALSE(generator->untrackAllExternals(nullptr));
-
     EXPECT_FALSE(generator->trackAllVariables(nullptr));
     EXPECT_FALSE(generator->untrackAllVariables(nullptr));
 
@@ -251,20 +248,20 @@ TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
     EXPECT_TRUE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->variable(variable)));
 
-    EXPECT_EQ(size_t(19), generator->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
-    EXPECT_TRUE(generator->untrackVariable(analyserModel->variable(variable)));
+    EXPECT_FALSE(generator->untrackVariable(analyserModel->variable(variable)));
 
-    EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
-    EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
+    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->variable(variable)));
+    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->variable(variable)));
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
-    EXPECT_TRUE(generator->trackVariable(analyserModel->variable(variable)));
+    EXPECT_FALSE(generator->trackVariable(analyserModel->variable(variable)));
 
-    EXPECT_EQ(size_t(19), generator->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
 
@@ -379,41 +376,6 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAllExternalVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel_m_gate")->variable("m")));
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel_h_gate")->variable("h")));
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel_n_gate")->variable("n")));
-
-    analyser->analyseModel(model);
-
-    auto analyserModel = analyser->model();
-    auto generator = libcellml::Generator::create();
-
-    EXPECT_EQ(size_t(3), generator->trackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(21), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
-
-    generator->untrackAllExternals(analyserModel);
-
-    EXPECT_EQ(size_t(0), generator->trackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(3), generator->untrackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
-
-    generator->trackAllExternals(analyserModel);
-
-    EXPECT_EQ(size_t(3), generator->trackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedExternalCount(analyserModel));
-    EXPECT_EQ(size_t(21), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
-}
-
 TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
 {
     auto parser = libcellml::Parser::create();
@@ -444,8 +406,7 @@ enum class TrackingType
     VARIABLES,
     CONSTANTS,
     COMPUTED_CONSTANTS,
-    ALGEBRAIC,
-    EXTERNALS
+    ALGEBRAIC
 };
 
 void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::GeneratorPtr &generator, TrackingType trackingType)
@@ -467,10 +428,6 @@ void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::Generato
         generator->untrackAllAlgebraic(model);
 
         break;
-    case TrackingType::EXTERNALS:
-        generator->untrackAllExternals(model);
-
-        break;
     }
 }
 
@@ -479,9 +436,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae") + ".cellml"));
     auto analyser = libcellml::Analyser::create();
-    libcellml::AnalyserModelPtr analyserModel;
     auto generator = libcellml::Generator::create();
-    libcellml::GeneratorProfilePtr profile;
     std::string modelType = ode ? "model" : "model.dae";
     std::string variableType = (trackingType == TrackingType::VARIABLES) ?
                                    "variables" :
@@ -489,30 +444,26 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
                                         "constants" :
                                         ((trackingType == TrackingType::COMPUTED_CONSTANTS) ?
                                              "computed.constants" :
-                                             ((trackingType == TrackingType::ALGEBRAIC) ?
-                                                  "algebraic.variables" :
-                                                  "external.variables")));
+                                             "algebraic.variables"));
 
-    if (trackingType != TrackingType::EXTERNALS) {
-        analyser->analyseModel(model);
+    analyser->analyseModel(model);
 
-        analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
-        untrack(analyserModel, generator, trackingType);
+    untrack(analyserModel, generator, trackingType);
 
-        profile = generator->profile();
+    auto profile = generator->profile();
 
-        profile->setInterfaceFileNameString(modelType + ".untracked." + variableType + ".h");
+    profile->setInterfaceFileNameString(modelType + ".untracked." + variableType + ".h");
 
-        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".h", generator->interfaceCode(analyserModel));
-        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".c", generator->implementationCode(analyserModel));
 
-        profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-        generator->setProfile(profile);
+    generator->setProfile(profile);
 
-        EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".py", generator->implementationCode(analyserModel));
-    }
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".py", generator->implementationCode(analyserModel));
 
     // With some external variables.
 
@@ -548,11 +499,6 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
-{
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES);
-}
-
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS);
@@ -568,14 +514,9 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebrai
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC);
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedExternalVariables)
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::EXTERNALS);
-}
-
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
-{
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
@@ -593,7 +534,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgeb
     hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC);
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedExternalVariables)
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::EXTERNALS);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES);
 }

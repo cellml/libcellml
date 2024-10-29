@@ -88,16 +88,6 @@ describe("Generator tests", () => {
         expect(g.trackedAlgebraicCount(am)).toBe(10)
         expect(g.untrackedAlgebraicCount(am)).toBe(0)
 
-        g.untrackAllExternals(am)
-
-        expect(g.trackedExternalCount(am)).toBe(0)
-        expect(g.untrackedExternalCount(am)).toBe(1)
-
-        g.trackAllExternals(am)
-
-        expect(g.trackedExternalCount(am)).toBe(1)
-        expect(g.untrackedExternalCount(am)).toBe(0)
-
         g.untrackAllVariables(am)
 
         expect(g.trackedVariableCount(am)).toBe(0)

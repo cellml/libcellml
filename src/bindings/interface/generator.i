@@ -47,12 +47,6 @@
 %feature("docstring") libcellml::Generator::untrackAllAlgebraic
 "Untracks all the algebraic variables in the given model.";
 
-%feature("docstring") libcellml::Generator::trackAllExternals
-"Tracks all the external variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackAllExternals
-"Untracks all the external variables in the given model.";
-
 %feature("docstring") libcellml::Generator::trackAllVariables
 "Tracks all the variables in the given model.";
 

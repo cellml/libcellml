@@ -12,7 +12,7 @@ const size_t STATE_COUNT = 3;
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 0;
-const size_t EXTERNAL_COUNT = 0;
+const size_t EXTERNAL_COUNT = 3;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
@@ -32,6 +32,9 @@ const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
+    {"V", "millivolt", "membrane"},
+    {"i_Na", "microA_per_cm2", "sodium_channel"},
+    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
 double * createStatesArray()
@@ -173,7 +176,7 @@ void objectiveFunction3(double *u, double *f, void *data)
 
     algebraic[1] = u[0];
 
-    f[0] = leakage_current_i_L-leakage_current_g_L*(membrane_V-leakage_current_E_L)-0.0;
+    f[0] = leakage_current_i_L-leakage_current_g_L*(externals[0]-leakage_current_E_L)-0.0;
 }
 
 void findRoot3(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -227,7 +230,7 @@ void objectiveFunction6(double *u, double *f, void *data)
 
     algebraic[5] = u[0];
 
-    f[0] = sodium_channel_m_gate_alpha_m-0.1*(membrane_V+25.0)/(exp((membrane_V+25.0)/10.0)-1.0)-0.0;
+    f[0] = sodium_channel_m_gate_alpha_m-0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)-0.0;
 }
 
 void findRoot6(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -254,7 +257,7 @@ void objectiveFunction7(double *u, double *f, void *data)
 
     algebraic[6] = u[0];
 
-    f[0] = sodium_channel_m_gate_beta_m-4.0*exp(membrane_V/18.0)-0.0;
+    f[0] = sodium_channel_m_gate_beta_m-4.0*exp(externals[0]/18.0)-0.0;
 }
 
 void findRoot7(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -308,7 +311,7 @@ void objectiveFunction9(double *u, double *f, void *data)
 
     algebraic[7] = u[0];
 
-    f[0] = sodium_channel_h_gate_alpha_h-0.07*exp(membrane_V/20.0)-0.0;
+    f[0] = sodium_channel_h_gate_alpha_h-0.07*exp(externals[0]/20.0)-0.0;
 }
 
 void findRoot9(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -335,7 +338,7 @@ void objectiveFunction10(double *u, double *f, void *data)
 
     algebraic[8] = u[0];
 
-    f[0] = sodium_channel_h_gate_beta_h-1.0/(exp((membrane_V+30.0)/10.0)+1.0)-0.0;
+    f[0] = sodium_channel_h_gate_beta_h-1.0/(exp((externals[0]+30.0)/10.0)+1.0)-0.0;
 }
 
 void findRoot10(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -416,7 +419,7 @@ void objectiveFunction13(double *u, double *f, void *data)
 
     algebraic[2] = u[0];
 
-    f[0] = potassium_channel_i_K-potassium_channel_g_K*pow(states[2], 4.0)*(membrane_V-potassium_channel_E_K)-0.0;
+    f[0] = potassium_channel_i_K-potassium_channel_g_K*pow(states[2], 4.0)*(externals[0]-potassium_channel_E_K)-0.0;
 }
 
 void findRoot13(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -443,7 +446,7 @@ void objectiveFunction15(double *u, double *f, void *data)
 
     algebraic[10] = u[0];
 
-    f[0] = potassium_channel_n_gate_beta_n-0.125*exp(membrane_V/80.0)-0.0;
+    f[0] = potassium_channel_n_gate_beta_n-0.125*exp(externals[0]/80.0)-0.0;
 }
 
 void findRoot15(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -470,7 +473,7 @@ void objectiveFunction16(double *u, double *f, void *data)
 
     rates[2] = u[0];
 
-    f[0] = rates[2]-(potassium_channel_n_gate_alpha_n*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2])-0.0;
+    f[0] = rates[2]-(externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2])-0.0;
 }
 
 void findRoot16(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -512,18 +515,21 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    double membrane_V = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot8(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot9(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot10(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot11(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double potassium_channel_n_gate_alpha_n = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
+    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
     findRoot15(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot16(voi, states, rates, constants, computedConstants, algebraic, externals);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
+    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
 }
