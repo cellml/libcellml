@@ -274,28 +274,6 @@ public:
     size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
 
     /**
-     * @brief Get the number of tracked external variables in the given @p model.
-     *
-     * Get the number of tracked external variables in the given @p model.
-     *
-     * @param model The pointer to the @ref AnalyserModel for which to get the number of tracked external variables.
-     *
-     * @return The number of tracked external variables in the model.
-     */
-    size_t trackedExternalCount(const AnalyserModelPtr &model);
-
-    /**
-     * @brief Get the number of untracked external variables in the given @p model.
-     *
-     * Get the number of untracked external variables in the given @p model.
-     *
-     * @param model The pointer to the @ref AnalyserModel for which to get the number of untracked external variables.
-     *
-     * @return The number of untracked external variables in the model.
-     */
-    size_t untrackedExternalCount(const AnalyserModelPtr &model);
-
-    /**
      * @brief Get the number of tracked variables in the given @p model.
      *
      * Get the number of tracked variables in the given @p model.

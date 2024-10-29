@@ -71,12 +71,6 @@
 %feature("docstring") libcellml::Generator::untrackedAlgebraicCount
 "Returns the number of untracked algebraic variables in the given model.";
 
-%feature("docstring") libcellml::Generator::trackedExternalCount
-"Returns the number of tracked external variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackedExternalCount
-"Returns the number of untracked external variables in the given model.";
-
 %feature("docstring") libcellml::Generator::trackedVariableCount
 "Returns the number of tracked variables in the given model.";
 
