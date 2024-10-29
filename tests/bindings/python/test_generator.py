@@ -59,15 +59,13 @@ class GeneratorTestCase(unittest.TestCase):
         p = Parser()
         m = p.parseModel(file_contents('generator/hodgkin_huxley_squid_axon_model_1952/model.cellml'))
         v = m.component("membrane").variable("Cm")
-        aev = AnalyserExternalVariable(v)
         a = Analyser()
 
-        a.addExternalVariable(aev)
         a.analyseModel(m)
 
         am = a.model()
-        g = Generator()
         av = am.variable(v)
+        g = Generator()
 
         g.untrackVariable(av)
 
@@ -82,11 +80,11 @@ class GeneratorTestCase(unittest.TestCase):
         g.untrackAllConstants(am)
 
         self.assertEqual(0, g.trackedConstantCount(am))
-        self.assertEqual(4, g.untrackedConstantCount(am))
+        self.assertEqual(5, g.untrackedConstantCount(am))
 
         g.trackAllConstants(am)
 
-        self.assertEqual(4, g.trackedConstantCount(am))
+        self.assertEqual(5, g.trackedConstantCount(am))
         self.assertEqual(0, g.untrackedConstantCount(am))
 
         g.untrackAllComputedConstants(am)
