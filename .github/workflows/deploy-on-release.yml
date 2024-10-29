@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  MACOSX_DEPLOYMENT_TARGET: 10.15
+  ARTIFACT_RETENTION_DAYS: 7
 
 jobs:
   setup-jobs:
@@ -275,12 +275,11 @@ jobs:
       with:
         path: ./build/dist/*
         name: ${{ matrix.config.os }}
+        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   wheels:
     needs: setup-jobs
     if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
-    permissions:
-      id-token: write
     name: ${{ matrix.name }} ${{ matrix.py }} wheel
     runs-on: ${{ matrix.os }}
     strategy:
@@ -363,14 +362,33 @@ jobs:
           package-dir: src/bindings/python/
 
       - name: Upload Python wheels as artifacts
-        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
         uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
           name: ${{ matrix.name }}-${{ matrix.py }}-wheel
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  publish-wheels:
+    if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
+    needs: wheels
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5  # Docker+network are slow sometimes.
+    permissions:
+      id-token: write
+    name: Publish Wheels
+    steps:
+      - name: Download Python wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: wheelhouse/
+          pattern: '*-wheel'
+          merge-multiple: true
+
+      - name: Display downloaded wheels
+        run: |
+          ls wheelhouse
 
       - name: Publish Python wheels
-        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
         env:
           name: pypi
           url: https://pypi.org/p/libcellml
@@ -448,6 +466,7 @@ jobs:
         with:
           path: ${{ steps.package-javascript.outputs.files }}
           name: libcellml.js
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
       - name: Publish libcellml.js
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
