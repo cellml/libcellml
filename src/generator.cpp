@@ -325,17 +325,6 @@ bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &model) const
     }
 }
 
-bool Generator::GeneratorImpl::modelHasNlas(const AnalyserModelPtr &model) const
-{
-    switch (model->type()) {
-    case AnalyserModel::Type::NLA:
-    case AnalyserModel::Type::DAE:
-        return true;
-    default:
-        return false;
-    }
-}
-
 double Generator::GeneratorImpl::scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by
@@ -973,17 +962,15 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode(const
 
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode(const AnalyserModelPtr &model)
 {
-    if (modelHasNlas(model)
-        && !mProfile->rootFindingInfoObjectString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
+    if (!mProfile->rootFindingInfoObjectString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
         mCode += newLineIfNeeded()
                  + mProfile->rootFindingInfoObjectString(modelHasOdes(model), model->hasExternalVariables());
     }
 }
 
-void Generator::GeneratorImpl::addExternNlaSolveMethodCode(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 {
-    if (modelHasNlas(model)
-        && !mProfile->externNlaSolveMethodString().empty()) {
+    if (!mProfile->externNlaSolveMethodString().empty()) {
         mCode += newLineIfNeeded()
                  + mProfile->externNlaSolveMethodString();
     }
@@ -991,8 +978,7 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode(const AnalyserModelPt
 
 void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
 {
-    if (modelHasNlas(model)
-        && !mProfile->objectiveFunctionMethodString(modelHasOdes(model), model->hasExternalVariables()).empty()
+    if (!mProfile->objectiveFunctionMethodString(modelHasOdes(model), model->hasExternalVariables()).empty()
         && !mProfile->findRootMethodString(modelHasOdes(model), model->hasExternalVariables()).empty()
         && !mProfile->nlaSolveCallString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
         // Note: only states and algebraic variables can be computed through an NLA system. Constants, computed
@@ -2575,10 +2561,9 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
 
     if (needNlaSolving) {
         mPimpl->addRootFindingInfoObjectCode(model);
-        mPimpl->addExternNlaSolveMethodCode(model);
+        mPimpl->addExternNlaSolveMethodCode();
+        mPimpl->addNlaSystemsCode(model);
     }
-
-    mPimpl->addNlaSystemsCode(model);
 
     // Add code for the implementation to initialise our variables.
 
