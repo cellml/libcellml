@@ -11,7 +11,7 @@ STATE_COUNT = 3
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 0
-EXTERNAL_COUNT = 0
+EXTERNAL_COUNT = 3
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -31,6 +31,9 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
+    {"name": "V", "units": "millivolt", "component": "membrane"},
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
 
@@ -128,7 +131,7 @@ def objective_function_3(u, f, data):
 
     algebraic[1] = u[0]
 
-    f[0] = leakage_current_i_L-leakage_current_g_L*(membrane_V-leakage_current_E_L)-0.0
+    f[0] = leakage_current_i_L-leakage_current_g_L*(externals[0]-leakage_current_E_L)-0.0
 
 
 def find_root_3(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -176,7 +179,7 @@ def objective_function_6(u, f, data):
 
     algebraic[5] = u[0]
 
-    f[0] = sodium_channel_m_gate_alpha_m-0.1*(membrane_V+25.0)/(exp((membrane_V+25.0)/10.0)-1.0)-0.0
+    f[0] = sodium_channel_m_gate_alpha_m-0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)-0.0
 
 
 def find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -200,7 +203,7 @@ def objective_function_7(u, f, data):
 
     algebraic[6] = u[0]
 
-    f[0] = sodium_channel_m_gate_beta_m-4.0*exp(membrane_V/18.0)-0.0
+    f[0] = sodium_channel_m_gate_beta_m-4.0*exp(externals[0]/18.0)-0.0
 
 
 def find_root_7(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -248,7 +251,7 @@ def objective_function_9(u, f, data):
 
     algebraic[7] = u[0]
 
-    f[0] = sodium_channel_h_gate_alpha_h-0.07*exp(membrane_V/20.0)-0.0
+    f[0] = sodium_channel_h_gate_alpha_h-0.07*exp(externals[0]/20.0)-0.0
 
 
 def find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -272,7 +275,7 @@ def objective_function_10(u, f, data):
 
     algebraic[8] = u[0]
 
-    f[0] = sodium_channel_h_gate_beta_h-1.0/(exp((membrane_V+30.0)/10.0)+1.0)-0.0
+    f[0] = sodium_channel_h_gate_beta_h-1.0/(exp((externals[0]+30.0)/10.0)+1.0)-0.0
 
 
 def find_root_10(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -344,7 +347,7 @@ def objective_function_13(u, f, data):
 
     algebraic[2] = u[0]
 
-    f[0] = potassium_channel_i_K-potassium_channel_g_K*pow(states[2], 4.0)*(membrane_V-potassium_channel_E_K)-0.0
+    f[0] = potassium_channel_i_K-potassium_channel_g_K*pow(states[2], 4.0)*(externals[0]-potassium_channel_E_K)-0.0
 
 
 def find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -368,7 +371,7 @@ def objective_function_15(u, f, data):
 
     algebraic[10] = u[0]
 
-    f[0] = potassium_channel_n_gate_beta_n-0.125*exp(membrane_V/80.0)-0.0
+    f[0] = potassium_channel_n_gate_beta_n-0.125*exp(externals[0]/80.0)-0.0
 
 
 def find_root_15(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -392,7 +395,7 @@ def objective_function_16(u, f, data):
 
     rates[2] = u[0]
 
-    f[0] = rates[2]-(potassium_channel_n_gate_alpha_n*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2])-0.0
+    f[0] = rates[2]-(externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2])-0.0
 
 
 def find_root_16(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -430,17 +433,19 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    membrane_V = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
     find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_8(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic, externals)
-    potassium_channel_n_gate_alpha_n = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
     find_root_15(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_16(voi, states, rates, constants, computed_constants, algebraic, externals)
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    pass
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)

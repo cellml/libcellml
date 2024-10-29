@@ -12,7 +12,7 @@ const size_t STATE_COUNT = 3;
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 0;
-const size_t EXTERNAL_COUNT = 0;
+const size_t EXTERNAL_COUNT = 3;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
@@ -32,6 +32,9 @@ const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
+    {"V", "millivolt", "membrane"},
+    {"i_Na", "microA_per_cm2", "sodium_channel"},
+    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
 double * createStatesArray()
@@ -107,18 +110,21 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    double membrane_V = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    double sodium_channel_m_gate_alpha_m = 0.1*(membrane_V+25.0)/(exp((membrane_V+25.0)/10.0)-1.0);
-    double sodium_channel_m_gate_beta_m = 4.0*exp(membrane_V/18.0);
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    double sodium_channel_m_gate_alpha_m = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0);
+    double sodium_channel_m_gate_beta_m = 4.0*exp(externals[0]/18.0);
     rates[1] = sodium_channel_m_gate_alpha_m*(1.0-states[1])-sodium_channel_m_gate_beta_m*states[1];
-    double sodium_channel_h_gate_alpha_h = 0.07*exp(membrane_V/20.0);
-    double sodium_channel_h_gate_beta_h = 1.0/(exp((membrane_V+30.0)/10.0)+1.0);
+    double sodium_channel_h_gate_alpha_h = 0.07*exp(externals[0]/20.0);
+    double sodium_channel_h_gate_beta_h = 1.0/(exp((externals[0]+30.0)/10.0)+1.0);
     rates[0] = sodium_channel_h_gate_alpha_h*(1.0-states[0])-sodium_channel_h_gate_beta_h*states[0];
-    double potassium_channel_n_gate_alpha_n = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
-    double potassium_channel_n_gate_beta_n = 0.125*exp(membrane_V/80.0);
-    rates[2] = potassium_channel_n_gate_alpha_n*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2];
+    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
+    double potassium_channel_n_gate_beta_n = 0.125*exp(externals[0]/80.0);
+    rates[2] = externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
+    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
 }

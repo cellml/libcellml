@@ -109,16 +109,6 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual(10, g.trackedAlgebraicCount(am))
         self.assertEqual(0, g.untrackedAlgebraicCount(am))
 
-        g.untrackAllExternals(am)
-
-        self.assertEqual(0, g.trackedExternalCount(am))
-        self.assertEqual(1, g.untrackedExternalCount(am))
-
-        g.trackAllExternals(am)
-
-        self.assertEqual(1, g.trackedExternalCount(am))
-        self.assertEqual(0, g.untrackedExternalCount(am))
-
         g.untrackAllVariables(am)
 
         self.assertEqual(0, g.trackedVariableCount(am))

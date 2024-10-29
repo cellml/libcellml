@@ -1334,12 +1334,16 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model, bool a
     auto constants = model->constants();
     auto computedConstants = model->computedConstants();
     auto algebraic = model->algebraic();
-    auto externals = model->externals();
 
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraic.begin(), algebraic.end());
-    res.insert(res.end(), externals.begin(), externals.end());
+
+    if (allVariables) {
+        auto externals = model->externals();
+
+        res.insert(res.end(), externals.begin(), externals.end());
+    }
 
     return res;
 }

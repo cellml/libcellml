@@ -184,34 +184,10 @@ public:
     bool untrackAllAlgebraic(const AnalyserModelPtr &model);
 
     /**
-     * @brief Track all the external variables in the given @p model.
-     *
-     * Track all the external variables in the given @p model. This will add all the external variables in the model to
-     * the list of tracked variables.
-     *
-     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be tracked.
-     *
-     * @return @c true if all the external variables in the model were tracked, @c false otherwise.
-     */
-    bool trackAllExternals(const AnalyserModelPtr &model);
-
-    /**
-     * @brief Untrack all the external variables in the given @p model.
-     *
-     * Untrack all the external variables in the given @p model. This will remove all the external variables in the model
-     * from the list of tracked variables.
-     *
-     * @param model The pointer to the @ref AnalyserModel which all the external variables are to be untracked.
-     *
-     * @return @c true if all the external variables in the model were untracked, @c false otherwise.
-     */
-    bool untrackAllExternals(const AnalyserModelPtr &model);
-
-    /**
      * @brief Track all the variables in the given @p model.
      *
      * Track all the variables in the given @p model. This will add all the variables in the model to the list of
-     * tracked variables.
+     * tracked variables. This includes all the constants, computed constants, and algebraic variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the variables are to be tracked.
      *
@@ -223,7 +199,7 @@ public:
      * @brief Untrack all the variables in the given @p model.
      *
      * Untrack all the variables in the given @p model. This will remove all the variables in the model from the list of
-     * tracked variables.
+     * tracked variables. This includes all the constants, computed constants, and algebraic variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the variables are to be untracked.
      *
