@@ -30,9 +30,10 @@ project(undefined CXX)
 add_library(foo SHARED \"foo.cpp\")
 ")
     if(HAVE_LIBXML2_CONFIG)
+      file(TO_CMAKE_PATH "${LibXml2_DIR}" _SAFE_LibXml2_DIR)
       file(APPEND "${_TEST_PROJECT_DIR}/CMakeLists.txt"
 "
-set(LibXml2_DIR \"${LibXml2_DIR}\")
+set(LibXml2_DIR \"${_SAFE_LibXml2_DIR}\")
 find_package(LibXml2 CONFIG)
 target_link_libraries(foo PUBLIC ${LIBXML2_TARGET_NAME})
 ")
