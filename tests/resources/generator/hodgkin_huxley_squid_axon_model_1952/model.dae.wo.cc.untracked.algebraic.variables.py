@@ -9,7 +9,7 @@ LIBCELLML_VERSION = "0.6.2"
 
 STATE_COUNT = 4
 CONSTANT_COUNT = 5
-COMPUTED_CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 3
 ALGEBRAIC_COUNT = 0
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
@@ -30,6 +30,9 @@ CONSTANT_INFO = [
 ]
 
 COMPUTED_CONSTANT_INFO = [
+    {"name": "E_L", "units": "millivolt", "component": "leakage_current"},
+    {"name": "E_Na", "units": "millivolt", "component": "sodium_channel"},
+    {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
 ALGEBRAIC_INFO = [
@@ -90,7 +93,7 @@ def find_root_1(voi, states, rates, constants, computed_constants, algebraic):
     rates[0] = u[0]
 
 
-def objective_function_8(u, f, data):
+def objective_function_6(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -103,17 +106,17 @@ def objective_function_8(u, f, data):
     f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2])-0.0
 
 
-def find_root_8(voi, states, rates, constants, computed_constants, algebraic):
+def find_root_6(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
     u[0] = rates[2]
 
-    u = nla_solve(objective_function_8, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
+    u = nla_solve(objective_function_6, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
     rates[2] = u[0]
 
 
-def objective_function_11(u, f, data):
+def objective_function_9(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -126,17 +129,17 @@ def objective_function_11(u, f, data):
     f[0] = rates[1]-(sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1])-0.0
 
 
-def find_root_11(voi, states, rates, constants, computed_constants, algebraic):
+def find_root_9(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
     u[0] = rates[1]
 
-    u = nla_solve(objective_function_11, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
+    u = nla_solve(objective_function_9, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
     rates[1] = u[0]
 
 
-def objective_function_16(u, f, data):
+def objective_function_13(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -149,12 +152,12 @@ def objective_function_16(u, f, data):
     f[0] = rates[3]-(potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3])-0.0
 
 
-def find_root_16(voi, states, rates, constants, computed_constants, algebraic):
+def find_root_13(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
     u[0] = rates[3]
 
-    u = nla_solve(objective_function_16, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
+    u = nla_solve(objective_function_13, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
     rates[3] = u[0]
 
@@ -176,18 +179,20 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
 
 
 def compute_computed_constants(constants, computed_constants):
-    pass
+    computed_constants[0] = constants[1]-10.613
+    computed_constants[1] = constants[1]-115.0
+    computed_constants[2] = constants[1]+12.0
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_16(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_11(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_8(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_13(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_9(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_6(voi, states, rates, constants, computed_constants, algebraic)
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_16(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_11(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_8(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_13(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_9(voi, states, rates, constants, computed_constants, algebraic)
+    find_root_6(voi, states, rates, constants, computed_constants, algebraic)
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)

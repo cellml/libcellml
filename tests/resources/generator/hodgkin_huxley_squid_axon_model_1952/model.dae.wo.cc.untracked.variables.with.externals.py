@@ -8,7 +8,7 @@ __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.2"
 
 STATE_COUNT = 3
-CONSTANT_COUNT = 5
+CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_COUNT = 0
 EXTERNAL_COUNT = 3
@@ -22,11 +22,6 @@ STATE_INFO = [
 ]
 
 CONSTANT_INFO = [
-    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane"},
-    {"name": "E_R", "units": "millivolt", "component": "membrane"},
-    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current"},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel"},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
@@ -77,7 +72,7 @@ def create_externals_array():
 from nlasolver import nla_solve
 
 
-def objective_function_8(u, f, data):
+def objective_function_6(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -91,17 +86,17 @@ def objective_function_8(u, f, data):
     f[0] = rates[1]-(sodium_channel_m_gate_alpha_m*(1.0-states[1])-sodium_channel_m_gate_beta_m*states[1])-0.0
 
 
-def find_root_8(voi, states, rates, constants, computed_constants, algebraic, externals):
+def find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals):
     u = [nan]*1
 
     u[0] = rates[1]
 
-    u = nla_solve(objective_function_8, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
+    u = nla_solve(objective_function_6, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
 
     rates[1] = u[0]
 
 
-def objective_function_11(u, f, data):
+def objective_function_9(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -115,17 +110,17 @@ def objective_function_11(u, f, data):
     f[0] = rates[0]-(sodium_channel_h_gate_alpha_h*(1.0-states[0])-sodium_channel_h_gate_beta_h*states[0])-0.0
 
 
-def find_root_11(voi, states, rates, constants, computed_constants, algebraic, externals):
+def find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals):
     u = [nan]*1
 
     u[0] = rates[0]
 
-    u = nla_solve(objective_function_11, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
+    u = nla_solve(objective_function_9, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
 
     rates[0] = u[0]
 
 
-def objective_function_16(u, f, data):
+def objective_function_13(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
@@ -139,12 +134,12 @@ def objective_function_16(u, f, data):
     f[0] = rates[2]-(externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2])-0.0
 
 
-def find_root_16(voi, states, rates, constants, computed_constants, algebraic, externals):
+def find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals):
     u = [nan]*1
 
     u[0] = rates[2]
 
-    u = nla_solve(objective_function_16, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
+    u = nla_solve(objective_function_13, u, 1, [voi, states, rates, constants, computed_constants, algebraic, externals])
 
     rates[2] = u[0]
 
@@ -156,11 +151,6 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
     rates[0] = 0.0
     rates[1] = 0.0
     rates[2] = 0.0
-    constants[0] = 1.0
-    constants[1] = 0.0
-    constants[2] = 0.3
-    constants[3] = 120.0
-    constants[4] = 36.0
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -169,10 +159,10 @@ def compute_computed_constants(constants, computed_constants):
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
     externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    find_root_8(voi, states, rates, constants, computed_constants, algebraic, externals)
-    find_root_11(voi, states, rates, constants, computed_constants, algebraic, externals)
+    find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals)
+    find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals)
     externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    find_root_16(voi, states, rates, constants, computed_constants, algebraic, externals)
+    find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals)
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):

@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.6.2. */
 
-#include "model.dae.untracked.variables.h"
+#include "model.dae.wo.cc.untracked.variables.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -120,7 +120,7 @@ void findRoot1(double voi, double *states, double *rates, double *constants, dou
     rates[0] = u[0];
 }
 
-void objectiveFunction8(double *u, double *f, void *data)
+void objectiveFunction6(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -134,19 +134,19 @@ void objectiveFunction8(double *u, double *f, void *data)
     f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2])-0.0;
 }
 
-void findRoot8(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void findRoot6(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };
     double u[1];
 
     u[0] = rates[2];
 
-    nlaSolve(objectiveFunction8, u, 1, &rfi);
+    nlaSolve(objectiveFunction6, u, 1, &rfi);
 
     rates[2] = u[0];
 }
 
-void objectiveFunction11(double *u, double *f, void *data)
+void objectiveFunction9(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -160,19 +160,19 @@ void objectiveFunction11(double *u, double *f, void *data)
     f[0] = rates[1]-(sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1])-0.0;
 }
 
-void findRoot11(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void findRoot9(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };
     double u[1];
 
     u[0] = rates[1];
 
-    nlaSolve(objectiveFunction11, u, 1, &rfi);
+    nlaSolve(objectiveFunction9, u, 1, &rfi);
 
     rates[1] = u[0];
 }
 
-void objectiveFunction16(double *u, double *f, void *data)
+void objectiveFunction13(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -186,14 +186,14 @@ void objectiveFunction16(double *u, double *f, void *data)
     f[0] = rates[3]-(potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3])-0.0;
 }
 
-void findRoot16(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void findRoot13(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic };
     double u[1];
 
     u[0] = rates[3];
 
-    nlaSolve(objectiveFunction16, u, 1, &rfi);
+    nlaSolve(objectiveFunction13, u, 1, &rfi);
 
     rates[3] = u[0];
 }
@@ -219,11 +219,14 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     double membrane_Cm = 1.0;
     double leakage_current_g_L = 0.3;
     double membrane_E_R = 0.0;
+    double leakage_current_E_L = membrane_E_R-10.613;
     double potassium_channel_g_K = 36.0;
-    findRoot16(voi, states, rates, constants, computedConstants, algebraic);
+    double potassium_channel_E_K = membrane_E_R+12.0;
+    findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     double sodium_channel_g_Na = 120.0;
-    findRoot11(voi, states, rates, constants, computedConstants, algebraic);
-    findRoot8(voi, states, rates, constants, computedConstants, algebraic);
+    double sodium_channel_E_Na = membrane_E_R-115.0;
+    findRoot9(voi, states, rates, constants, computedConstants, algebraic);
+    findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic);
 }
 
@@ -232,10 +235,13 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     double membrane_Cm = 1.0;
     double leakage_current_g_L = 0.3;
     double membrane_E_R = 0.0;
+    double leakage_current_E_L = membrane_E_R-10.613;
     double potassium_channel_g_K = 36.0;
-    findRoot16(voi, states, rates, constants, computedConstants, algebraic);
+    double potassium_channel_E_K = membrane_E_R+12.0;
+    findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     double sodium_channel_g_Na = 120.0;
-    findRoot11(voi, states, rates, constants, computedConstants, algebraic);
-    findRoot8(voi, states, rates, constants, computedConstants, algebraic);
+    double sodium_channel_E_Na = membrane_E_R-115.0;
+    findRoot9(voi, states, rates, constants, computedConstants, algebraic);
+    findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic);
 }

@@ -431,10 +431,10 @@ void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::Generato
 void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType trackingType)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae") + ".cellml"));
+    auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae.wo.cc") + ".cellml"));
     auto analyser = libcellml::Analyser::create();
     auto generator = libcellml::Generator::create();
-    std::string modelType = ode ? "model" : "model.dae";
+    std::string modelType = ode ? "model" : "model.dae.wo.cc";
     std::string variableType = (trackingType == TrackingType::VARIABLES) ?
                                    "variables" :
                                    ((trackingType == TrackingType::CONSTANTS) ?

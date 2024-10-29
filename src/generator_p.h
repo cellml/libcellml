@@ -86,7 +86,6 @@ struct Generator::GeneratorImpl
     size_t untrackedVariableCount(const AnalyserModelPtr &model);
 
     bool modelHasOdes(const AnalyserModelPtr &model) const;
-    bool modelHasNlas(const AnalyserModelPtr &model) const;
 
     double scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const;
 
@@ -145,7 +144,7 @@ struct Generator::GeneratorImpl
     void addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &model);
 
     void addRootFindingInfoObjectCode(const AnalyserModelPtr &model);
-    void addExternNlaSolveMethodCode(const AnalyserModelPtr &model);
+    void addExternNlaSolveMethodCode();
     void addNlaSystemsCode(const AnalyserModelPtr &model);
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
