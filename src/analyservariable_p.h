@@ -43,6 +43,8 @@ struct AnalyserVariable::AnalyserVariableImpl
     void populate(AnalyserVariable::Type type, size_t index, const VariablePtr &initialisingVariable,
                   const VariablePtr &variable, const AnalyserModelPtr &model,
                   const std::vector<AnalyserEquationPtr> &equations);
+
+    bool constantWithDummyEquation() const;
 };
 
 } // namespace libcellml
