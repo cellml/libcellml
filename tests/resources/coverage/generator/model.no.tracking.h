@@ -13,7 +13,7 @@ extern const size_t COMPUTED_CONSTANT_COUNT;
 extern const size_t ALGEBRAIC_COUNT;
 
 typedef struct {
-    char name[2];
+    char name[16];
     char units[14];
     char component[13];
 } VariableInfo;

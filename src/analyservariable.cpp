@@ -99,7 +99,7 @@ AnalyserModelPtr AnalyserVariable::model() const
     return mPimpl->mModel.lock();
 }
 
-// Note: our equation-related methods must account for the fact that a constant intialised using the `initial_value`
+// Note: our equation-related methods must account for the fact that a constant initialised using the `initial_value`
 //       attribute (rather than through an equation; e.g. x = 3) will have a dummy equation associated with it which
 //       we don't want to be accessible, hence the calls to constantWithDummyEquation() in the following methods.
 
