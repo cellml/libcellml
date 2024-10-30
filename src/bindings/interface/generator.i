@@ -7,6 +7,7 @@
 %import "analysermodel.i"
 %import "createconstructor.i"
 %import "generatorprofile.i"
+%import "logger.i"
 
 %feature("docstring") libcellml::Generator
 "Creates a :class:`Generator` object.";

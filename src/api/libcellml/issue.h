@@ -36,6 +36,7 @@ class LIBCELLML_EXPORT Issue
 {
     friend class Analyser;
     friend class Annotator;
+    friend class Generator;
     friend class Importer;
     friend class Parser;
     friend class Printer;
@@ -209,6 +210,16 @@ public:
         ANNOTATOR_NO_MODEL,
         ANNOTATOR_INCONSISTENT_TYPE,
         ANNOTATOR_NULL_MODEL,
+
+        // Generator issues:
+        GENERATOR_NULL_MODEL,
+        GENERATOR_NULL_VARIABLE,
+        GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED,
+        GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE,
+        GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED,
+        GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE,
+        GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED,
+        GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE,
 
         // Placeholder for further references:
         UNSPECIFIED

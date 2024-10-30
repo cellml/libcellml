@@ -1,8 +1,11 @@
-# OS X hidden system files
+# macOS hidden system files
 .DS_Store
 
 # Ignore the build directory
 build/
+
+# Debugging files
+*.profraw
 
 # Eclipse project files
 .project

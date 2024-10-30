@@ -16,10 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
-#include "libcellml/exportdefinitions.h"
-#include "libcellml/types.h"
+#include "libcellml/logger.h"
 
 namespace libcellml {
 
@@ -28,7 +25,7 @@ namespace libcellml {
  *
  * The Generator class is for representing a CellML Generator.
  */
-class LIBCELLML_EXPORT Generator
+class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
     ~Generator(); /**< Destructor, @private. */
@@ -95,10 +92,8 @@ public:
      * Track the given @p variable. This will add the variable to the list of tracked variables.
      *
      * @param variable The pointer to the @ref AnalyserVariable to track.
-     *
-     * @return @c true if the variable was tracked, @c false otherwise.
      */
-    bool trackVariable(const AnalyserVariablePtr &variable);
+    void trackVariable(const AnalyserVariablePtr &variable);
 
     /**
      * @brief Untrack the given @p variable.
@@ -106,10 +101,8 @@ public:
      * Untrack the given @p variable. This will remove the variable from the list of tracked variables.
      *
      * @param variable The pointer to the @ref AnalyserVariable to untrack.
-     *
-     * @return @c true if the variable was untracked, @c false otherwise.
      */
-    bool untrackVariable(const AnalyserVariablePtr &variable);
+    void untrackVariable(const AnalyserVariablePtr &variable);
 
     /**
      * @brief Track all the constants in the given @p model.
@@ -118,10 +111,8 @@ public:
      * tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the constants are to be tracked.
-     *
-     * @return @c true if all the constants in the model were tracked, @c false otherwise.
      */
-    bool trackAllConstants(const AnalyserModelPtr &model);
+    void trackAllConstants(const AnalyserModelPtr &model);
 
     /**
      * @brief Untrack all the constants in the given @p model.
@@ -130,10 +121,8 @@ public:
      * tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the constants are to be untracked.
-     *
-     * @return @c true if all the constants in the model were untracked, @c false otherwise.
      */
-    bool untrackAllConstants(const AnalyserModelPtr &model);
+    void untrackAllConstants(const AnalyserModelPtr &model);
 
     /**
      * @brief Track all the computed constants in the given @p model.
@@ -142,10 +131,8 @@ public:
      * the list of tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be tracked.
-     *
-     * @return @c true if all the computed constants in the model were tracked, @c false otherwise.
      */
-    bool trackAllComputedConstants(const AnalyserModelPtr &model);
+    void trackAllComputedConstants(const AnalyserModelPtr &model);
 
     /**
      * @brief Untrack all the computed constants in the given @p model.
@@ -154,10 +141,8 @@ public:
      * from the list of tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the computed constants are to be untracked.
-     *
-     * @return @c true if all the computed constants in the model were untracked, @c false otherwise.
      */
-    bool untrackAllComputedConstants(const AnalyserModelPtr &model);
+    void untrackAllComputedConstants(const AnalyserModelPtr &model);
 
     /**
      * @brief Track all the algebraic variables in the given @p model.
@@ -166,10 +151,8 @@ public:
      * the list of tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be tracked.
-     *
-     * @return @c true if all the algebraic variables in the model were tracked, @c false otherwise.
      */
-    bool trackAllAlgebraic(const AnalyserModelPtr &model);
+    void trackAllAlgebraic(const AnalyserModelPtr &model);
 
     /**
      * @brief Untrack all the algebraic variables in the given @p model.
@@ -178,10 +161,8 @@ public:
      * model from the list of tracked variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the algebraic variables are to be untracked.
-     *
-     * @return @c true if all the algebraic variables in the model were untracked, @c false otherwise.
      */
-    bool untrackAllAlgebraic(const AnalyserModelPtr &model);
+    void untrackAllAlgebraic(const AnalyserModelPtr &model);
 
     /**
      * @brief Track all the variables in the given @p model.
@@ -190,10 +171,8 @@ public:
      * tracked variables. This includes all the constants, computed constants, and algebraic variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the variables are to be tracked.
-     *
-     * @return @c true if all the variables in the model were tracked, @c false otherwise.
      */
-    bool trackAllVariables(const AnalyserModelPtr &model);
+    void trackAllVariables(const AnalyserModelPtr &model);
 
     /**
      * @brief Untrack all the variables in the given @p model.
@@ -202,10 +181,8 @@ public:
      * tracked variables. This includes all the constants, computed constants, and algebraic variables.
      *
      * @param model The pointer to the @ref AnalyserModel which all the variables are to be untracked.
-     *
-     * @return @c true if all the variables in the model were untracked, @c false otherwise.
      */
-    bool untrackAllVariables(const AnalyserModelPtr &model);
+    void untrackAllVariables(const AnalyserModelPtr &model);
 
     /**
      * @brief Get the number of tracked constants in the given @p model.
@@ -304,7 +281,7 @@ public:
      *
      * @return The interface code as a @c std::string.
      */
-    std::string interfaceCode(const AnalyserModelPtr &model) const;
+    std::string interfaceCode(const AnalyserModelPtr &model);
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
@@ -315,7 +292,7 @@ public:
      *
      * @return The implementation code as a @c std::string.
      */
-    std::string implementationCode(const AnalyserModelPtr &model) const;
+    std::string implementationCode(const AnalyserModelPtr &model);
 
     /**
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
@@ -346,7 +323,9 @@ private:
     Generator(); /**< Constructor, @private. */
 
     struct GeneratorImpl;
-    GeneratorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+
+    GeneratorImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const GeneratorImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

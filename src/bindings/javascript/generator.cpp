@@ -24,7 +24,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_generator)
 {
-    class_<libcellml::Generator>("Generator")
+    class_<libcellml::Generator, base<libcellml::Logger>>("Generator")
         .smart_ptr_constructor("Generator", &libcellml::Generator::create)
         .function("profile", &libcellml::Generator::profile)
         .function("setProfile", &libcellml::Generator::setProfile)

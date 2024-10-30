@@ -49,19 +49,8 @@ bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &eq
     switch (equation->type()) {
     case AnalyserEquation::Type::COMPUTED_CONSTANT:
         return isTrackedVariable(equation->computedConstants().front()) == tracked;
-    case AnalyserEquation::Type::NLA: {
-        if (!equation->states().empty()) {
-            return true;
-        }
-
-        for (const auto &variable : equation->algebraic()) {
-            if (isTrackedVariable(variable) == tracked) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    case AnalyserEquation::Type::NLA:
+        return true;
     case AnalyserEquation::Type::ALGEBRAIC:
         return isTrackedVariable(equation->algebraic().front()) == tracked;
     case AnalyserEquation::Type::EXTERNAL:
@@ -81,6 +70,18 @@ bool Generator::GeneratorImpl::isUntrackedEquation(const AnalyserEquationPtr &eq
     return doIsTrackedEquation(equation, false);
 }
 
+bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
+                                                   bool tracked)
+{
+    // By default a variable is always tracked.
+
+    if (mTrackedVariables[model].find(variable) == mTrackedVariables[model].end()) {
+        mTrackedVariables[model][variable] = true;
+    }
+
+    return mTrackedVariables[model][variable] == tracked;
+}
+
 bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked)
 {
     if (variable == nullptr) {
@@ -90,12 +91,9 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
     auto model = variable->model();
 
     for (const auto &modelVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())) {
-            if (mTrackedVariables[model].find(modelVariable) == mTrackedVariables[model].end()) {
-                mTrackedVariables[model][modelVariable] = true;
-            }
-
-            return mTrackedVariables[model][modelVariable] == tracked;
+        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())
+            && trackableVariable(modelVariable)) {
+            return doIsTrackedVariable(model, modelVariable, tracked);
         }
     }
 
@@ -112,129 +110,238 @@ bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &va
     return doIsTrackedVariable(variable, false);
 }
 
-bool Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variable, bool tracked)
+bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &variable)
 {
-    if (variable == nullptr) {
-        return false;
-    }
+    // A trackable variable is a variable that is not a variable of integration, a state, or an external variable, which
+    // is already the case when we reach this point. However, a trackable variable is also a variable that is not
+    // computed using an NLA system.
 
-    auto model = variable->model();
-
-    for (const auto &modelVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())) {
-            mTrackedVariables[modelVariable->model()][modelVariable] = tracked;
-
-            return true;
+    for (const auto &equation : variable->equations()) {
+        if (equation->type() == AnalyserEquation::Type::NLA) {
+            return false;
         }
-    }
-
-    return false;
-}
-
-bool Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &variable)
-{
-    return doTrackVariable(variable, true);
-}
-
-bool Generator::GeneratorImpl::untrackVariable(const AnalyserVariablePtr &variable)
-{
-    return doTrackVariable(variable, false);
-}
-
-bool Generator::GeneratorImpl::doTrackVariables(const std::vector<AnalyserVariablePtr> &variables,
-                                                bool tracked)
-{
-    for (const auto &variable : variables) {
-        doTrackVariable(variable, tracked);
     }
 
     return true;
 }
 
-bool Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &model)
+bool Generator::GeneratorImpl::specialVariable(const AnalyserModelPtr &model, const VariablePtr &variable,
+                                               const VariablePtr &specialVariable, bool tracked,
+                                               Issue::ReferenceRule trackedReferenceRule,
+                                               Issue::ReferenceRule untrackedReferenceRule)
 {
-    if (model == nullptr) {
-        return false;
+    if (model->areEquivalentVariables(variable, specialVariable)) {
+        auto issue = Issue::IssueImpl::create();
+        auto variableType = model->variable(specialVariable)->type();
+        auto variableTypeString = (variableType == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+                                      "the variable of integration" :
+                                      ((variableType == AnalyserVariable::Type::STATE) ?
+                                           "a state variable" :
+                                           "an external variable");
+
+        issue->mPimpl->setDescription("Variable '" + variable->name()
+                                      + "' in component '" + owningComponent(variable)->name()
+                                      + "' is " + variableTypeString + " and "
+                                      + (tracked ?
+                                             "is therefore always tracked." :
+                                             "cannot therefore be untracked."));
+
+        if (tracked) {
+            issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+        }
+
+        issue->mPimpl->setReferenceRule(tracked ? trackedReferenceRule : untrackedReferenceRule);
+
+        addIssue(issue);
+
+        return true;
     }
 
-    return doTrackVariables(model->constants(), true);
+    return false;
 }
 
-bool Generator::GeneratorImpl::untrackAllConstants(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variable, bool tracked,
+                                               bool needRemoveAllIssues)
 {
-    if (model == nullptr) {
-        return false;
+    // Make sure that we have a variable.
+
+    if (needRemoveAllIssues) {
+        removeAllIssues();
     }
 
-    return doTrackVariables(model->constants(), false);
+    if (variable == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The variable is null.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::GENERATOR_NULL_VARIABLE);
+
+        addIssue(issue);
+
+        return;
+    }
+
+    // Check whether we want to track/untrack a constant, a computed constant, or an algebraic variable though we can
+    // only track/untrack a variable if it is actually trackable.
+
+    auto model = variable->model();
+    auto var = variable->variable();
+
+    for (const auto &modelVariable : variables(model, false)) {
+        if (model->areEquivalentVariables(modelVariable->variable(), var)) {
+            if (trackableVariable(modelVariable)) {
+                mTrackedVariables[modelVariable->model()][modelVariable] = tracked;
+
+                return;
+            }
+
+            auto issue = Issue::IssueImpl::create();
+
+            issue->mPimpl->setDescription("Variable '" + var->name()
+                                          + "' in component '" + owningComponent(var)->name()
+                                          + "' is computed using an NLA system and "
+                                          + (tracked ?
+                                                 "is therefore always tracked." :
+                                                 "cannot therefore be untracked."));
+
+            addIssue(issue);
+
+            return;
+        }
+    }
+
+    // Check whether we tried to track/untrack a state variable.
+
+    for (const auto &state : model->states()) {
+        if (specialVariable(model, var, state->variable(), tracked,
+                            Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED,
+                            Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE)) {
+            return;
+        }
+    }
+
+    // Check whether we tried to track/untrack an external variable.
+
+    for (const auto &external : model->externals()) {
+        if (specialVariable(model, var, external->variable(), tracked,
+                            Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED,
+                            Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE)) {
+            return;
+        }
+    }
+
+    // In the end, we tried to track/untrack the variable of integration.
+
+    specialVariable(model, var, model->voi()->variable(), tracked,
+                    Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED,
+                    Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE);
 }
 
-bool Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &variable)
 {
-    if (model == nullptr) {
-        return false;
-    }
-
-    return doTrackVariables(model->computedConstants(), true);
+    return doTrackVariable(variable, true);
 }
 
-bool Generator::GeneratorImpl::untrackAllComputedConstants(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::untrackVariable(const AnalyserVariablePtr &variable)
 {
-    if (model == nullptr) {
-        return false;
-    }
-
-    return doTrackVariables(model->computedConstants(), false);
+    return doTrackVariable(variable, false);
 }
 
-bool Generator::GeneratorImpl::trackAllAlgebraic(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::doTrackVariables(const std::vector<AnalyserVariablePtr> &variables, bool tracked)
 {
-    if (model == nullptr) {
-        return false;
-    }
+    removeAllIssues();
 
-    return doTrackVariables(model->algebraic(), true);
+    for (const auto &variable : variables) {
+        doTrackVariable(variable, tracked, false);
+    }
 }
 
-bool Generator::GeneratorImpl::untrackAllAlgebraic(const AnalyserModelPtr &model)
+bool Generator::GeneratorImpl::validModel(const AnalyserModelPtr &model)
 {
+    removeAllIssues();
+
     if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model is null.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::GENERATOR_NULL_MODEL);
+
+        addIssue(issue);
+
         return false;
     }
 
-    return doTrackVariables(model->algebraic(), false);
+    return true;
 }
 
-bool Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &model)
 {
-    if (model == nullptr) {
-        return false;
+    if (validModel(model)) {
+        doTrackVariables(model->constants(), true);
     }
-
-    return doTrackVariables(variables(model, false), true);
 }
 
-bool Generator::GeneratorImpl::untrackAllVariables(const AnalyserModelPtr &model)
+void Generator::GeneratorImpl::untrackAllConstants(const AnalyserModelPtr &model)
 {
-    if (model == nullptr) {
-        return false;
+    if (validModel(model)) {
+        doTrackVariables(model->constants(), false);
     }
+}
 
-    return doTrackVariables(variables(model, false), false);
+void Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(model->computedConstants(), true);
+    }
+}
+
+void Generator::GeneratorImpl::untrackAllComputedConstants(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(model->computedConstants(), false);
+    }
+}
+
+void Generator::GeneratorImpl::trackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(model->algebraic(), true);
+    }
+}
+
+void Generator::GeneratorImpl::untrackAllAlgebraic(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(model->algebraic(), false);
+    }
+}
+
+void Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(variables(model, false), true);
+    }
+}
+
+void Generator::GeneratorImpl::untrackAllVariables(const AnalyserModelPtr &model)
+{
+    if (validModel(model)) {
+        doTrackVariables(variables(model, false), false);
+    }
 }
 
 size_t Generator::GeneratorImpl::doTrackedVariableCount(const AnalyserModelPtr &model,
-                                                        const std::vector<AnalyserVariablePtr> &variables,
-                                                        bool tracked)
+                                                        const std::vector<AnalyserVariablePtr> &variables, bool tracked)
 {
     size_t res = 0;
 
     for (const auto &variable : variables) {
-        if (mTrackedVariables[model].find(variable) == mTrackedVariables[model].end()) {
-            mTrackedVariables[model][variable] = true;
-        }
+        if (trackableVariable(variable)) {
+            if (doIsTrackedVariable(model, variable, tracked)) {
+                ++res;
+            }
+        } else {
+            // The variable is not trackable per se, which means that it is always tracked.
 
-        if (mTrackedVariables[model][variable] == tracked) {
             ++res;
         }
     }
@@ -988,8 +1095,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
 
         for (const auto &equation : model->equations()) {
             if ((equation->type() == AnalyserEquation::Type::NLA)
-                && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())
-                && isTrackedEquation(equation)) {
+                && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())) {
                 // 1) Generate some code for the objectiveFunction[INDEX]() method.
                 //     a) Retrieve the values from our NLA solver's u array.
 
@@ -2074,8 +2180,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
             break;
         case AnalyserEquation::Type::NLA:
-            if (!mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()).empty()
-                && isTrackedEquation(equation)) {
+            if (!mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()).empty()) {
                 res += mProfile->indentString()
                        + replace(mProfile->findRootCallString(modelHasOdes(model), model->hasExternalVariables()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
@@ -2228,8 +2333,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
         for (const auto &algebraic : model->algebraic()) {
             if (algebraic->initialisingVariable() != nullptr) {
                 methodBody += generateInitialisationCode(model, algebraic);
-            } else if ((algebraic->equation(0)->type() == AnalyserEquation::Type::NLA)
-                       && isTrackedVariable(algebraic)) {
+            } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
                 methodBody += generateZeroInitialisationCode(model, algebraic);
             }
         }
@@ -2318,14 +2422,26 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
     }
 }
 
+Generator::GeneratorImpl *Generator::pFunc()
+{
+    return reinterpret_cast<Generator::GeneratorImpl *>(Logger::pFunc());
+}
+
+/*TODO
+const Generator::GeneratorImpl *Generator::pFunc() const
+{
+    return reinterpret_cast<Generator::GeneratorImpl const *>(Logger::pFunc());
+}
+*/
+
 Generator::Generator()
-    : mPimpl(new GeneratorImpl())
+    : Logger(new GeneratorImpl())
 {
 }
 
 Generator::~Generator()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 GeneratorPtr Generator::create() noexcept
@@ -2335,215 +2451,215 @@ GeneratorPtr Generator::create() noexcept
 
 GeneratorProfilePtr Generator::profile()
 {
-    return mPimpl->mProfile;
+    return pFunc()->mProfile;
 }
 
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
-    mPimpl->mProfile = profile;
+    pFunc()->mProfile = profile;
 }
 
 bool Generator::isTrackedVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->isTrackedVariable(variable);
+    return pFunc()->isTrackedVariable(variable);
 }
 
 bool Generator::isUntrackedVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->isUntrackedVariable(variable);
+    return pFunc()->isUntrackedVariable(variable);
 }
 
-bool Generator::trackVariable(const AnalyserVariablePtr &variable)
+void Generator::trackVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->trackVariable(variable);
+    pFunc()->trackVariable(variable);
 }
 
-bool Generator::untrackVariable(const AnalyserVariablePtr &variable)
+void Generator::untrackVariable(const AnalyserVariablePtr &variable)
 {
-    return mPimpl->untrackVariable(variable);
+    pFunc()->untrackVariable(variable);
 }
 
-bool Generator::trackAllConstants(const AnalyserModelPtr &model)
+void Generator::trackAllConstants(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackAllConstants(model);
+    pFunc()->trackAllConstants(model);
 }
 
-bool Generator::untrackAllConstants(const AnalyserModelPtr &model)
+void Generator::untrackAllConstants(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackAllConstants(model);
+    pFunc()->untrackAllConstants(model);
 }
 
-bool Generator::trackAllComputedConstants(const AnalyserModelPtr &model)
+void Generator::trackAllComputedConstants(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackAllComputedConstants(model);
+    pFunc()->trackAllComputedConstants(model);
 }
 
-bool Generator::untrackAllComputedConstants(const AnalyserModelPtr &model)
+void Generator::untrackAllComputedConstants(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackAllComputedConstants(model);
+    pFunc()->untrackAllComputedConstants(model);
 }
 
-bool Generator::trackAllAlgebraic(const AnalyserModelPtr &model)
+void Generator::trackAllAlgebraic(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackAllAlgebraic(model);
+    pFunc()->trackAllAlgebraic(model);
 }
 
-bool Generator::untrackAllAlgebraic(const AnalyserModelPtr &model)
+void Generator::untrackAllAlgebraic(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackAllAlgebraic(model);
+    pFunc()->untrackAllAlgebraic(model);
 }
 
-bool Generator::trackAllVariables(const AnalyserModelPtr &model)
+void Generator::trackAllVariables(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackAllVariables(model);
+    pFunc()->trackAllVariables(model);
 }
 
-bool Generator::untrackAllVariables(const AnalyserModelPtr &model)
+void Generator::untrackAllVariables(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackAllVariables(model);
+    pFunc()->untrackAllVariables(model);
 }
 
 size_t Generator::trackedConstantCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackedConstantCount(model);
+    return pFunc()->trackedConstantCount(model);
 }
 
 size_t Generator::untrackedConstantCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackedConstantCount(model);
+    return pFunc()->untrackedConstantCount(model);
 }
 
 size_t Generator::trackedComputedConstantCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackedComputedConstantCount(model);
+    return pFunc()->trackedComputedConstantCount(model);
 }
 
 size_t Generator::untrackedComputedConstantCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackedComputedConstantCount(model);
+    return pFunc()->untrackedComputedConstantCount(model);
 }
 
 size_t Generator::trackedAlgebraicCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackedAlgebraicCount(model);
+    return pFunc()->trackedAlgebraicCount(model);
 }
 
 size_t Generator::untrackedAlgebraicCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackedAlgebraicCount(model);
+    return pFunc()->untrackedAlgebraicCount(model);
 }
 
 size_t Generator::trackedVariableCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->trackedVariableCount(model);
+    return pFunc()->trackedVariableCount(model);
 }
 
 size_t Generator::untrackedVariableCount(const AnalyserModelPtr &model)
 {
-    return mPimpl->untrackedVariableCount(model);
+    return pFunc()->untrackedVariableCount(model);
 }
 
-std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
+std::string Generator::interfaceCode(const AnalyserModelPtr &model)
 {
     if ((model == nullptr)
-        || (mPimpl->mProfile == nullptr)
+        || (pFunc()->mProfile == nullptr)
         || !model->isValid()
-        || !mPimpl->mProfile->hasInterface()) {
+        || !pFunc()->mProfile->hasInterface()) {
         return {};
     }
 
     // Get ourselves ready.
 
-    mPimpl->reset();
+    pFunc()->reset();
 
     // Add code for the origin comment.
 
-    mPimpl->addOriginCommentCode();
+    pFunc()->addOriginCommentCode();
 
     // Add code for the header.
 
-    mPimpl->addInterfaceHeaderCode();
+    pFunc()->addInterfaceHeaderCode();
 
     // Add code for the interface of the version of the profile and libCellML.
 
-    mPimpl->addVersionAndLibcellmlVersionCode(true);
+    pFunc()->addVersionAndLibcellmlVersionCode(true);
 
     // Add code for the interface of the number of states and variables.
 
-    mPimpl->addStateAndVariableCountCode(model, true);
+    pFunc()->addStateAndVariableCountCode(model, true);
 
     // Add code for the variable information related objects.
 
-    mPimpl->addVariableInfoObjectCode(model);
+    pFunc()->addVariableInfoObjectCode(model);
 
     // Add code for the interface of the information about the variable of integration, states, constants, computed
     // constants, algebraic variables, and external variables.
 
-    mPimpl->addInterfaceVariableInfoCode(model);
+    pFunc()->addInterfaceVariableInfoCode(model);
 
     // Add code for the interface to create and delete arrays.
 
-    mPimpl->addInterfaceCreateDeleteArrayMethodsCode(model);
+    pFunc()->addInterfaceCreateDeleteArrayMethodsCode(model);
 
     // Add code for the external variable method type definition.
 
-    mPimpl->addExternalVariableMethodTypeDefinitionCode(model);
+    pFunc()->addExternalVariableMethodTypeDefinitionCode(model);
 
     // Add code for the interface to compute the model.
 
-    mPimpl->addInterfaceComputeModelMethodsCode(model);
+    pFunc()->addInterfaceComputeModelMethodsCode(model);
 
-    return mPimpl->mCode;
+    return pFunc()->mCode;
 }
 
-std::string Generator::implementationCode(const AnalyserModelPtr &model) const
+std::string Generator::implementationCode(const AnalyserModelPtr &model)
 {
     if ((model == nullptr)
-        || (mPimpl->mProfile == nullptr)
+        || (pFunc()->mProfile == nullptr)
         || !model->isValid()) {
         return {};
     }
 
     // Get ourselves ready.
 
-    mPimpl->reset();
+    pFunc()->reset();
 
     // Add code for the origin comment.
 
-    mPimpl->addOriginCommentCode();
+    pFunc()->addOriginCommentCode();
 
     // Add code for the header.
 
-    mPimpl->addImplementationHeaderCode();
+    pFunc()->addImplementationHeaderCode();
 
     // Add code for the implementation of the version of the profile and
     // libCellML.
 
-    mPimpl->addVersionAndLibcellmlVersionCode();
+    pFunc()->addVersionAndLibcellmlVersionCode();
 
     // Add code for the implementation of the number of states and variables.
 
-    mPimpl->addStateAndVariableCountCode(model);
+    pFunc()->addStateAndVariableCountCode(model);
 
     // Add code for the variable information related objects.
 
-    if (!mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableInfoObjectCode(model);
+    if (!pFunc()->mProfile->hasInterface()) {
+        pFunc()->addVariableInfoObjectCode(model);
     }
 
     // Add code for the implementation of the information about the variable of integration, states, constants, computed
     // constants, algebraic variables, and external variables.
 
-    mPimpl->addImplementationVariableInfoCode(model);
+    pFunc()->addImplementationVariableInfoCode(model);
 
     // Add code for the arithmetic and trigonometric functions.
 
-    mPimpl->addArithmeticFunctionsCode(model);
-    mPimpl->addTrigonometricFunctionsCode(model);
+    pFunc()->addArithmeticFunctionsCode(model);
+    pFunc()->addTrigonometricFunctionsCode(model);
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateDeleteArrayMethodsCode(model);
+    pFunc()->addImplementationCreateDeleteArrayMethodsCode(model);
 
     // Add code for the NLA solver.
 
@@ -2551,18 +2667,16 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
 
     for (const auto &equation : model->equations()) {
         if (equation->type() == AnalyserEquation::Type::NLA) {
-            if (mPimpl->isTrackedEquation(equation)) {
-                needNlaSolving = true;
+            needNlaSolving = true;
 
-                break;
-            }
+            break;
         }
     }
 
     if (needNlaSolving) {
-        mPimpl->addRootFindingInfoObjectCode(model);
-        mPimpl->addExternNlaSolveMethodCode();
-        mPimpl->addNlaSystemsCode(model);
+        pFunc()->addRootFindingInfoObjectCode(model);
+        pFunc()->addExternNlaSolveMethodCode();
+        pFunc()->addNlaSystemsCode(model);
     }
 
     // Add code for the implementation to initialise our variables.
@@ -2570,16 +2684,16 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
     auto equations = model->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mPimpl->addImplementationInitialiseVariablesMethodCode(model, remainingEquations);
+    pFunc()->addImplementationInitialiseVariablesMethodCode(model, remainingEquations);
 
     // Add code for the implementation to compute our computed constants.
 
-    mPimpl->addImplementationComputeComputedConstantsMethodCode(model, remainingEquations);
+    pFunc()->addImplementationComputeComputedConstantsMethodCode(model, remainingEquations);
 
     // Add code for the implementation to compute our rates (and any variables
     // on which they depend).
 
-    mPimpl->addImplementationComputeRatesMethodCode(model, remainingEquations);
+    pFunc()->addImplementationComputeRatesMethodCode(model, remainingEquations);
 
     // Add code for the implementation to compute our variables.
     // Note: this method computes the remaining variables, i.e. the ones not
@@ -2589,9 +2703,9 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
     //       thus ensuring that variables that rely on the value of some
     //       states/rates are up to date.
 
-    mPimpl->addImplementationComputeVariablesMethodCode(model, remainingEquations);
+    pFunc()->addImplementationComputeVariablesMethodCode(model, remainingEquations);
 
-    return mPimpl->mCode;
+    return pFunc()->mCode;
 }
 
 std::string Generator::equationCode(const AnalyserEquationAstPtr &ast,
@@ -2603,7 +2717,7 @@ std::string Generator::equationCode(const AnalyserEquationAstPtr &ast,
         generator->setProfile(generatorProfile);
     }
 
-    return generator->mPimpl->generateCode(nullptr, ast);
+    return generator->pFunc()->generateCode(nullptr, ast);
 }
 
 std::string Generator::equationCode(const AnalyserEquationAstPtr &ast)

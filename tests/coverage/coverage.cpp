@@ -641,6 +641,9 @@ TEST(Coverage, generator)
     EXPECT_NE(nullptr, analyserModel->state(0)->equation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->constant(0));
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->equationCount());
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->equations().size());
+    EXPECT_EQ(nullptr, analyserModel->constant(0)->equation(0));
     EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
@@ -683,6 +686,10 @@ TEST(Coverage, generator)
     }
 
     auto generator = libcellml::Generator::create();
+
+    generator->trackVariable(analyserModel->variable(model->component("my_component")->variable("eqnNlaVariable1")));
+
+    expectEqualIssues({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, generator);
 
     EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
 

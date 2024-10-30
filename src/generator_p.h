@@ -20,6 +20,8 @@ limitations under the License.
 
 #include "libcellml/generatorprofile.h"
 
+#include "issue_p.h"
+#include "logger_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -31,7 +33,7 @@ std::string generateDoubleCode(const std::string &value);
  *
  * The private implementation for the Generator class.
  */
-struct Generator::GeneratorImpl
+struct Generator::GeneratorImpl: public Logger::LoggerImpl
 {
     std::string mCode;
 
@@ -46,29 +48,37 @@ struct Generator::GeneratorImpl
     bool isTrackedEquation(const AnalyserEquationPtr &equation);
     bool isUntrackedEquation(const AnalyserEquationPtr &equation);
 
+    bool doIsTrackedVariable(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable, bool tracked);
     bool doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked);
 
     bool isTrackedVariable(const AnalyserVariablePtr &variable);
     bool isUntrackedVariable(const AnalyserVariablePtr &variable);
 
-    bool doTrackVariable(const AnalyserVariablePtr &variable, bool tracked);
+    bool trackableVariable(const AnalyserVariablePtr &variable);
+    bool specialVariable(const AnalyserModelPtr &model, const VariablePtr &variable, const VariablePtr &specialVariable,
+                         bool tracked, Issue::ReferenceRule trackedReferenceRule,
+                         Issue::ReferenceRule untrackedReferenceRule);
 
-    bool trackVariable(const AnalyserVariablePtr &variable);
-    bool untrackVariable(const AnalyserVariablePtr &variable);
+    void doTrackVariable(const AnalyserVariablePtr &variable, bool tracked, bool needRemoveAllIssues = true);
 
-    bool doTrackVariables(const std::vector<AnalyserVariablePtr> &variables, bool tracked);
+    void trackVariable(const AnalyserVariablePtr &variable);
+    void untrackVariable(const AnalyserVariablePtr &variable);
 
-    bool trackAllConstants(const AnalyserModelPtr &model);
-    bool untrackAllConstants(const AnalyserModelPtr &model);
+    void doTrackVariables(const std::vector<AnalyserVariablePtr> &variables, bool tracked);
 
-    bool trackAllComputedConstants(const AnalyserModelPtr &model);
-    bool untrackAllComputedConstants(const AnalyserModelPtr &model);
+    bool validModel(const AnalyserModelPtr &model);
 
-    bool trackAllAlgebraic(const AnalyserModelPtr &model);
-    bool untrackAllAlgebraic(const AnalyserModelPtr &model);
+    void trackAllConstants(const AnalyserModelPtr &model);
+    void untrackAllConstants(const AnalyserModelPtr &model);
 
-    bool trackAllVariables(const AnalyserModelPtr &model);
-    bool untrackAllVariables(const AnalyserModelPtr &model);
+    void trackAllComputedConstants(const AnalyserModelPtr &model);
+    void untrackAllComputedConstants(const AnalyserModelPtr &model);
+
+    void trackAllAlgebraic(const AnalyserModelPtr &model);
+    void untrackAllAlgebraic(const AnalyserModelPtr &model);
+
+    void trackAllVariables(const AnalyserModelPtr &model);
+    void untrackAllVariables(const AnalyserModelPtr &model);
 
     size_t doTrackedVariableCount(const AnalyserModelPtr &model, const std::vector<AnalyserVariablePtr> &variables,
                                   bool tracked);
