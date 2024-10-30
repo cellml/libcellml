@@ -46,6 +46,11 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
     std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
 
+bool AnalyserVariable::AnalyserVariableImpl::constantWithDummyEquation() const
+{
+    return (mType == Type::CONSTANT) && (mEquations.front().lock() == nullptr);
+}
+
 AnalyserVariable::AnalyserVariable()
     : mPimpl(new AnalyserVariableImpl())
 {
@@ -94,13 +99,25 @@ AnalyserModelPtr AnalyserVariable::model() const
     return mPimpl->mModel.lock();
 }
 
+// Note: our equation-related methods must account for the fact that a constant intialised using the `initial_value`
+//       attribute (rather than through an equation; e.g. x = 3) will have a dummy equation associated with it which
+//       we don't want to be accessible, hence the calls to constantWithDummyEquation() in the following methods.
+
 size_t AnalyserVariable::equationCount() const
 {
+    if (mPimpl->constantWithDummyEquation()) {
+        return 0;
+    }
+
     return mPimpl->mEquations.size();
 }
 
 std::vector<AnalyserEquationPtr> AnalyserVariable::equations() const
 {
+    if (mPimpl->constantWithDummyEquation()) {
+        return {};
+    }
+
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &equation : mPimpl->mEquations) {
@@ -112,7 +129,7 @@ std::vector<AnalyserEquationPtr> AnalyserVariable::equations() const
 
 AnalyserEquationPtr AnalyserVariable::equation(size_t index) const
 {
-    if (index >= mPimpl->mEquations.size()) {
+    if (mPimpl->constantWithDummyEquation() || (index >= mPimpl->mEquations.size())) {
         return {};
     }
 
