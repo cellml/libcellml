@@ -119,12 +119,16 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>E_Na</ci>
                 <apply>
                     <minus/>
-                    <ci>E_R</ci>
-                    <cn cellml:units="millivolt">115</cn>
+                    <ci>E_Na</ci>
+                    <apply>
+                        <minus/>
+                        <ci>E_R</ci>
+                        <cn cellml:units="millivolt">115</cn>
+                    </apply>
                 </apply>
+                <cn cellml:units="millivolt">0</cn>
             </apply>
             <apply>
                 <eq/>
@@ -160,39 +164,35 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
+                <ci>alpha_m</ci>
                 <apply>
-                    <minus/>
-                    <ci>alpha_m</ci>
+                    <divide/>
                     <apply>
-                        <divide/>
+                        <times/>
+                        <cn cellml:units="per_millivolt_millisecond">0.1</cn>
                         <apply>
-                            <times/>
-                            <cn cellml:units="per_millivolt_millisecond">0.1</cn>
-                            <apply>
-                                <plus/>
-                                <ci>V</ci>
-                                <cn cellml:units="millivolt">25</cn>
-                            </apply>
-                        </apply>
-                        <apply>
-                            <minus/>
-                            <apply>
-                                <exp/>
-                                <apply>
-                                    <divide/>
-                                    <apply>
-                                        <plus/>
-                                        <ci>V</ci>
-                                        <cn cellml:units="millivolt">25</cn>
-                                    </apply>
-                                    <cn cellml:units="millivolt">10</cn>
-                                </apply>
-                            </apply>
-                            <cn cellml:units="dimensionless">1</cn>
+                            <plus/>
+                            <ci>V</ci>
+                            <cn cellml:units="millivolt">25</cn>
                         </apply>
                     </apply>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>V</ci>
+                                    <cn cellml:units="millivolt">25</cn>
+                                </apply>
+                                <cn cellml:units="millivolt">10</cn>
+                            </apply>
+                        </apply>
+                        <cn cellml:units="dimensionless">1</cn>
+                    </apply>
                 </apply>
-                <cn cellml:units="per_millisecond">0</cn>
             </apply>
             <apply>
                 <eq/>
@@ -483,12 +483,16 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>E_L</ci>
                 <apply>
                     <minus/>
-                    <ci>E_R</ci>
-                    <cn cellml:units="millivolt">10.613</cn>
+                    <ci>E_L</ci>
+                    <apply>
+                        <minus/>
+                        <ci>E_R</ci>
+                        <cn cellml:units="millivolt">10.613</cn>
+                    </apply>
                 </apply>
+                <cn cellml:units="millivolt">0</cn>
             </apply>
             <apply>
                 <eq/>

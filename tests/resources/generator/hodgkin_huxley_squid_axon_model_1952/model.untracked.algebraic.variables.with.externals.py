@@ -7,15 +7,16 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.2"
 
-STATE_COUNT = 3
+STATE_COUNT = 4
 CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 0
-EXTERNAL_COUNT = 3
+ALGEBRAIC_COUNT = 1
+EXTERNAL_COUNT = 1
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
 STATE_INFO = [
+    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
     {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
     {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
@@ -36,12 +37,11 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
+    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"}
 ]
 
 EXTERNAL_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane"},
-    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
-    {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"}
 ]
 
 
@@ -78,9 +78,10 @@ def create_externals_array():
 
 
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
-    states[0] = 0.6
-    states[1] = 0.05
-    states[2] = 0.325
+    states[0] = 0.0
+    states[1] = 0.6
+    states[2] = 0.05
+    states[3] = 0.325
     constants[0] = 1.0
     constants[1] = 0.0
     constants[2] = 0.3
@@ -95,19 +96,22 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    leakage_current_i_L = constants[2]*(states[0]-computed_constants[0])
+    potassium_channel_i_K = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
+    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    sodium_channel_m_gate_alpha_m = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)
-    sodium_channel_m_gate_beta_m = 4.0*exp(externals[0]/18.0)
-    rates[1] = sodium_channel_m_gate_alpha_m*(1.0-states[1])-sodium_channel_m_gate_beta_m*states[1]
-    sodium_channel_h_gate_alpha_h = 0.07*exp(externals[0]/20.0)
-    sodium_channel_h_gate_beta_h = 1.0/(exp((externals[0]+30.0)/10.0)+1.0)
-    rates[0] = sodium_channel_h_gate_alpha_h*(1.0-states[0])-sodium_channel_h_gate_beta_h*states[0]
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    potassium_channel_n_gate_beta_n = 0.125*exp(externals[0]/80.0)
-    rates[2] = externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2]
+    rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
+    sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
+    rates[2] = algebraic[3]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
+    sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0)
+    sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1]
+    potassium_channel_n_gate_alpha_n = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    potassium_channel_n_gate_beta_n = 0.125*exp(states[0]/80.0)
+    rates[3] = potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
