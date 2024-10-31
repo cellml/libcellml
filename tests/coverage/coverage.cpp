@@ -347,7 +347,7 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatAreEmpty)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(4), validator->errorCount());
-    expectEqualIssues(expectedIssues, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 
     model = importer->flattenModel(model);
 
@@ -418,13 +418,13 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatReferenceEmptyNamedUnits
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(3), validator->errorCount());
-    expectEqualIssues(expectedIssuesModel, validator);
+    EXPECT_EQ_ISSUES(expectedIssuesModel, validator);
 
     model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(2), validator->errorCount());
-    expectEqualIssues(expectedIssuesFLatModel, validator);
+    EXPECT_EQ_ISSUES(expectedIssuesFLatModel, validator);
 }
 
 TEST(Coverage, analyser)
