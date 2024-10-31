@@ -306,6 +306,8 @@ void objectiveFunction7(double *u, double *f, void *data)
 
     rates[2] = u[0];
 
+    double sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+
     f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-algebraic[7]*states[2])-0.0;
 }
 

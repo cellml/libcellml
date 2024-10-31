@@ -522,9 +522,9 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     // With an external variable with a dependency on a constant, computed constant, and algebraic variable.
 
-    auto membrane_Cm = model->component("membrane")->variable("Cm");
-    auto potassium_channel_EK = model->component("potassium_channel")->variable("E_K");
-    auto sodium_channel_m_gate_alapha_m = model->component("sodium_channel_m_gate")->variable("alpha_m");
+    auto membrane_Cm = model->component("membrane")->variable("Cm"); // Constant.
+    auto potassium_channel_EK = model->component("potassium_channel")->variable("E_K"); // Computed constant.
+    auto sodium_channel_m_gate_alapha_m = model->component("sodium_channel_m_gate")->variable("alpha_m"); // Algebraic variable.
     auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
 
     external_sodium_channel_i_Na->addDependency(membrane_Cm);

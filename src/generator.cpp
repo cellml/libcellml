@@ -1183,7 +1183,8 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
-                //     b) Initialise any untracked constant / computed constant that is needed by our NLA system.
+                //     b) Initialise any untracked constant, computed constant, or algebraic variable that is needed by
+                //        our NLA system.
 
                 methodBody += "\n";
 
@@ -1196,15 +1197,16 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                 }
 
                 std::vector<AnalyserEquationPtr> dummyRemainingEquations = model->equations();
-                std::vector<AnalyserEquationPtr> dummyEquationsForDependencies = model->equations();
+                std::vector<AnalyserEquationPtr> dummyEquationsForDependencies;
                 std::vector<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
 
                 for (const auto &dependency : equation->dependencies()) {
-                    if ((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                    if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                         || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
                         && isUntrackedEquation(dependency)) {
                         methodBody += generateEquationCode(model, dependency, dummyRemainingEquations,
                                                            dummyEquationsForDependencies,
-                                                           dummyGeneratedConstantDependencies, true);
+                                                           dummyGeneratedConstantDependencies, false, true);
                     }
                 }
 
@@ -2189,7 +2191,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
                                                            std::vector<AnalyserEquationPtr> &equationsForDependencies,
                                                            std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
-                                                           bool includeComputedConstants)
+                                                           bool includeComputedConstants, bool forNlaSystem)
 {
     std::string res;
 
@@ -2221,6 +2223,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                 if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                      && isUntrackedEquation(dependency))
                     || ((dependency->type() != AnalyserEquation::Type::ODE)
+                        && (!forNlaSystem || (dependency->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (equationsForDependencies.empty()
                             || isToBeComputedAgain(dependency)
