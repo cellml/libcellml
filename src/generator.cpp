@@ -91,8 +91,7 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &va
     auto model = variable->model();
 
     for (const auto &modelVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(modelVariable->variable(), variable->variable())
-            && trackableVariable(modelVariable)) {
+        if ((variable == modelVariable) && trackableVariable(modelVariable, tracked, false)) {
             return doIsTrackedVariable(model, modelVariable, tracked);
         }
     }
@@ -110,7 +109,7 @@ bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &va
     return doIsTrackedVariable(variable, false);
 }
 
-bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &variable)
+bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &variable, bool tracked, bool canAddIssue)
 {
     // A trackable variable is a variable that is not a variable of integration, a state, or an external variable, which
     // is already the case when we reach this point. However, a trackable variable is also a variable that is not
@@ -118,6 +117,26 @@ bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &vari
 
     for (const auto &equation : variable->equations()) {
         if (equation->type() == AnalyserEquation::Type::NLA) {
+            if (canAddIssue) {
+                auto issue = Issue::IssueImpl::create();
+
+                issue->mPimpl->setDescription("Variable '" + variable->variable()->name()
+                                              + "' in component '" + owningComponent(variable->variable())->name()
+                                              + "' is computed using an NLA system and "
+                                              + (tracked ?
+                                                     "is therefore always tracked." :
+                                                     "cannot therefore be untracked."));
+                issue->mPimpl->setReferenceRule(tracked ?
+                                                    Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED :
+                                                    Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
+
+                if (tracked) {
+                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+                }
+
+                addIssue(issue);
+            }
+
             return false;
         }
     }
@@ -125,32 +144,30 @@ bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &vari
     return true;
 }
 
-bool Generator::GeneratorImpl::specialVariable(const AnalyserModelPtr &model, const VariablePtr &variable,
-                                               const VariablePtr &specialVariable, bool tracked,
+bool Generator::GeneratorImpl::specialVariable(const AnalyserVariablePtr &variable,
+                                               const AnalyserVariablePtr &specialVariable, bool tracked,
                                                Issue::ReferenceRule trackedReferenceRule,
                                                Issue::ReferenceRule untrackedReferenceRule)
 {
-    if (model->areEquivalentVariables(variable, specialVariable)) {
+    if (variable == specialVariable) {
         auto issue = Issue::IssueImpl::create();
-        auto variableType = model->variable(specialVariable)->type();
-        auto variableTypeString = (variableType == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
-                                      "the variable of integration" :
-                                      ((variableType == AnalyserVariable::Type::STATE) ?
-                                           "a state variable" :
-                                           "an external variable");
+        auto variableType = (specialVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+                                "the variable of integration" :
+                                ((specialVariable->type() == AnalyserVariable::Type::STATE) ?
+                                     "a state variable" :
+                                     "an external variable");
 
-        issue->mPimpl->setDescription("Variable '" + variable->name()
-                                      + "' in component '" + owningComponent(variable)->name()
-                                      + "' is " + variableTypeString + " and "
+        issue->mPimpl->setDescription("Variable '" + variable->variable()->name()
+                                      + "' in component '" + owningComponent(variable->variable())->name()
+                                      + "' is " + variableType + " and "
                                       + (tracked ?
                                              "is therefore always tracked." :
                                              "cannot therefore be untracked."));
+        issue->mPimpl->setReferenceRule(tracked ? trackedReferenceRule : untrackedReferenceRule);
 
         if (tracked) {
             issue->mPimpl->setLevel(Issue::Level::MESSAGE);
         }
-
-        issue->mPimpl->setReferenceRule(tracked ? trackedReferenceRule : untrackedReferenceRule);
 
         addIssue(issue);
 
@@ -184,26 +201,12 @@ void Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variab
     // only track/untrack a variable if it is actually trackable.
 
     auto model = variable->model();
-    auto var = variable->variable();
 
     for (const auto &modelVariable : variables(model, false)) {
-        if (model->areEquivalentVariables(modelVariable->variable(), var)) {
-            if (trackableVariable(modelVariable)) {
+        if (variable == modelVariable) {
+            if (trackableVariable(variable, tracked)) {
                 mTrackedVariables[modelVariable->model()][modelVariable] = tracked;
-
-                return;
             }
-
-            auto issue = Issue::IssueImpl::create();
-
-            issue->mPimpl->setDescription("Variable '" + var->name()
-                                          + "' in component '" + owningComponent(var)->name()
-                                          + "' is computed using an NLA system and "
-                                          + (tracked ?
-                                                 "is therefore always tracked." :
-                                                 "cannot therefore be untracked."));
-
-            addIssue(issue);
 
             return;
         }
@@ -212,7 +215,7 @@ void Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variab
     // Check whether we tried to track/untrack a state variable.
 
     for (const auto &state : model->states()) {
-        if (specialVariable(model, var, state->variable(), tracked,
+        if (specialVariable(variable, state, tracked,
                             Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED,
                             Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE)) {
             return;
@@ -222,7 +225,7 @@ void Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variab
     // Check whether we tried to track/untrack an external variable.
 
     for (const auto &external : model->externals()) {
-        if (specialVariable(model, var, external->variable(), tracked,
+        if (specialVariable(variable, external, tracked,
                             Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED,
                             Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE)) {
             return;
@@ -231,7 +234,7 @@ void Generator::GeneratorImpl::doTrackVariable(const AnalyserVariablePtr &variab
 
     // In the end, we tried to track/untrack the variable of integration.
 
-    specialVariable(model, var, model->voi()->variable(), tracked,
+    specialVariable(variable, model->voi(), tracked,
                     Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED,
                     Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE);
 }
@@ -335,7 +338,7 @@ size_t Generator::GeneratorImpl::doTrackedVariableCount(const AnalyserModelPtr &
     size_t res = 0;
 
     for (const auto &variable : variables) {
-        if (trackableVariable(variable)) {
+        if (trackableVariable(variable, tracked, false)) {
             if (doIsTrackedVariable(model, variable, tracked)) {
                 ++res;
             }
@@ -1283,9 +1286,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
     }
 
     if (isUntrackedVariable(analyserVariable)) {
-        auto var = analyserVariable->variable();
-
-        return owningComponent(var)->name() + "_" + var->name();
+        return owningComponent(analyserVariable->variable())->name() + "_" + analyserVariable->variable()->name();
     }
 
     std::string arrayName;
