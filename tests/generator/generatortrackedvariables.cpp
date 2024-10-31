@@ -35,34 +35,34 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     EXPECT_FALSE(generator->isUntrackedVariable(nullptr));
 
     generator->trackVariable(nullptr);
-    expectEqualIssues({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
 
     generator->untrackVariable(nullptr);
-    expectEqualIssues({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
 
     generator->trackAllConstants(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->untrackAllConstants(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->trackAllComputedConstants(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->untrackAllComputedConstants(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->trackAllAlgebraic(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->untrackAllAlgebraic(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->trackAllVariables(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     generator->untrackAllVariables(nullptr);
-    expectEqualIssues({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES({"The model is null."}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedConstantCount(nullptr));
     EXPECT_EQ(size_t(0), generator->untrackedConstantCount(nullptr));
@@ -101,7 +101,7 @@ TEST(GeneratorTrackedVariables, tracAndkUntrackVariableOfIntegration)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'time' in component 'environment' is the variable of integration and cannot therefore be untracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and cannot therefore be untracked."}, generator);
 
     EXPECT_TRUE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -110,7 +110,7 @@ TEST(GeneratorTrackedVariables, tracAndkUntrackVariableOfIntegration)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'time' in component 'environment' is the variable of integration and is therefore always tracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and is therefore always tracked."}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -136,7 +136,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackStateVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'V' in component 'membrane' is a state variable and cannot therefore be untracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and cannot therefore be untracked."}, generator);
 
     EXPECT_TRUE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -145,7 +145,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackStateVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'V' in component 'membrane' is a state variable and is therefore always tracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and is therefore always tracked."}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -171,7 +171,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -180,7 +180,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -206,7 +206,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -215,7 +215,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -241,7 +241,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -250,7 +250,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -278,7 +278,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'V' in component 'membrane' is an external variable and cannot therefore be untracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and cannot therefore be untracked."}, generator);
 
     EXPECT_TRUE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -287,7 +287,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    expectEqualIssues({"Variable 'V' in component 'membrane' is an external variable and is therefore always tracked."}, generator);
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and is therefore always tracked."}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -308,10 +308,10 @@ TEST(GeneratorTrackedVariables, trackAndUntrackVariableFromOtherModel)
     auto otherVariable = otherModel->component("membrane")->variable("Cm");
 
     generator->trackVariable(analyserModel->variable(otherVariable));
-    expectEqualIssues({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
 
     generator->untrackVariable(analyserModel->variable(otherVariable));
-    expectEqualIssues({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
 }
 
 TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
@@ -331,7 +331,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllConstants(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(5), generator->untrackedConstantCount(analyserModel));
@@ -339,7 +339,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     EXPECT_EQ(size_t(5), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllConstants(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
@@ -364,7 +364,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllComputedConstants(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(3), generator->untrackedComputedConstantCount(analyserModel));
@@ -372,7 +372,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllComputedConstants(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
@@ -397,7 +397,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllAlgebraic(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(10), generator->untrackedAlgebraicCount(analyserModel));
@@ -405,7 +405,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(10), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllAlgebraic(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
@@ -428,13 +428,13 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllVariables(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllVariables(analyserModel);
-    expectEqualIssues({}, generator);
+    EXPECT_EQ_ISSUES({}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -494,7 +494,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     untrack(analyserModel, generator, trackingType);
 
-    expectEqualIssues(issues, generator);
+    EXPECT_EQ_ISSUES(issues, generator);
 
     auto profile = generator->profile();
 
@@ -528,7 +528,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     untrack(analyserModel, generator, trackingType);
 
-    expectEqualIssues(externalIssues, generator);
+    EXPECT_EQ_ISSUES(externalIssues, generator);
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
 
