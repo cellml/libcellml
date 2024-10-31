@@ -189,7 +189,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
-                                     bool includeComputedConstants);
+                                     bool includeComputedConstants, bool forNlaSystem = false);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
