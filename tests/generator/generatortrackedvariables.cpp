@@ -34,35 +34,42 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     EXPECT_FALSE(generator->isTrackedVariable(nullptr));
     EXPECT_FALSE(generator->isUntrackedVariable(nullptr));
 
+    const std::vector<std::string> nullVariableIssue = {"The variable is null."};
+    const std::vector<libcellml::Issue::Level> errorLevel = {libcellml::Issue::Level::ERROR};
+    const std::vector<libcellml::Issue::ReferenceRule> nullVariableReferenceRule = {libcellml::Issue::ReferenceRule::GENERATOR_NULL_VARIABLE};
+
     generator->trackVariable(nullptr);
-    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generator);
 
     generator->untrackVariable(nullptr);
-    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generator);
+
+    const std::vector<std::string> nullModelIssue = {"The model is null."};
+    const std::vector<libcellml::Issue::ReferenceRule> nullModelReferenceRule = {libcellml::Issue::ReferenceRule::GENERATOR_NULL_MODEL};
 
     generator->trackAllConstants(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->untrackAllConstants(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->trackAllComputedConstants(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->untrackAllComputedConstants(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->trackAllAlgebraic(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->untrackAllAlgebraic(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->trackAllVariables(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->untrackAllVariables(nullptr);
-    EXPECT_EQ_ISSUES({"The model is null."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedConstantCount(nullptr));
     EXPECT_EQ(size_t(0), generator->untrackedConstantCount(nullptr));
@@ -171,7 +178,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -180,7 +187,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -206,7 +213,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -215,7 +222,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -241,7 +248,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_FALSE(generator->isTrackedVariable(analyserModel->variable(variable)));
     EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->variable(variable)));
@@ -250,7 +257,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
     EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
 
     generator->trackVariable(analyserModel->variable(variable));
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -331,7 +338,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllConstants(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(5), generator->untrackedConstantCount(analyserModel));
@@ -339,7 +346,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     EXPECT_EQ(size_t(5), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllConstants(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
@@ -364,7 +371,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllComputedConstants(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(3), generator->untrackedComputedConstantCount(analyserModel));
@@ -372,7 +379,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllComputedConstants(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
@@ -397,7 +404,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllAlgebraic(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(10), generator->untrackedAlgebraicCount(analyserModel));
@@ -405,7 +412,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(10), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllAlgebraic(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
@@ -428,13 +435,13 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
     generator->untrackAllVariables(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(18), generator->untrackedVariableCount(analyserModel));
 
     generator->trackAllVariables(analyserModel);
-    EXPECT_EQ_ISSUES({}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
@@ -472,8 +479,12 @@ void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::Generato
 }
 
 void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType trackingType,
-                                                   const std::vector<std::string> &issues = {},
-                                                   const std::vector<std::string> &externalIssues = {})
+                                                   const std::vector<std::string> &issues,
+                                                   const std::vector<libcellml::Issue::Level> &levels,
+                                                   const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                   const std::vector<std::string> &externalIssues,
+                                                   const std::vector<libcellml::Issue::Level> &externalLevels,
+                                                   const std::vector<libcellml::Issue::ReferenceRule> &externalReferenceRules)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae.wo.cc") + ".cellml"));
@@ -494,7 +505,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     untrack(analyserModel, generator, trackingType);
 
-    EXPECT_EQ_ISSUES(issues, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(issues, levels, referenceRules, generator);
 
     auto profile = generator->profile();
 
@@ -528,7 +539,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     untrack(analyserModel, generator, trackingType);
 
-    EXPECT_EQ_ISSUES(externalIssues, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(externalIssues, externalLevels, externalReferenceRules, generator);
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
 
@@ -546,23 +557,22 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
 }
 
-const std::vector<std::string> noIssues;
-const std::vector<std::string> constantRelatedExternalIssues = {
-    "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
-};
-
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS, noIssues, constantRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
+                                                  {}, {}, {},
+                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
-
-const std::vector<std::string> computedConstantRelatedExternalIssues = {
-    "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
-};
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS, noIssues, computedConstantRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS,
+                                                  {}, {}, {},
+                                                  {"Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 const std::vector<std::string> algebraicRelatedExternalIssues = {
@@ -571,28 +581,42 @@ const std::vector<std::string> algebraicRelatedExternalIssues = {
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC, noIssues, algebraicRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC,
+                                                  {}, {}, {},
+                                                  {"Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
-    const std::vector<std::string> variableRelatedExternalIssues = {
-        "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
-    };
-
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES, noIssues, variableRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES,
+                                                  {}, {}, {},
+                                                  {
+                                                      "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
+                                                      "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
+                                                      "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+                                                  },
+                                                  expectedLevels(3, libcellml::Issue::Level::ERROR),
+                                                  expectedReferenceRules(3, libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE));
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS, noIssues, constantRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS,
+                                                  {}, {}, {},
+                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS, noIssues, computedConstantRelatedExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS,
+                                                  {}, {}, {},
+                                                  {"Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 const std::vector<std::string> daeIssues = {
@@ -608,6 +632,8 @@ const std::vector<std::string> daeIssues = {
     "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
 };
+const std::vector<libcellml::Issue::Level> daeLevels = expectedLevels(daeIssues.size(), libcellml::Issue::Level::ERROR);
+const std::vector<libcellml::Issue::ReferenceRule> daeReferenceRules = expectedReferenceRules(daeIssues.size(), libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
 {
@@ -624,8 +650,23 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgeb
         "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
         "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
     };
+    const std::vector<libcellml::Issue::ReferenceRule> daeExternalReferenceRules = {
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+    };
 
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC, daeIssues, daeExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC,
+                                                  daeIssues, daeLevels, daeReferenceRules,
+                                                  daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
@@ -645,6 +686,23 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVaria
         "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
         "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
     };
+    const std::vector<libcellml::Issue::ReferenceRule> daeExternalReferenceRules = {
+        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
+    };
 
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES, daeIssues, daeExternalIssues);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES,
+                                                  daeIssues, daeLevels, daeReferenceRules,
+                                                  daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
 }

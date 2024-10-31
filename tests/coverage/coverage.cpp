@@ -689,7 +689,7 @@ TEST(Coverage, generator)
 
     generator->trackVariable(analyserModel->variable(model->component("my_component")->variable("eqnNlaVariable1")));
 
-    expectEqualIssues({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generator);
 
     EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
 
