@@ -468,7 +468,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     find_root_8(voi, states, rates, constants, computed_constants, algebraic)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic)
-    sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     find_root_6(voi, states, rates, constants, computed_constants, algebraic)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic)
     find_root_4(voi, states, rates, constants, computed_constants, algebraic)
@@ -477,8 +476,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_2(voi, states, rates, constants, computed_constants, algebraic)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic)
     find_root_12(voi, states, rates, constants, computed_constants, algebraic)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic)
@@ -487,9 +484,7 @@ def compute_variables(voi, states, rates, constants, computed_constants, algebra
     find_root_8(voi, states, rates, constants, computed_constants, algebraic)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic)
-    sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     find_root_6(voi, states, rates, constants, computed_constants, algebraic)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_4(voi, states, rates, constants, computed_constants, algebraic)
     find_root_5(voi, states, rates, constants, computed_constants, algebraic)
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)

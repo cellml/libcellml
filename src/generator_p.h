@@ -181,6 +181,13 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     bool isSomeConstant(const AnalyserEquationPtr &equation,
                         bool includeComputedConstants) const;
 
+    enum class GenerateEquationCodeTarget
+    {
+        NORMAL,
+        OBJECTIVE_FUNCTION,
+        COMPUTE_VARIABLES
+    };
+
     std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
                                                const AnalyserVariablePtr &variable);
     std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
@@ -189,7 +196,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
-                                     bool includeComputedConstants, bool forNlaSystem = false);
+                                     bool includeComputedConstants,
+                                     GenerateEquationCodeTarget target = GenerateEquationCodeTarget::NORMAL);
     std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
