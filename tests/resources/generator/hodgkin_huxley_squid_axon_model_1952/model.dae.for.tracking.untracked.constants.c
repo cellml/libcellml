@@ -538,18 +538,13 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    double membrane_Cm = 1.0;
     findRoot0(voi, states, rates, constants, computedConstants, algebraic);
-    double leakage_current_g_L = 0.3;
-    double membrane_E_R = 0.0;
     findRoot2(voi, states, rates, constants, computedConstants, algebraic);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic);
     findRoot11(voi, states, rates, constants, computedConstants, algebraic);
-    double sodium_channel_g_Na = 120.0;
     findRoot8(voi, states, rates, constants, computedConstants, algebraic);
     findRoot9(voi, states, rates, constants, computedConstants, algebraic);
     findRoot10(voi, states, rates, constants, computedConstants, algebraic);
@@ -563,25 +558,17 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    double membrane_Cm = 1.0;
-    findRoot0(voi, states, rates, constants, computedConstants, algebraic);
-    double leakage_current_g_L = 0.3;
-    double membrane_E_R = 0.0;
-    findRoot2(voi, states, rates, constants, computedConstants, algebraic);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic);
     findRoot11(voi, states, rates, constants, computedConstants, algebraic);
-    double sodium_channel_g_Na = 120.0;
     findRoot8(voi, states, rates, constants, computedConstants, algebraic);
     findRoot9(voi, states, rates, constants, computedConstants, algebraic);
     findRoot10(voi, states, rates, constants, computedConstants, algebraic);
     algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic);
-    findRoot4(voi, states, rates, constants, computedConstants, algebraic);
     findRoot5(voi, states, rates, constants, computedConstants, algebraic);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic);
 }

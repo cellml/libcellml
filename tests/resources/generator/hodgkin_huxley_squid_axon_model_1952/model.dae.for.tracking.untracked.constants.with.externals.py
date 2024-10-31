@@ -457,11 +457,8 @@ def compute_computed_constants(constants, computed_constants):
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
     find_root_0(voi, states, rates, constants, computed_constants, algebraic, externals)
-    leakage_current_g_L = 0.3
-    membrane_E_R = 0.0
     find_root_2(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic, externals)
-    potassium_channel_g_K = 36.0
     find_root_12(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_14(voi, states, rates, constants, computed_constants, algebraic, externals)
@@ -477,9 +474,7 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic, 
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    leakage_current_g_L = 0.3
     find_root_3(voi, states, rates, constants, computed_constants, algebraic, externals)
-    potassium_channel_g_K = 36.0
     find_root_12(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_14(voi, states, rates, constants, computed_constants, algebraic, externals)
@@ -487,7 +482,6 @@ def compute_variables(voi, states, rates, constants, computed_constants, algebra
     algebraic[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
     find_root_1(voi, states, rates, constants, computed_constants, algebraic, externals)
-    membrane_E_R = 0.0
     find_root_4(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic, externals)

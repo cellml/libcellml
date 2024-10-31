@@ -540,11 +540,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
     findRoot0(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double leakage_current_g_L = 0.3;
-    double membrane_E_R = 0.0;
     findRoot2(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic, externals);
@@ -561,9 +558,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    double leakage_current_g_L = 0.3;
     findRoot3(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic, externals);
@@ -571,7 +566,6 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     algebraic[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double membrane_E_R = 0.0;
     findRoot4(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic, externals);

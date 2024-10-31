@@ -1206,7 +1206,8 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                         && isUntrackedEquation(dependency)) {
                         methodBody += generateEquationCode(model, dependency, dummyRemainingEquations,
                                                            dummyEquationsForDependencies,
-                                                           dummyGeneratedConstantDependencies, false, true);
+                                                           dummyGeneratedConstantDependencies, false,
+                                                           GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
                     }
                 }
 
@@ -2142,10 +2143,8 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &eq
 bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equation,
                                               bool includeComputedConstants) const
 {
-    auto type = equation->type();
-
-    return (type == AnalyserEquation::Type::CONSTANT)
-           || (!includeComputedConstants && (type == AnalyserEquation::Type::COMPUTED_CONSTANT));
+    return (equation->type() == AnalyserEquation::Type::CONSTANT)
+           || (!includeComputedConstants && (equation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT));
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserModelPtr &model,
@@ -2191,7 +2190,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
                                                            std::vector<AnalyserEquationPtr> &equationsForDependencies,
                                                            std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
-                                                           bool includeComputedConstants, bool forNlaSystem)
+                                                           bool includeComputedConstants,
+                                                           GenerateEquationCodeTarget target)
 {
     std::string res;
 
@@ -2210,7 +2210,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
         // Generate any dependency that this equation may have.
 
         for (const auto &constantDependency : equation->mPimpl->mConstantDependencies) {
-            if (isUntrackedVariable(constantDependency)
+            if ((equation->type() != AnalyserEquation::Type::NLA)
+                && isUntrackedVariable(constantDependency)
                 && (std::find(generatedConstantDependencies.begin(), generatedConstantDependencies.end(), constantDependency) == generatedConstantDependencies.end())) {
                 res += generateInitialisationCode(model, constantDependency, true);
 
@@ -2220,16 +2221,24 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
         if (!isSomeConstant(equation, includeComputedConstants)) {
             for (const auto &dependency : equation->dependencies()) {
-                if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                if (((equation->type() != AnalyserEquation::Type::NLA)
+                     && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                      && isUntrackedEquation(dependency))
-                    || ((dependency->type() != AnalyserEquation::Type::ODE)
-                        && (!forNlaSystem || (dependency->type() != AnalyserEquation::Type::NLA))
+                    || (((target == GenerateEquationCodeTarget::NORMAL)
+                         || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
+                             && ((dependency->type() != AnalyserEquation::Type::NLA)
+                                 || isToBeComputedAgain(dependency)
+                                 || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end()))))
+                        && (dependency->type() != AnalyserEquation::Type::ODE)
+                        && (isTrackedEquation(dependency)
+                            || (isUntrackedEquation(dependency)
+                                && (equation->type() != AnalyserEquation::Type::NLA)))
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (equationsForDependencies.empty()
                             || isToBeComputedAgain(dependency)
                             || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end())))) {
                     res += generateEquationCode(model, dependency, remainingEquations, equationsForDependencies,
-                                                generatedConstantDependencies, includeComputedConstants);
+                                                generatedConstantDependencies, includeComputedConstants, target);
                 }
             }
         }
@@ -2481,7 +2490,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
                  || isToBeComputedAgain(equation))
                 && isTrackedEquation(equation)) {
                 methodBody += generateEquationCode(model, equation, newRemainingEquations, remainingEquations,
-                                                   generatedConstantDependencies, false);
+                                                   generatedConstantDependencies, false,
+                                                   GenerateEquationCodeTarget::COMPUTE_VARIABLES);
             }
         }
 

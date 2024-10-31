@@ -460,18 +460,13 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    membrane_Cm = 1.0
     find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    leakage_current_g_L = 0.3
-    membrane_E_R = 0.0
     find_root_2(voi, states, rates, constants, computed_constants, algebraic)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic)
-    potassium_channel_g_K = 36.0
     find_root_12(voi, states, rates, constants, computed_constants, algebraic)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic)
     find_root_14(voi, states, rates, constants, computed_constants, algebraic)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic)
-    sodium_channel_g_Na = 120.0
     find_root_8(voi, states, rates, constants, computed_constants, algebraic)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic)
@@ -484,24 +479,16 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    membrane_Cm = 1.0
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    leakage_current_g_L = 0.3
-    membrane_E_R = 0.0
-    find_root_2(voi, states, rates, constants, computed_constants, algebraic)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic)
-    potassium_channel_g_K = 36.0
     find_root_12(voi, states, rates, constants, computed_constants, algebraic)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic)
     find_root_14(voi, states, rates, constants, computed_constants, algebraic)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic)
-    sodium_channel_g_Na = 120.0
     find_root_8(voi, states, rates, constants, computed_constants, algebraic)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic)
     algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     find_root_6(voi, states, rates, constants, computed_constants, algebraic)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic)
-    find_root_4(voi, states, rates, constants, computed_constants, algebraic)
     find_root_5(voi, states, rates, constants, computed_constants, algebraic)
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)

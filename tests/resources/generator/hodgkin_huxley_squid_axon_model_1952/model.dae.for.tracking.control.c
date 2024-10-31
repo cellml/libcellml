@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.6.2. */
 
-#include "model.dae.for.tracking.untracked.control.h"
+#include "model.dae.for.tracking.control.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -555,8 +555,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    findRoot0(voi, states, rates, constants, computedConstants, algebraic);
-    findRoot2(voi, states, rates, constants, computedConstants, algebraic);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic);
     findRoot12(voi, states, rates, constants, computedConstants, algebraic);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic);
@@ -568,7 +566,6 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic);
-    findRoot4(voi, states, rates, constants, computedConstants, algebraic);
     findRoot5(voi, states, rates, constants, computedConstants, algebraic);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic);
 }

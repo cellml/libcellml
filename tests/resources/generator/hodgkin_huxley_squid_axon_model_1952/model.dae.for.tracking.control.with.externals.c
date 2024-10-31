@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.6.2. */
 
-#include "model.dae.for.tracking.untracked.control.with.externals.h"
+#include "model.dae.for.tracking.control.with.externals.h"
 
 #include <math.h>
 #include <stdlib.h>
