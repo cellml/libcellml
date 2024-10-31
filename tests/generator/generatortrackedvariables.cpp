@@ -449,6 +449,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
 
 enum class TrackingType
 {
+    CONTROL,
     VARIABLES,
     CONSTANTS,
     COMPUTED_CONSTANTS,
@@ -475,6 +476,8 @@ void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::Generato
         generator->untrackAllAlgebraic(model);
 
         break;
+    default: // CONTROL.
+        break;
     }
 }
 
@@ -497,7 +500,9 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
                                         "constants" :
                                         ((trackingType == TrackingType::COMPUTED_CONSTANTS) ?
                                              "computed.constants" :
-                                             "algebraic.variables"));
+                                             ((trackingType == TrackingType::ALGEBRAIC) ?
+                                                  "algebraic.variables" :
+                                                  "control")));
 
     analyser->analyseModel(model);
 
@@ -557,6 +562,15 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
 }
 
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952Control)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
+                                                  {}, {}, {},
+                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
+                                                  {libcellml::Issue::Level::ERROR},
+                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
+}
+
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
@@ -599,6 +613,13 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariable
                                                   },
                                                   expectedLevels(3, libcellml::Issue::Level::ERROR),
                                                   expectedReferenceRules(3, libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE));
+}
+
+TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeControl)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONTROL,
+                                                  {}, {}, {},
+                                                  {}, {}, {});
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
