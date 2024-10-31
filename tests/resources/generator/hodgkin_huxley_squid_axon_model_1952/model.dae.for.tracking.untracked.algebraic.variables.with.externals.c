@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.6.2. */
 
-#include "model.dae.wo.cc.untracked.constants.with.externals.h"
+#include "model.dae.for.tracking.untracked.algebraic.variables.with.externals.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.6.2";
 
 const size_t STATE_COUNT = 4;
-const size_t CONSTANT_COUNT = 1;
+const size_t CONSTANT_COUNT = 5;
 const size_t COMPUTED_CONSTANT_COUNT = 1;
 const size_t ALGEBRAIC_COUNT = 11;
 const size_t EXTERNAL_COUNT = 1;
@@ -24,7 +24,11 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"Cm", "microF_per_cm2", "membrane"}
+    {"Cm", "microF_per_cm2", "membrane"},
+    {"E_R", "millivolt", "membrane"},
+    {"g_L", "milliS_per_cm2", "leakage_current"},
+    {"g_Na", "milliS_per_cm2", "sodium_channel"},
+    {"g_K", "milliS_per_cm2", "potassium_channel"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
@@ -188,9 +192,7 @@ void objectiveFunction2(double *u, double *f, void *data)
 
     algebraic[3] = u[0];
 
-    double membrane_E_R = 0.0;
-
-    f[0] = algebraic[3]-(membrane_E_R-10.613)-0.0;
+    f[0] = algebraic[3]-(constants[1]-10.613)-0.0;
 }
 
 void findRoot2(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -217,9 +219,7 @@ void objectiveFunction3(double *u, double *f, void *data)
 
     algebraic[1] = u[0];
 
-    double leakage_current_g_L = 0.3;
-
-    f[0] = algebraic[1]-leakage_current_g_L*(states[0]-algebraic[3])-0.0;
+    f[0] = algebraic[1]-constants[2]*(states[0]-algebraic[3])-0.0;
 }
 
 void findRoot3(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -246,9 +246,7 @@ void objectiveFunction4(double *u, double *f, void *data)
 
     algebraic[4] = u[0];
 
-    double membrane_E_R = 0.0;
-
-    f[0] = algebraic[4]-(membrane_E_R-115.0)-0.0;
+    f[0] = algebraic[4]-(constants[1]-115.0)-0.0;
 }
 
 void findRoot4(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -410,9 +408,7 @@ void objectiveFunction11(double *u, double *f, void *data)
 
     algebraic[2] = u[0];
 
-    double potassium_channel_g_K = 36.0;
-
-    f[0] = algebraic[2]-potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[0])-0.0;
+    f[0] = algebraic[2]-constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[0])-0.0;
 }
 
 void findRoot11(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
@@ -519,6 +515,10 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     rates[2] = 0.0;
     rates[3] = 0.0;
     constants[0] = 1.0;
+    constants[1] = 0.0;
+    constants[2] = 0.3;
+    constants[3] = 120.0;
+    constants[4] = 36.0;
     algebraic[0] = 0.0;
     algebraic[1] = 0.0;
     algebraic[2] = 0.0;
@@ -533,18 +533,14 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    double membrane_E_R = 0.0;
-    computedConstants[0] = membrane_E_R+12.0;
+    computedConstants[0] = constants[1]+12.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
     findRoot0(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double leakage_current_g_L = 0.3;
-    double membrane_E_R = 0.0;
     findRoot2(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic, externals);
@@ -561,9 +557,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    double leakage_current_g_L = 0.3;
     findRoot3(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double potassium_channel_g_K = 36.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic, externals);
@@ -571,7 +565,6 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     algebraic[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     findRoot1(voi, states, rates, constants, computedConstants, algebraic, externals);
-    double membrane_E_R = 0.0;
     findRoot4(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic, externals);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic, externals);

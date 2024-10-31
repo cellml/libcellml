@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.6.2. */
 
-#include "model.dae.wo.cc.untracked.algebraic.variables.h"
+#include "model.dae.for.tracking.untracked.computed.constants.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -10,8 +10,8 @@ const char LIBCELLML_VERSION[] = "0.6.2";
 
 const size_t STATE_COUNT = 4;
 const size_t CONSTANT_COUNT = 5;
-const size_t COMPUTED_CONSTANT_COUNT = 1;
-const size_t ALGEBRAIC_COUNT = 11;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 12;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
@@ -31,7 +31,6 @@ const VariableInfo CONSTANT_INFO[] = {
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
-    {"E_K", "millivolt", "potassium_channel"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
@@ -41,6 +40,7 @@ const VariableInfo ALGEBRAIC_INFO[] = {
     {"i_Na", "microA_per_cm2", "sodium_channel"},
     {"E_L", "millivolt", "leakage_current"},
     {"E_Na", "millivolt", "sodium_channel"},
+    {"alpha_m", "per_millisecond", "sodium_channel_m_gate"},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate"},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate"},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate"},
@@ -302,7 +302,7 @@ void objectiveFunction7(double *u, double *f, void *data)
 
     rates[2] = u[0];
 
-    f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-algebraic[7]*states[2])-0.0;
+    f[0] = rates[2]-(algebraic[6]*(1.0-states[2])-algebraic[7]*states[2])-0.0;
 }
 
 void findRoot7(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
@@ -406,7 +406,9 @@ void objectiveFunction11(double *u, double *f, void *data)
 
     algebraic[2] = u[0];
 
-    f[0] = algebraic[2]-constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[0])-0.0;
+    double potassium_channel_E_K = constants[1]+12.0;
+
+    f[0] = algebraic[2]-constants[4]*pow(states[3], 4.0)*(states[0]-potassium_channel_E_K)-0.0;
 }
 
 void findRoot11(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
@@ -529,7 +531,6 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[0] = constants[1]+12.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
@@ -537,6 +538,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot0(voi, states, rates, constants, computedConstants, algebraic);
     findRoot2(voi, states, rates, constants, computedConstants, algebraic);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic);
+    double potassium_channel_E_K = constants[1]+12.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic);
@@ -544,7 +546,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot8(voi, states, rates, constants, computedConstants, algebraic);
     findRoot9(voi, states, rates, constants, computedConstants, algebraic);
     findRoot10(voi, states, rates, constants, computedConstants, algebraic);
-    double sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic);
     findRoot4(voi, states, rates, constants, computedConstants, algebraic);
@@ -557,6 +559,7 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     findRoot0(voi, states, rates, constants, computedConstants, algebraic);
     findRoot2(voi, states, rates, constants, computedConstants, algebraic);
     findRoot3(voi, states, rates, constants, computedConstants, algebraic);
+    double potassium_channel_E_K = constants[1]+12.0;
     findRoot12(voi, states, rates, constants, computedConstants, algebraic);
     findRoot13(voi, states, rates, constants, computedConstants, algebraic);
     findRoot14(voi, states, rates, constants, computedConstants, algebraic);
@@ -564,7 +567,7 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     findRoot8(voi, states, rates, constants, computedConstants, algebraic);
     findRoot9(voi, states, rates, constants, computedConstants, algebraic);
     findRoot10(voi, states, rates, constants, computedConstants, algebraic);
-    double sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraic);
     findRoot7(voi, states, rates, constants, computedConstants, algebraic);
     findRoot4(voi, states, rates, constants, computedConstants, algebraic);
