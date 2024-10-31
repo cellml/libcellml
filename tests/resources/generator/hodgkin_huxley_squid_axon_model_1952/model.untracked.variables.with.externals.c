@@ -8,33 +8,35 @@
 const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.6.2";
 
-const size_t STATE_COUNT = 3;
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 0;
-const size_t EXTERNAL_COUNT = 3;
+const size_t STATE_COUNT = 4;
+const size_t CONSTANT_COUNT = 1;
+const size_t COMPUTED_CONSTANT_COUNT = 1;
+const size_t ALGEBRAIC_COUNT = 1;
+const size_t EXTERNAL_COUNT = 1;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
 const VariableInfo STATE_INFO[] = {
+    {"V", "millivolt", "membrane"},
     {"h", "dimensionless", "sodium_channel_h_gate"},
     {"m", "dimensionless", "sodium_channel_m_gate"},
     {"n", "dimensionless", "potassium_channel_n_gate"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
+    {"Cm", "microF_per_cm2", "membrane"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"E_K", "millivolt", "potassium_channel"}
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
+    {"alpha_m", "per_millisecond", "sodium_channel_m_gate"}
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"V", "millivolt", "membrane"},
-    {"i_Na", "microA_per_cm2", "sodium_channel"},
-    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
+    {"i_Na", "microA_per_cm2", "sodium_channel"}
 };
 
 double * createStatesArray()
@@ -99,32 +101,43 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    states[0] = 0.6;
-    states[1] = 0.05;
-    states[2] = 0.325;
+    states[0] = 0.0;
+    states[1] = 0.6;
+    states[2] = 0.05;
+    states[3] = 0.325;
+    constants[0] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
+    double membrane_E_R = 0.0;
+    computedConstants[2] = membrane_E_R+12.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
+    double membrane_i_Stim = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
+    double leakage_current_g_L = 0.3;
+    double membrane_E_R = 0.0;
+    double leakage_current_E_L = membrane_E_R-10.613;
+    double leakage_current_i_L = leakage_current_g_L*(states[0]-leakage_current_E_L);
+    double potassium_channel_g_K = 36.0;
+    double potassium_channel_i_K = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
+    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    double sodium_channel_m_gate_alpha_m = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0);
-    double sodium_channel_m_gate_beta_m = 4.0*exp(externals[0]/18.0);
-    rates[1] = sodium_channel_m_gate_alpha_m*(1.0-states[1])-sodium_channel_m_gate_beta_m*states[1];
-    double sodium_channel_h_gate_alpha_h = 0.07*exp(externals[0]/20.0);
-    double sodium_channel_h_gate_beta_h = 1.0/(exp((externals[0]+30.0)/10.0)+1.0);
-    rates[0] = sodium_channel_h_gate_alpha_h*(1.0-states[0])-sodium_channel_h_gate_beta_h*states[0];
-    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
-    double potassium_channel_n_gate_beta_n = 0.125*exp(externals[0]/80.0);
-    rates[2] = externals[2]*(1.0-states[2])-potassium_channel_n_gate_beta_n*states[2];
+    rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0];
+    double sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0);
+    rates[2] = algebraic[3]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
+    double sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0);
+    double sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1];
+    double potassium_channel_n_gate_alpha_n = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
+    double potassium_channel_n_gate_beta_n = 0.125*exp(states[0]/80.0);
+    rates[3] = potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
+    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
-    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
 }

@@ -109,6 +109,27 @@ bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &va
     return doIsTrackedVariable(variable, false);
 }
 
+void Generator::GeneratorImpl::addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &variable, bool tracked)
+{
+    auto issue = Issue::IssueImpl::create();
+
+    issue->mPimpl->setDescription("Variable '" + variable->variable()->name()
+                                  + "' in component '" + owningComponent(variable->variable())->name()
+                                  + "' is needed to compute an external variable and "
+                                  + (tracked ?
+                                         "is therefore always tracked." :
+                                         "cannot therefore be untracked."));
+    issue->mPimpl->setReferenceRule(tracked ?
+                                        Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED :
+                                        Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE);
+
+    if (tracked) {
+        issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+    }
+
+    addIssue(issue);
+}
+
 bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &variable, bool tracked, bool canAddIssue)
 {
     // A trackable variable is a variable that is not a variable of integration, a state, or an external variable, which
@@ -138,6 +159,50 @@ bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &vari
             }
 
             return false;
+        }
+    }
+
+    // A trackable variable is also not a variable that is needed to compute an external variable.
+
+    for (const auto &external : variable->model()->externals()) {
+        auto externalEquationPimpl = external->equations().front()->mPimpl;
+
+        // Check whether the variable is a constant dependency.
+
+        for (const auto &constantDependency : externalEquationPimpl->mConstantDependencies) {
+            if (variable == constantDependency) {
+                if (canAddIssue) {
+                    addNeededToComputeExternalVariableIssue(variable, tracked);
+                }
+
+                return false;
+            }
+        }
+
+        // Check whether the variable is a computed constant dependency or an algebraic dependency.
+
+        for (const auto &dependency : externalEquationPimpl->mDependencies) {
+            auto dependencyPimpl = dependency.lock()->mPimpl;
+
+            for (const auto &computedConstant : dependencyPimpl->mComputedConstants) {
+                if (variable == computedConstant) {
+                    if (canAddIssue) {
+                        addNeededToComputeExternalVariableIssue(variable, tracked);
+                    }
+
+                    return false;
+                }
+            }
+
+            for (const auto &algebraic : dependencyPimpl->mAlgebraic) {
+                if (variable == algebraic) {
+                    if (canAddIssue) {
+                        addNeededToComputeExternalVariableIssue(variable, tracked);
+                    }
+
+                    return false;
+                }
+            }
         }
     }
 

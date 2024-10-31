@@ -452,6 +452,7 @@ void untrack(const libcellml::AnalyserModelPtr &model, const libcellml::Generato
 {
     switch (trackingType) {
     case TrackingType::VARIABLES:
+        generator->trackAllVariables(model); // For coverage.
         generator->untrackAllVariables(model);
 
         break;
@@ -508,17 +509,18 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".py", generator->implementationCode(analyserModel));
 
-    // With some external variables.
+    // With an external variable with a dependency on a constant, computed constant, and algebraic variable.
 
-    auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
+    auto membrane_Cm = model->component("membrane")->variable("Cm");
+    auto potassium_channel_EK = model->component("potassium_channel")->variable("E_K");
+    auto sodium_channel_m_gate_alapha_m = model->component("sodium_channel_m_gate")->variable("alpha_m");
     auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
 
-    external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
-    external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
+    external_sodium_channel_i_Na->addDependency(membrane_Cm);
+    external_sodium_channel_i_Na->addDependency(potassium_channel_EK);
+    external_sodium_channel_i_Na->addDependency(sodium_channel_m_gate_alapha_m);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
     analyser->addExternalVariable(external_sodium_channel_i_Na);
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
 
     analyser->analyseModel(model);
 
@@ -544,65 +546,105 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + ".untracked." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
 }
 
+const std::vector<std::string> noIssues;
+const std::vector<std::string> constantRelatedExternalIssues = {
+    "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
+};
+
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS, noIssues, constantRelatedExternalIssues);
 }
+
+const std::vector<std::string> computedConstantRelatedExternalIssues = {
+    "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
+};
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS, noIssues, computedConstantRelatedExternalIssues);
 }
+
+const std::vector<std::string> algebraicRelatedExternalIssues = {
+    "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+};
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC, noIssues, algebraicRelatedExternalIssues);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES);
+    const std::vector<std::string> variableRelatedExternalIssues = {
+        "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+    };
+
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES, noIssues, variableRelatedExternalIssues);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS, noIssues, constantRelatedExternalIssues);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS, noIssues, computedConstantRelatedExternalIssues);
 }
 
-const std::vector<std::string> issues = {
+const std::vector<std::string> daeIssues = {
     "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'i_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'alpha_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
+    "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
+    "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
     "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
 };
-const std::vector<std::string> externalIssues = {
-    "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'alpha_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-};
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC, issues, externalIssues);
+    const std::vector<std::string> daeExternalIssues = {
+        "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
+    };
+
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC, daeIssues, daeExternalIssues);
 }
 
 TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES, issues, externalIssues);
+    const std::vector<std::string> daeExternalIssues = {
+        "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+        "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
+        "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
+    };
+
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES, daeIssues, daeExternalIssues);
 }

@@ -54,6 +54,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     bool isTrackedVariable(const AnalyserVariablePtr &variable);
     bool isUntrackedVariable(const AnalyserVariablePtr &variable);
 
+    void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &variable, bool tracked);
+
     bool trackableVariable(const AnalyserVariablePtr &variable, bool tracked, bool canAddIssue = true);
     bool specialVariable(const AnalyserVariablePtr &variable, const AnalyserVariablePtr &specialVariable, bool tracked,
                          Issue::ReferenceRule trackedReferenceRule, Issue::ReferenceRule untrackedReferenceRule);
