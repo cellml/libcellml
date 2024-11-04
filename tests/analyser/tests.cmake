@@ -7,4 +7,5 @@ set(${CURRENT_TEST}_SRCS
   ${CMAKE_CURRENT_LIST_DIR}/analyser.cpp
   ${CMAKE_CURRENT_LIST_DIR}/analyserexternalvariable.cpp
   ${CMAKE_CURRENT_LIST_DIR}/analyserunits.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/investigate.cpp
 )
