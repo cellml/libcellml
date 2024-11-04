@@ -96,14 +96,14 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[2] = constants[1]+12.0
+    computed_constants[0] = constants[1]+12.0
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
     algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_E_L = constants[1]-10.613
     algebraic[1] = constants[2]*(states[0]-leakage_current_E_L)
-    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
+    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[0])
     algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
     rates[0] = -(-algebraic[0]+externals[0]+algebraic[2]+algebraic[1])/constants[0]
@@ -125,6 +125,6 @@ def compute_variables(voi, states, rates, constants, computed_constants, algebra
     algebraic[4] = 4.0*exp(states[0]/18.0)
     algebraic[5] = 0.07*exp(states[0]/20.0)
     algebraic[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
+    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[0])
     algebraic[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
     algebraic[8] = 0.125*exp(states[0]/80.0)

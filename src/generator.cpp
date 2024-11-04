@@ -44,6 +44,48 @@ void Generator::GeneratorImpl::reset()
     mCode = {};
 }
 
+std::string Generator::GeneratorImpl::doVariableIndexString(const AnalyserModelPtr &model,
+                                                            const AnalyserVariablePtr &variable,
+                                                            const std::vector<AnalyserVariablePtr> &variables)
+{
+    // Determine the actual index of the variable in the list of variables by accounting for the fact that some
+    // variables may be untracked.
+
+    size_t i = MAX_SIZE_T;
+    size_t res = MAX_SIZE_T;
+
+    for (;;) {
+        auto var = variables[++i];
+
+        if (doIsTrackedVariable(model, var)) {
+            ++res;
+        }
+
+        if (variable == var) {
+            break;
+        }
+    }
+
+    return convertToString(res);
+}
+
+std::string Generator::GeneratorImpl::variableIndexString(const AnalyserModelPtr &model,
+                                                          const AnalyserVariablePtr &variable)
+{
+    switch (variable->type()) {
+    case AnalyserVariable::Type::CONSTANT:
+        return doVariableIndexString(model, variable, model->constants());
+    case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        return doVariableIndexString(model, variable, model->computedConstants());
+    case AnalyserVariable::Type::ALGEBRAIC:
+        return doVariableIndexString(model, variable, model->algebraic());
+    default:
+        break;
+    }
+
+    return convertToString(variable->index());
+}
+
 bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked)
 {
     switch (equation->type()) {
@@ -1177,7 +1219,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                            mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + variableIndexString(model, variable) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
@@ -1255,7 +1297,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                     methodBody += mProfile->indentString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + variableIndexString(model, variable) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
@@ -1281,7 +1323,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &model)
                                            mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + variableIndexString(model, variable) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
@@ -1322,7 +1364,7 @@ std::string generateDoubleCode(const std::string &value)
 }
 
 std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &model,
-                                                                               const VariablePtr &variable) const
+                                                                               const VariablePtr &variable)
 {
     if (isCellMLReal(variable->initialValue())) {
         return generateDoubleCode(variable->initialValue());
@@ -1331,7 +1373,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
     auto analyserInitialValueVariable = model->variable(initialValueVariable);
 
-    return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
+    return mProfile->constantsArrayString() + mProfile->openArrayString() + variableIndexString(model, analyserInitialValueVariable) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserModelPtr &model,
@@ -1373,7 +1415,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
         arrayName = mProfile->externalArrayString();
     }
 
-    return arrayName + mProfile->openArrayString() + convertToString(analyserVariable->index()) + mProfile->closeArrayString();
+    return arrayName + mProfile->openArrayString() + variableIndexString(model, analyserVariable) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const AnalyserModelPtr &model, const std::string &op,
@@ -2252,7 +2294,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                        + generateVariableNameCode(model, variable->variable())
                        + mProfile->equalityString()
                        + replace(mProfile->externalVariableMethodCallString(modelHasOdes(model)),
-                                 "[INDEX]", convertToString(variable->index()))
+                                 "[INDEX]", variableIndexString(model, variable))
                        + mProfile->commandSeparatorString() + "\n";
             }
 

@@ -126,7 +126,7 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[2] = constants[1]+12.0;
+    computedConstants[0] = constants[1]+12.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
@@ -134,7 +134,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     algebraic[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     double leakage_current_E_L = constants[1]-10.613;
     algebraic[1] = constants[2]*(states[0]-leakage_current_E_L);
-    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
+    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[0]);
     algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     rates[0] = -(-algebraic[0]+externals[0]+algebraic[2]+algebraic[1])/constants[0];
@@ -157,7 +157,7 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     algebraic[4] = 4.0*exp(states[0]/18.0);
     algebraic[5] = 0.07*exp(states[0]/20.0);
     algebraic[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
-    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
+    algebraic[2] = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[0]);
     algebraic[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
     algebraic[8] = 0.125*exp(states[0]/80.0);
 }

@@ -43,12 +43,16 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void reset();
 
+    std::string doVariableIndexString(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
+                                      const std::vector<AnalyserVariablePtr> &variables);
+    std::string variableIndexString(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable);
+
     bool doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked);
 
     bool isTrackedEquation(const AnalyserEquationPtr &equation);
     bool isUntrackedEquation(const AnalyserEquationPtr &equation);
 
-    bool doIsTrackedVariable(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable, bool tracked);
+    bool doIsTrackedVariable(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable, bool tracked = true);
     bool doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked);
 
     bool isTrackedVariable(const AnalyserVariablePtr &variable);
@@ -161,7 +165,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &model,
-                                                         const VariablePtr &variable) const;
+                                                         const VariablePtr &variable);
     std::string generateVariableNameCode(const AnalyserModelPtr &model, const VariablePtr &variable,
                                          bool state = true);
 
