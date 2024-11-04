@@ -111,7 +111,7 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
 void computeComputedConstants(double *constants, double *computedConstants)
 {
     double membrane_E_R = 0.0;
-    computedConstants[2] = membrane_E_R+12.0;
+    computedConstants[0] = membrane_E_R+12.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
@@ -122,12 +122,12 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     double leakage_current_E_L = membrane_E_R-10.613;
     double leakage_current_i_L = leakage_current_g_L*(states[0]-leakage_current_E_L);
     double potassium_channel_g_K = 36.0;
-    double potassium_channel_i_K = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
-    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    double potassium_channel_i_K = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[0]);
+    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
     rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0];
     double sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0);
-    rates[2] = algebraic[3]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
+    rates[2] = algebraic[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
     double sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0);
     double sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
     rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1];
@@ -138,6 +138,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
 }
