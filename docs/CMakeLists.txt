@@ -86,4 +86,3 @@ if(SPHINX_FOUND OR DOXYGEN_FOUND OR LIBCELLML_COVERAGE)
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/_doctrees
     COMMENT "Cleaning documentation")
 endif()
-
