@@ -49,7 +49,7 @@ if(SPHINX_FOUND)
     COMMENT "Building HTML documentation with Sphinx")
 endif()
 
-if(DOXYGEN_FOUND AND DOT_EXE)
+if(DOXYGEN_FOUND)
   set(DOXYGEN_DOCS_TARGET api_docs)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in.config ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
   add_custom_target(${DOXYGEN_DOCS_TARGET}
