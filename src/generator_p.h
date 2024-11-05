@@ -43,8 +43,6 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void reset();
 
-    std::string doVariableIndexString(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
-                                      const std::vector<AnalyserVariablePtr> &variables);
     std::string variableIndexString(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable);
 
     bool doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked);
@@ -81,6 +79,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void trackAllAlgebraic(const AnalyserModelPtr &model);
     void untrackAllAlgebraic(const AnalyserModelPtr &model);
+
+    std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &model) const;
 
     void trackAllVariables(const AnalyserModelPtr &model);
     void untrackAllVariables(const AnalyserModelPtr &model);

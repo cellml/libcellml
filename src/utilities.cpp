@@ -28,6 +28,7 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -1317,33 +1318,46 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model, bool allVariables)
+std::vector<AnalyserVariablePtr> variables(const AnalyserVariablePtr &variable)
 {
     std::vector<AnalyserVariablePtr> res;
 
-    if (allVariables) {
-        if (model->voi() != nullptr) {
-            res.push_back(model->voi());
-        }
+    switch (variable->type()) {
+    case AnalyserVariable::Type::CONSTANT:
+        return variable->model()->constants();
+    case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        return variable->model()->computedConstants();
 
-        auto states = model->states();
-
-        res.insert(res.end(), states.begin(), states.end());
+    case AnalyserVariable::Type::ALGEBRAIC:
+        return variable->model()->algebraic();
+    default:
+        break;
     }
+
+    return {};
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    if (model->voi() != nullptr) {
+        res.push_back(model->voi());
+    }
+
+    auto states = model->states();
+
+    res.insert(res.end(), states.begin(), states.end());
 
     auto constants = model->constants();
     auto computedConstants = model->computedConstants();
     auto algebraic = model->algebraic();
+    auto externals = model->externals();
 
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraic.begin(), algebraic.end());
-
-    if (allVariables) {
-        auto externals = model->externals();
-
-        res.insert(res.end(), externals.begin(), externals.end());
-    }
+    res.insert(res.end(), externals.begin(), externals.end());
 
     return res;
 }
