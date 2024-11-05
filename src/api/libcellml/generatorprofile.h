@@ -2587,7 +2587,7 @@ public:
      * Set the @c std::string for the name of the state variable type that is
      * used in a differential model.
      *
-     * @param stateTypeString The @c std::string to use for the name of the
+     * @param stateVariableTypeString The @c std::string to use for the name of the
      * state variable type.
      */
     void setStateVariableTypeString(const std::string &stateVariableTypeString);
