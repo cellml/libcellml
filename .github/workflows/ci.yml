@@ -33,11 +33,11 @@ jobs:
             unit_tests: ON
             set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
             additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
-          - name: 'Linux static - C++ (build only)'
+          - name: 'Linux static - C++'
             os: ubuntu-latest
             bindings_python: OFF
             build_shared: OFF
-            unit_tests: OFF
+            unit_tests: ON
           - name: 'Linux shared - C++/Python'
             os: ubuntu-latest
             bindings_python: ON
