@@ -11,12 +11,12 @@ const char LIBCELLML_VERSION[] = "0.6.2";
 const size_t VARIABLE_COUNT = 6;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"d", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"b", "dimensionless", "my_algebraic_system", ALGEBRAIC},
     {"c", "dimensionless", "my_algebraic_system", ALGEBRAIC},
+    {"b", "dimensionless", "my_algebraic_system", ALGEBRAIC},
+    {"d", "dimensionless", "my_algebraic_system", ALGEBRAIC},
     {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT},
-    {"x", "dimensionless", "my_algebraic_system", CONSTANT},
-    {"y", "dimensionless", "my_algebraic_system", CONSTANT}
+    {"y", "dimensionless", "my_algebraic_system", CONSTANT},
+    {"x", "dimensionless", "my_algebraic_system", CONSTANT}
 };
 
 double * createVariablesArray()
@@ -46,11 +46,11 @@ void objectiveFunction0(double *u, double *f, void *data)
 {
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[2] = u[0];
+    variables[0] = u[0];
     variables[1] = u[1];
 
-    f[0] = 3.0*variables[3]+2.0*variables[1]+variables[2]-57.0;
-    f[1] = variables[3]+3.0*variables[1]-variables[2]-19.0;
+    f[0] = 3.0*variables[3]+2.0*variables[1]+variables[0]-57.0;
+    f[1] = variables[3]+3.0*variables[1]-variables[0]-19.0;
 }
 
 void findRoot0(double *variables)
@@ -58,30 +58,30 @@ void findRoot0(double *variables)
     RootFindingInfo rfi = { variables };
     double u[2];
 
-    u[0] = variables[2];
+    u[0] = variables[0];
     u[1] = variables[1];
 
     nlaSolve(objectiveFunction0, u, 2, &rfi);
 
-    variables[2] = u[0];
+    variables[0] = u[0];
     variables[1] = u[1];
 }
 
 void initialiseVariables(double *variables)
 {
+    variables[0] = 1.0;
     variables[1] = 1.0;
-    variables[2] = 1.0;
-    variables[4] = 3.0;
-    variables[5] = 5.0;
+    variables[4] = 5.0;
+    variables[5] = 3.0;
 }
 
 void computeComputedConstants(double *variables)
 {
-    variables[3] = 3.0*variables[4]+variables[5];
+    variables[3] = 3.0*variables[5]+variables[4];
 }
 
 void computeVariables(double *variables)
 {
     findRoot0(variables);
-    variables[0] = variables[1]+variables[2];
+    variables[2] = variables[1]+variables[0];
 }
