@@ -11,8 +11,8 @@ const char LIBCELLML_VERSION[] = "0.6.2";
 const size_t VARIABLE_COUNT = 2;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_eqn", ALGEBRAIC},
-    {"a", "dimensionless", "my_algebraic_eqn", EXTERNAL}
+    {"a", "dimensionless", "my_algebraic_eqn", EXTERNAL},
+    {"x", "dimensionless", "my_algebraic_eqn", ALGEBRAIC}
 };
 
 double * createVariablesArray()
@@ -33,7 +33,7 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *variables, ExternalVariable externalVariable)
 {
-    variables[1] = externalVariable(variables, 1);
+    variables[0] = externalVariable(variables, 0);
 }
 
 void computeComputedConstants(double *variables)
@@ -42,6 +42,6 @@ void computeComputedConstants(double *variables)
 
 void computeVariables(double *variables, ExternalVariable externalVariable)
 {
-    variables[1] = externalVariable(variables, 1);
-    variables[0] = variables[1];
+    variables[0] = externalVariable(variables, 0);
+    variables[1] = variables[0];
 }
