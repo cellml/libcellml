@@ -743,34 +743,27 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         auto childCount = mathmlChildCount(node);
 
-        analyseNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-
-        if (childCount >= 2) {
-            analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
-
-            if (childCount >= 3) {
-                AnalyserEquationAstPtr astRightChild;
-                AnalyserEquationAstPtr tempAst;
-
-                analyseNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
-
-                for (auto i = childCount - 2; i > 1; --i) {
-                    tempAst = AnalyserEquationAst::create();
-
-                    analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                    analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
-
+        AnalyserEquationAstPtr tempAst;
+        AnalyserEquationAstPtr astRightChild;
+        for (size_t i = childCount - 1; i > 0; --i) {
+            astRightChild = tempAst;
+            tempAst = AnalyserEquationAst::create();
+            if (astRightChild) {
+                if (i == childCount - 2) {
+                    astRightChild->swapLeftAndRightChildren();
+                    tempAst = astRightChild;
+                } else {
                     astRightChild->mPimpl->mParent = tempAst;
-
                     tempAst->mPimpl->mOwnedRightChild = astRightChild;
-                    astRightChild = tempAst;
                 }
-
-                astRightChild->mPimpl->mParent = ast;
-
-                ast->mPimpl->mOwnedRightChild = astRightChild;
             }
+            if (i != childCount - 2) {
+                analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
+            }
+            analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
         }
+        analyseNode(mathmlChildNode(node, 0), tempAst, astParent, component, equation);
+        ast = tempAst;
 
         // Relational and logical operators.
 
