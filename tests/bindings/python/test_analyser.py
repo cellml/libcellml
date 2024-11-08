@@ -152,12 +152,12 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserVariable.
 
-        av = am.variable(3)
+        av = am.variable(4)
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
         self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
         self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
-        self.assertEqual(3, av.index())
+        self.assertEqual(4, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
         self.assertEqual(1, av.equationCount())
