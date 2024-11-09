@@ -742,7 +742,6 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         //                 +-------------+
 
         auto childCount = mathmlChildCount(node);
-
         AnalyserEquationAstPtr tempAst;
         AnalyserEquationAstPtr astRightChild;
 
