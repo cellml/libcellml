@@ -749,7 +749,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             astRightChild = tempAst;
             tempAst = AnalyserEquationAst::create();
 
-            if (astRightChild) {
+            if (astRightChild != nullptr) {
                 if (i == childCount - 2) {
                     astRightChild->swapLeftAndRightChildren();
                     tempAst = astRightChild;
