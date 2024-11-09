@@ -745,9 +745,11 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         AnalyserEquationAstPtr tempAst;
         AnalyserEquationAstPtr astRightChild;
+
         for (size_t i = childCount - 1; i > 0; --i) {
             astRightChild = tempAst;
             tempAst = AnalyserEquationAst::create();
+
             if (astRightChild) {
                 if (i == childCount - 2) {
                     astRightChild->swapLeftAndRightChildren();
@@ -757,12 +759,16 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
                     tempAst->mPimpl->mOwnedRightChild = astRightChild;
                 }
             }
+
             if (i != childCount - 2) {
                 analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
             }
+
             analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
         }
+
         analyseNode(mathmlChildNode(node, 0), tempAst, astParent, component, equation);
+
         ast = tempAst;
 
         // Relational and logical operators.
