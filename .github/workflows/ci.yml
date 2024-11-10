@@ -66,7 +66,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
         with:
           cache_key: ${{ matrix.os }}-${{ matrix.build_shared }}
       - name: Configure MSVC (Windows only)
@@ -115,7 +115,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install Emscripten
         run: |
           brew install --overwrite emscripten
@@ -184,7 +184,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install LLVM
         run: |
           brew install --overwrite llvm
@@ -210,7 +210,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install Valgrind
         run: |
           sudo apt update
@@ -235,7 +235,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install Doxygen
         run: |
           sudo apt update
