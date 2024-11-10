@@ -18,7 +18,7 @@ endif()
 
 if(LIBCELLML_BINDINGS_PYTHON)
   if(NOT LIBCELLML_BUILD_SHARED)
-    message(WARNING "The Python bindings are not intended to work with static libraries.")
+    message(WARNING "It is **not** recommended to build the Python bindings with static libraries.")
   endif()
   add_subdirectory(python)
 endif()
