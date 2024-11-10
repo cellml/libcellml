@@ -17,6 +17,9 @@ if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings that use SWIG.
 endif()
 
 if(LIBCELLML_BINDINGS_PYTHON)
+  if(NOT LIBCELLML_BUILD_SHARED)
+    message(WARNING "It is **not** recommended to build the Python bindings with static libraries.")
+  endif()
   add_subdirectory(python)
 endif()
 
