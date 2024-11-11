@@ -134,6 +134,7 @@ function(cxx_library_with_type name type cxx_flags)
   add_library(${name} ${type} ${ARGN})
   set_target_properties(${name}
     PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
     COMPILE_FLAGS "${cxx_flags}")
   if (BUILD_SHARED_LIBS OR type STREQUAL "SHARED")
     set_target_properties(${name}
