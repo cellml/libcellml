@@ -18,9 +18,9 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
 ]
 
 
