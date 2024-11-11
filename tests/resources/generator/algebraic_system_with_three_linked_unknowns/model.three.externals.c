@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.2. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.three.externals.h"
 
@@ -6,14 +6,14 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.5.0";
-const char LIBCELLML_VERSION[] = "0.6.2";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t VARIABLE_COUNT = 3;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system", EXTERNAL},
+    {"z", "dimensionless", "my_algebraic_system", EXTERNAL},
     {"y", "dimensionless", "my_algebraic_system", EXTERNAL},
-    {"z", "dimensionless", "my_algebraic_system", EXTERNAL}
+    {"x", "dimensionless", "my_algebraic_system", EXTERNAL}
 };
 
 double * createVariablesArray()

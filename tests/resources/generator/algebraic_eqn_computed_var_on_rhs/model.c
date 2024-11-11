@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.2. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.h"
 
@@ -6,13 +6,13 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.5.0";
-const char LIBCELLML_VERSION[] = "0.6.2";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t VARIABLE_COUNT = 2;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
-    {"a", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
+    {"a", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
+    {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
 };
 
 double * createVariablesArray()
@@ -33,12 +33,12 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *variables)
 {
-    variables[1] = 1.0;
+    variables[0] = 1.0;
 }
 
 void computeComputedConstants(double *variables)
 {
-    variables[0] = variables[1];
+    variables[1] = variables[0];
 }
 
 void computeVariables(double *variables)

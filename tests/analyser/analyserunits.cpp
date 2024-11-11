@@ -845,6 +845,8 @@ TEST(AnalyserUnits, powerValues)
         "The units in 'eqnMax2 = pow(x, max(5.0, 3.0))' in component 'my_component' are not equivalent. 'eqnMax2' is in 'second' while 'pow(x, max(5.0, 3.0))' is in 'second^5'.",
         "The units in 'eqnRem = pow(x, rem(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnRem' is in 'second' while 'pow(x, rem(3.0, 5.0))' is in 'second^3'.",
         "The units in 'eqnDiff = pow(x, dx/dt)' in component 'my_component' may not be equivalent. 'eqnDiff' is in 'second' while 'dx/dt' may result in 'pow(x, dx/dt)' having different units.",
+        "The units in 'pow(x, dx/dt) = eqnDiff2' in component 'my_component' may not be equivalent. 'dx/dt' may result in 'pow(x, dx/dt)' having different units while 'eqnDiff2' is in 'second'.",
+        "The units in 'pow(x, dx/dt) = pow(xx, dxx/dt)' in component 'my_component' may not be equivalent. 'dx/dt' may result in 'pow(x, dx/dt)' having different units while 'dxx/dt' may result in 'pow(xx, dxx/dt)' having different units.",
         "The units in 'eqnSin = pow(x, sin(3.0))' in component 'my_component' are not equivalent. 'eqnSin' is in 'second' while 'pow(x, sin(3.0))' is in 'second^0.14112'.",
         "The units in 'eqnCos = pow(x, cos(3.0))' in component 'my_component' are not equivalent. 'eqnCos' is in 'second' while 'pow(x, cos(3.0))' is in 'second^-0.989992'.",
         "The units in 'eqnTan = pow(x, tan(3.0))' in component 'my_component' are not equivalent. 'eqnTan' is in 'second' while 'pow(x, tan(3.0))' is in 'second^-0.142547'.",
@@ -881,6 +883,10 @@ TEST(AnalyserUnits, powerValues)
         "The units in 'eqnPi = pow(x, pi)' in component 'my_component' are not equivalent. 'eqnPi' is in 'second' while 'pow(x, pi)' is in 'second^3.14159'.",
         "The units in 'eqnInfinity = pow(x, infinity)' in component 'my_component' are not equivalent. 'eqnInfinity' is in 'second' while 'pow(x, infinity)' is in 'second^inf' (i.e. '10^nan x second^inf').",
         "The units in 'eqnNotanumber = pow(x, notanumber)' in component 'my_component' are not equivalent. 'eqnNotanumber' is in 'second' while 'pow(x, notanumber)' is in 'second^nan' (i.e. '10^nan x second^nan').",
+        "The type of variable 'u' in component 'my_component' is unknown.",
+        "The type of variable 'eqnCoverage' in component 'my_component' is unknown.",
+        "The type of variable 'eqnCoverage2' in component 'my_component' is unknown.",
+        "The type of variable 'eqnCoverage3' in component 'my_component' is unknown.",
     };
 
     auto analyser = libcellml::Analyser::create();

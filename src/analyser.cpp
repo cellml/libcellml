@@ -715,7 +715,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
     // Basic content elements.
 
     if (node->isMathmlElement("apply")) {
-        // We may have 2, 3 or more child nodes, e.g.
+        // We may have 1, 2, 3 or more child nodes, e.g.
         //
         //                 +--------+
         //                 |   +    |
@@ -742,32 +742,33 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         //                 +-------------+
 
         auto childCount = mathmlChildCount(node);
+        AnalyserEquationAstPtr tempAst;
+        AnalyserEquationAstPtr astRightChild;
 
-        analyseNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
+        for (size_t i = childCount - 1; i > 0; --i) {
+            astRightChild = tempAst;
+            tempAst = AnalyserEquationAst::create();
 
-        if (childCount >= 3) {
-            AnalyserEquationAstPtr astRightChild;
-            AnalyserEquationAstPtr tempAst;
-
-            analyseNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
-
-            for (auto i = childCount - 2; i > 1; --i) {
-                tempAst = AnalyserEquationAst::create();
-
-                analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
-
-                astRightChild->mPimpl->mParent = tempAst;
-
-                tempAst->mPimpl->mOwnedRightChild = astRightChild;
-                astRightChild = tempAst;
+            if (astRightChild != nullptr) {
+                if (i == childCount - 2) {
+                    astRightChild->swapLeftAndRightChildren();
+                    tempAst = astRightChild;
+                } else {
+                    astRightChild->mPimpl->mParent = tempAst;
+                    tempAst->mPimpl->mOwnedRightChild = astRightChild;
+                }
             }
 
-            astRightChild->mPimpl->mParent = ast;
+            if (i != childCount - 2) {
+                analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
+            }
 
-            ast->mPimpl->mOwnedRightChild = astRightChild;
+            analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
         }
+
+        analyseNode(mathmlChildNode(node, 0), tempAst, astParent, component, equation);
+
+        ast = tempAst;
 
         // Relational and logical operators.
 
@@ -2182,9 +2183,26 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                    + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
             }
         } else if (!isDimensionlessUnitsMaps(unitsMaps)) {
-            issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
-                               + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
-                               + expression(ast->mPimpl->mOwnedRightChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(ast->mPimpl->mOwnedRightChild, false) + " having different units.";
+            auto leftChild = ast->mPimpl->mOwnedLeftChild;
+            auto rightChild = ast->mPimpl->mOwnedRightChild;
+
+            if (leftChild->type() == AnalyserEquationAst::Type::POWER) {
+                if (rightChild != nullptr) {
+                    if (rightChild->type() == AnalyserEquationAst::Type::POWER) {
+                        issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
+                                           + expression(leftChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(leftChild, false) + " having different units while "
+                                           + expression(rightChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(rightChild, false) + " having different units.";
+                    } else {
+                        issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
+                                           + expression(leftChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(leftChild, false) + " having different units while "
+                                           + expressionUnits(rightChild, unitsMaps, userUnitsMaps, unitsMultipliers) + ".";
+                    }
+                }
+            } else if (rightChild->type() == AnalyserEquationAst::Type::POWER) {
+                issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
+                                   + expressionUnits(leftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
+                                   + expression(rightChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(rightChild, false) + " having different units.";
+            }
         }
     } break;
     case AnalyserEquationAst::Type::PIECEWISE:

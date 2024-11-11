@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.2.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.4.0"
-LIBCELLML_VERSION = "0.6.2"
+LIBCELLML_VERSION = "0.6.3"
 
 VARIABLE_COUNT = 2
 
@@ -18,8 +18,8 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC},
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL}
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL},
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -28,7 +28,7 @@ def create_variables_array():
 
 
 def initialise_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
+    variables[0] = external_variable(variables, 0)
 
 
 def compute_computed_constants(variables):
@@ -36,5 +36,5 @@ def compute_computed_constants(variables):
 
 
 def compute_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
-    variables[0] = variables[1]
+    variables[0] = external_variable(variables, 0)
+    variables[1] = variables[0]

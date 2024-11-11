@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.2.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.4.0"
-LIBCELLML_VERSION = "0.6.2"
+LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
 VARIABLE_COUNT = 2
@@ -26,8 +26,8 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "a", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "b", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC}
+    {"name": "b", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC},
+    {"name": "a", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -52,5 +52,5 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
-    variables[1] = 2.0*voi
-    variables[0] = 3.0*variables[1]
+    variables[0] = 2.0*voi
+    variables[1] = 3.0*variables[0]

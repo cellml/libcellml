@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.2.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.4.0"
-LIBCELLML_VERSION = "0.6.2"
+LIBCELLML_VERSION = "0.6.3"
 
 VARIABLE_COUNT = 3
 
@@ -18,9 +18,9 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
 ]
 
 
