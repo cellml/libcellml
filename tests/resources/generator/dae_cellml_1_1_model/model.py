@@ -28,12 +28,12 @@ STATE_INFO = [
 
 VARIABLE_INFO = [
     {"name": "v_1", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "v_in", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
     {"name": "v_2", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "v_in", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
     {"name": "v_out", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_2", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "u_3", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "u_2", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "C", "units": "C2_per_J", "component": "main", "type": VariableType.CONSTANT},
     {"name": "R", "units": "Js_per_C2", "component": "main", "type": VariableType.CONSTANT},
     {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT}
@@ -59,7 +59,7 @@ def objective_function_0(u, f, data):
 
     variables[0] = u[0]
 
-    f[0] = variables[1]-(variables[0]+variables[2])
+    f[0] = variables[2]-(variables[0]+variables[1])
 
 
 def find_root_0(voi, states, rates, variables):
@@ -78,26 +78,26 @@ def objective_function_1(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    variables[6] = u[0]
+    variables[4] = u[0]
 
-    f[0] = variables[4]-(variables[5]+variables[6])
+    f[0] = variables[6]-(variables[5]+variables[4])
 
 
 def find_root_1(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = variables[6]
+    u[0] = variables[4]
 
     u = nla_solve(objective_function_1, u, 1, [voi, states, rates, variables])
 
-    variables[6] = u[0]
+    variables[4] = u[0]
 
 
 def initialise_variables(states, rates, variables):
     variables[0] = 0.0
-    variables[1] = 1.0
+    variables[2] = 1.0
     variables[3] = 1.0
-    variables[6] = 0.0
+    variables[4] = 0.0
     variables[7] = 20.0
     variables[8] = 2.0
     variables[9] = 10.0
@@ -110,18 +110,18 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables):
-    variables[2] = states[1]+variables[3]
+    variables[1] = states[1]+variables[3]
     find_root_0(voi, states, rates, variables)
     rates[0] = variables[0]
-    variables[4] = states[0]/variables[7]
-    variables[5] = variables[8]*variables[2]
+    variables[5] = variables[8]*variables[1]
+    variables[6] = states[0]/variables[7]
     find_root_1(voi, states, rates, variables)
-    rates[1] = variables[6]/variables[9]
+    rates[1] = variables[4]/variables[9]
 
 
 def compute_variables(voi, states, rates, variables):
-    variables[2] = states[1]+variables[3]
+    variables[1] = states[1]+variables[3]
     find_root_0(voi, states, rates, variables)
-    variables[4] = states[0]/variables[7]
-    variables[5] = variables[8]*variables[2]
+    variables[5] = variables[8]*variables[1]
+    variables[6] = states[0]/variables[7]
     find_root_1(voi, states, rates, variables)
