@@ -898,8 +898,8 @@ TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
         "Variable 'z' in component 'my_algebraic_system' is computed more than once.",
+        "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -954,8 +954,8 @@ TEST(Analyser, overconstrainedNlaSystem)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_algebraic_system' is computed more than once.",
         "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
+        "Variable 'x' in component 'my_algebraic_system' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
