@@ -4,7 +4,7 @@ Changelogs
 
 .. toctree::
 
-   changelog_v0.6.3-rc.2
+   changelog_v0.6.3
    changelog_v0.6.2
    changelog_v0.6.1
    changelog_v0.6.0
