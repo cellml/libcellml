@@ -18,8 +18,8 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC},
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL}
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.EXTERNAL},
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -28,7 +28,7 @@ def create_variables_array():
 
 
 def initialise_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
+    variables[0] = external_variable(variables, 0)
 
 
 def compute_computed_constants(variables):
@@ -36,5 +36,5 @@ def compute_computed_constants(variables):
 
 
 def compute_variables(variables, external_variable):
-    variables[1] = external_variable(variables, 1)
-    variables[0] = variables[1]
+    variables[0] = external_variable(variables, 0)
+    variables[1] = variables[0]
