@@ -11,9 +11,9 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 const size_t VARIABLE_COUNT = 3;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"z", "dimensionless", "my_algebraic_system", EXTERNAL},
+    {"x", "dimensionless", "my_algebraic_system", EXTERNAL},
     {"y", "dimensionless", "my_algebraic_system", EXTERNAL},
-    {"x", "dimensionless", "my_algebraic_system", EXTERNAL}
+    {"z", "dimensionless", "my_algebraic_system", EXTERNAL}
 };
 
 double * createVariablesArray()
