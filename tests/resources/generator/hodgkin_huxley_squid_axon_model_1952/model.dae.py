@@ -30,10 +30,10 @@ STATE_INFO = [
 
 VARIABLE_INFO = [
     {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
+    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_L", "units": "millivolt", "component": "leakage_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
@@ -102,7 +102,7 @@ def objective_function_1(u, f, data):
 
     rates[0] = u[0]
 
-    f[0] = rates[0]-(-(-variables[0]+variables[4]+variables[3]+variables[2])/variables[1])-0.0
+    f[0] = rates[0]-(-(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4])-0.0
 
 
 def find_root_1(voi, states, rates, variables):
@@ -142,19 +142,19 @@ def objective_function_3(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    variables[2] = u[0]
+    variables[1] = u[0]
 
-    f[0] = variables[2]-variables[7]*(states[0]-variables[6])-0.0
+    f[0] = variables[1]-variables[7]*(states[0]-variables[6])-0.0
 
 
 def find_root_3(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = variables[2]
+    u[0] = variables[1]
 
     u = nla_solve(objective_function_3, u, 1, [voi, states, rates, variables])
 
-    variables[2] = u[0]
+    variables[1] = u[0]
 
 
 def objective_function_4(u, f, data):
@@ -184,19 +184,19 @@ def objective_function_5(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    variables[4] = u[0]
+    variables[3] = u[0]
 
-    f[0] = variables[4]-variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])-0.0
+    f[0] = variables[3]-variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])-0.0
 
 
 def find_root_5(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = variables[4]
+    u[0] = variables[3]
 
     u = nla_solve(objective_function_5, u, 1, [voi, states, rates, variables])
 
-    variables[4] = u[0]
+    variables[3] = u[0]
 
 
 def objective_function_6(u, f, data):
@@ -352,19 +352,19 @@ def objective_function_13(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    variables[3] = u[0]
+    variables[2] = u[0]
 
-    f[0] = variables[3]-variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])-0.0
+    f[0] = variables[2]-variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])-0.0
 
 
 def find_root_13(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = variables[3]
+    u[0] = variables[2]
 
     u = nla_solve(objective_function_13, u, 1, [voi, states, rates, variables])
 
-    variables[3] = u[0]
+    variables[2] = u[0]
 
 
 def objective_function_14(u, f, data):
@@ -432,10 +432,10 @@ def find_root_16(voi, states, rates, variables):
 
 def initialise_variables(states, rates, variables):
     variables[0] = 0.0
-    variables[1] = 1.0
+    variables[1] = 0.0
     variables[2] = 0.0
     variables[3] = 0.0
-    variables[4] = 0.0
+    variables[4] = 1.0
     variables[5] = 0.0
     variables[6] = 0.0
     variables[7] = 0.3
@@ -467,16 +467,16 @@ def compute_rates(voi, states, rates, variables):
     find_root_0(voi, states, rates, variables)
     find_root_2(voi, states, rates, variables)
     find_root_3(voi, states, rates, variables)
-    find_root_15(voi, states, rates, variables)
     find_root_14(voi, states, rates, variables)
+    find_root_15(voi, states, rates, variables)
     find_root_16(voi, states, rates, variables)
     find_root_12(voi, states, rates, variables)
     find_root_13(voi, states, rates, variables)
-    find_root_10(voi, states, rates, variables)
     find_root_9(voi, states, rates, variables)
+    find_root_10(voi, states, rates, variables)
     find_root_11(voi, states, rates, variables)
-    find_root_7(voi, states, rates, variables)
     find_root_6(voi, states, rates, variables)
+    find_root_7(voi, states, rates, variables)
     find_root_8(voi, states, rates, variables)
     find_root_4(voi, states, rates, variables)
     find_root_5(voi, states, rates, variables)
@@ -487,16 +487,16 @@ def compute_variables(voi, states, rates, variables):
     find_root_0(voi, states, rates, variables)
     find_root_2(voi, states, rates, variables)
     find_root_3(voi, states, rates, variables)
-    find_root_15(voi, states, rates, variables)
     find_root_14(voi, states, rates, variables)
+    find_root_15(voi, states, rates, variables)
     find_root_16(voi, states, rates, variables)
     find_root_12(voi, states, rates, variables)
     find_root_13(voi, states, rates, variables)
-    find_root_10(voi, states, rates, variables)
     find_root_9(voi, states, rates, variables)
+    find_root_10(voi, states, rates, variables)
     find_root_11(voi, states, rates, variables)
-    find_root_7(voi, states, rates, variables)
     find_root_6(voi, states, rates, variables)
+    find_root_7(voi, states, rates, variables)
     find_root_8(voi, states, rates, variables)
     find_root_4(voi, states, rates, variables)
     find_root_5(voi, states, rates, variables)
