@@ -22,8 +22,8 @@ class VariableType(Enum):
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "y", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE},
-    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
+    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE},
+    {"name": "y", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -41,8 +41,8 @@ def create_variables_array():
 
 def initialise_variables(states, rates, variables):
     variables[0] = 1.0
-    states[0] = 0.0
-    states[1] = -2.0
+    states[0] = -2.0
+    states[1] = 0.0
 
 
 def compute_computed_constants(variables):
@@ -50,8 +50,8 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables):
-    rates[1] = states[0]*1.0
-    rates[0] = (variables[0]*(1.0-pow(states[1], 2.0))*states[0]-states[1])*1.0
+    rates[0] = states[1]*1.0
+    rates[1] = (variables[0]*(1.0-pow(states[0], 2.0))*states[1]-states[0])*1.0
 
 
 def compute_variables(voi, states, rates, variables):

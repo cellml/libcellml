@@ -14,14 +14,14 @@ const size_t VARIABLE_COUNT = 4;
 const VariableInfo VOI_INFO = {"t", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
+    {"y1", "dimensionless", "main", STATE},
     {"y3", "dimensionless", "main", STATE},
-    {"y2", "dimensionless", "main", STATE},
-    {"y1", "dimensionless", "main", STATE}
+    {"y2", "dimensionless", "main", STATE}
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"k3", "dimensionless", "main", CONSTANT},
     {"k1", "dimensionless", "main", CONSTANT},
+    {"k3", "dimensionless", "main", CONSTANT},
     {"k2", "dimensionless", "main", CONSTANT},
     {"y2_scaled", "dimensionless", "main", ALGEBRAIC}
 };
@@ -55,12 +55,12 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *variables)
 {
-    variables[0] = 1.0e4;
-    variables[1] = 0.04;
+    variables[0] = 0.04;
+    variables[1] = 1.0e4;
     variables[2] = 3.0e7;
-    states[0] = 0.0;
+    states[0] = 1.0;
     states[1] = 0.0;
-    states[2] = 1.0;
+    states[2] = 0.0;
 }
 
 void computeComputedConstants(double *variables)
@@ -69,12 +69,12 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    rates[2] = -variables[1]*states[2]+variables[0]*states[1]*states[0];
-    rates[1] = variables[1]*states[2]-variables[2]*pow(states[1], 2.0)-variables[0]*states[1]*states[0];
-    rates[0] = variables[2]*pow(states[1], 2.0);
+    rates[0] = -variables[0]*states[0]+variables[1]*states[2]*states[1];
+    rates[2] = variables[0]*states[0]-variables[2]*pow(states[2], 2.0)-variables[1]*states[2]*states[1];
+    rates[1] = variables[2]*pow(states[2], 2.0);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[3] = 10000.0*states[1];
+    variables[3] = 10000.0*states[2];
 }

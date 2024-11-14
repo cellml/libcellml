@@ -623,9 +623,8 @@ TEST(Coverage, generator)
         EXPECT_NE(nullptr, analyserModel->state(i)->initialisingVariable());
     }
 
-    std::vector<size_t> nonNull = {0, 1, 5, 17, 178, 179, 181, 205, 206};
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        if (std::find(nonNull.begin(), nonNull.end(), i) != nonNull.end()) {
+        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
             EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
         }
     }
