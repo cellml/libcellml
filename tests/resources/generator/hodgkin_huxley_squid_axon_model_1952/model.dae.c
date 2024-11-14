@@ -22,10 +22,10 @@ const VariableInfo STATE_INFO[] = {
 
 const VariableInfo VARIABLE_INFO[] = {
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
+    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"E_R", "millivolt", "membrane", CONSTANT},
     {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
@@ -111,7 +111,7 @@ void objectiveFunction1(double *u, double *f, void *data)
 
     rates[0] = u[0];
 
-    f[0] = rates[0]-(-(-variables[0]+variables[4]+variables[3]+variables[2])/variables[1])-0.0;
+    f[0] = rates[0]-(-(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4])-0.0;
 }
 
 void findRoot1(double voi, double *states, double *rates, double *variables)
@@ -157,9 +157,9 @@ void objectiveFunction3(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[2] = u[0];
+    variables[1] = u[0];
 
-    f[0] = variables[2]-variables[7]*(states[0]-variables[6])-0.0;
+    f[0] = variables[1]-variables[7]*(states[0]-variables[6])-0.0;
 }
 
 void findRoot3(double voi, double *states, double *rates, double *variables)
@@ -167,11 +167,11 @@ void findRoot3(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = variables[2];
+    u[0] = variables[1];
 
     nlaSolve(objectiveFunction3, u, 1, &rfi);
 
-    variables[2] = u[0];
+    variables[1] = u[0];
 }
 
 void objectiveFunction4(double *u, double *f, void *data)
@@ -205,9 +205,9 @@ void objectiveFunction5(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[4] = u[0];
+    variables[3] = u[0];
 
-    f[0] = variables[4]-variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])-0.0;
+    f[0] = variables[3]-variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])-0.0;
 }
 
 void findRoot5(double voi, double *states, double *rates, double *variables)
@@ -215,11 +215,11 @@ void findRoot5(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = variables[4];
+    u[0] = variables[3];
 
     nlaSolve(objectiveFunction5, u, 1, &rfi);
 
-    variables[4] = u[0];
+    variables[3] = u[0];
 }
 
 void objectiveFunction6(double *u, double *f, void *data)
@@ -397,9 +397,9 @@ void objectiveFunction13(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[3] = u[0];
+    variables[2] = u[0];
 
-    f[0] = variables[3]-variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])-0.0;
+    f[0] = variables[2]-variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])-0.0;
 }
 
 void findRoot13(double voi, double *states, double *rates, double *variables)
@@ -407,11 +407,11 @@ void findRoot13(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = variables[3];
+    u[0] = variables[2];
 
     nlaSolve(objectiveFunction13, u, 1, &rfi);
 
-    variables[3] = u[0];
+    variables[2] = u[0];
 }
 
 void objectiveFunction14(double *u, double *f, void *data)
@@ -489,10 +489,10 @@ void findRoot16(double voi, double *states, double *rates, double *variables)
 void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 0.0;
-    variables[1] = 1.0;
+    variables[1] = 0.0;
     variables[2] = 0.0;
     variables[3] = 0.0;
-    variables[4] = 0.0;
+    variables[4] = 1.0;
     variables[5] = 0.0;
     variables[6] = 0.0;
     variables[7] = 0.3;
@@ -525,16 +525,16 @@ void computeRates(double voi, double *states, double *rates, double *variables)
     findRoot0(voi, states, rates, variables);
     findRoot2(voi, states, rates, variables);
     findRoot3(voi, states, rates, variables);
-    findRoot15(voi, states, rates, variables);
     findRoot14(voi, states, rates, variables);
+    findRoot15(voi, states, rates, variables);
     findRoot16(voi, states, rates, variables);
     findRoot12(voi, states, rates, variables);
     findRoot13(voi, states, rates, variables);
-    findRoot10(voi, states, rates, variables);
     findRoot9(voi, states, rates, variables);
+    findRoot10(voi, states, rates, variables);
     findRoot11(voi, states, rates, variables);
-    findRoot7(voi, states, rates, variables);
     findRoot6(voi, states, rates, variables);
+    findRoot7(voi, states, rates, variables);
     findRoot8(voi, states, rates, variables);
     findRoot4(voi, states, rates, variables);
     findRoot5(voi, states, rates, variables);
@@ -546,16 +546,16 @@ void computeVariables(double voi, double *states, double *rates, double *variabl
     findRoot0(voi, states, rates, variables);
     findRoot2(voi, states, rates, variables);
     findRoot3(voi, states, rates, variables);
-    findRoot15(voi, states, rates, variables);
     findRoot14(voi, states, rates, variables);
+    findRoot15(voi, states, rates, variables);
     findRoot16(voi, states, rates, variables);
     findRoot12(voi, states, rates, variables);
     findRoot13(voi, states, rates, variables);
-    findRoot10(voi, states, rates, variables);
     findRoot9(voi, states, rates, variables);
+    findRoot10(voi, states, rates, variables);
     findRoot11(voi, states, rates, variables);
-    findRoot7(voi, states, rates, variables);
     findRoot6(voi, states, rates, variables);
+    findRoot7(voi, states, rates, variables);
     findRoot8(voi, states, rates, variables);
     findRoot4(voi, states, rates, variables);
     findRoot5(voi, states, rates, variables);
