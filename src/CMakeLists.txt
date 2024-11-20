@@ -245,7 +245,7 @@ set_target_properties(cellml_debug_utilities PROPERTIES
   VISIBILITY_INLINES_HIDDEN 1
 )
 
-target_link_libraries(cellml PRIVATE debug $<BUILD_INTERFACE:cellml_debug_utilities>)
+target_link_libraries(cellml PUBLIC debug $<BUILD_INTERFACE:cellml_debug_utilities>)
 
 group_source_to_dir_structure(
   ${DEBUG_SOURCE_FILES}
