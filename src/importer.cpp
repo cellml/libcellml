@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <algorithm>
 #include <cmath>
-#include <filesystem>
 #include <fstream>
 #include <libxml/uri.h>
 #include <sstream>
@@ -37,8 +36,6 @@ limitations under the License.
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
-
-#include "debug.h"
 
 namespace libcellml {
 
@@ -332,18 +329,14 @@ std::string pathFromUrl(const std::string &url)
  */
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
-    return std::filesystem::canonical(pathFromUrl(base) + filename).generic_string();
+    return pathFromUrl(base) + filename;
 }
 
 bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile)
 {
     std::string url = normaliseDirectorySeparator(importSource->url());
-    Debug() << "Fetch model: " << importSource->url();
-    Debug() << " norm: " << url;
     if (mLibrary.count(url) == 0) {
         url = resolvePath(url, baseFile);
-        Debug() << "Resolved path: " << url;
-        Debug() << "now: " << std::filesystem::canonical(url);
     }
 
     ModelPtr model;
@@ -488,7 +481,6 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
-    Debug() << "Component -> resolvingUrl: " << resolvingUrl;
 
     if (encounteredRelatedError) {
         auto issue = Issue::IssueImpl::create();
@@ -580,7 +572,6 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
-    Debug() << "Units -> resolvingUrl: " << resolvingUrl;
 
     if (encounteredRelatedError) {
         auto issue = Issue::IssueImpl::create();
@@ -662,7 +653,6 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
 
     clearImports(model);
     auto normalisedBasePath = normalisePath(basePath);
-    Debug() << "normalisedBasePath: " << normalisedBasePath;
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
@@ -680,7 +670,6 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
             status = false;
         }
     }
-    printImportLibrary(pFunc()->mLibrary);
 
     return status;
 }
@@ -853,8 +842,6 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         }
 
         // Get list of required units from component's variables and math cn elements.
-        printModel(clonedImportModel);
-        printComponent(importedComponentCopy);
         std::vector<UnitsPtr> requiredUnits = unitsUsed(clonedImportModel, importedComponentCopy);
 
         std::vector<UnitsPtr> uniqueRequiredUnits;
@@ -922,7 +909,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                 }
             }
 
-            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : units;
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits : units;
 
             for (size_t unitIndex = 0; unitIndex < replacementUnits->unitCount(); ++unitIndex) {
                 const std::string ref = replacementUnits->unitAttributeReference(unitIndex);
