@@ -85,6 +85,9 @@ std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool cellmlElementTypes = false, bool rule = false);
 
+void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);
+void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, bool includeMaths = true);
+
 std::vector<libcellml::CellmlElementType> TEST_EXPORT expectedCellmlElementTypes(size_t size, libcellml::CellmlElementType type);
 std::vector<libcellml::Issue::Level> TEST_EXPORT expectedLevels(size_t size, libcellml::Issue::Level level);
 std::vector<libcellml::Issue::ReferenceRule> TEST_EXPORT expectedReferenceRules(size_t size, libcellml::Issue::ReferenceRule rule);
