@@ -91,7 +91,7 @@ static const std::string FIXED_INDENT = "    ";
 
 void printComponent(const libcellml::ComponentPtr &component, size_t c, const std::string &indent, bool includeMaths)
 {
-    if (c == size_t(-1)) {
+    if (c == SIZE_MAX) {
         std::cout << "COMPONENT: '" << component->name() << "'";
     } else {
         std::cout << indent << "[" << c + 1 << "]: " << component->name();
@@ -162,7 +162,7 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
 
 void printComponent(const libcellml::ComponentPtr &component, bool includeMaths)
 {
-    printComponent(component, -1, {}, includeMaths);
+    printComponent(component, SIZE_MAX, {}, includeMaths);
 }
 
 void printModel(const libcellml::ModelPtr &model, bool includeMaths)
