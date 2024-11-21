@@ -160,12 +160,12 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
     }
 }
 
-void printComponent(const ComponentPtr &component, bool includeMaths)
+void printComponent(const libcellml::ComponentPtr &component, bool includeMaths)
 {
     printComponent(component, -1, {}, includeMaths);
 }
 
-void printModel(const ModelPtr &model, bool includeMaths)
+void printModel(const libcellml::ModelPtr &model, bool includeMaths)
 {
     std::cout << "MODEL: '" << model->name() << "'";
     if (model->id() != "") {
