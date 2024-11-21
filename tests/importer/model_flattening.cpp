@@ -1919,7 +1919,7 @@ TEST(ModelFlattening, modelWithCnUnitsNotDefinedInImportedComponent)
     EXPECT_EQ("The model is not fully defined.", importer->error(0)->description());
 }
 
-TEST(Experiment, periodicStimulus)
+TEST(ModelFlattening, multiLayeredImportOfNonStandardUnits)
 {
     auto parser = libcellml::Parser::create(false);
     auto model = parser->parseModel(fileContents("importer/periodicstimulus/experiments/periodic-stimulus.xml"));
