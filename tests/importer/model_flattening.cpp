@@ -1917,3 +1917,28 @@ TEST(ModelFlattening, modelWithCnUnitsNotDefinedInImportedComponent)
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ("The model is not fully defined.", importer->error(0)->description());
 }
+
+TEST(ModelFlattening, multiLayeredImportOfNonStandardUnits)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("importer/periodicstimulus/experiments/periodic-stimulus.xml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    auto importer = libcellml::Importer::create(false);
+
+    importer->resolveImports(model, resourcePath("importer/periodicstimulus/experiments"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flattenModel = importer->flattenModel(model);
+
+    EXPECT_NE(nullptr, flattenModel);
+}
