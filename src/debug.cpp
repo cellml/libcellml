@@ -29,6 +29,8 @@ limitations under the License.
 #include "commonutils.h"
 #include "utilities.h"
 
+#include "libcellml/undefines.h"
+
 namespace libcellml {
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)
