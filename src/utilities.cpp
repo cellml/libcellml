@@ -26,6 +26,9 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#include "libcellml/analyserequation.h"
+#include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -1311,6 +1314,64 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
             ++childNodeIndex;
         }
     }
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserVariablePtr &variable)
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    switch (variable->type()) {
+    case AnalyserVariable::Type::CONSTANT:
+        return variable->model()->constants();
+    case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        return variable->model()->computedConstants();
+
+    case AnalyserVariable::Type::ALGEBRAIC:
+        return variable->model()->algebraic();
+    default:
+        break;
+    }
+
+    return {};
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    if (model->voi() != nullptr) {
+        res.push_back(model->voi());
+    }
+
+    auto states = model->states();
+
+    res.insert(res.end(), states.begin(), states.end());
+
+    auto constants = model->constants();
+    auto computedConstants = model->computedConstants();
+    auto algebraic = model->algebraic();
+    auto externals = model->externals();
+
+    res.insert(res.end(), constants.begin(), constants.end());
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraic.begin(), algebraic.end());
+    res.insert(res.end(), externals.begin(), externals.end());
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
+{
+    auto res = equation->states();
+    auto computedConstants = equation->computedConstants();
+    auto algebraic = equation->algebraic();
+    auto externals = equation->externals();
+
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraic.begin(), algebraic.end());
+    res.insert(res.end(), externals.begin(), externals.end());
 
     return res;
 }

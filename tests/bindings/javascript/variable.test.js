@@ -70,7 +70,7 @@ describe("Variable tests", () => {
         const v = new libcellml.Variable("V")
         const u = new libcellml.Units("mV")
 
-        expect(v.units()).toBe(null)
+        expect(v.units()).toBeNull()
 
         v.setUnitsByName("A")
 
@@ -82,7 +82,7 @@ describe("Variable tests", () => {
 
         v.removeUnits()
 
-        expect(v.units()).toBe(null)
+        expect(v.units()).toBeNull()
 
         v.delete()
         u.delete()
