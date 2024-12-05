@@ -82,10 +82,10 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertTrue(a.addExternalVariable(aev))
 
         self.assertTrue(a.containsExternalVariable(aev))
-        self.assertTrue(a.containsExternalVariable(m, c.name(), v0.name()))
+        self.assertTrue(a.containsExternalVariable(v0))
 
         self.assertEqual(aev.variable().name(), a.externalVariable(0).variable().name())
-        self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v0.name()).variable().name())
+        self.assertEqual(aev.variable().name(), a.externalVariable(v0).variable().name())
 
         v2 = c.variable(2)
 
@@ -97,7 +97,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertTrue(a.removeExternalVariable(1))
         self.assertTrue(a.removeExternalVariable(aev))
-        self.assertTrue(a.removeExternalVariable(m, c.name(), v2.name()))
+        self.assertTrue(a.removeExternalVariable(v2))
 
         a.removeAllExternalVariables()
 
@@ -152,12 +152,12 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserVariable.
 
-        av = am.variable(4)
+        av = am.variable(3)
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
         self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
         self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
-        self.assertEqual(4, av.index())
+        self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
         self.assertEqual(1, av.equationCount())

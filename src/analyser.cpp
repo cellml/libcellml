@@ -622,9 +622,7 @@ public:
 
     void analyseModel(const ModelPtr &model);
 
-    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const ModelPtr &model,
-                                                                      const std::string &componentName,
-                                                                      const std::string &variableName) const;
+    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const VariablePtr &variable) const;
     AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 };
 
@@ -742,33 +740,35 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         //                 +-------------+
 
         auto childCount = mathmlChildCount(node);
-        AnalyserEquationAstPtr tempAst;
-        AnalyserEquationAstPtr astRightChild;
 
-        for (size_t i = childCount - 1; i > 0; --i) {
-            astRightChild = tempAst;
-            tempAst = AnalyserEquationAst::create();
+        analyseNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
 
-            if (astRightChild != nullptr) {
-                if (i == childCount - 2) {
-                    astRightChild->swapLeftAndRightChildren();
-                    tempAst = astRightChild;
-                } else {
+        if (childCount >= 2) {
+            analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
+
+            if (childCount >= 3) {
+                AnalyserEquationAstPtr astRightChild;
+                AnalyserEquationAstPtr tempAst;
+
+                analyseNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
+
+                for (auto i = childCount - 2; i > 1; --i) {
+                    tempAst = AnalyserEquationAst::create();
+
+                    analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
+                    analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
+
                     astRightChild->mPimpl->mParent = tempAst;
+
                     tempAst->mPimpl->mOwnedRightChild = astRightChild;
+                    astRightChild = tempAst;
                 }
-            }
 
-            if (i != childCount - 2) {
-                analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-            }
+                astRightChild->mPimpl->mParent = ast;
 
-            analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
+                ast->mPimpl->mOwnedRightChild = astRightChild;
+            }
         }
-
-        analyseNode(mathmlChildNode(node, 0), tempAst, astParent, component, equation);
-
-        ast = tempAst;
 
         // Relational and logical operators.
 
@@ -3308,16 +3308,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                          const std::string &componentName,
-                                                                                          const std::string &variableName) const
+AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
-        auto variable = ev->variable();
-
-        return (owningModel(variable) == model)
-               && (owningComponent(variable)->name() == componentName)
-               && (variable->name() == variableName);
+        return ev->variable() == variable;
     });
 }
 
@@ -3405,6 +3399,19 @@ void Analyser::analyseModel(const ModelPtr &model)
     }
 }
 
+bool Analyser::addExternalVariable(const VariablePtr &variable)
+{
+    for (const auto &externalVariable : pFunc()->mExternalVariables) {
+        if (externalVariable->variable() == variable) {
+            return false;
+        }
+    }
+
+    pFunc()->mExternalVariables.push_back(AnalyserExternalVariable::create(variable));
+
+    return true;
+}
+
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
     if (std::find(pFunc()->mExternalVariables.begin(), pFunc()->mExternalVariables.end(), externalVariable) == pFunc()->mExternalVariables.end()) {
@@ -3427,11 +3434,9 @@ bool Analyser::removeExternalVariable(size_t index)
     return false;
 }
 
-bool Analyser::removeExternalVariable(const ModelPtr &model,
-                                      const std::string &componentName,
-                                      const std::string &variableName)
+bool Analyser::removeExternalVariable(const VariablePtr &variable)
 {
-    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(variable);
 
     if (result != pFunc()->mExternalVariables.end()) {
         pFunc()->mExternalVariables.erase(result);
@@ -3460,11 +3465,9 @@ void Analyser::removeAllExternalVariables()
     pFunc()->mExternalVariables.clear();
 }
 
-bool Analyser::containsExternalVariable(const ModelPtr &model,
-                                        const std::string &componentName,
-                                        const std::string &variableName) const
+bool Analyser::containsExternalVariable(const VariablePtr &variable) const
 {
-    return pFunc()->findExternalVariable(model, componentName, variableName) != pFunc()->mExternalVariables.end();
+    return pFunc()->findExternalVariable(variable) != pFunc()->mExternalVariables.end();
 }
 
 bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
@@ -3481,11 +3484,9 @@ AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
     return nullptr;
 }
 
-AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
-                                                       const std::string &componentName,
-                                                       const std::string &variableName) const
+AnalyserExternalVariablePtr Analyser::externalVariable(const VariablePtr &variable) const
 {
-    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(variable);
 
     if (result != pFunc()->mExternalVariables.end()) {
         return *result;

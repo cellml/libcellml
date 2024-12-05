@@ -64,7 +64,7 @@ describe("Analyser Model tests", () => {
     test('Checking Analyser Model variables related API.', () => {
         expect(am.variableCount()).toBe(18)
         expect(am.variables().size()).toBe(18)
-        expect(am.variable(2).variable().name()).toBe("i_L")
+        expect(am.variable(2).variable().name()).toBe("i_K")
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)
