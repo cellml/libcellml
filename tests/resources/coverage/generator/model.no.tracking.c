@@ -26,8 +26,8 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"eqnNlaVariable1", "dimensionless", "my_component"},
-    {"eqnNlaVariable2", "dimensionless", "my_component"}
+    {"eqnNlaVariable2", "dimensionless", "my_component"},
+    {"eqnNlaVariable1", "dimensionless", "my_component"}
 };
 
 double xor(double x, double y)
@@ -184,8 +184,8 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraic[0] = u[0];
     algebraic[1] = u[1];
 
-    f[0] = algebraic[0]+algebraic[1]+states[0]-0.0;
-    f[1] = algebraic[0]-algebraic[1]-(my_component_eqnComputedConstant1+my_component_eqnComputedConstant2);
+    f[0] = algebraic[1]+algebraic[0]+states[0]-0.0;
+    f[1] = algebraic[1]-algebraic[0]-(my_component_eqnComputedConstant1+my_component_eqnComputedConstant2);
 }
 
 void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
@@ -217,8 +217,8 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     double my_component_eqnNotanumber = NAN;
     double my_component_eqnComputedConstant1 = 1.0;
     double my_component_eqnComputedConstant2 = 3.0;
-    algebraic[0] = 1.0;
-    algebraic[1] = 2.0;
+    algebraic[0] = 2.0;
+    algebraic[1] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

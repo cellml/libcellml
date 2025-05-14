@@ -97,11 +97,11 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic, 
     rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
     sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
     rates[2] = algebraic[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
-    sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0)
     sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0)
     rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1]
-    potassium_channel_n_gate_alpha_n = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
     potassium_channel_n_gate_beta_n = 0.125*exp(states[0]/80.0)
+    potassium_channel_n_gate_alpha_n = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
     rates[3] = potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3]
 
 

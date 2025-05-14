@@ -134,11 +134,11 @@ void computeComputedConstants(double *constants, double *computedConstants)
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
     externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    algebraic[6] = 0.07*exp(externals[0]/20.0);
     algebraic[7] = 1.0/(exp((externals[0]+30.0)/10.0)+1.0);
+    algebraic[6] = 0.07*exp(externals[0]/20.0);
     rates[0] = algebraic[6]*(1.0-states[0])-algebraic[7]*states[0];
-    algebraic[8] = 0.01*(externals[0]+10.0)/(exp((externals[0]+10.0)/10.0)-1.0);
     algebraic[9] = 0.125*exp(externals[0]/80.0);
+    algebraic[8] = 0.01*(externals[0]+10.0)/(exp((externals[0]+10.0)/10.0)-1.0);
     rates[1] = algebraic[8]*(1.0-states[1])-algebraic[9]*states[1];
 }
 
