@@ -14,8 +14,8 @@ const size_t VARIABLE_COUNT = 1;
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_component", STATE},
-    {"y", "dimensionless", "my_component", STATE}
+    {"y", "dimensionless", "my_component", STATE},
+    {"x", "dimensionless", "my_component", STATE}
 };
 
 const VariableInfo VARIABLE_INFO[] = {
@@ -52,8 +52,8 @@ void deleteArray(double *array)
 void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 1.0;
-    states[0] = -2.0;
-    states[1] = 0.0;
+    states[0] = 0.0;
+    states[1] = -2.0;
 }
 
 void computeComputedConstants(double *variables)
@@ -62,8 +62,8 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    rates[0] = states[1]*1.0;
-    rates[1] = (variables[0]*(1.0-pow(states[0], 2.0))*states[1]-states[0])*1.0;
+    rates[1] = states[0]*1.0;
+    rates[0] = (variables[0]*(1.0-pow(states[1], 2.0))*states[0]-states[1])*1.0;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)

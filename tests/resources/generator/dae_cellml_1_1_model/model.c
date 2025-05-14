@@ -20,12 +20,12 @@ const VariableInfo STATE_INFO[] = {
 
 const VariableInfo VARIABLE_INFO[] = {
     {"v_1", "C_per_s", "main", ALGEBRAIC},
-    {"v_in", "C_per_s", "main", CONSTANT},
     {"v_2", "C_per_s", "main", ALGEBRAIC},
+    {"v_in", "C_per_s", "main", CONSTANT},
     {"v_out", "C_per_s", "main", CONSTANT},
-    {"u_1", "J_per_C", "main", ALGEBRAIC},
-    {"u_2", "J_per_C", "main", ALGEBRAIC},
     {"u_3", "J_per_C", "main", ALGEBRAIC},
+    {"u_2", "J_per_C", "main", ALGEBRAIC},
+    {"u_1", "J_per_C", "main", ALGEBRAIC},
     {"C", "C2_per_J", "main", CONSTANT},
     {"R", "Js_per_C2", "main", CONSTANT},
     {"L", "Js2_per_C2", "main", CONSTANT}
@@ -77,7 +77,7 @@ void objectiveFunction0(double *u, double *f, void *data)
 
     variables[0] = u[0];
 
-    f[0] = variables[1]-(variables[0]+variables[2]);
+    f[0] = variables[2]-(variables[0]+variables[1]);
 }
 
 void findRoot0(double voi, double *states, double *rates, double *variables)
@@ -99,9 +99,9 @@ void objectiveFunction1(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[6] = u[0];
+    variables[4] = u[0];
 
-    f[0] = variables[4]-(variables[5]+variables[6]);
+    f[0] = variables[6]-(variables[5]+variables[4]);
 }
 
 void findRoot1(double voi, double *states, double *rates, double *variables)
@@ -109,19 +109,19 @@ void findRoot1(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[1];
 
-    u[0] = variables[6];
+    u[0] = variables[4];
 
     nlaSolve(objectiveFunction1, u, 1, &rfi);
 
-    variables[6] = u[0];
+    variables[4] = u[0];
 }
 
 void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 0.0;
-    variables[1] = 1.0;
+    variables[2] = 1.0;
     variables[3] = 1.0;
-    variables[6] = 0.0;
+    variables[4] = 0.0;
     variables[7] = 20.0;
     variables[8] = 2.0;
     variables[9] = 10.0;
@@ -135,20 +135,20 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    variables[2] = states[1]+variables[3];
+    variables[1] = states[1]+variables[3];
     findRoot0(voi, states, rates, variables);
     rates[0] = variables[0];
-    variables[4] = states[0]/variables[7];
-    variables[5] = variables[8]*variables[2];
+    variables[5] = variables[8]*variables[1];
+    variables[6] = states[0]/variables[7];
     findRoot1(voi, states, rates, variables);
-    rates[1] = variables[6]/variables[9];
+    rates[1] = variables[4]/variables[9];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[2] = states[1]+variables[3];
+    variables[1] = states[1]+variables[3];
     findRoot0(voi, states, rates, variables);
-    variables[4] = states[0]/variables[7];
-    variables[5] = variables[8]*variables[2];
+    variables[5] = variables[8]*variables[1];
+    variables[6] = states[0]/variables[7];
     findRoot1(voi, states, rates, variables);
 }

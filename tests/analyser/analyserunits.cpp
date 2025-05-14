@@ -883,8 +883,8 @@ TEST(AnalyserUnits, powerValues)
         "The units in 'eqnPi = pow(x, pi)' in component 'my_component' are not equivalent. 'eqnPi' is in 'second' while 'pow(x, pi)' is in 'second^3.14159'.",
         "The units in 'eqnInfinity = pow(x, infinity)' in component 'my_component' are not equivalent. 'eqnInfinity' is in 'second' while 'pow(x, infinity)' is in 'second^inf' (i.e. '10^nan x second^inf').",
         "The units in 'eqnNotanumber = pow(x, notanumber)' in component 'my_component' are not equivalent. 'eqnNotanumber' is in 'second' while 'pow(x, notanumber)' is in 'second^nan' (i.e. '10^nan x second^nan').",
-        "The type of variable 'eqnCoverage' in component 'my_component' is unknown.",
         "The type of variable 'u' in component 'my_component' is unknown.",
+        "The type of variable 'eqnCoverage' in component 'my_component' is unknown.",
         "The type of variable 'eqnCoverage2' in component 'my_component' is unknown.",
         "The type of variable 'eqnCoverage3' in component 'my_component' is unknown.",
     };
