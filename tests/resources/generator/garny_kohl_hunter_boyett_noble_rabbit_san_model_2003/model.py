@@ -17,17 +17,17 @@ VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
 STATE_INFO = [
     {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "m", "units": "dimensionless", "component": "sodium_current_m_gate"},
-    {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "h2", "units": "dimensionless", "component": "sodium_current_h_gate"},
-    {"name": "f_L", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate"},
+    {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "d_L", "units": "dimensionless", "component": "L_type_Ca_channel_d_gate"},
+    {"name": "f_L", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate"},
     {"name": "f_T", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate"},
     {"name": "d_T", "units": "dimensionless", "component": "T_type_Ca_channel_d_gate"},
     {"name": "r", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate"},
     {"name": "q", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate"},
     {"name": "P_i", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"name": "P_af", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"name": "P_as", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"name": "P_af", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"name": "xs", "units": "dimensionless", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
     {"name": "y", "units": "dimensionless", "component": "hyperpolarisation_activated_current_y_gate"}
 ]
@@ -66,11 +66,11 @@ CONSTANT_INFO = [
     {"name": "k_NaCa_Centre_0DCapable", "units": "nanoA", "component": "sodium_calcium_exchanger"},
     {"name": "k_NaCa_Periphery_0DCapable", "units": "nanoA", "component": "sodium_calcium_exchanger"},
     {"name": "Na_i", "units": "millimolar", "component": "ionic_concentrations"},
-    {"name": "gamma_NaCa", "units": "dimensionless", "component": "sodium_calcium_exchanger"},
     {"name": "Ca_o", "units": "millimolar", "component": "ionic_concentrations"},
     {"name": "Na_o", "units": "millimolar", "component": "ionic_concentrations"},
     {"name": "Ca_i", "units": "millimolar", "component": "ionic_concentrations"},
     {"name": "d_NaCa", "units": "dimensionless", "component": "sodium_calcium_exchanger"},
+    {"name": "gamma_NaCa", "units": "dimensionless", "component": "sodium_calcium_exchanger"},
     {"name": "i_p_max_Centre_Published", "units": "nanoA", "component": "sodium_potassium_pump"},
     {"name": "i_p_max_Periphery_Published", "units": "nanoA", "component": "sodium_potassium_pump"},
     {"name": "i_p_max_Centre_1DCapable", "units": "nanoA", "component": "sodium_potassium_pump"},
@@ -172,7 +172,6 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "i_Na", "units": "nanoA", "component": "sodium_current"},
     {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump"},
     {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger"},
     {"name": "i_b_K", "units": "nanoA", "component": "potassium_background_current"},
@@ -186,44 +185,45 @@ ALGEBRAIC_INFO = [
     {"name": "i_to", "units": "nanoA", "component": "four_AP_sensitive_currents"},
     {"name": "i_Ca_T", "units": "nanoA", "component": "T_type_Ca_channel"},
     {"name": "i_Ca_L", "units": "nanoA", "component": "L_type_Ca_channel"},
+    {"name": "i_Na", "units": "nanoA", "component": "sodium_current"},
     {"name": "h", "units": "dimensionless", "component": "sodium_current_h_gate"},
-    {"name": "m_infinity", "units": "dimensionless", "component": "sodium_current_m_gate"},
     {"name": "tau_m", "units": "second", "component": "sodium_current_m_gate"},
+    {"name": "m_infinity", "units": "dimensionless", "component": "sodium_current_m_gate"},
     {"name": "F_Na", "units": "dimensionless", "component": "sodium_current_h_gate"},
-    {"name": "h1_infinity", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "tau_h1", "units": "second", "component": "sodium_current_h_gate"},
-    {"name": "h2_infinity", "units": "dimensionless", "component": "sodium_current_h_gate"},
+    {"name": "h1_infinity", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "tau_h2", "units": "second", "component": "sodium_current_h_gate"},
-    {"name": "d_L_infinity", "units": "dimensionless", "component": "L_type_Ca_channel_d_gate"},
+    {"name": "h2_infinity", "units": "dimensionless", "component": "sodium_current_h_gate"},
     {"name": "tau_d_L", "units": "second", "component": "L_type_Ca_channel_d_gate"},
+    {"name": "d_L_infinity", "units": "dimensionless", "component": "L_type_Ca_channel_d_gate"},
     {"name": "alpha_d_L", "units": "per_second", "component": "L_type_Ca_channel_d_gate"},
     {"name": "beta_d_L", "units": "per_second", "component": "L_type_Ca_channel_d_gate"},
-    {"name": "f_L_infinity", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate"},
     {"name": "tau_f_L", "units": "second", "component": "L_type_Ca_channel_f_gate"},
+    {"name": "f_L_infinity", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate"},
     {"name": "alpha_f_L", "units": "per_second", "component": "L_type_Ca_channel_f_gate"},
     {"name": "beta_f_L", "units": "per_second", "component": "L_type_Ca_channel_f_gate"},
-    {"name": "d_T_infinity", "units": "dimensionless", "component": "T_type_Ca_channel_d_gate"},
     {"name": "tau_d_T", "units": "second", "component": "T_type_Ca_channel_d_gate"},
+    {"name": "d_T_infinity", "units": "dimensionless", "component": "T_type_Ca_channel_d_gate"},
     {"name": "alpha_d_T", "units": "per_second", "component": "T_type_Ca_channel_d_gate"},
     {"name": "beta_d_T", "units": "per_second", "component": "T_type_Ca_channel_d_gate"},
-    {"name": "f_T_infinity", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate"},
     {"name": "tau_f_T", "units": "second", "component": "T_type_Ca_channel_f_gate"},
+    {"name": "f_T_infinity", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate"},
     {"name": "alpha_f_T", "units": "per_second", "component": "T_type_Ca_channel_f_gate"},
     {"name": "beta_f_T", "units": "per_second", "component": "T_type_Ca_channel_f_gate"},
-    {"name": "q_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate"},
     {"name": "tau_q", "units": "second", "component": "four_AP_sensitive_currents_q_gate"},
-    {"name": "r_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate"},
+    {"name": "q_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate"},
     {"name": "tau_r", "units": "second", "component": "four_AP_sensitive_currents_r_gate"},
+    {"name": "r_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate"},
     {"name": "P_a", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current"},
-    {"name": "P_af_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"name": "tau_P_af", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
-    {"name": "P_as_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"name": "P_af_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"name": "tau_P_as", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"name": "P_as_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
     {"name": "P_i_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"name": "alpha_xs", "units": "per_second", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
     {"name": "beta_xs", "units": "per_second", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
-    {"name": "alpha_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate"},
-    {"name": "beta_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate"}
+    {"name": "alpha_xs", "units": "per_second", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
+    {"name": "beta_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate"},
+    {"name": "alpha_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate"}
 ]
 
 
@@ -254,17 +254,17 @@ def create_algebraic_array():
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
     states[0] = -39.013558536
     states[1] = 0.092361701692
-    states[2] = 0.015905380261
-    states[3] = 0.01445216109
-    states[4] = 0.48779845203
-    states[5] = 0.04804900895
+    states[2] = 0.01445216109
+    states[3] = 0.015905380261
+    states[4] = 0.04804900895
+    states[5] = 0.48779845203
     states[6] = 0.038968420558
     states[7] = 0.42074047435
     states[8] = 0.064402950262
     states[9] = 0.29760539675
     states[10] = 0.87993375273
-    states[11] = 0.13034201158
-    states[12] = 0.46960956028
+    states[11] = 0.46960956028
+    states[12] = 0.13034201158
     states[13] = 0.082293827208
     states[14] = 0.03889291759
     constants[0] = 0.0
@@ -300,11 +300,11 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
     constants[30] = 2.7229e-6
     constants[31] = 8.83584e-6
     constants[32] = 8.0
-    constants[33] = 0.5
-    constants[34] = 2.0
-    constants[35] = 140.0
+    constants[33] = 2.0
+    constants[34] = 140.0
+    constants[35] = 0.0001
     constants[36] = 0.0001
-    constants[37] = 0.0001
+    constants[37] = 0.5
     constants[38] = 0.0478
     constants[39] = 0.16
     constants[40] = 0.0478
@@ -388,11 +388,11 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[9] = constants[26]+computed_constants[0]*(constants[27]-constants[26]) if eq_func(constants[1], 0.0) else constants[30]+computed_constants[0]*(constants[31]-constants[30]) if eq_func(constants[1], 1.0) else constants[28]+computed_constants[0]*(constants[29]-constants[28])
     computed_constants[10] = constants[38]+computed_constants[0]*(constants[39]-constants[38]) if eq_func(constants[1], 0.0) else constants[42]+computed_constants[0]*(constants[43]-constants[42]) if eq_func(constants[1], 1.0) else constants[40]+computed_constants[0]*(constants[41]-constants[40])
     computed_constants[11] = constants[47]+computed_constants[0]*(constants[48]-constants[47]) if eq_func(constants[1], 0.0) else constants[51]+computed_constants[0]*(constants[52]-constants[51]) if eq_func(constants[1], 1.0) else constants[49]+computed_constants[0]*(constants[50]-constants[49])
-    computed_constants[2] = computed_constants[11]*constants[36]/(constants[36]+0.0004)
-    computed_constants[4] = constants[5]*constants[6]/constants[7]*log(constants[35]/constants[32])
+    computed_constants[2] = computed_constants[11]*constants[35]/(constants[35]+0.0004)
+    computed_constants[4] = constants[5]*constants[6]/constants[7]*log(constants[34]/constants[32])
     computed_constants[6] = constants[5]*constants[6]/constants[7]*log(constants[44]/constants[53])
-    computed_constants[8] = constants[5]*constants[6]/(2.0*constants[7])*log(constants[34]/constants[36])
-    computed_constants[12] = constants[5]*constants[6]/constants[7]*log((constants[44]+0.12*constants[35])/(constants[53]+0.12*constants[32])) if eq_func(constants[1], 0.0) else constants[5]*constants[6]/constants[7]*log((constants[44]+0.03*constants[35])/(constants[53]+0.03*constants[32]))
+    computed_constants[8] = constants[5]*constants[6]/(2.0*constants[7])*log(constants[33]/constants[35])
+    computed_constants[12] = constants[5]*constants[6]/constants[7]*log((constants[44]+0.12*constants[34])/(constants[53]+0.12*constants[32])) if eq_func(constants[1], 0.0) else constants[5]*constants[6]/constants[7]*log((constants[44]+0.03*constants[34])/(constants[53]+0.03*constants[32]))
     computed_constants[13] = constants[54]+computed_constants[0]*(constants[55]-constants[54]) if eq_func(constants[1], 0.0) else constants[58]+computed_constants[0]*(constants[59]-constants[58]) if eq_func(constants[1], 1.0) else constants[56]+computed_constants[0]*(constants[57]-constants[56])
     computed_constants[14] = constants[60]+computed_constants[0]*(constants[61]-constants[60]) if eq_func(constants[1], 0.0) else constants[64]+computed_constants[0]*(constants[65]-constants[64]) if eq_func(constants[1], 1.0) else constants[62]+computed_constants[0]*(constants[63]-constants[62])
     computed_constants[15] = constants[67]+computed_constants[0]*(constants[68]-constants[67]) if eq_func(constants[1], 0.0) else constants[71]+computed_constants[0]*(constants[72]-constants[71]) if eq_func(constants[1], 1.0) else constants[69]+computed_constants[0]*(constants[70]-constants[69])
@@ -406,125 +406,125 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[1] = computed_constants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0))
-    algebraic[2] = computed_constants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.0374*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0))) if eq_func(constants[1], 0.0) else computed_constants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.03743*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0)))
-    algebraic[6] = computed_constants[22]*states[14]*(states[0]-computed_constants[6]) if neq_func(constants[1], 2.0) else computed_constants[22]*states[14]*(states[0]+102.0)
-    algebraic[7] = computed_constants[21]*states[14]*(states[0]-computed_constants[4]) if neq_func(constants[1], 2.0) else computed_constants[21]*states[14]*(states[0]-77.6)
-    algebraic[8] = computed_constants[20]*pow(states[13], 2.0)*(states[0]-computed_constants[12])
-    algebraic[10] = computed_constants[17]*states[8]*(states[0]-computed_constants[6])
-    algebraic[11] = computed_constants[16]*states[9]*states[8]*(states[0]-computed_constants[6])
-    algebraic[12] = computed_constants[15]*states[7]*states[6]*(states[0]-constants[73])
-    algebraic[13] = computed_constants[14]*(states[4]*states[5]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66])
+    algebraic[0] = computed_constants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0))
+    algebraic[1] = computed_constants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))) if eq_func(constants[1], 0.0) else computed_constants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)))
+    algebraic[5] = computed_constants[22]*states[14]*(states[0]-computed_constants[6]) if neq_func(constants[1], 2.0) else computed_constants[22]*states[14]*(states[0]+102.0)
+    algebraic[6] = computed_constants[21]*states[14]*(states[0]-computed_constants[4]) if neq_func(constants[1], 2.0) else computed_constants[21]*states[14]*(states[0]-77.6)
+    algebraic[7] = computed_constants[20]*pow(states[13], 2.0)*(states[0]-computed_constants[12])
+    algebraic[9] = computed_constants[17]*states[8]*(states[0]-computed_constants[6])
+    algebraic[10] = computed_constants[16]*states[9]*states[8]*(states[0]-computed_constants[6])
+    algebraic[11] = computed_constants[15]*states[7]*states[6]*(states[0]-constants[73])
+    algebraic[12] = computed_constants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66])
+    algebraic[2] = computed_constants[5]*(states[0]-computed_constants[6])
+    algebraic[3] = computed_constants[7]*(states[0]-computed_constants[8])
+    algebraic[4] = computed_constants[3]*(states[0]-computed_constants[4])
+    algebraic[42] = 0.6*states[12]+0.4*states[11]
+    algebraic[8] = computed_constants[18]*algebraic[42]*states[10]*(states[0]-computed_constants[6])
     algebraic[17] = 0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869 if eq_func(constants[1], 0.0) else 0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693
-    algebraic[14] = (1.0-algebraic[17])*states[2]+algebraic[17]*states[3]
-    algebraic[0] = computed_constants[13]*pow(states[1], 3.0)*algebraic[14]*constants[35]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computed_constants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0]
-    algebraic[3] = computed_constants[5]*(states[0]-computed_constants[6])
-    algebraic[4] = computed_constants[7]*(states[0]-computed_constants[8])
-    algebraic[5] = computed_constants[3]*(states[0]-computed_constants[4])
-    algebraic[42] = 0.6*states[11]+0.4*states[12]
-    algebraic[9] = computed_constants[18]*algebraic[42]*states[10]*(states[0]-computed_constants[6])
-    rates[0] = -1.0/computed_constants[1]*(algebraic[0]+algebraic[13]+algebraic[12]+algebraic[11]+algebraic[10]+algebraic[9]+algebraic[8]+algebraic[7]+algebraic[6]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[2]+algebraic[1]+computed_constants[2])
-    algebraic[15] = pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0) if eq_func(constants[1], 0.0) else pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0)
-    algebraic[16] = 0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5 if eq_func(constants[1], 0.0) else 0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5
-    rates[1] = (algebraic[15]-states[1])/algebraic[16]
-    algebraic[18] = 1.0/(1.0+exp((states[0]+66.1)/6.4))
-    algebraic[19] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977
-    rates[2] = (algebraic[18]-states[2])/algebraic[19]
-    algebraic[20] = algebraic[18]
-    algebraic[21] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556
-    rates[3] = (algebraic[20]-states[3])/algebraic[21]
-    algebraic[22] = 1.0/(1.0+exp(-(states[0]+23.1)/6.0)) if eq_func(constants[1], 0.0) else 1.0/(1.0+exp(-(states[0]+22.3+0.8*computed_constants[0])/6.0)) if eq_func(constants[1], 1.0) else 1.0/(1.0+exp(-(states[0]+22.2)/6.0))
-    algebraic[24] = -28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 0.0) else -28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 1.0) else -28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0)
+    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2]
+    algebraic[13] = computed_constants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computed_constants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0]
+    rates[0] = -1.0/computed_constants[1]*(algebraic[13]+algebraic[12]+algebraic[11]+algebraic[10]+algebraic[9]+algebraic[8]+algebraic[7]+algebraic[6]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[2]+algebraic[1]+algebraic[0]+computed_constants[2])
+    algebraic[15] = 0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5 if eq_func(constants[1], 0.0) else 0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5
+    algebraic[16] = pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0) if eq_func(constants[1], 0.0) else pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0)
+    rates[1] = (algebraic[16]-states[1])/algebraic[15]
+    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977
+    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4))
+    rates[3] = (algebraic[19]-states[3])/algebraic[18]
+    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556
+    algebraic[21] = algebraic[19]
+    rates[2] = (algebraic[21]-states[2])/algebraic[20]
     algebraic[25] = 11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0) if eq_func(constants[1], 1.0) else 11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0)
-    algebraic[23] = 2.0/(algebraic[24]+algebraic[25])
-    rates[5] = (algebraic[22]-states[5])/algebraic[23]
-    algebraic[26] = 1.0/(1.0+exp((states[0]+45.0)/5.0))
-    algebraic[28] = 3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0) if eq_func(constants[1], 1.0) else 3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0)
+    algebraic[24] = -28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 0.0) else -28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 1.0) else -28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0)
+    algebraic[22] = 2.0/(algebraic[24]+algebraic[25])
+    algebraic[23] = 1.0/(1.0+exp(-(states[0]+23.1)/6.0)) if eq_func(constants[1], 0.0) else 1.0/(1.0+exp(-(states[0]+22.3+0.8*computed_constants[0])/6.0)) if eq_func(constants[1], 1.0) else 1.0/(1.0+exp(-(states[0]+22.2)/6.0))
+    rates[4] = (algebraic[23]-states[4])/algebraic[22]
     algebraic[29] = 30.0/(1.0+exp(-(states[0]+28.0)/4.0)) if eq_func(constants[1], 1.0) else 25.0/(1.0+exp(-(states[0]+28.0)/4.0))
-    algebraic[27] = (1.2-0.2*computed_constants[0])/(algebraic[28]+algebraic[29]) if eq_func(constants[1], 1.0) else 1.0/(algebraic[28]+algebraic[29])
-    rates[4] = (algebraic[26]-states[4])/algebraic[27]
-    algebraic[30] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8))
-    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0)
+    algebraic[28] = 3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0) if eq_func(constants[1], 1.0) else 3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0)
+    algebraic[26] = (1.2-0.2*computed_constants[0])/(algebraic[28]+algebraic[29]) if eq_func(constants[1], 1.0) else 1.0/(algebraic[28]+algebraic[29])
+    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0))
+    rates[5] = (algebraic[27]-states[5])/algebraic[26]
     algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0)
-    algebraic[31] = 1.0/(algebraic[32]+algebraic[33])
-    rates[7] = (algebraic[30]-states[7])/algebraic[31]
-    algebraic[34] = 1.0/(1.0+exp((states[0]+71.0)/9.0))
-    algebraic[36] = 15.3*exp(-(states[0]+71.0+0.7*computed_constants[0])/83.3) if eq_func(constants[1], 1.0) else 15.3*exp(-(states[0]+71.7)/83.3)
+    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0)
+    algebraic[30] = 1.0/(algebraic[32]+algebraic[33])
+    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8))
+    rates[7] = (algebraic[31]-states[7])/algebraic[30]
     algebraic[37] = 15.0*exp((states[0]+71.0)/15.38) if eq_func(constants[1], 1.0) else 15.0*exp((states[0]+71.7)/15.38)
-    algebraic[35] = 1.0/(algebraic[36]+algebraic[37])
-    rates[6] = (algebraic[34]-states[6])/algebraic[35]
-    algebraic[38] = 1.0/(1.0+exp((states[0]+59.37)/13.1))
-    algebraic[39] = 0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)) if eq_func(constants[1], 0.0) else 0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computed_constants[0]))+0.7174*exp((0.2719-0.1719*computed_constants[0])*1.0*(states[0]+40.93+10.0*computed_constants[0])))) if eq_func(constants[1], 1.0) else 0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)))
-    rates[9] = (algebraic[38]-states[9])/algebraic[39]
-    algebraic[40] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7))
-    algebraic[41] = 0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))) if eq_func(constants[1], 0.0) else 0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))) if eq_func(constants[1], 1.0) else 0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))))
-    rates[8] = (algebraic[40]-states[8])/algebraic[41]
-    algebraic[43] = 1.0/(1.0+exp(-(states[0]+14.2)/10.6)) if neq_func(constants[1], 2.0) else 1.0/(1.0+exp(-(states[0]+13.2)/10.6))
-    algebraic[44] = 1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)) if neq_func(constants[1], 2.0) else 1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5))
-    rates[11] = (algebraic[43]-states[11])/algebraic[44]
-    algebraic[45] = algebraic[43]
-    algebraic[46] = 1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)) if neq_func(constants[1], 2.0) else 1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6))
-    rates[12] = (algebraic[45]-states[12])/algebraic[46]
+    algebraic[36] = 15.3*exp(-(states[0]+71.0+0.7*computed_constants[0])/83.3) if eq_func(constants[1], 1.0) else 15.3*exp(-(states[0]+71.7)/83.3)
+    algebraic[34] = 1.0/(algebraic[36]+algebraic[37])
+    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0))
+    rates[6] = (algebraic[35]-states[6])/algebraic[34]
+    algebraic[38] = 0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)) if eq_func(constants[1], 0.0) else 0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computed_constants[0]))+0.7174*exp((0.2719-0.1719*computed_constants[0])*1.0*(states[0]+40.93+10.0*computed_constants[0])))) if eq_func(constants[1], 1.0) else 0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)))
+    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1))
+    rates[9] = (algebraic[39]-states[9])/algebraic[38]
+    algebraic[40] = 0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))) if eq_func(constants[1], 0.0) else 0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))) if eq_func(constants[1], 1.0) else 0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))))
+    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7))
+    rates[8] = (algebraic[41]-states[8])/algebraic[40]
+    algebraic[43] = 1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)) if neq_func(constants[1], 2.0) else 1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5))
+    algebraic[44] = 1.0/(1.0+exp(-(states[0]+14.2)/10.6)) if neq_func(constants[1], 2.0) else 1.0/(1.0+exp(-(states[0]+13.2)/10.6))
+    rates[12] = (algebraic[44]-states[12])/algebraic[43]
+    algebraic[45] = 1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)) if neq_func(constants[1], 2.0) else 1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6))
+    algebraic[46] = algebraic[44]
+    rates[11] = (algebraic[46]-states[11])/algebraic[45]
     algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1))
     rates[10] = (algebraic[47]-states[10])/computed_constants[19]
-    algebraic[48] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0))
-    algebraic[49] = 1.0*exp(-states[0]/45.0)
-    rates[13] = algebraic[48]*(1.0-states[13])-algebraic[49]*states[13]
-    algebraic[50] = 1.0*exp(-(states[0]+78.91)/26.62) if eq_func(constants[1], 0.0) else 1.0*exp(-(states[0]+78.91)/26.63)
-    algebraic[51] = 1.0*exp((states[0]+75.13)/21.25)
-    rates[14] = algebraic[50]*(1.0-states[14])-algebraic[51]*states[14]
+    algebraic[48] = 1.0*exp(-states[0]/45.0)
+    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0))
+    rates[13] = algebraic[49]*(1.0-states[13])-algebraic[48]*states[13]
+    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25)
+    algebraic[51] = 1.0*exp(-(states[0]+78.91)/26.62) if eq_func(constants[1], 0.0) else 1.0*exp(-(states[0]+78.91)/26.63)
+    rates[14] = algebraic[51]*(1.0-states[14])-algebraic[50]*states[14]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[5] = computed_constants[3]*(states[0]-computed_constants[4])
-    algebraic[3] = computed_constants[5]*(states[0]-computed_constants[6])
-    algebraic[4] = computed_constants[7]*(states[0]-computed_constants[8])
-    algebraic[2] = computed_constants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.0374*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0))) if eq_func(constants[1], 0.0) else computed_constants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.03743*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0)))
-    algebraic[1] = computed_constants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0))
+    algebraic[4] = computed_constants[3]*(states[0]-computed_constants[4])
+    algebraic[2] = computed_constants[5]*(states[0]-computed_constants[6])
+    algebraic[3] = computed_constants[7]*(states[0]-computed_constants[8])
+    algebraic[1] = computed_constants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))) if eq_func(constants[1], 0.0) else computed_constants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)))
+    algebraic[0] = computed_constants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0))
     algebraic[17] = 0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869 if eq_func(constants[1], 0.0) else 0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693
-    algebraic[14] = (1.0-algebraic[17])*states[2]+algebraic[17]*states[3]
-    algebraic[0] = computed_constants[13]*pow(states[1], 3.0)*algebraic[14]*constants[35]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computed_constants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0]
-    algebraic[15] = pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0) if eq_func(constants[1], 0.0) else pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0)
-    algebraic[16] = 0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5 if eq_func(constants[1], 0.0) else 0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5
-    algebraic[18] = 1.0/(1.0+exp((states[0]+66.1)/6.4))
-    algebraic[20] = algebraic[18]
-    algebraic[19] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977
-    algebraic[21] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556
-    algebraic[13] = computed_constants[14]*(states[4]*states[5]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66])
+    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2]
+    algebraic[13] = computed_constants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computed_constants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0]
+    algebraic[16] = pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0) if eq_func(constants[1], 0.0) else pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0)
+    algebraic[15] = 0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5 if eq_func(constants[1], 0.0) else 0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5
+    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4))
+    algebraic[21] = algebraic[19]
+    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977
+    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556
+    algebraic[12] = computed_constants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66])
     algebraic[24] = -28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 0.0) else -28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0) if eq_func(constants[1], 1.0) else -28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0)
     algebraic[25] = 11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0) if eq_func(constants[1], 1.0) else 11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0)
-    algebraic[23] = 2.0/(algebraic[24]+algebraic[25])
-    algebraic[22] = 1.0/(1.0+exp(-(states[0]+23.1)/6.0)) if eq_func(constants[1], 0.0) else 1.0/(1.0+exp(-(states[0]+22.3+0.8*computed_constants[0])/6.0)) if eq_func(constants[1], 1.0) else 1.0/(1.0+exp(-(states[0]+22.2)/6.0))
+    algebraic[22] = 2.0/(algebraic[24]+algebraic[25])
+    algebraic[23] = 1.0/(1.0+exp(-(states[0]+23.1)/6.0)) if eq_func(constants[1], 0.0) else 1.0/(1.0+exp(-(states[0]+22.3+0.8*computed_constants[0])/6.0)) if eq_func(constants[1], 1.0) else 1.0/(1.0+exp(-(states[0]+22.2)/6.0))
     algebraic[28] = 3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0) if eq_func(constants[1], 1.0) else 3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0)
     algebraic[29] = 30.0/(1.0+exp(-(states[0]+28.0)/4.0)) if eq_func(constants[1], 1.0) else 25.0/(1.0+exp(-(states[0]+28.0)/4.0))
-    algebraic[27] = (1.2-0.2*computed_constants[0])/(algebraic[28]+algebraic[29]) if eq_func(constants[1], 1.0) else 1.0/(algebraic[28]+algebraic[29])
-    algebraic[26] = 1.0/(1.0+exp((states[0]+45.0)/5.0))
-    algebraic[12] = computed_constants[15]*states[7]*states[6]*(states[0]-constants[73])
+    algebraic[26] = (1.2-0.2*computed_constants[0])/(algebraic[28]+algebraic[29]) if eq_func(constants[1], 1.0) else 1.0/(algebraic[28]+algebraic[29])
+    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0))
+    algebraic[11] = computed_constants[15]*states[7]*states[6]*(states[0]-constants[73])
     algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0)
     algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0)
-    algebraic[31] = 1.0/(algebraic[32]+algebraic[33])
-    algebraic[30] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8))
+    algebraic[30] = 1.0/(algebraic[32]+algebraic[33])
+    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8))
     algebraic[36] = 15.3*exp(-(states[0]+71.0+0.7*computed_constants[0])/83.3) if eq_func(constants[1], 1.0) else 15.3*exp(-(states[0]+71.7)/83.3)
     algebraic[37] = 15.0*exp((states[0]+71.0)/15.38) if eq_func(constants[1], 1.0) else 15.0*exp((states[0]+71.7)/15.38)
-    algebraic[35] = 1.0/(algebraic[36]+algebraic[37])
-    algebraic[34] = 1.0/(1.0+exp((states[0]+71.0)/9.0))
-    algebraic[11] = computed_constants[16]*states[9]*states[8]*(states[0]-computed_constants[6])
-    algebraic[10] = computed_constants[17]*states[8]*(states[0]-computed_constants[6])
-    algebraic[38] = 1.0/(1.0+exp((states[0]+59.37)/13.1))
-    algebraic[39] = 0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)) if eq_func(constants[1], 0.0) else 0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computed_constants[0]))+0.7174*exp((0.2719-0.1719*computed_constants[0])*1.0*(states[0]+40.93+10.0*computed_constants[0])))) if eq_func(constants[1], 1.0) else 0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)))
-    algebraic[40] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7))
-    algebraic[41] = 0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))) if eq_func(constants[1], 0.0) else 0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))) if eq_func(constants[1], 1.0) else 0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))))
-    algebraic[42] = 0.6*states[11]+0.4*states[12]
-    algebraic[9] = computed_constants[18]*algebraic[42]*states[10]*(states[0]-computed_constants[6])
-    algebraic[43] = 1.0/(1.0+exp(-(states[0]+14.2)/10.6)) if neq_func(constants[1], 2.0) else 1.0/(1.0+exp(-(states[0]+13.2)/10.6))
-    algebraic[44] = 1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)) if neq_func(constants[1], 2.0) else 1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5))
-    algebraic[45] = algebraic[43]
-    algebraic[46] = 1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)) if neq_func(constants[1], 2.0) else 1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6))
+    algebraic[34] = 1.0/(algebraic[36]+algebraic[37])
+    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0))
+    algebraic[10] = computed_constants[16]*states[9]*states[8]*(states[0]-computed_constants[6])
+    algebraic[9] = computed_constants[17]*states[8]*(states[0]-computed_constants[6])
+    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1))
+    algebraic[38] = 0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)) if eq_func(constants[1], 0.0) else 0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computed_constants[0]))+0.7174*exp((0.2719-0.1719*computed_constants[0])*1.0*(states[0]+40.93+10.0*computed_constants[0])))) if eq_func(constants[1], 1.0) else 0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)))
+    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7))
+    algebraic[40] = 0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))) if eq_func(constants[1], 0.0) else 0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))) if eq_func(constants[1], 1.0) else 0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))))
+    algebraic[42] = 0.6*states[12]+0.4*states[11]
+    algebraic[8] = computed_constants[18]*algebraic[42]*states[10]*(states[0]-computed_constants[6])
+    algebraic[44] = 1.0/(1.0+exp(-(states[0]+14.2)/10.6)) if neq_func(constants[1], 2.0) else 1.0/(1.0+exp(-(states[0]+13.2)/10.6))
+    algebraic[43] = 1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)) if neq_func(constants[1], 2.0) else 1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5))
+    algebraic[46] = algebraic[44]
+    algebraic[45] = 1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)) if neq_func(constants[1], 2.0) else 1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6))
     algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1))
-    algebraic[8] = computed_constants[20]*pow(states[13], 2.0)*(states[0]-computed_constants[12])
-    algebraic[48] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0))
-    algebraic[49] = 1.0*exp(-states[0]/45.0)
-    algebraic[7] = computed_constants[21]*states[14]*(states[0]-computed_constants[4]) if neq_func(constants[1], 2.0) else computed_constants[21]*states[14]*(states[0]-77.6)
-    algebraic[6] = computed_constants[22]*states[14]*(states[0]-computed_constants[6]) if neq_func(constants[1], 2.0) else computed_constants[22]*states[14]*(states[0]+102.0)
-    algebraic[50] = 1.0*exp(-(states[0]+78.91)/26.62) if eq_func(constants[1], 0.0) else 1.0*exp(-(states[0]+78.91)/26.63)
-    algebraic[51] = 1.0*exp((states[0]+75.13)/21.25)
+    algebraic[7] = computed_constants[20]*pow(states[13], 2.0)*(states[0]-computed_constants[12])
+    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0))
+    algebraic[48] = 1.0*exp(-states[0]/45.0)
+    algebraic[6] = computed_constants[21]*states[14]*(states[0]-computed_constants[4]) if neq_func(constants[1], 2.0) else computed_constants[21]*states[14]*(states[0]-77.6)
+    algebraic[5] = computed_constants[22]*states[14]*(states[0]-computed_constants[6]) if neq_func(constants[1], 2.0) else computed_constants[22]*states[14]*(states[0]+102.0)
+    algebraic[51] = 1.0*exp(-(states[0]+78.91)/26.62) if eq_func(constants[1], 0.0) else 1.0*exp(-(states[0]+78.91)/26.63)
+    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25)

@@ -23,9 +23,9 @@ const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system"},
+    {"z", "dimensionless", "my_algebraic_system"},
     {"y", "dimensionless", "my_algebraic_system"},
-    {"z", "dimensionless", "my_algebraic_system"}
+    {"x", "dimensionless", "my_algebraic_system"}
 };
 
 double * createConstantsArray()

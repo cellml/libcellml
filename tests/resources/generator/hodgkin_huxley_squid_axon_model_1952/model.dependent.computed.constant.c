@@ -140,14 +140,14 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     algebraic[5] = externals[0]-115.0;
     algebraic[3] = constants[2]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[5]);
     rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0];
-    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     algebraic[7] = 4.0*exp(states[0]/18.0);
+    algebraic[6] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     rates[2] = algebraic[6]*(1.0-states[2])-algebraic[7]*states[2];
-    algebraic[8] = 0.07*exp(states[0]/20.0);
     algebraic[9] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    algebraic[8] = 0.07*exp(states[0]/20.0);
     rates[1] = algebraic[8]*(1.0-states[1])-algebraic[9]*states[1];
-    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
     algebraic[11] = 0.125*exp(states[0]/80.0);
+    algebraic[10] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
     rates[3] = algebraic[10]*(1.0-states[3])-algebraic[11]*states[3];
 }
 

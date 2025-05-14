@@ -13,8 +13,8 @@ const size_t COMPUTED_CONSTANT_COUNT = 1;
 const size_t ALGEBRAIC_COUNT = 3;
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system"},
-    {"y", "dimensionless", "my_algebraic_system"}
+    {"y", "dimensionless", "my_algebraic_system"},
+    {"x", "dimensionless", "my_algebraic_system"}
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
@@ -103,15 +103,15 @@ void findRoot0(double *constants, double *computedConstants, double *algebraic)
 
 void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
 {
-    constants[0] = 3.0;
-    constants[1] = 5.0;
+    constants[0] = 5.0;
+    constants[1] = 3.0;
     algebraic[0] = 1.0;
     algebraic[1] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[0] = 3.0*constants[0]+constants[1];
+    computedConstants[0] = 3.0*constants[1]+constants[0];
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)
