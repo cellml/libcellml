@@ -25,8 +25,8 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_INFO = [
-    {"name": "a", "units": "second", "component": "my_component"},
-    {"name": "b", "units": "second", "component": "my_component"}
+    {"name": "b", "units": "second", "component": "my_component"},
+    {"name": "a", "units": "second", "component": "my_component"}
 ]
 
 
@@ -59,5 +59,5 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[1] = 2.0*voi
-    algebraic[0] = 3.0*algebraic[1]
+    algebraic[0] = 2.0*voi
+    algebraic[1] = 3.0*algebraic[0]
