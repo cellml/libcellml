@@ -18,17 +18,17 @@ const VariableInfo VOI_INFO = {"time", "second", "environment"};
 const VariableInfo STATE_INFO[] = {
     {"V", "millivolt", "membrane"},
     {"m", "dimensionless", "sodium_current_m_gate"},
-    {"h1", "dimensionless", "sodium_current_h_gate"},
     {"h2", "dimensionless", "sodium_current_h_gate"},
-    {"f_L", "dimensionless", "L_type_Ca_channel_f_gate"},
+    {"h1", "dimensionless", "sodium_current_h_gate"},
     {"d_L", "dimensionless", "L_type_Ca_channel_d_gate"},
+    {"f_L", "dimensionless", "L_type_Ca_channel_f_gate"},
     {"f_T", "dimensionless", "T_type_Ca_channel_f_gate"},
     {"d_T", "dimensionless", "T_type_Ca_channel_d_gate"},
     {"r", "dimensionless", "four_AP_sensitive_currents_r_gate"},
     {"q", "dimensionless", "four_AP_sensitive_currents_q_gate"},
     {"P_i", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"P_af", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"P_as", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"P_af", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"xs", "dimensionless", "slow_delayed_rectifying_potassium_current_xs_gate"},
     {"y", "dimensionless", "hyperpolarisation_activated_current_y_gate"}
 };
@@ -67,11 +67,11 @@ const VariableInfo CONSTANT_INFO[] = {
     {"k_NaCa_Centre_0DCapable", "nanoA", "sodium_calcium_exchanger"},
     {"k_NaCa_Periphery_0DCapable", "nanoA", "sodium_calcium_exchanger"},
     {"Na_i", "millimolar", "ionic_concentrations"},
-    {"gamma_NaCa", "dimensionless", "sodium_calcium_exchanger"},
     {"Ca_o", "millimolar", "ionic_concentrations"},
     {"Na_o", "millimolar", "ionic_concentrations"},
     {"Ca_i", "millimolar", "ionic_concentrations"},
     {"d_NaCa", "dimensionless", "sodium_calcium_exchanger"},
+    {"gamma_NaCa", "dimensionless", "sodium_calcium_exchanger"},
     {"i_p_max_Centre_Published", "nanoA", "sodium_potassium_pump"},
     {"i_p_max_Periphery_Published", "nanoA", "sodium_potassium_pump"},
     {"i_p_max_Centre_1DCapable", "nanoA", "sodium_potassium_pump"},
@@ -173,7 +173,6 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"i_Na", "nanoA", "sodium_current"},
     {"i_p", "nanoA", "sodium_potassium_pump"},
     {"i_NaCa", "nanoA", "sodium_calcium_exchanger"},
     {"i_b_K", "nanoA", "potassium_background_current"},
@@ -187,44 +186,45 @@ const VariableInfo ALGEBRAIC_INFO[] = {
     {"i_to", "nanoA", "four_AP_sensitive_currents"},
     {"i_Ca_T", "nanoA", "T_type_Ca_channel"},
     {"i_Ca_L", "nanoA", "L_type_Ca_channel"},
+    {"i_Na", "nanoA", "sodium_current"},
     {"h", "dimensionless", "sodium_current_h_gate"},
-    {"m_infinity", "dimensionless", "sodium_current_m_gate"},
     {"tau_m", "second", "sodium_current_m_gate"},
+    {"m_infinity", "dimensionless", "sodium_current_m_gate"},
     {"F_Na", "dimensionless", "sodium_current_h_gate"},
-    {"h1_infinity", "dimensionless", "sodium_current_h_gate"},
     {"tau_h1", "second", "sodium_current_h_gate"},
-    {"h2_infinity", "dimensionless", "sodium_current_h_gate"},
+    {"h1_infinity", "dimensionless", "sodium_current_h_gate"},
     {"tau_h2", "second", "sodium_current_h_gate"},
-    {"d_L_infinity", "dimensionless", "L_type_Ca_channel_d_gate"},
+    {"h2_infinity", "dimensionless", "sodium_current_h_gate"},
     {"tau_d_L", "second", "L_type_Ca_channel_d_gate"},
+    {"d_L_infinity", "dimensionless", "L_type_Ca_channel_d_gate"},
     {"alpha_d_L", "per_second", "L_type_Ca_channel_d_gate"},
     {"beta_d_L", "per_second", "L_type_Ca_channel_d_gate"},
-    {"f_L_infinity", "dimensionless", "L_type_Ca_channel_f_gate"},
     {"tau_f_L", "second", "L_type_Ca_channel_f_gate"},
+    {"f_L_infinity", "dimensionless", "L_type_Ca_channel_f_gate"},
     {"alpha_f_L", "per_second", "L_type_Ca_channel_f_gate"},
     {"beta_f_L", "per_second", "L_type_Ca_channel_f_gate"},
-    {"d_T_infinity", "dimensionless", "T_type_Ca_channel_d_gate"},
     {"tau_d_T", "second", "T_type_Ca_channel_d_gate"},
+    {"d_T_infinity", "dimensionless", "T_type_Ca_channel_d_gate"},
     {"alpha_d_T", "per_second", "T_type_Ca_channel_d_gate"},
     {"beta_d_T", "per_second", "T_type_Ca_channel_d_gate"},
-    {"f_T_infinity", "dimensionless", "T_type_Ca_channel_f_gate"},
     {"tau_f_T", "second", "T_type_Ca_channel_f_gate"},
+    {"f_T_infinity", "dimensionless", "T_type_Ca_channel_f_gate"},
     {"alpha_f_T", "per_second", "T_type_Ca_channel_f_gate"},
     {"beta_f_T", "per_second", "T_type_Ca_channel_f_gate"},
-    {"q_infinity", "dimensionless", "four_AP_sensitive_currents_q_gate"},
     {"tau_q", "second", "four_AP_sensitive_currents_q_gate"},
-    {"r_infinity", "dimensionless", "four_AP_sensitive_currents_r_gate"},
+    {"q_infinity", "dimensionless", "four_AP_sensitive_currents_q_gate"},
     {"tau_r", "second", "four_AP_sensitive_currents_r_gate"},
+    {"r_infinity", "dimensionless", "four_AP_sensitive_currents_r_gate"},
     {"P_a", "dimensionless", "rapid_delayed_rectifying_potassium_current"},
-    {"P_af_infinity", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"tau_P_af", "second", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
-    {"P_as_infinity", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"P_af_infinity", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
     {"tau_P_as", "second", "rapid_delayed_rectifying_potassium_current_P_as_gate"},
+    {"P_as_infinity", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_as_gate"},
     {"P_i_infinity", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"alpha_xs", "per_second", "slow_delayed_rectifying_potassium_current_xs_gate"},
     {"beta_xs", "per_second", "slow_delayed_rectifying_potassium_current_xs_gate"},
-    {"alpha_y", "per_second", "hyperpolarisation_activated_current_y_gate"},
-    {"beta_y", "per_second", "hyperpolarisation_activated_current_y_gate"}
+    {"alpha_xs", "per_second", "slow_delayed_rectifying_potassium_current_xs_gate"},
+    {"beta_y", "per_second", "hyperpolarisation_activated_current_y_gate"},
+    {"alpha_y", "per_second", "hyperpolarisation_activated_current_y_gate"}
 };
 
 double * createStatesArray()
@@ -280,17 +280,17 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
 {
     states[0] = -39.013558536;
     states[1] = 0.092361701692;
-    states[2] = 0.015905380261;
-    states[3] = 0.01445216109;
-    states[4] = 0.48779845203;
-    states[5] = 0.04804900895;
+    states[2] = 0.01445216109;
+    states[3] = 0.015905380261;
+    states[4] = 0.04804900895;
+    states[5] = 0.48779845203;
     states[6] = 0.038968420558;
     states[7] = 0.42074047435;
     states[8] = 0.064402950262;
     states[9] = 0.29760539675;
     states[10] = 0.87993375273;
-    states[11] = 0.13034201158;
-    states[12] = 0.46960956028;
+    states[11] = 0.46960956028;
+    states[12] = 0.13034201158;
     states[13] = 0.082293827208;
     states[14] = 0.03889291759;
     constants[0] = 0.0;
@@ -326,11 +326,11 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     constants[30] = 2.7229e-6;
     constants[31] = 8.83584e-6;
     constants[32] = 8.0;
-    constants[33] = 0.5;
-    constants[34] = 2.0;
-    constants[35] = 140.0;
+    constants[33] = 2.0;
+    constants[34] = 140.0;
+    constants[35] = 0.0001;
     constants[36] = 0.0001;
-    constants[37] = 0.0001;
+    constants[37] = 0.5;
     constants[38] = 0.0478;
     constants[39] = 0.16;
     constants[40] = 0.0478;
@@ -415,11 +415,11 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[9] = (constants[1] == 0.0)?constants[26]+computedConstants[0]*(constants[27]-constants[26]):(constants[1] == 1.0)?constants[30]+computedConstants[0]*(constants[31]-constants[30]):constants[28]+computedConstants[0]*(constants[29]-constants[28]);
     computedConstants[10] = (constants[1] == 0.0)?constants[38]+computedConstants[0]*(constants[39]-constants[38]):(constants[1] == 1.0)?constants[42]+computedConstants[0]*(constants[43]-constants[42]):constants[40]+computedConstants[0]*(constants[41]-constants[40]);
     computedConstants[11] = (constants[1] == 0.0)?constants[47]+computedConstants[0]*(constants[48]-constants[47]):(constants[1] == 1.0)?constants[51]+computedConstants[0]*(constants[52]-constants[51]):constants[49]+computedConstants[0]*(constants[50]-constants[49]);
-    computedConstants[2] = computedConstants[11]*constants[36]/(constants[36]+0.0004);
-    computedConstants[4] = constants[5]*constants[6]/constants[7]*log(constants[35]/constants[32]);
+    computedConstants[2] = computedConstants[11]*constants[35]/(constants[35]+0.0004);
+    computedConstants[4] = constants[5]*constants[6]/constants[7]*log(constants[34]/constants[32]);
     computedConstants[6] = constants[5]*constants[6]/constants[7]*log(constants[44]/constants[53]);
-    computedConstants[8] = constants[5]*constants[6]/(2.0*constants[7])*log(constants[34]/constants[36]);
-    computedConstants[12] = (constants[1] == 0.0)?constants[5]*constants[6]/constants[7]*log((constants[44]+0.12*constants[35])/(constants[53]+0.12*constants[32])):constants[5]*constants[6]/constants[7]*log((constants[44]+0.03*constants[35])/(constants[53]+0.03*constants[32]));
+    computedConstants[8] = constants[5]*constants[6]/(2.0*constants[7])*log(constants[33]/constants[35]);
+    computedConstants[12] = (constants[1] == 0.0)?constants[5]*constants[6]/constants[7]*log((constants[44]+0.12*constants[34])/(constants[53]+0.12*constants[32])):constants[5]*constants[6]/constants[7]*log((constants[44]+0.03*constants[34])/(constants[53]+0.03*constants[32]));
     computedConstants[13] = (constants[1] == 0.0)?constants[54]+computedConstants[0]*(constants[55]-constants[54]):(constants[1] == 1.0)?constants[58]+computedConstants[0]*(constants[59]-constants[58]):constants[56]+computedConstants[0]*(constants[57]-constants[56]);
     computedConstants[14] = (constants[1] == 0.0)?constants[60]+computedConstants[0]*(constants[61]-constants[60]):(constants[1] == 1.0)?constants[64]+computedConstants[0]*(constants[65]-constants[64]):constants[62]+computedConstants[0]*(constants[63]-constants[62]);
     computedConstants[15] = (constants[1] == 0.0)?constants[67]+computedConstants[0]*(constants[68]-constants[67]):(constants[1] == 1.0)?constants[71]+computedConstants[0]*(constants[72]-constants[71]):constants[69]+computedConstants[0]*(constants[70]-constants[69]);
@@ -434,127 +434,127 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    algebraic[1] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
-    algebraic[2] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.0374*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.03743*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0)));
-    algebraic[6] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
-    algebraic[7] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
-    algebraic[8] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
-    algebraic[10] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[11] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[12] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
-    algebraic[13] = computedConstants[14]*(states[4]*states[5]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
+    algebraic[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
+    algebraic[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
+    algebraic[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
+    algebraic[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
+    algebraic[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
+    algebraic[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
+    algebraic[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
+    algebraic[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
+    algebraic[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
+    algebraic[2] = computedConstants[5]*(states[0]-computedConstants[6]);
+    algebraic[3] = computedConstants[7]*(states[0]-computedConstants[8]);
+    algebraic[4] = computedConstants[3]*(states[0]-computedConstants[4]);
+    algebraic[42] = 0.6*states[12]+0.4*states[11];
+    algebraic[8] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
     algebraic[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
-    algebraic[14] = (1.0-algebraic[17])*states[2]+algebraic[17]*states[3];
-    algebraic[0] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[35]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
-    algebraic[3] = computedConstants[5]*(states[0]-computedConstants[6]);
-    algebraic[4] = computedConstants[7]*(states[0]-computedConstants[8]);
-    algebraic[5] = computedConstants[3]*(states[0]-computedConstants[4]);
-    algebraic[42] = 0.6*states[11]+0.4*states[12];
-    algebraic[9] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
-    rates[0] = -1.0/computedConstants[1]*(algebraic[0]+algebraic[13]+algebraic[12]+algebraic[11]+algebraic[10]+algebraic[9]+algebraic[8]+algebraic[7]+algebraic[6]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[2]+algebraic[1]+computedConstants[2]);
-    algebraic[15] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
-    algebraic[16] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
-    rates[1] = (algebraic[15]-states[1])/algebraic[16];
-    algebraic[18] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
-    algebraic[19] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
-    rates[2] = (algebraic[18]-states[2])/algebraic[19];
-    algebraic[20] = algebraic[18];
-    algebraic[21] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
-    rates[3] = (algebraic[20]-states[3])/algebraic[21];
-    algebraic[22] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
-    algebraic[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
+    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2];
+    algebraic[13] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
+    rates[0] = -1.0/computedConstants[1]*(algebraic[13]+algebraic[12]+algebraic[11]+algebraic[10]+algebraic[9]+algebraic[8]+algebraic[7]+algebraic[6]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[2]+algebraic[1]+algebraic[0]+computedConstants[2]);
+    algebraic[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
+    algebraic[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
+    rates[1] = (algebraic[16]-states[1])/algebraic[15];
+    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
+    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
+    rates[3] = (algebraic[19]-states[3])/algebraic[18];
+    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
+    algebraic[21] = algebraic[19];
+    rates[2] = (algebraic[21]-states[2])/algebraic[20];
     algebraic[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
-    algebraic[23] = 2.0/(algebraic[24]+algebraic[25]);
-    rates[5] = (algebraic[22]-states[5])/algebraic[23];
-    algebraic[26] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
-    algebraic[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
+    algebraic[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
+    algebraic[22] = 2.0/(algebraic[24]+algebraic[25]);
+    algebraic[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
+    rates[4] = (algebraic[23]-states[4])/algebraic[22];
     algebraic[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
-    algebraic[27] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
-    rates[4] = (algebraic[26]-states[4])/algebraic[27];
-    algebraic[30] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
-    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0);
+    algebraic[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
+    algebraic[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
+    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
+    rates[5] = (algebraic[27]-states[5])/algebraic[26];
     algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
-    algebraic[31] = 1.0/(algebraic[32]+algebraic[33]);
-    rates[7] = (algebraic[30]-states[7])/algebraic[31];
-    algebraic[34] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
-    algebraic[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
+    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0);
+    algebraic[30] = 1.0/(algebraic[32]+algebraic[33]);
+    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
+    rates[7] = (algebraic[31]-states[7])/algebraic[30];
     algebraic[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
-    algebraic[35] = 1.0/(algebraic[36]+algebraic[37]);
-    rates[6] = (algebraic[34]-states[6])/algebraic[35];
-    algebraic[38] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
-    algebraic[39] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
-    rates[9] = (algebraic[38]-states[9])/algebraic[39];
-    algebraic[40] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
-    algebraic[41] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
-    rates[8] = (algebraic[40]-states[8])/algebraic[41];
-    algebraic[43] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
-    algebraic[44] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
-    rates[11] = (algebraic[43]-states[11])/algebraic[44];
-    algebraic[45] = algebraic[43];
-    algebraic[46] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
-    rates[12] = (algebraic[45]-states[12])/algebraic[46];
+    algebraic[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
+    algebraic[34] = 1.0/(algebraic[36]+algebraic[37]);
+    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
+    rates[6] = (algebraic[35]-states[6])/algebraic[34];
+    algebraic[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
+    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
+    rates[9] = (algebraic[39]-states[9])/algebraic[38];
+    algebraic[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
+    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
+    rates[8] = (algebraic[41]-states[8])/algebraic[40];
+    algebraic[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
+    algebraic[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
+    rates[12] = (algebraic[44]-states[12])/algebraic[43];
+    algebraic[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
+    algebraic[46] = algebraic[44];
+    rates[11] = (algebraic[46]-states[11])/algebraic[45];
     algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
     rates[10] = (algebraic[47]-states[10])/computedConstants[19];
-    algebraic[48] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
-    algebraic[49] = 1.0*exp(-states[0]/45.0);
-    rates[13] = algebraic[48]*(1.0-states[13])-algebraic[49]*states[13];
-    algebraic[50] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
-    algebraic[51] = 1.0*exp((states[0]+75.13)/21.25);
-    rates[14] = algebraic[50]*(1.0-states[14])-algebraic[51]*states[14];
+    algebraic[48] = 1.0*exp(-states[0]/45.0);
+    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
+    rates[13] = algebraic[49]*(1.0-states[13])-algebraic[48]*states[13];
+    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25);
+    algebraic[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
+    rates[14] = algebraic[51]*(1.0-states[14])-algebraic[50]*states[14];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    algebraic[5] = computedConstants[3]*(states[0]-computedConstants[4]);
-    algebraic[3] = computedConstants[5]*(states[0]-computedConstants[6]);
-    algebraic[4] = computedConstants[7]*(states[0]-computedConstants[8]);
-    algebraic[2] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.0374*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[34]*exp(0.03743*states[0]*constants[33])-pow(constants[35], 3.0)*constants[36]*exp(0.03743*states[0]*(constants[33]-1.0)))/(1.0+constants[37]*(constants[36]*pow(constants[35], 3.0)+constants[34]*pow(constants[32], 3.0)));
-    algebraic[1] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
+    algebraic[4] = computedConstants[3]*(states[0]-computedConstants[4]);
+    algebraic[2] = computedConstants[5]*(states[0]-computedConstants[6]);
+    algebraic[3] = computedConstants[7]*(states[0]-computedConstants[8]);
+    algebraic[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
+    algebraic[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
     algebraic[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
-    algebraic[14] = (1.0-algebraic[17])*states[2]+algebraic[17]*states[3];
-    algebraic[0] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[35]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
-    algebraic[15] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
-    algebraic[16] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
-    algebraic[18] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
-    algebraic[20] = algebraic[18];
-    algebraic[19] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
-    algebraic[21] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
-    algebraic[13] = computedConstants[14]*(states[4]*states[5]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
+    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2];
+    algebraic[13] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
+    algebraic[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
+    algebraic[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
+    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
+    algebraic[21] = algebraic[19];
+    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
+    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
+    algebraic[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
     algebraic[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
     algebraic[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
-    algebraic[23] = 2.0/(algebraic[24]+algebraic[25]);
-    algebraic[22] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
+    algebraic[22] = 2.0/(algebraic[24]+algebraic[25]);
+    algebraic[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
     algebraic[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
     algebraic[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
-    algebraic[27] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
-    algebraic[26] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
-    algebraic[12] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
+    algebraic[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
+    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
+    algebraic[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
     algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0);
     algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
-    algebraic[31] = 1.0/(algebraic[32]+algebraic[33]);
-    algebraic[30] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
+    algebraic[30] = 1.0/(algebraic[32]+algebraic[33]);
+    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
     algebraic[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
     algebraic[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
-    algebraic[35] = 1.0/(algebraic[36]+algebraic[37]);
-    algebraic[34] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
-    algebraic[11] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[10] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[38] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
-    algebraic[39] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
-    algebraic[40] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
-    algebraic[41] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
-    algebraic[42] = 0.6*states[11]+0.4*states[12];
-    algebraic[9] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
-    algebraic[43] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
-    algebraic[44] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
-    algebraic[45] = algebraic[43];
-    algebraic[46] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
+    algebraic[34] = 1.0/(algebraic[36]+algebraic[37]);
+    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
+    algebraic[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
+    algebraic[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
+    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
+    algebraic[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
+    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
+    algebraic[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
+    algebraic[42] = 0.6*states[12]+0.4*states[11];
+    algebraic[8] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
+    algebraic[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
+    algebraic[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
+    algebraic[46] = algebraic[44];
+    algebraic[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
     algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
-    algebraic[8] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
-    algebraic[48] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
-    algebraic[49] = 1.0*exp(-states[0]/45.0);
-    algebraic[7] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
-    algebraic[6] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
-    algebraic[50] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
-    algebraic[51] = 1.0*exp((states[0]+75.13)/21.25);
+    algebraic[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
+    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
+    algebraic[48] = 1.0*exp(-states[0]/45.0);
+    algebraic[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
+    algebraic[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
+    algebraic[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
+    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25);
 }

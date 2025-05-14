@@ -22,9 +22,9 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 

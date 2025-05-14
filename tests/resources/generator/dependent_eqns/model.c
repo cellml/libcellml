@@ -26,8 +26,8 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"a", "second", "my_component"},
-    {"b", "second", "my_component"}
+    {"b", "second", "my_component"},
+    {"a", "second", "my_component"}
 };
 
 double * createStatesArray()
@@ -95,6 +95,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    algebraic[1] = 2.0*voi;
-    algebraic[0] = 3.0*algebraic[1];
+    algebraic[0] = 2.0*voi;
+    algebraic[1] = 3.0*algebraic[0];
 }

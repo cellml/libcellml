@@ -16,8 +16,8 @@ const size_t ALGEBRAIC_COUNT = 0;
 const VariableInfo VOI_INFO = {"t", "second", "my_component"};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_component"},
-    {"y", "dimensionless", "my_component"}
+    {"y", "dimensionless", "my_component"},
+    {"x", "dimensionless", "my_component"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
@@ -81,8 +81,8 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    states[0] = -2.0;
-    states[1] = 0.0;
+    states[0] = 0.0;
+    states[1] = -2.0;
     constants[0] = 1.0;
 }
 
@@ -92,8 +92,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    rates[0] = states[1]*1.0;
-    rates[1] = (constants[0]*(1.0-pow(states[0], 2.0))*states[1]-states[0])*1.0;
+    rates[1] = states[0]*1.0;
+    rates[0] = (constants[0]*(1.0-pow(states[1], 2.0))*states[0]-states[1])*1.0;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)

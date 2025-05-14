@@ -47,8 +47,8 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
@@ -147,7 +147,7 @@ def objective_function_3(u, f, data):
 
     algebraic[1] = u[0]
 
-    f[0] = algebraic[1]-constants[2]*(externals[0]-algebraic[3])-0.0
+    f[0] = algebraic[1]-constants[2]*(externals[1]-algebraic[3])-0.0
 
 
 def find_root_3(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -195,7 +195,7 @@ def objective_function_6(u, f, data):
 
     algebraic[5] = u[0]
 
-    f[0] = algebraic[5]-0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)-0.0
+    f[0] = algebraic[5]-0.1*(externals[1]+25.0)/(exp((externals[1]+25.0)/10.0)-1.0)-0.0
 
 
 def find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -219,7 +219,7 @@ def objective_function_7(u, f, data):
 
     algebraic[6] = u[0]
 
-    f[0] = algebraic[6]-4.0*exp(externals[0]/18.0)-0.0
+    f[0] = algebraic[6]-4.0*exp(externals[1]/18.0)-0.0
 
 
 def find_root_7(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -267,7 +267,7 @@ def objective_function_9(u, f, data):
 
     algebraic[7] = u[0]
 
-    f[0] = algebraic[7]-0.07*exp(externals[0]/20.0)-0.0
+    f[0] = algebraic[7]-0.07*exp(externals[1]/20.0)-0.0
 
 
 def find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -291,7 +291,7 @@ def objective_function_10(u, f, data):
 
     algebraic[8] = u[0]
 
-    f[0] = algebraic[8]-1.0/(exp((externals[0]+30.0)/10.0)+1.0)-0.0
+    f[0] = algebraic[8]-1.0/(exp((externals[1]+30.0)/10.0)+1.0)-0.0
 
 
 def find_root_10(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -363,7 +363,7 @@ def objective_function_13(u, f, data):
 
     algebraic[2] = u[0]
 
-    f[0] = algebraic[2]-constants[4]*pow(states[2], 4.0)*(externals[0]-algebraic[9])-0.0
+    f[0] = algebraic[2]-constants[4]*pow(states[2], 4.0)*(externals[1]-algebraic[9])-0.0
 
 
 def find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -387,7 +387,7 @@ def objective_function_15(u, f, data):
 
     algebraic[10] = u[0]
 
-    f[0] = algebraic[10]-0.125*exp(externals[0]/80.0)-0.0
+    f[0] = algebraic[10]-0.125*exp(externals[1]/80.0)-0.0
 
 
 def find_root_15(voi, states, rates, constants, computed_constants, algebraic, externals):
@@ -454,25 +454,25 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals)
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
     find_root_7(voi, states, rates, constants, computed_constants, algebraic, externals)
+    find_root_6(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_8(voi, states, rates, constants, computed_constants, algebraic, externals)
-    find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic, externals)
+    find_root_9(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic, externals)
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
     find_root_15(voi, states, rates, constants, computed_constants, algebraic, externals)
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
     find_root_16(voi, states, rates, constants, computed_constants, algebraic, externals)
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
     find_root_0(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_2(voi, states, rates, constants, computed_constants, algebraic, externals)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_4(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_12(voi, states, rates, constants, computed_constants, algebraic, externals)
     find_root_13(voi, states, rates, constants, computed_constants, algebraic, externals)
     externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)

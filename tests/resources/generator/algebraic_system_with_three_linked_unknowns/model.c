@@ -19,9 +19,9 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system"},
+    {"z", "dimensionless", "my_algebraic_system"},
     {"y", "dimensionless", "my_algebraic_system"},
-    {"z", "dimensionless", "my_algebraic_system"}
+    {"x", "dimensionless", "my_algebraic_system"}
 };
 
 double * createConstantsArray()
@@ -81,9 +81,9 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraic[1] = u[1];
     algebraic[2] = u[2];
 
-    f[0] = 2.0*algebraic[0]+algebraic[1]-2.0*algebraic[2]-(-1.0);
-    f[1] = 3.0*algebraic[0]-3.0*algebraic[1]-algebraic[2]-5.0;
-    f[2] = algebraic[0]-2.0*algebraic[1]+3.0*algebraic[2]-6.0;
+    f[0] = 2.0*algebraic[2]+algebraic[1]-2.0*algebraic[0]-(-1.0);
+    f[1] = 3.0*algebraic[2]-3.0*algebraic[1]-algebraic[0]-5.0;
+    f[2] = algebraic[2]-2.0*algebraic[1]+3.0*algebraic[0]-6.0;
 }
 
 void findRoot0(double *constants, double *computedConstants, double *algebraic)
