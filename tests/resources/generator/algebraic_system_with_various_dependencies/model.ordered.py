@@ -1,19 +1,19 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.5.0"
-LIBCELLML_VERSION = "0.6.0"
+LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 2
 COMPUTED_CONSTANT_COUNT = 1
 ALGEBRAIC_COUNT = 3
 
 CONSTANT_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"},
-    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"}
+    {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 COMPUTED_CONSTANT_INFO = [
@@ -67,14 +67,14 @@ def find_root_0(constants, computed_constants, algebraic):
 
 
 def initialise_variables(constants, computed_constants, algebraic):
-    constants[0] = 3.0
-    constants[1] = 5.0
+    constants[0] = 5.0
+    constants[1] = 3.0
     algebraic[0] = 1.0
     algebraic[1] = 1.0
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[0] = 3.0*constants[0]+constants[1]
+    computed_constants[0] = 3.0*constants[1]+constants[0]
 
 
 def compute_variables(constants, computed_constants, algebraic):

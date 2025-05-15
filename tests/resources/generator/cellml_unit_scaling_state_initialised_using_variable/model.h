@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #pragma once
 

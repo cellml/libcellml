@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.ode.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.6.0";
-const char LIBCELLML_VERSION[] = "0.6.0";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 3;
 const size_t CONSTANT_COUNT = 3;
@@ -16,14 +16,14 @@ const size_t ALGEBRAIC_COUNT = 1;
 const VariableInfo VOI_INFO = {"t", "dimensionless", "main"};
 
 const VariableInfo STATE_INFO[] = {
-    {"y1", "dimensionless", "main"},
     {"y3", "dimensionless", "main"},
-    {"y2", "dimensionless", "main"}
+    {"y2", "dimensionless", "main"},
+    {"y1", "dimensionless", "main"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
-    {"k1", "dimensionless", "main"},
     {"k3", "dimensionless", "main"},
+    {"k1", "dimensionless", "main"},
     {"k2", "dimensionless", "main"}
 };
 
@@ -85,11 +85,11 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    states[0] = 1.0;
+    states[0] = 0.0;
     states[1] = 0.0;
-    states[2] = 0.0;
-    constants[0] = 0.04;
-    constants[1] = 1.0e4;
+    states[2] = 1.0;
+    constants[0] = 1.0e4;
+    constants[1] = 0.04;
     constants[2] = 3.0e7;
 }
 
@@ -99,12 +99,12 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    rates[0] = -constants[0]*states[0]+constants[1]*states[2]*states[1];
-    rates[2] = constants[0]*states[0]-constants[2]*pow(states[2], 2.0)-constants[1]*states[2]*states[1];
-    rates[1] = constants[2]*pow(states[2], 2.0);
+    rates[2] = -constants[1]*states[2]+constants[0]*states[1]*states[0];
+    rates[1] = constants[1]*states[2]-constants[2]*pow(states[1], 2.0)-constants[0]*states[1]*states[0];
+    rates[0] = constants[2]*pow(states[1], 2.0);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    algebraic[0] = 10000.0*states[2];
+    algebraic[0] = 10000.0*states[1];
 }

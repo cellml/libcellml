@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.external.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.6.0";
-const char LIBCELLML_VERSION[] = "0.6.0";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 3;
 const size_t CONSTANT_COUNT = 5;
@@ -48,8 +48,8 @@ const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"V", "millivolt", "membrane"},
     {"i_Na", "microA_per_cm2", "sodium_channel"},
+    {"V", "millivolt", "membrane"},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
@@ -134,24 +134,24 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    algebraic[3] = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0);
-    algebraic[4] = 4.0*exp(externals[0]/18.0);
+    externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
+    algebraic[4] = 4.0*exp(externals[1]/18.0);
+    algebraic[3] = 0.1*(externals[1]+25.0)/(exp((externals[1]+25.0)/10.0)-1.0);
     rates[1] = algebraic[3]*(1.0-states[1])-algebraic[4]*states[1];
-    algebraic[5] = 0.07*exp(externals[0]/20.0);
-    algebraic[6] = 1.0/(exp((externals[0]+30.0)/10.0)+1.0);
+    algebraic[6] = 1.0/(exp((externals[1]+30.0)/10.0)+1.0);
+    algebraic[5] = 0.07*exp(externals[1]/20.0);
     rates[0] = algebraic[5]*(1.0-states[0])-algebraic[6]*states[0];
+    algebraic[7] = 0.125*exp(externals[1]/80.0);
     externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
-    algebraic[7] = 0.125*exp(externals[0]/80.0);
     rates[2] = externals[2]*(1.0-states[2])-algebraic[7]*states[2];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
 {
     algebraic[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    algebraic[1] = constants[2]*(externals[0]-computedConstants[0]);
-    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
     externals[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 1);
-    algebraic[2] = constants[4]*pow(states[2], 4.0)*(externals[0]-computedConstants[2]);
+    algebraic[1] = constants[2]*(externals[1]-computedConstants[0]);
+    externals[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 2);
+    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    algebraic[2] = constants[4]*pow(states[2], 4.0)*(externals[1]-computedConstants[2]);
 }

@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.5.0"
-LIBCELLML_VERSION = "0.6.0"
+LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 2
 CONSTANT_COUNT = 1
@@ -15,8 +15,8 @@ ALGEBRAIC_COUNT = 0
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
 STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_component"},
-    {"name": "y", "units": "dimensionless", "component": "my_component"}
+    {"name": "y", "units": "dimensionless", "component": "my_component"},
+    {"name": "x", "units": "dimensionless", "component": "my_component"}
 ]
 
 CONSTANT_INFO = [
@@ -47,8 +47,8 @@ def create_algebraic_array():
 
 
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
-    states[0] = -2.0
-    states[1] = 0.0
+    states[0] = 0.0
+    states[1] = -2.0
     constants[0] = 1.0
 
 
@@ -57,8 +57,8 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    rates[0] = states[1]*1.0
-    rates[1] = (constants[0]*(1.0-pow(states[0], 2.0))*states[1]-states[0])*1.0
+    rates[1] = states[0]*1.0
+    rates[0] = (constants[0]*(1.0-pow(states[1], 2.0))*states[0]-states[1])*1.0
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):

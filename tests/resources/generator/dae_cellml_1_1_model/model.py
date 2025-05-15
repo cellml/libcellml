@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.5.0"
-LIBCELLML_VERSION = "0.6.0"
+LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 2
 CONSTANT_COUNT = 5
@@ -33,9 +33,9 @@ COMPUTED_CONSTANT_INFO = [
 ALGEBRAIC_INFO = [
     {"name": "v_1", "units": "C_per_s", "component": "main"},
     {"name": "v_2", "units": "C_per_s", "component": "main"},
-    {"name": "u_1", "units": "J_per_C", "component": "main"},
+    {"name": "u_3", "units": "J_per_C", "component": "main"},
     {"name": "u_2", "units": "J_per_C", "component": "main"},
-    {"name": "u_3", "units": "J_per_C", "component": "main"}
+    {"name": "u_1", "units": "J_per_C", "component": "main"}
 ]
 
 
@@ -89,19 +89,19 @@ def objective_function_1(u, f, data):
     computed_constants = data[4]
     algebraic = data[5]
 
-    algebraic[4] = u[0]
+    algebraic[2] = u[0]
 
-    f[0] = algebraic[2]-(algebraic[3]+algebraic[4])
+    f[0] = algebraic[4]-(algebraic[3]+algebraic[2])
 
 
 def find_root_1(voi, states, rates, constants, computed_constants, algebraic):
     u = [nan]*1
 
-    u[0] = algebraic[4]
+    u[0] = algebraic[2]
 
     u = nla_solve(objective_function_1, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
 
-    algebraic[4] = u[0]
+    algebraic[2] = u[0]
 
 
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
@@ -113,7 +113,7 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
     constants[3] = 2.0
     constants[4] = 10.0
     algebraic[0] = 0.0
-    algebraic[4] = 0.0
+    algebraic[2] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -124,15 +124,15 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     algebraic[1] = states[1]+constants[1]
     find_root_0(voi, states, rates, constants, computed_constants, algebraic)
     rates[0] = algebraic[0]
-    algebraic[2] = states[0]/constants[2]
     algebraic[3] = constants[3]*algebraic[1]
+    algebraic[4] = states[0]/constants[2]
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)
-    rates[1] = algebraic[4]/constants[4]
+    rates[1] = algebraic[2]/constants[4]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     algebraic[1] = states[1]+constants[1]
     find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    algebraic[2] = states[0]/constants[2]
     algebraic[3] = constants[3]*algebraic[1]
+    algebraic[4] = states[0]/constants[2]
     find_root_1(voi, states, rates, constants, computed_constants, algebraic)

@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.6.0";
-const char LIBCELLML_VERSION[] = "0.6.0";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 2;
 const size_t CONSTANT_COUNT = 1;
@@ -16,8 +16,8 @@ const size_t ALGEBRAIC_COUNT = 0;
 const VariableInfo VOI_INFO = {"t", "second", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_x_ode"},
-    {"y", "dimensionless", "my_y_ode"}
+    {"y", "dimensionless", "my_y_ode"},
+    {"x", "dimensionless", "my_x_ode"}
 };
 
 const VariableInfo CONSTANT_INFO[] = {
@@ -81,8 +81,8 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    states[0] = -2.0;
-    states[1] = 0.0;
+    states[0] = 0.0;
+    states[1] = -2.0;
     constants[0] = 1.0;
 }
 
@@ -92,8 +92,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    rates[0] = states[1]*1.0;
-    rates[1] = (constants[0]*(1.0-pow(states[0], 2.0))*states[1]-states[0])*1.0;
+    rates[1] = states[0]*1.0;
+    rates[0] = (constants[0]*(1.0-pow(states[1], 2.0))*states[0]-states[1])*1.0;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
