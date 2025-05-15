@@ -23,46 +23,38 @@ jobs:
             os: windows-latest
             bindings_python: ON
             build_shared: OFF
-            unit_tests: ON
             set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
             additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
           - name: 'Windows shared - C++/Python'
             os: windows-latest
             bindings_python: ON
             build_shared: ON
-            unit_tests: ON
             set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
             additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
-          - name: 'Linux static - C++ (build only)'
+          - name: 'Linux static - C++'
             os: ubuntu-latest
             bindings_python: OFF
             build_shared: OFF
-            unit_tests: OFF
           - name: 'Linux shared - C++/Python'
             os: ubuntu-latest
             bindings_python: ON
             build_shared: ON
-            unit_tests: ON
           - name: 'macOS static - C++ (Intel)'
             os: macos-13
             bindings_python: OFF
             build_shared: OFF
-            unit_tests: ON
           - name: 'macOS shared - C++/Python (Intel)'
             os: macos-13
             bindings_python: ON
             build_shared: ON
-            unit_tests: ON
           - name: 'macOS static - C++ (ARM)'
             os: macos-latest
             bindings_python: OFF
             build_shared: OFF
-            unit_tests: ON
           - name: 'macOS shared - C++/Python (ARM)'
             os: macos-latest
             bindings_python: ON
             build_shared: ON
-            unit_tests: ON
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v4
@@ -74,7 +66,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
         with:
           cache_key: ${{ matrix.os }}-${{ matrix.build_shared }}
       - name: Configure MSVC (Windows only)
@@ -99,13 +91,12 @@ jobs:
           mkdir build
           cd build
           ${{ matrix.set_path }}
-          cmake -G Ninja -DBINDINGS_PYTHON=${{ matrix.bindings_python }} -DBUILD_SHARED=${{ matrix.build_shared }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=${{ matrix.unit_tests }} ${{ matrix.additional_cmake_options }} ..
+          cmake -G Ninja -DBINDINGS_PYTHON=${{ matrix.bindings_python }} -DBUILD_SHARED=${{ matrix.build_shared }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=ON ${{ matrix.additional_cmake_options }} ..
       - name: Build libCellML
         run: |
           cd build
           ninja
       - name: Unit testing
-        if: ${{ matrix.unit_tests == 'ON' }}
         run: |
           cd build
           ninja test
@@ -124,7 +115,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install Emscripten
         run: |
           brew install --overwrite emscripten
@@ -193,7 +184,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install LLVM
         run: |
           brew install --overwrite llvm
@@ -219,7 +210,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
+        uses: cscouto/buildcache-action@v1
       - name: Install Valgrind
         run: |
           sudo apt update
@@ -244,11 +235,7 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
-        uses: mikehardy/buildcache-action@v2
-      - name: Install dot
-        run: |
-          sudo apt update
-          sudo apt install graphviz
+        uses: cscouto/buildcache-action@v1
       - name: Install Doxygen
         run: |
           sudo apt update

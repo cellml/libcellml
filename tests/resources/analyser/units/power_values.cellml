@@ -11,7 +11,9 @@
     </units>
     <component name="my_component">
         <variable name="t" units="second"/>
+        <variable name="u" units="dimensionless"/>
         <variable name="x" initial_value="1" units="second"/>
+        <variable name="xx" initial_value="1" units="second"/>
         <variable name="y" initial_value="3" units="dimensionless"/>
         <variable name="z" initial_value="1" units="dimensionless"/>
         <variable name="eqnEq" units="second"/>
@@ -51,6 +53,7 @@
         <variable name="eqnMax2" units="second"/>
         <variable name="eqnRem" units="second"/>
         <variable name="eqnDiff" units="second"/>
+        <variable name="eqnDiff2" units="second"/>
         <variable name="eqnSin" units="second"/>
         <variable name="eqnCos" units="second"/>
         <variable name="eqnTan" units="second"/>
@@ -88,6 +91,9 @@
         <variable name="eqnPi" units="second"/>
         <variable name="eqnInfinity" units="second"/>
         <variable name="eqnNotanumber" units="second"/>
+        <variable name="eqnCoverage" units="second"/>
+        <variable name="eqnCoverage2" units="second"/>
+        <variable name="eqnCoverage3" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -596,6 +602,46 @@
             </apply>
             <apply>
                 <eq/>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+                <ci>eqnDiff2</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+                <apply>
+                    <power/>
+                    <ci>xx</ci>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>xx</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnSin</ci>
                 <apply>
                     <power/>
@@ -1033,6 +1079,89 @@
                     <power/>
                     <ci>x</ci>
                     <notanumber/>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverage</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <divide/>
+                            <apply>
+                                <power/>
+                                <ci>x</ci>
+                                <apply>
+                                    <minus/>
+                                    <ci>y</ci>
+                                    <ci>u</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <power/>
+                                <ci>x</ci>
+                                <ci>u</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>x</ci>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverage2</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <apply>
+                            <divide/>
+                            <apply>
+                                <power/>
+                                <ci>x</ci>
+                                <apply>
+                                    <minus/>
+                                    <ci>y</ci>
+                                    <ci>u</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <power/>
+                                <ci>x</ci>
+                                <ci>u</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>x</ci>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverage3</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <power/>
+                            <ci>x</ci>
+                            <ci>u</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>x</ci>
+                        <ci>x</ci>
+                    </apply>
                 </apply>
             </apply>
         </math>

@@ -908,7 +908,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                 }
             }
 
-            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : units;
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits : units;
 
             for (size_t unitIndex = 0; unitIndex < replacementUnits->unitCount(); ++unitIndex) {
                 const std::string ref = replacementUnits->unitAttributeReference(unitIndex);

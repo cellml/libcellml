@@ -93,6 +93,7 @@ private:
     bool mNewLine;
 };
 
+void listModelsUnits(const ModelPtr &model);
 void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
@@ -101,16 +102,15 @@ void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model);
+void printEquivalences(const VariablePtr &variable);
 void printHistory(const History &history);
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
 void printImportLibrary(const ImportLibrary &importlibrary);
+void printNamedPath(const ParentedEntityPtr &parented);
 void printStack(const IndexStack &stack);
 void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
 void printStringStringMap(const StringStringMap &map);
-void printVariableMap(const VariableMap &map);
 void printUnits(const UnitsPtr &units);
-void listModelsUnits(const ModelPtr &model);
-void printNamedPath(const ParentedEntityPtr &parented);
-void printEquivalences(const VariablePtr &variable);
+void printVariableMap(const VariableMap &map);
 
 } // namespace libcellml
