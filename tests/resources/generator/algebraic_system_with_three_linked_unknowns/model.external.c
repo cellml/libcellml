@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.0. */
+/* The content of this file was generated using the C profile of libCellML 0.6.3. */
 
 #include "model.external.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.6.0";
-const char LIBCELLML_VERSION[] = "0.6.0";
+const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
@@ -23,9 +23,9 @@ const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 const VariableInfo EXTERNAL_INFO[] = {
-    {"x", "dimensionless", "my_algebraic_system"},
+    {"z", "dimensionless", "my_algebraic_system"},
     {"y", "dimensionless", "my_algebraic_system"},
-    {"z", "dimensionless", "my_algebraic_system"}
+    {"x", "dimensionless", "my_algebraic_system"}
 };
 
 double * createConstantsArray()

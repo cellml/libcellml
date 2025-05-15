@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.5.0"
-LIBCELLML_VERSION = "0.6.0"
+LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
@@ -22,9 +22,9 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"},
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
 

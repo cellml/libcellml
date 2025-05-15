@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.6.0.
+# The content of this file was generated using the Python profile of libCellML 0.6.3.
 
 from enum import Enum
 from math import *
 
 
 __version__ = "0.5.0"
-LIBCELLML_VERSION = "0.6.0"
+LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 3
 CONSTANT_COUNT = 5
@@ -47,8 +47,8 @@ ALGEBRAIC_INFO = [
 ]
 
 EXTERNAL_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
+    {"name": "V", "units": "millivolt", "component": "membrane"},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
@@ -103,22 +103,22 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    algebraic[3] = 0.1*(externals[0]+25.0)/(exp((externals[0]+25.0)/10.0)-1.0)
-    algebraic[4] = 4.0*exp(externals[0]/18.0)
+    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
+    algebraic[4] = 4.0*exp(externals[1]/18.0)
+    algebraic[3] = 0.1*(externals[1]+25.0)/(exp((externals[1]+25.0)/10.0)-1.0)
     rates[1] = algebraic[3]*(1.0-states[1])-algebraic[4]*states[1]
-    algebraic[5] = 0.07*exp(externals[0]/20.0)
-    algebraic[6] = 1.0/(exp((externals[0]+30.0)/10.0)+1.0)
+    algebraic[6] = 1.0/(exp((externals[1]+30.0)/10.0)+1.0)
+    algebraic[5] = 0.07*exp(externals[1]/20.0)
     rates[0] = algebraic[5]*(1.0-states[0])-algebraic[6]*states[0]
+    algebraic[7] = 0.125*exp(externals[1]/80.0)
     externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    algebraic[7] = 0.125*exp(externals[0]/80.0)
     rates[2] = externals[2]*(1.0-states[2])-algebraic[7]*states[2]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
     algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    algebraic[1] = constants[2]*(externals[0]-computed_constants[0])
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
     externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
-    algebraic[2] = constants[4]*pow(states[2], 4.0)*(externals[0]-computed_constants[2])
+    algebraic[1] = constants[2]*(externals[1]-computed_constants[0])
+    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
+    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+    algebraic[2] = constants[4]*pow(states[2], 4.0)*(externals[1]-computed_constants[2])

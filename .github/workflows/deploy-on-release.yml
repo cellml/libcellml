@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  MACOSX_DEPLOYMENT_TARGET: 10.15
+  ARTIFACT_RETENTION_DAYS: 7
 
 jobs:
   setup-jobs:
@@ -81,8 +81,6 @@ jobs:
         - {
             name: "Windows Server 2019 MSVC",
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=$ENV{GITHUB_WORKSPACE}/usr/local/libxml2-2.9.10/CMake/"',
-            zlib_dir: '-D "ZLIB_DIR=$ENV{GITHUB_WORKSPACE}/usr/local/ZLIB-1.2.3/CMake/"',
             cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
@@ -105,15 +103,17 @@ jobs:
 
     - name: Checkout zlib
       uses: actions/checkout@v4
+      if: runner.os == 'Windows'
       with:
-        repository: OpenCMISS-Dependencies/zlib
+        repository: CMLibs-Dependencies/zlib
         path: zlib
-        ref: v1.2.3
+        ref: v1.2.12
 
     - name: Checkout LibXml2
       uses: actions/checkout@v4
+      if: runner.os == 'Windows'
       with:
-        repository: OpenCMISS-Dependencies/libxml2
+        repository: CMLibs-Dependencies/libxml2
         path: libxml2
         ref: v2.9.10
 
@@ -144,7 +144,7 @@ jobs:
         execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
           WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
 
-        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}  -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" -DCMAKE_PREFIX_PATH=$ENV{GITHUB_WORKSPACE}/usr/local -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
           RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
         execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
           WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
@@ -168,6 +168,11 @@ jobs:
           list(APPEND OPTIONAL_ARGUMENTS -D COVERAGE=OFF)
         endif()
 
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/usr/local" _SAFE_PATH)
+          list(APPEND OPTIONAL_ARGUMENTS -D CMAKE_PREFIX_PATH=${_SAFE_PATH})
+        endif()
+
         if ("${{ matrix.config.cc }}" STREQUAL "clang")
           list(APPEND OPTIONAL_ARGUMENTS -D LLVM_COVERAGE=OFF)
         endif()
@@ -175,16 +180,16 @@ jobs:
           list(APPEND OPTIONAL_ARGUMENTS -D PACKAGE_ANY_LINUX=TRUE)
         endif()
 
-        list(APPEND OPTIONAL_ARGUMENTS ${{ matrix.config.libxml2_dir }})
-
+        message(STATUS "Configuring with optional arguments: ${OPTIONAL_ARGUMENTS}")
         execute_process(
           COMMAND ${CMAKE_COMMAND}
             -S .
             -B build
             ${OPTIONAL_ARGUMENTS}
-          RESULT_VARIABLE result
+          RESULT_VARIABLE _RESULT
         )
-        if (NOT result EQUAL 0)
+
+        if (NOT _RESULT EQUAL 0)
           message(FATAL_ERROR "Configure failed.")
         endif()
 
@@ -259,7 +264,7 @@ jobs:
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.package.outputs.files }}
         tag_name: ${{ github.event.release.tag_name }}
@@ -270,6 +275,7 @@ jobs:
       with:
         path: ./build/dist/*
         name: ${{ matrix.config.os }}
+        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   wheels:
     needs: setup-jobs
@@ -356,19 +362,32 @@ jobs:
           package-dir: src/bindings/python/
 
       - name: Upload Python wheels as artifacts
-        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
         uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
           name: ${{ matrix.name }}-${{ matrix.py }}-wheel
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  publish-wheels:
+    if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
+    needs: wheels
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5  # Docker+network are slow sometimes.
+    permissions:
+      id-token: write
+    name: Publish Wheels
+    steps:
+      - name: Download Python wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: wheelhouse/
+          pattern: '*-wheel'
+          merge-multiple: true
 
       - name: Publish Python wheels
-        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
         env:
           name: pypi
           url: https://pypi.org/p/libcellml
-        permissions:
-          id-token: write
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ./wheelhouse/
@@ -443,6 +462,7 @@ jobs:
         with:
           path: ${{ steps.package-javascript.outputs.files }}
           name: libcellml.js
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
       - name: Publish libcellml.js
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'

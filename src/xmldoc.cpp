@@ -42,7 +42,7 @@ namespace libcellml {
  *
  * @param error The @c xmlErrorPtr to the error raised by libxml.
  */
-void structuredErrorCallback(void *userData, xmlErrorPtr error)
+void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE error)
 {
     static const std::regex newLineRegex("\\n");
     // Swap libxml2 carriage return for a period.

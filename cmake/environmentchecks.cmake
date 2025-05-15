@@ -14,6 +14,7 @@
 
 include(CheckCXXCompilerFlag)
 include(TestUndefinedSymbolsAllowed)
+include(TestLibXml2ConstErrorStructuredErrorCallback)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -45,7 +46,6 @@ else ()
   endif()
   find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
   find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
-  find_program(DOT_EXE NAMES ${PREFERRED_FIND_NAMES} dot)
   find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
   find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
   find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} ENV PATH /Library/Developer/CommandLineTools/usr/bin/)
@@ -94,7 +94,6 @@ else ()
     BUILDCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
-    DOT_EXE
     FIND_EXE
     GCC_COVERAGE_COMPILER_FLAGS_OK
     GCOV_EXE
@@ -132,6 +131,7 @@ if(LibXml2_FOUND)
       endif()
     else()
       find_package(ZLIB REQUIRED)
+      set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
     endif()
   endif()
   set(HAVE_LIBXML2_CONFIG TRUE)
@@ -156,16 +156,31 @@ if(LibXml2_FOUND)
   endforeach()
 else()
   find_package(LibXml2 REQUIRED)
+  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
   if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
     get_target_property(ZLIB_TARGET_TYPE z TYPE)
   else()
     find_package(ZLIB REQUIRED)
+    set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
   endif()
   if(LibXml2_FOUND)
     # Clear out GUI variable created in config search mode.
     unset(LibXml2_DIR CACHE)
   endif()
+endif()
+
+if(NOT DEFINED _LibXml2_FIND_REPORTED)
+  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
+  message(STATUS "Found LibXml2: ${LIBXML2_LIBRARIES} (found version \"${LIBXML2_VERSION_STRING}\").")
+endif()
+
+if(NOT DEFINED _ZLIB_FIND_REPORTED)
+  set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
+    set(ZLIB_VERSION_STRING ${ZLIB_VERSION})
+  endif()
+  message(STATUS "Found ZLIB: ${ZLIB_LIBRARIES} (found version \"${ZLIB_VERSION_STRING}\").")
 endif()
 
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
@@ -239,4 +254,12 @@ endif()
 
 if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
+endif()
+
+test_libxml2_const_error_structured_error_callback()
+
+if(CONST_ERROR_STRUCTURED_ERROR_CALLBACK)
+  set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "const xmlError *")
+else()
+  set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "xmlErrorPtr")
 endif()
