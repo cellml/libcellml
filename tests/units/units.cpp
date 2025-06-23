@@ -3455,15 +3455,15 @@ TEST(Units, oneLitreEqualToOneThousandCentiMetreCubed)
 TEST(Units, oneKilogramEqualToOneThousandGrams)
 {
     auto model = libcellml::Model::create();
-    auto oneThousandgrams = libcellml::Units::create("oneThousandgrams");
-    oneThousandgrams->addUnit("gram", 0, 1.0, 1000);
+    auto oneThousandGrams = libcellml::Units::create("oneThousandGrams");
+    oneThousandGrams->addUnit("gram", 0, 1.0, 1000);
 
     auto kilogram = libcellml::Units::create("kilogram");
 
-    model->addUnits(oneThousandgrams);
+    model->addUnits(oneThousandGrams);
     model->addUnits(kilogram);
 
-    EXPECT_TRUE(libcellml::Units::equivalent(kilogram, oneThousandgrams));
+    EXPECT_TRUE(libcellml::Units::equivalent(kilogram, oneThousandGrams));
 }
 
 TEST(Units, oneLitreEqualToOneThousandCentiMetreCubedAllCubed)
