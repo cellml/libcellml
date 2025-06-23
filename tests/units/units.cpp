@@ -3436,3 +3436,53 @@ TEST(Units, definedUnitsImport)
 
     EXPECT_FALSE(u->isDefined());
 }
+
+TEST(Units, oneLitreEqualToOneThousandCentiMetreCubed)
+{
+    auto model = libcellml::Model::create();
+    auto oneLitre = libcellml::Units::create("oneLitre");
+    oneLitre->addUnit("litre");
+
+    auto oneThousandCentiMetreCubed = libcellml::Units::create("oneThousandCentiMetreCubed");
+    oneThousandCentiMetreCubed->addUnit("metre", "centi", 3, 1000);
+
+    model->addUnits(oneLitre);
+    model->addUnits(oneThousandCentiMetreCubed);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(oneLitre, oneThousandCentiMetreCubed));
+}
+
+TEST(Units, oneKilogramEqualToOneThousandGrams)
+{
+    auto model = libcellml::Model::create();
+    auto oneThousandgrams = libcellml::Units::create("oneThousandgrams");
+    oneThousandgrams->addUnit("gram", 0, 1.0, 1000);
+
+    auto kilogram = libcellml::Units::create("kilogram");
+
+    model->addUnits(oneThousandgrams);
+    model->addUnits(kilogram);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(kilogram, oneThousandgrams));
+}
+
+TEST(Units, oneLitreEqualToOneThousandCentiMetreCubedAllCubed)
+{
+    auto model = libcellml::Model::create();
+    auto oneLitre = libcellml::Units::create("oneLitre");
+    oneLitre->addUnit("litre");
+    auto oneLitreCubed = libcellml::Units::create("oneLitreCubed");
+    oneLitreCubed->addUnit("oneLitre", 3);
+
+    auto oneThousandCentiMetreCubed = libcellml::Units::create("oneThousandCentiMetreCubed");
+    oneThousandCentiMetreCubed->addUnit("metre", "centi", 3, 1000);
+    auto oneThousandCentiMetreCubedCubed = libcellml::Units::create("oneThousandCentiMetreCubedCubed");
+    oneThousandCentiMetreCubedCubed->addUnit("oneThousandCentiMetreCubed", 3);
+
+    model->addUnits(oneLitre);
+    model->addUnits(oneLitreCubed);
+    model->addUnits(oneThousandCentiMetreCubed);
+    model->addUnits(oneThousandCentiMetreCubedCubed);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(oneLitreCubed, oneThousandCentiMetreCubedCubed));
+}
