@@ -254,7 +254,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
                 // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
-                localMultiplier += mult + standardMult * exp + prefixMult;
+                localMultiplier += mult + standardMult * exp + prefixMult * exp;
             } else {
                 auto model = owningModel(units);
                 auto refUnits = model->units(ref);
