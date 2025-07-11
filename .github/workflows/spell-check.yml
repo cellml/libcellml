@@ -17,5 +17,5 @@ jobs:
       - uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
-          skip: ./.git,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/*
+          skip: ./.git,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/*,./src/bindings/interface/numpy.i
           exclude_file: .codespellexclude

@@ -34,7 +34,7 @@ else ()
 
   test_undefined_symbols_allowed()
 
-  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter NumPy ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
   find_program(BUILDCACHE_EXE buildcache)
   if(NOT BUILDCACHE_EXE)

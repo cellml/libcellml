@@ -31,8 +31,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/importer.i
     ../interface/importsource.i
     ../interface/importedentity.i
-    #---GRY--- TO BE UNCOMMENTED ONCE WE HAVE FIGURED OUT HOW TO PASS double *.
-    # ../interface/interpreter.i
+    ../interface/interpreter.i
     ../interface/issue.i
     ../interface/logger.i
     ../interface/model.i
@@ -119,6 +118,8 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   else()
     target_link_libraries(${MODULE_TARGET} PRIVATE ${_PYTHON_LINK_TARGET})
   endif()
+  # Add the Python NumPy include directories.
+  target_include_directories(${MODULE_TARGET} PRIVATE ${Python_NumPy_INCLUDE_DIRS})
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
   if(WIN32)
