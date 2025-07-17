@@ -486,8 +486,8 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         //                 +-------------+
 
         auto childCount = mathmlChildCount(node);
-        AnalyserEquationAstPtr tempAst;
         AnalyserEquationAstPtr astRightChild;
+        AnalyserEquationAstPtr tempAst;
 
         for (size_t i = childCount - 1; i > 0; --i) {
             astRightChild = tempAst;
@@ -496,6 +496,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             if (astRightChild != nullptr) {
                 if (i == childCount - 2) {
                     astRightChild->swapLeftAndRightChildren();
+
                     tempAst = astRightChild;
                 } else {
                     astRightChild->mPimpl->mParent = tempAst;
