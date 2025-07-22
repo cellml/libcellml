@@ -19,47 +19,37 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: 'Windows static - C++/Python'
+          - name: 'Windows static - C++'
             os: windows-latest
-            bindings_python: ON
-            build_shared: OFF
-            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
-            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+            python_bindings: OFF
+            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
           - name: 'Windows shared - C++/Python'
             os: windows-latest
-            bindings_python: ON
-            build_shared: ON
-            set_path: $env:Path="C:\libxml2\bin;C:\zlib\bin;"+$env:Path
-            additional_cmake_options: -DLIBXML2_INCLUDE_DIR="C:\libxml2\include\libxml2" -DLIBXML2_LIBRARY="C:\libxml2\lib\libxml2.lib" -DZLIB_INCLUDE_DIR="C:\zlib\include" -DZLIB_LIBRARY="C:\zlib\lib\z_dll.lib"
+            python_bindings: ON
+            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
           - name: 'Linux static - C++'
             os: ubuntu-latest
-            bindings_python: OFF
-            build_shared: OFF
+            python_bindings: OFF
           - name: 'Linux shared - C++/Python'
             os: ubuntu-latest
-            bindings_python: ON
-            build_shared: ON
+            python_bindings: ON
           - name: 'macOS static - C++ (Intel)'
             os: macos-13
-            bindings_python: OFF
-            build_shared: OFF
+            python_bindings: OFF
           - name: 'macOS shared - C++/Python (Intel)'
             os: macos-13
-            bindings_python: ON
-            build_shared: ON
+            python_bindings: ON
           - name: 'macOS static - C++ (ARM)'
             os: macos-latest
-            bindings_python: OFF
-            build_shared: OFF
+            python_bindings: OFF
           - name: 'macOS shared - C++/Python (ARM)'
             os: macos-latest
-            bindings_python: ON
-            build_shared: ON
+            python_bindings: ON
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v4
       - name: Install Python (if needed)
-        if: ${{ matrix.bindings_python == 'ON' }}
+        if: ${{ matrix.python_bindings == 'ON' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -68,47 +58,36 @@ jobs:
       - name: Install buildcache
         uses: cscouto/buildcache-action@v1
         with:
-          cache_key: ${{ matrix.os }}-${{ matrix.build_shared }}
+          cache_key: ${{ matrix.os }}-${{ matrix.python_bindings }}
       - name: Configure MSVC (Windows only)
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install libxml2 (Windows only)
         if: ${{ runner.os == 'Windows' }}
         run: |
-          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/libxml2.zip -OutFile libxml2.zip
-          Expand-Archive -LiteralPath libxml2.zip -DestinationPath C:\
-      - name: Install SWIG (macOS only and if needed)
-        if: ${{ runner.os == 'macOS' && matrix.bindings_python == 'ON' }}
-        run: |
-          brew install swig
+          cd C:\
+          curl -L https://github.com/cellml/gha/releases/download/gha/libxml2-Windows.tar.gz -o libxml2.tar.gz -s
+          tar -xzf libxml2.tar.gz
       - name: Install zlib (Windows only)
         if: ${{ runner.os == 'Windows' }}
         run: |
-          Invoke-WebRequest -UseBasicParsing https://github.com/cellml/gha/releases/download/gha/zlib.zip -OutFile zlib.zip
-          Expand-Archive -LiteralPath zlib.zip -DestinationPath C:\
+          cd C:\
+          curl -L https://github.com/cellml/gha/releases/download/gha/zlib-Windows.tar.gz -o zlib.tar.gz -s
+          tar -xzf zlib.tar.gz
+      - name: Install SWIG (macOS only and if needed)
+        if: ${{ runner.os == 'macOS' && matrix.python_bindings == 'ON' }}
+        run: brew install swig
       - name: Configure libCellML
-        run: |
-          mkdir build
-          cd build
-          ${{ matrix.set_path }}
-          cmake -G Ninja -DBINDINGS_PYTHON=${{ matrix.bindings_python }} -DBUILD_SHARED=${{ matrix.build_shared }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=ON ${{ matrix.additional_cmake_options }} ..
+        run: cmake -G Ninja -S . -B build -DBINDINGS_PYTHON=${{ matrix.python_bindings }} -DBUILD_SHARED=${{ matrix.python_bindings }} -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=ON ${{ matrix.additional_cmake_options }}
       - name: Build libCellML
-        run: |
-          cd build
-          ninja
+        run: cmake --build build
       - name: Unit testing
-        run: |
-          cd build
-          ninja test
+        run: cmake --build build --target test
   javascript:
     name: JavaScript
     runs-on: macos-latest
     strategy:
       fail-fast: false
-    env:
-      LIBCELLML_WASM_DIR: wasm
-      LIBXML2_VERSION: 2.9.10
-      ZLIB_VERSION: 1.2.3
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v4
@@ -117,39 +96,22 @@ jobs:
       - name: Install buildcache
         uses: cscouto/buildcache-action@v1
       - name: Install Emscripten
+        run: brew install --overwrite emscripten
+      - name: Install libxml2
         run: |
-          brew install --overwrite emscripten
-      - name: Set up the build directory
+          cd $HOME
+          wget https://github.com/cellml/gha/releases/download/gha/libxml2-WASM.tar.gz -O - | tar -xz
+      - name: Install zlib
         run: |
-          mkdir build
-      - name: Build zlib
+          cd $HOME
+          wget https://github.com/cellml/gha/releases/download/gha/zlib-WASM.tar.gz -O - | tar -xz
+      - name: Configure libCellML
         run: |
-          cd build
-          ZLIB_BUILD_DIR=zlib-wasm
-          git clone https://github.com/OpenCMISS-Dependencies/zlib.git -b v${ZLIB_VERSION}
-          mkdir ${ZLIB_BUILD_DIR}
-          emcmake cmake -G Ninja -S zlib -B ${ZLIB_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DBUILD_SHARED_LIBS=OFF
-          cmake --build ${ZLIB_BUILD_DIR}
-          cmake --install ${ZLIB_BUILD_DIR}
-      - name: Build libxml2
-        run: |
-          cd build
-          LIBXML2_BUILD_DIR=libxml2-wasm
-          git clone https://github.com/OpenCMISS-Dependencies/libxml2.git -b v${LIBXML2_VERSION}
-          mkdir ${LIBXML2_BUILD_DIR}
-          emcmake cmake -G Ninja -S libxml2 -B ${LIBXML2_BUILD_DIR} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/${LIBCELLML_WASM_DIR} -DZLIB_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/ZLIB-${ZLIB_VERSION} -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
-          cmake --build ${LIBXML2_BUILD_DIR}
-          cmake --install ${LIBXML2_BUILD_DIR}
+          emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DLIBXML2_INCLUDE_DIR=$HOME/libxml2/include/libxml2 -DLIBXML2_LIBRARY=$HOME/libxml2/lib/libxml2.a -DZLIB_INCLUDE_DIR=$HOME/zlib/include -DZLIB_LIBRARY=$HOME/zlib/lib/libz.a
       - name: Build libCellML
-        run: |
-          cd build
-          mkdir ${LIBCELLML_WASM_DIR}
-          emcmake cmake -G Ninja -S .. -B ${LIBCELLML_WASM_DIR} -DLibXml2_DIR=~/${LIBCELLML_WASM_DIR}/lib/cmake/libxml2-${LIBXML2_VERSION} -DBUILD_TYPE=Release
-          cmake --build ${LIBCELLML_WASM_DIR}
+        run: cmake --build build-wasm
       - name: Unit testing
-        run: |
-          cd build
-          cmake --build ${LIBCELLML_WASM_DIR} --target jest_test
+        run: cmake --build build-wasm --target jest_test
   code_formatting:
     name: Code formatting
     runs-on: ubuntu-latest
