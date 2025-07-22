@@ -31,24 +31,25 @@ struct AnalyserEquation::AnalyserEquationImpl
 {
     AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
     AnalyserEquationAstPtr mAst;
-    std::vector<AnalyserEquationWeakPtr> mDependencies;
     size_t mNlaSystemIndex;
-    std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
     bool mIsStateRateBased = false;
-    std::vector<AnalyserVariablePtr> mVariables;
+
+    AnalyserVariablePtr mConstant;
+
+    std::vector<AnalyserVariablePtr> mStates;
+    std::vector<AnalyserVariablePtr> mComputedConstants;
+    std::vector<AnalyserVariablePtr> mAlgebraic;
+    std::vector<AnalyserVariablePtr> mExternals;
+
+    std::vector<AnalyserVariablePtr> mConstantDependencies;
+    std::vector<AnalyserEquationWeakPtr> mDependencies;
+    std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
 
     static AnalyserEquationPtr create();
 
-    void populate(AnalyserEquation::Type type,
-                  const AnalyserEquationAstPtr &ast,
-                  const std::vector<AnalyserEquationPtr> &dependencies,
-                  size_t nlaSystemIndex,
-                  const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                  const std::vector<AnalyserVariablePtr> &variables);
+    static bool isDummyDependency(const AnalyserEquationWeakPtr &dependency);
 
-    static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
-
-    void cleanUpDependencies();
+    void removeDummyDependencies();
 };
 
 } // namespace libcellml
