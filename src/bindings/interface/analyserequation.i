@@ -43,14 +43,41 @@
 %feature("docstring") libcellml::AnalyserEquation::isStateRateBased
 "Tests if this :class:`AnalyserEquation` object relies on states and/or rates.";
 
-%feature("docstring") libcellml::AnalyserEquation::variableCount
-"Returns the number of variables computed by this :class:`AnalyserEquation` object.";
+%feature("docstring") libcellml::AnalyserEquation::stateCount
+"Returns the number of states computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::variables
-"Returns the variables computed by this :class:`AnalyserEquation` object.";
+%feature("docstring") libcellml::AnalyserEquation::states
+"Returns the states computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::variable
-"Returns the variable, at the given index, computed by this :class:`AnalyserEquation` object.";
+%feature("docstring") libcellml::AnalyserEquation::state
+"Returns the state, at the given index, computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::computedConstantCount
+"Returns the number of computed constants computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::computedConstants
+"Returns the computed constants computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::computedConstant
+"Returns the computed constant, at the given index, computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::algebraicCount
+"Returns the number of algebraic variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::algebraic
+"Returns the algebraic variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::algebraic
+"Returns the algebraic variable, at the given index, computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::externalCount
+"Returns the number of external variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::externals
+"Returns the external variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::external
+"Returns the external variable, at the given index, computed by this :class:`AnalyserEquation` object.";
 
 %{
 #include "libcellml/analyserequation.h"
