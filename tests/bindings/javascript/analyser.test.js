@@ -23,6 +23,7 @@ describe("Analyser tests", () => {
   let m
   let a
   let aev
+  let v
 
   beforeAll(async () => {
     libcellml = await libCellMLModule();
@@ -35,7 +36,7 @@ describe("Analyser tests", () => {
     a.analyseModel(m)
     expect(a.issueCount()).toBe(0)
 
-    const v = m.componentByIndex(0).variableByIndex(0)
+    v = m.componentByIndex(0).variableByIndex(0)
     aev = new libcellml.AnalyserExternalVariable(v)
   });
   test("Checking Analyser.analyseModel.", () => {
@@ -49,54 +50,57 @@ describe("Analyser tests", () => {
     expect(a.issueCount()).toBe(1)
     expect(a.issue(0).description()).toBe("Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.")
   });
-  test("Checking Analyser.addExternalVariable.", () => {
-     expect(a.addExternalVariable(aev)).toBe(true)
+  test("Checking Analyser.addExternalVariableByVariable.", () => {
+     expect(a.addExternalVariableByVariable(v)).toBe(true)
+  });
+  test("Checking Analyser.addExternalVariableByExternalVariable.", () => {
+     expect(a.addExternalVariableByExternalVariable(aev)).toBe(true)
   });
   test("Checking Analyser.removeExternalVariableByIndex.", () => {
-    a.addExternalVariable(aev)
+    a.addExternalVariableByVariable(v)
     expect(a.externalVariableCount()).toBe(1)
     a.removeExternalVariableByIndex(0)
     expect(a.externalVariableCount()).toBe(0)
   });
-  test("Checking Analyser.removeExternalVariableByModel.", () => {
-    a.addExternalVariable(aev)
+  test("Checking Analyser.removeExternalVariableByVariable.", () => {
+    a.addExternalVariableByVariable(v)
     expect(a.externalVariableCount()).toBe(1)
-    a.removeExternalVariableByModel(m, "component", "time")
+    a.removeExternalVariableByVariable(v)
     expect(a.externalVariableCount()).toBe(0)
   });
   test("Checking Analyser.removeExternalVariableByExternalVariable.", () => {
-    a.addExternalVariable(aev)
+    a.addExternalVariableByExternalVariable(aev)
     expect(a.externalVariableCount()).toBe(1)
     a.removeExternalVariableByExternalVariable(aev)
     expect(a.externalVariableCount()).toBe(0)
   });
   test("Checking Analyser.removeAllExternalVariables.", () => {
-    a.addExternalVariable(aev)
+    a.addExternalVariableByVariable(v)
     expect(a.externalVariableCount()).toBe(1)
     a.removeAllExternalVariables()
     expect(a.externalVariableCount()).toBe(0)
   });
-  test("Checking Analyser.containsExternalVariableByModel.", () => {
-    expect(a.containsExternalVariableByModel(m, "component", "time")).toBe(false)
-    a.addExternalVariable(aev)
-    expect(a.containsExternalVariableByModel(m, "component", "time")).toBe(true)
+  test("Checking Analyser.containsExternalVariableByVariable.", () => {
+    expect(a.containsExternalVariableByVariable(v)).toBe(false)
+    a.addExternalVariableByVariable(v)
+    expect(a.containsExternalVariableByVariable(v)).toBe(true)
   });
   test("Checking Analyser.containsExternalVariableByExternalVariable.", () => {
     expect(a.containsExternalVariableByExternalVariable(aev)).toBe(false)
-    a.addExternalVariable(aev)
+    a.addExternalVariableByExternalVariable(aev)
     expect(a.containsExternalVariableByExternalVariable(aev)).toBe(true)
   });
   test("Checking Analyser.externalVariableByIndex.", () => {
-    a.addExternalVariable(aev)
+    a.addExternalVariableByExternalVariable(aev)
     expect(a.externalVariableByIndex(0)).toStrictEqual(aev)
   });
-  test("Checking Analyser.externalVariableByModel.", () => {
-    a.addExternalVariable(aev)
-    expect(a.externalVariableByModel(m, "component", "time")).toStrictEqual(aev)
+  test("Checking Analyser.externalVariableByVariable.", () => {
+    a.addExternalVariableByExternalVariable(aev)
+    expect(a.externalVariableByVariable(v)).toStrictEqual(aev)
   });
   test("Checking Analyser.externalVariableCount.", () => {
     expect(a.externalVariableCount()).toBe(0)
-    a.addExternalVariable(aev)
+    a.addExternalVariableByVariable(v)
     expect(a.externalVariableCount()).toBe(1)
   });
   test("Checking Analyser.model.", () => {

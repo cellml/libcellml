@@ -216,7 +216,6 @@ std::vector<std::string> expectedUrls(size_t size, std::string url)
 }
 
 void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
-
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
@@ -258,6 +257,22 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
         EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
         EXPECT_EQ(urls.at(i), logger->issue(i)->url());
     }
+}
+
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
 }
 
 libcellml::ModelPtr createModel(const std::string &name)
