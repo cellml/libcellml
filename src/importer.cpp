@@ -766,8 +766,8 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, con
             updateUnitsNameUsages(originalName, newName, component, units);
             changedNames.emplace(originalName, newName);
         }
-    } else if (targetUnits->name() != units->name()) {
-        const std::string originalName = units->name();
+    } else if (targetUnits->name() != newName) {
+        const std::string originalName = newName;
         newName = targetUnits->name();
         updateUnitsNameUsages(originalName, newName, component, targetUnits);
         changedNames.emplace(originalName, newName);
@@ -918,6 +918,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                     }
                 }
             }
+
             StringStringMap changedNames = transferUnitsRenamingIfRequired(clonedImportModel, flatModel, replacementUnits, importedComponentCopy);
             if (!changedNames.empty()) {
                 unitNamesToReplace.merge(changedNames);
