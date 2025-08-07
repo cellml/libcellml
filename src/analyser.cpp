@@ -2502,7 +2502,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Detmerine whether some variables have been marked as external.
+    // Determine whether some variables have been marked as external.
 
     auto hasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
         return iv->mIsExternalVariable;
