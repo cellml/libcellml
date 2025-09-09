@@ -1740,10 +1740,12 @@ TEST(Generator, daeModel)
     EXPECT_EQ_FILE_CONTENTS("generator/dae_cellml_1_1_model/model.py", generator->implementationCode(analyserModel));
 }
 
-TEST(Generator, variableInitialisedUsingAConstant)
+TEST(Generator, variableInitialisedUsingAnotherVariable)
 {
+    // Note: this should be in sync with the corresponding Analyser test.
+
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/variable_initialised_using_a_constant/model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/variable_initialised_using_another_variable/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -1756,14 +1758,14 @@ TEST(Generator, variableInitialisedUsingAConstant)
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
-    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_another_variable/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_another_variable/model.c", generator->implementationCode(analyserModel));
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_another_variable/model.py", generator->implementationCode(analyserModel));
 }
 
 TEST(Generator, modelOutOfScope)

@@ -895,7 +895,7 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
         // different then make sure that they don't both have an initial value.
         // Alternatively, if the variable held by `internalVariable` has an
         // initial value which is the name of another variable then make sure
-        // that it is of constant type.
+        // that it has the same units.
         // Note: we always have an initialising variable in the second case.
         //       Indeed, if we were not to have one, it would mean that the
         //       variable is initialised using a reference to a variable that is
@@ -923,18 +923,7 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
             auto initialisingVariable = owningComponent(variable)->variable(variable->initialValue());
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
-            if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::INITIALISED) {
-                auto issue = Issue::IssueImpl::create();
-
-                issue->mPimpl->setDescription("Variable '" + variable->name()
-                                              + "' in component '" + component->name()
-                                              + "' is initialised using variable '" + variable->initialValue()
-                                              + "', which is not a constant.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
-                issue->mPimpl->mItem->mPimpl->setVariable(variable);
-
-                addIssue(issue);
-            } else {
+            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
                 auto scalingFactor = Units::scalingFactor(variable->units(), initialisingVariable->units());
 
                 if (!areNearlyEqual(scalingFactor, 1.0)) {
@@ -945,7 +934,7 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
                                                   + "' is initialised using variable '" + variable->initialValue()
                                                   + "' which has different units.");
                     issue->mPimpl->setLevel(Issue::Level::WARNING);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_VARIABLE_WITH_DIFFERENT_UNITS);
                     issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
                     addIssue(issue);
@@ -2339,8 +2328,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Recursively analyse the model's components' variables.
-    // Note: we can't do this as part of analyseComponent() since we don't
-    //       necessarily know the state of all the variables.
+    // Note #1: we can't do this as part of analyseComponent() since we don't
+    //          necessarily know the state of all the variables.
+    // Note #2: when it comes to variables initialised using another variable,
+    //          we can only do this after all the equations have been analysed,
+    //          i.e. once we know the type of all the variables since a variable
+    //          can be initialised using another variable, but only if it is not
+    //          an algebraic variable.
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         analyseComponentVariables(model->component(i));
@@ -2608,6 +2602,35 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else {
             mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
         }
+
+        return;
+    }
+
+    // Make sure that variables that are initialised using another variable are
+    // not initialised using an algebraic variable.
+
+    for (const auto &internalVariable : mInternalVariables) {
+        if ((internalVariable->mInitialisingVariable != nullptr)
+            && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
+            auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
+
+            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
+                auto issue = Issue::IssueImpl::create();
+
+                issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
+                                              + "' in component '" + owningComponent(internalVariable->mVariable)->name()
+                                              + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
+                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
+                issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
+
+                addIssue(issue);
+            }
+        }
+    }
+
+    if (mAnalyser->errorCount() != 0) {
+        mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
     }
