@@ -225,7 +225,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.6.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.7.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -489,8 +489,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
+        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                                               "{\n"
                                                               "[CODE]"
                                                               "}\n";
@@ -735,7 +735,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.5.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.6.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -922,7 +922,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(constants, computed_constants):\n"
+                                                              "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
                                                               "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";

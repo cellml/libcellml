@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.6.0";
+const char VERSION[] = "0.7.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 15;
@@ -405,7 +405,7 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     constants[109] = 0.006875;
 }
 
-void computeComputedConstants(double *constants, double *computedConstants)
+void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     computedConstants[0] = (constants[1] == 0.0)?1.07*(3.0*constants[0]-0.1)/(3.0*(1.0+0.7745*exp(-(3.0*constants[0]-2.05)/0.295))):(constants[1] == 1.0)?constants[2]*constants[0]/(1.0+0.7745*exp(-(3.0*constants[0]-2.05)/0.295)):1.07*29.0*constants[0]/(30.0*(1.0+0.7745*exp(-(29.0*constants[0]-24.5)/1.95)));
     computedConstants[1] = constants[3]+computedConstants[0]*(constants[4]-constants[3]);
