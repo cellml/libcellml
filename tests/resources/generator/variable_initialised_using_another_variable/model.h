@@ -13,9 +13,9 @@ extern const size_t COMPUTED_CONSTANT_COUNT;
 extern const size_t ALGEBRAIC_COUNT;
 
 typedef struct {
-    char name[7];
+    char name[19];
     char units[14];
-    char component[12];
+    char component[5];
 } VariableInfo;
 
 extern const VariableInfo VOI_INFO;
