@@ -192,6 +192,9 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
         COMPUTE_VARIABLES
     };
 
+    std::string generateConstantInitialisationCode(const AnalyserModelPtr &model,
+                                                   const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
                                                const AnalyserVariablePtr &variable);
     std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
@@ -207,9 +210,6 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
 
     void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model);
-    std::string generateConstantInitialisationCode(const AnalyserModelPtr &model,
-                                                   const std::vector<AnalyserVariablePtr>::iterator constant,
-                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
                                                         std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &model,
