@@ -2184,6 +2184,32 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
            || (!includeComputedConstants && (equation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT));
 }
 
+std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const AnalyserModelPtr &model,
+                                                                         const std::vector<AnalyserVariablePtr>::iterator constant,
+                                                                         std::vector<AnalyserVariablePtr> &remainingConstants)
+{
+    auto initialisingVariable = (*constant)->initialisingVariable();
+    auto initialValue = initialisingVariable->initialValue();
+
+    if (!isCellMLReal(initialValue)) {
+        auto initialisingComponent = owningComponent(initialisingVariable);
+        auto crtConstant = std::find_if(remainingConstants.begin(), remainingConstants.end(),
+                                        [=](const AnalyserVariablePtr &av) -> bool {
+                                            return initialisingComponent->variable(initialValue) == av->variable();
+                                        });
+
+        if (crtConstant != remainingConstants.end()) {
+            return generateConstantInitialisationCode(model, crtConstant, remainingConstants);
+        }
+    }
+
+    auto code = generateInitialisationCode(model, *constant);
+
+    remainingConstants.erase(constant);
+
+    return code;
+}
+
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserModelPtr &model,
                                                                      const AnalyserVariablePtr &variable)
 {
@@ -2353,32 +2379,6 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const Analyse
         mCode += newLineIfNeeded()
                  + code;
     }
-}
-
-std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const AnalyserModelPtr &model,
-                                                                         const std::vector<AnalyserVariablePtr>::iterator constant,
-                                                                         std::vector<AnalyserVariablePtr> &remainingConstants)
-{
-    auto initialisingVariable = (*constant)->initialisingVariable();
-    auto initialValue = initialisingVariable->initialValue();
-
-    if (!isCellMLReal(initialValue)) {
-        auto initialisingComponent = owningComponent(initialisingVariable);
-        auto crtConstant = std::find_if(remainingConstants.begin(), remainingConstants.end(),
-                                        [=](const AnalyserVariablePtr &av) -> bool {
-                                            return initialisingComponent->variable(initialValue) == av->variable();
-                                        });
-
-        if (crtConstant != remainingConstants.end()) {
-            return generateConstantInitialisationCode(model, crtConstant, remainingConstants);
-        }
-    }
-
-    auto code = generateInitialisationCode(model, *constant);
-
-    remainingConstants.erase(constant);
-
-    return code;
 }
 
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
