@@ -2444,8 +2444,8 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const Analyse
         code += interfaceInitialiseVariablesMethodString;
     }
 
-    if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
-        code += mProfile->interfaceComputeComputedConstantsMethodString();
+    if (!mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(model)).empty()) {
+        code += mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(model));
     }
 
     auto interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(model->hasExternalVariables());
@@ -2551,7 +2551,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
                                                                                    std::vector<AnalyserVariablePtr> &remainingComputedConstants,
                                                                                    std::vector<AnalyserVariablePtr> &remainingAlgebraic)
 {
-    if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
+    if (!mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(model)).empty()) {
         // Initialise our remaining states (which are initialised using a computed constant).
 
         std::string methodBody;
@@ -2588,7 +2588,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
         }
 
         mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationComputeComputedConstantsMethodString(),
+                 + replace(mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(model)),
                            "[CODE]", generateMethodBodyCode(methodBody));
     }
 }

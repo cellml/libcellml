@@ -279,8 +279,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceInitialiseVariablesMethodFdmString;
     std::string mImplementationInitialiseVariablesMethodFdmString;
 
-    std::string mInterfaceComputeComputedConstantsMethodString;
-    std::string mImplementationComputeComputedConstantsMethodString;
+    std::string mInterfaceComputeComputedConstantsMethodFamString;
+    std::string mImplementationComputeComputedConstantsMethodFamString;
+
+    std::string mInterfaceComputeComputedConstantsMethodFdmString;
+    std::string mImplementationComputeComputedConstantsMethodFdmString;
 
     std::string mInterfaceComputeRatesMethodWoevString;
     std::string mImplementationComputeRatesMethodWoevString;

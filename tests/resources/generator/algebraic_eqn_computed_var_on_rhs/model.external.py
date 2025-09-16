@@ -47,7 +47,7 @@ def initialise_variables(constants, computed_constants, algebraic):
     pass
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic):
     pass
 
 

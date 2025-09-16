@@ -65,7 +65,7 @@ void initialiseVariables(double *constants, double *computedConstants, double *a
     computedConstants[0] = 1.0;
 }
 
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)
 {
 }
 

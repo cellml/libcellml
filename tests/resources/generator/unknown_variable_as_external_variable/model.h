@@ -33,5 +33,5 @@ void deleteArray(double *array);
 typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraic, double *externals, size_t index);
 
 void initialiseVariables(double *constants, double *computedConstants, double *algebraic);
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);
 void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable);
