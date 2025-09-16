@@ -109,7 +109,7 @@ void initialiseVariables(double *constants, double *computedConstants, double *a
     algebraic[2] = 1.0;
 }
 
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)
 {
 }
 

@@ -64,7 +64,7 @@ def initialise_variables(constants, computed_constants, algebraic):
     constants[8] = constants[7]
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic):
     computed_constants[0] = constants[1]+constants[0]
     computed_constants[1] = 0.001*constants[1]+0.001*constants[0]
     computed_constants[2] = 1000.0*constants[3]+1000.0*constants[4]

@@ -489,11 +489,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
-                                                              "{\n"
-                                                              "[CODE]"
-                                                              "}\n";
+        mInterfaceComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+                                                                 "{\n"
+                                                                 "[CODE]"
+                                                                 "}\n";
+
+        mInterfaceComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+                                                                 "{\n"
+                                                                 "[CODE]"
+                                                                 "}\n";
 
         mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
         mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n"
@@ -920,10 +926,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                             "def initialise_variables(states, rates, constants, computed_constants, algebraic):\n"
                                                             "[CODE]";
 
-        mInterfaceComputeComputedConstantsMethodString = "";
-        mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
-                                                              "[CODE]";
+        mInterfaceComputeComputedConstantsMethodFamString = "";
+        mImplementationComputeComputedConstantsMethodFamString = "\n"
+                                                                 "def compute_computed_constants(constants, computed_constants, algebraic):\n"
+                                                                 "[CODE]";
+
+        mInterfaceComputeComputedConstantsMethodFdmString = "";
+        mImplementationComputeComputedConstantsMethodFdmString = "\n"
+                                                                 "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
+                                                                 "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
@@ -2796,24 +2807,42 @@ void GeneratorProfile::setImplementationInitialiseVariablesMethodString(bool for
     }
 }
 
-std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
+std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mInterfaceComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mInterfaceComputeComputedConstantsMethodFdmString;
+    }
+
+    return mPimpl->mInterfaceComputeComputedConstantsMethodFamString;
 }
 
-void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString)
+void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                                        const std::string &interfaceComputeComputedConstantsMethodString)
 {
-    mPimpl->mInterfaceComputeComputedConstantsMethodString = interfaceComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mInterfaceComputeComputedConstantsMethodFdmString = interfaceComputeComputedConstantsMethodString;
+    } else {
+        mPimpl->mInterfaceComputeComputedConstantsMethodFamString = interfaceComputeComputedConstantsMethodString;
+    }
 }
 
-std::string GeneratorProfile::implementationComputeComputedConstantsMethodString() const
+std::string GeneratorProfile::implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mImplementationComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mImplementationComputeComputedConstantsMethodFdmString;
+    }
+
+    return mPimpl->mImplementationComputeComputedConstantsMethodFamString;
 }
 
-void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString)
+void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                                             const std::string &implementationComputeComputedConstantsMethodString)
 {
-    mPimpl->mImplementationComputeComputedConstantsMethodString = implementationComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mImplementationComputeComputedConstantsMethodFdmString = implementationComputeComputedConstantsMethodString;
+    } else {
+        mPimpl->mImplementationComputeComputedConstantsMethodFamString = implementationComputeComputedConstantsMethodString;
+    }
 }
 
 std::string GeneratorProfile::interfaceComputeRatesMethodString(bool withExternalVariables) const

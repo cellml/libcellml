@@ -574,13 +574,21 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(true));
 
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n",
+              generatorProfile->interfaceComputeComputedConstantsMethodString(false));
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+              "{\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->implementationComputeComputedConstantsMethodString(false));
+
     EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
-              generatorProfile->interfaceComputeComputedConstantsMethodString());
+              generatorProfile->interfaceComputeComputedConstantsMethodString(true));
     EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationComputeComputedConstantsMethodString());
+              generatorProfile->implementationComputeComputedConstantsMethodString(true));
 
     EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
               generatorProfile->interfaceComputeRatesMethodString(false));
@@ -1054,8 +1062,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationInitialiseVariablesMethodString(false, value);
     generatorProfile->setImplementationInitialiseVariablesMethodString(true, value);
 
-    generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
-    generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
+    generatorProfile->setInterfaceComputeComputedConstantsMethodString(false, value);
+    generatorProfile->setInterfaceComputeComputedConstantsMethodString(true, value);
+
+    generatorProfile->setImplementationComputeComputedConstantsMethodString(false, value);
+    generatorProfile->setImplementationComputeComputedConstantsMethodString(true, value);
 
     generatorProfile->setInterfaceComputeRatesMethodString(false, value);
     generatorProfile->setInterfaceComputeRatesMethodString(true, value);
@@ -1206,8 +1217,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(true));
     EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(true));
 
-    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString(false));
+    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString(true));
+
+    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString(false));
+    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString(false));
     EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString(false));
