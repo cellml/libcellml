@@ -3234,10 +3234,8 @@ void Analyser::analyseModel(const ModelPtr &model)
 
 bool Analyser::addExternalVariable(const VariablePtr &variable)
 {
-    for (const auto &externalVariable : pFunc()->mExternalVariables) {
-        if (externalVariable->variable() == variable) {
-            return false;
-        }
+    if (containsExternalVariable(variable)) {
+        return false;
     }
 
     pFunc()->mExternalVariables.push_back(AnalyserExternalVariable::create(variable));
@@ -3247,13 +3245,13 @@ bool Analyser::addExternalVariable(const VariablePtr &variable)
 
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    if (std::find(pFunc()->mExternalVariables.begin(), pFunc()->mExternalVariables.end(), externalVariable) == pFunc()->mExternalVariables.end()) {
-        pFunc()->mExternalVariables.push_back(externalVariable);
-
-        return true;
+    if (containsExternalVariable(externalVariable)) {
+        return false;
     }
 
-    return false;
+    pFunc()->mExternalVariables.push_back(externalVariable);
+
+    return true;
 }
 
 bool Analyser::removeExternalVariable(size_t index)
