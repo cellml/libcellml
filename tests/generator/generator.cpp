@@ -77,7 +77,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a"))));
 
     analyser->analyseModel(model);
 
@@ -335,7 +335,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a"))));
 
     analyser->analyseModel(model);
 
@@ -397,9 +397,9 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x")));
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("y")));
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("z")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x"))));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("y"))));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("z"))));
 
     analyser->analyseModel(model);
 
@@ -1085,8 +1085,8 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("L")));
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("rad")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("L"))));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("rad"))));
 
     analyser->analyseModel(model);
 
@@ -1235,7 +1235,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m"))));
 
     analyser->analyseModel(model);
 
@@ -1278,8 +1278,8 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     external_sodium_channel_m->addDependency(sodium_channel_V);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_V));
-    analyser->addExternalVariable(external_sodium_channel_m);
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_V)));
+    EXPECT_TRUE(analyser->addExternalVariable(external_sodium_channel_m));
 
     analyser->analyseModel(model);
 
@@ -1316,7 +1316,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"))));
 
     analyser->analyseModel(model);
 
@@ -1358,8 +1358,8 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     external_sodium_channel_Cm->addDependency(sodium_channel_g_Na);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_g_Na));
-    analyser->addExternalVariable(external_sodium_channel_Cm);
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_g_Na)));
+    EXPECT_TRUE(analyser->addExternalVariable(external_sodium_channel_Cm));
 
     analyser->analyseModel(model);
 
@@ -1396,7 +1396,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L"))));
 
     analyser->analyseModel(model);
 
@@ -1438,8 +1438,8 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     external_leakage_current_E_R->addDependency(potassium_channel_E_K);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_E_K));
-    analyser->addExternalVariable(external_leakage_current_E_R);
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_E_K)));
+    EXPECT_TRUE(analyser->addExternalVariable(external_leakage_current_E_R));
 
     analyser->analyseModel(model);
 
@@ -1476,7 +1476,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"))));
 
     analyser->analyseModel(model);
 
@@ -1518,8 +1518,8 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     membrane_i_Stime->addDependency(potassium_channel_n_gate_beta_n);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n));
-    analyser->addExternalVariable(membrane_i_Stime);
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n)));
+    EXPECT_TRUE(analyser->addExternalVariable(membrane_i_Stime));
 
     analyser->analyseModel(model);
 
@@ -1567,9 +1567,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
     external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
     external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
-    analyser->addExternalVariable(external_sodium_channel_i_Na);
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"))));
+    EXPECT_TRUE(analyser->addExternalVariable(external_sodium_channel_i_Na));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n)));
 
     analyser->analyseModel(model);
 
@@ -1876,7 +1876,7 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("SLC_template3_ss")->variable("P_3")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("SLC_template3_ss")->variable("P_3"))));
 
     analyser->analyseModel(model);
 

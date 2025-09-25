@@ -811,7 +811,7 @@ TEST(Coverage, generator)
 
     // Coverage for various profile settings.
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnEq")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnEq"))));
 
     analyser->analyseModel(model);
 
