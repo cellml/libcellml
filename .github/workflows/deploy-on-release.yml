@@ -90,8 +90,8 @@ jobs:
             build_type: "Release", cc: "gcc", cxx: "g++"
           }
         - {
-            name: "macOS 13 Clang",
-            os: macos-13,
+            name: "macOS 15 Clang",
+            os: macos-15-intel,
             cc: "clang", cxx: "clang++"
           }
 
@@ -285,7 +285,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, ubuntu-20.04, windows-2019]
+        os: [macos-15-intel, ubuntu-20.04, windows-2019]
         py: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - name: 'Windows'
@@ -293,9 +293,9 @@ jobs:
           - name: 'Linux'
             os: ubuntu-20.04
           - name: 'macOS'
-            os: macos-13
+            os: macos-15-intel
         exclude:
-          - os: macos-13
+          - os: macos-15-intel
             py: '3.7'
           - os: ubuntu-20.04
             py: '3.7'
@@ -396,7 +396,7 @@ jobs:
     needs: setup-jobs
     if: needs.setup-jobs.outputs.allowed-jobs == 'Javascript' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: libcellml.js
-    runs-on: macos-13
+    runs-on: macos-15-intel
     steps:
       - name: Checkout libCellML
         uses: actions/checkout@v4

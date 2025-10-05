@@ -34,10 +34,10 @@ jobs:
             os: ubuntu-latest
             python_bindings: ON
           - name: 'macOS static - C++ (Intel)'
-            os: macos-13
+            os: macos-15-intel
             python_bindings: OFF
           - name: 'macOS shared - C++/Python (Intel)'
-            os: macos-13
+            os: macos-15-intel
             python_bindings: ON
           - name: 'macOS static - C++ (ARM)'
             os: macos-latest
