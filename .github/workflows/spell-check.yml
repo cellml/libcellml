@@ -1,21 +1,27 @@
-# GitHub Action to automate the identification of common misspellings in text files.
-# https://github.com/codespell-project/actions-codespell
-# https://github.com/codespell-project/codespell
-name: codespell
-on: [pull_request]
+name: Check Spelling
 
-permissions:
-  contents: read
+on: [pull_request]
 
 jobs:
   codespell:
     if: github.repository == 'cellml/libcellml'
-    name: Check for spelling errors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: codespell-project/actions-codespell@v2
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          check_filenames: true
-          skip: ./.git,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/*
-          exclude_file: .codespellexclude
+          python-version: '3.x'
+
+      - name: Install codespell
+        run: pip install codespell
+
+      - name: Create spelling annotations
+        run: |
+          python .github/scripts/codespell_annotations.py \
+            --exclude-file .codespell-exclude \
+            --skip ./.git,.codespell-dict,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/* \
+            --dictionary .codespell-dict \
+            --dictionary -
