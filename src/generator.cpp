@@ -1349,7 +1349,7 @@ std::string generateDoubleCode(const std::string &value)
         return value;
     }
 
-    auto ePos = value.find('e');
+    auto ePos = value.find_first_of("eE");
 
     if (ePos == std::string::npos) {
         return value + ".0";
