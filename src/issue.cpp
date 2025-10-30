@@ -210,6 +210,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED, {"ANALYSER_VARIABLE_UNUSED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED, {"ANALYSER_STATE_NOT_INITIALISED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC, {"ANALYSER_STATE_RATE_AS_ALGEBRAIC", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VARIABLE_NO_INITIAL_GUESS, {"ANALYSER_VARIABLE_NO_INITIAL_GUESS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL, {"ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI, {"ANALYSER_EXTERNAL_VARIABLE_VOI", "", docsUrl, ""}},

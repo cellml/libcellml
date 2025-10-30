@@ -40,7 +40,7 @@
         <variable interface="public" name="i_Na" units="microA_per_cm2"/>
         <variable interface="public" name="i_K" units="microA_per_cm2"/>
         <variable interface="public" name="i_L" units="microA_per_cm2"/>
-        <variable name="i_Stim" units="microA_per_cm2"/>
+        <variable initial_value="0" name="i_Stim" units="microA_per_cm2"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -108,7 +108,7 @@
         </math>
     </component>
     <component name="sodium_channel">
-        <variable interface="public" name="i_Na" units="microA_per_cm2"/>
+        <variable initial_value="0" interface="public" name="i_Na" units="microA_per_cm2"/>
         <variable initial_value="120" name="g_Na" units="milliS_per_cm2"/>
         <variable name="E_Na" units="millivolt"/>
         <variable interface="public_and_private" name="time" units="millisecond"/>
@@ -119,16 +119,12 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
+                <ci>E_Na</ci>
                 <apply>
                     <minus/>
-                    <ci>E_Na</ci>
-                    <apply>
-                        <minus/>
-                        <ci>E_R</ci>
-                        <cn cellml:units="millivolt">115</cn>
-                    </apply>
+                    <ci>E_R</ci>
+                    <cn cellml:units="millivolt">115</cn>
                 </apply>
-                <cn cellml:units="millivolt">0</cn>
             </apply>
             <apply>
                 <eq/>
@@ -157,8 +153,8 @@
     </component>
     <component name="sodium_channel_m_gate">
         <variable initial_value="0.05" interface="public" name="m" units="dimensionless"/>
-        <variable name="alpha_m" units="per_millisecond"/>
-        <variable name="beta_m" units="per_millisecond"/>
+        <variable initial_value="0" name="alpha_m" units="per_millisecond"/>
+        <variable initial_value="0" name="beta_m" units="per_millisecond"/>
         <variable interface="public" name="V" units="millivolt"/>
         <variable interface="public" name="time" units="millisecond"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -253,8 +249,8 @@
     </component>
     <component name="sodium_channel_h_gate">
         <variable initial_value="0.6" interface="public" name="h" units="dimensionless"/>
-        <variable name="alpha_h" units="per_millisecond"/>
-        <variable name="beta_h" units="per_millisecond"/>
+        <variable initial_value="0" name="alpha_h" units="per_millisecond"/>
+        <variable initial_value="0" name="beta_h" units="per_millisecond"/>
         <variable interface="public" name="V" units="millivolt"/>
         <variable interface="public" name="time" units="millisecond"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -340,7 +336,7 @@
         </math>
     </component>
     <component name="potassium_channel">
-        <variable interface="public" name="i_K" units="microA_per_cm2"/>
+        <variable initial_value="0" interface="public" name="i_K" units="microA_per_cm2"/>
         <variable initial_value="36" name="g_K" units="milliS_per_cm2"/>
         <variable name="E_K" units="millivolt"/>
         <variable interface="public_and_private" name="time" units="millisecond"/>
@@ -350,16 +346,12 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
+                <ci>E_K</ci>
                 <apply>
-                    <minus/>
-                    <ci>E_K</ci>
-                    <apply>
-                        <plus/>
-                        <ci>E_R</ci>
-                        <cn cellml:units="millivolt">12</cn>
-                    </apply>
+                    <plus/>
+                    <ci>E_R</ci>
+                    <cn cellml:units="millivolt">12</cn>
                 </apply>
-                <cn cellml:units="millivolt">0</cn>
             </apply>
             <apply>
                 <eq/>
@@ -387,8 +379,8 @@
     </component>
     <component name="potassium_channel_n_gate">
         <variable initial_value="0.325" interface="public" name="n" units="dimensionless"/>
-        <variable name="alpha_n" units="per_millisecond"/>
-        <variable name="beta_n" units="per_millisecond"/>
+        <variable initial_value="0" name="alpha_n" units="per_millisecond"/>
+        <variable initial_value="0" name="beta_n" units="per_millisecond"/>
         <variable interface="public" name="V" units="millivolt"/>
         <variable interface="public" name="time" units="millisecond"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -482,7 +474,7 @@
         </math>
     </component>
     <component name="leakage_current">
-        <variable interface="public" name="i_L" units="microA_per_cm2"/>
+        <variable initial_value="0" interface="public" name="i_L" units="microA_per_cm2"/>
         <variable initial_value="0.3" name="g_L" units="milliS_per_cm2"/>
         <variable name="E_L" units="millivolt"/>
         <variable interface="public" name="time" units="millisecond"/>
@@ -491,16 +483,12 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
+                <ci>E_L</ci>
                 <apply>
                     <minus/>
-                    <ci>E_L</ci>
-                    <apply>
-                        <minus/>
-                        <ci>E_R</ci>
-                        <cn cellml:units="millivolt">10.613</cn>
-                    </apply>
+                    <ci>E_R</ci>
+                    <cn cellml:units="millivolt">10.613</cn>
                 </apply>
-                <cn cellml:units="millivolt">0</cn>
             </apply>
             <apply>
                 <eq/>

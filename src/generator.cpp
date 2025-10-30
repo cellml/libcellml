@@ -2528,8 +2528,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(co
             methodBody += generateInitialiseVariableCode(model, algebraic,
                                                          remainingEquations, remainingStates, remainingConstants,
                                                          remainingComputedConstants, remainingAlgebraic);
-        } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
-            methodBody += generateZeroInitialisationCode(model, algebraic);
         }
     }
 

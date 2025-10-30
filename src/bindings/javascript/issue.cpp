@@ -37,6 +37,7 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .value("ANALYSER_ODE_NOT_FIRST_ORDER", libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER)
         .value("ANALYSER_STATE_NOT_INITIALISED", libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED)
         .value("ANALYSER_STATE_RATE_AS_ALGEBRAIC", libcellml::Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC)
+        .value("ANALYSER_VARIABLE_NO_INITIAL_GUESS", libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NO_INITIAL_GUESS)
         .value("ANALYSER_UNITS", libcellml::Issue::ReferenceRule::ANALYSER_UNITS)
         .value("ANALYSER_UNLINKED_UNITS", libcellml::Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS)
         .value("ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE", libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE)
