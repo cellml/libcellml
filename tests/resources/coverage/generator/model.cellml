@@ -214,12 +214,12 @@
         <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
         <variable name="eqnComputedConstant1" units="dimensionless"/>
         <variable name="eqnComputedConstant2" units="dimensionless"/>
-        <variable initial_value="1" name="m" units="dimensionless"/>
-        <variable initial_value="2" name="n" units="dimensionless"/>
-        <variable initial_value="3" name="o" units="dimensionless"/>
-        <variable initial_value="4" name="p" units="dimensionless"/>
-        <variable initial_value="5" name="q" units="dimensionless"/>
-        <variable initial_value="6" name="r" units="dimensionless"/>
+        <variable initial_value="123" name="m" units="dimensionless"/>
+        <variable initial_value="1.23" name="n" units="dimensionless"/>
+        <variable initial_value="1e1" name="o" units="dimensionless"/>
+        <variable initial_value="1.23e1" name="p" units="dimensionless"/>
+        <variable initial_value="1E1" name="q" units="dimensionless"/>
+        <variable initial_value="1.23E1" name="r" units="dimensionless"/>
         <variable initial_value="7" name="s" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>

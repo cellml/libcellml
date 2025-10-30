@@ -396,12 +396,12 @@ def find_root_0(voi, states, rates, constants, computed_constants, algebraic, ex
 
 def initialise_variables(states, rates, constants, computed_constants, algebraic):
     states[0] = 0.0
-    constants[0] = 2.0
-    constants[1] = 1.0
-    constants[2] = 3.0
-    constants[3] = 4.0
-    constants[4] = 5.0
-    constants[5] = 6.0
+    constants[0] = 1.23
+    constants[1] = 123.0
+    constants[2] = 1.0e1
+    constants[3] = 1.23e1
+    constants[4] = 1.0E1
+    constants[5] = 1.23E1
     constants[6] = 7.0
     computed_constants[176] = 123.0
     computed_constants[177] = 123.456789
