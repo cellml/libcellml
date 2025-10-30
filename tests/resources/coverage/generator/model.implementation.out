@@ -152,7 +152,7 @@ void initialiseVariables(double *states, double *rates, double *variables)
     variables[1] = 123.0;
     variables[5] = 1.0e1;
     variables[17] = 1.23e1;
-    variables[178] = 1E1.0;
+    variables[178] = 1.0E1;
     variables[179] = 1.23E1;
     variables[181] = 7.0;
     variables[205] = 2.0;
