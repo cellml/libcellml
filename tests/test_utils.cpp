@@ -216,7 +216,6 @@ std::vector<std::string> expectedUrls(size_t size, std::string url)
 }
 
 void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
-
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
@@ -257,6 +256,21 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
         EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
         EXPECT_EQ(urls.at(i), logger->issue(i)->url());
+    }
+}
+
+void expectEqualIssuesLevelsReferenceRules(const std::vector<std::string> &issues,
+                                           const std::vector<libcellml::Issue::Level> &levels,
+                                           const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                           const libcellml::LoggerPtr &logger)
+{
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(levels.size(), logger->issueCount());
+    EXPECT_EQ(referenceRules.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(levels.at(i), logger->issue(i)->level());
+        EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
     }
 }
 
@@ -416,4 +430,20 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
     }
     EXPECT_EQ(r1->testValueId(), r2->testValueId());
     EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
+}
+
+void expectEqualFileContents(const std::string &fileName, const std::string &fileContents)
+{
+    // Uncomment the below when you want to generate the expected file contents.
+    // #define NEW_GENERATOR
+
+#ifdef NEW_GENERATOR
+    std::ofstream file(resourcePath(fileName));
+
+    file << fileContents;
+
+    file.close();
+#endif
+
+    EXPECT_EQ(::fileContents(fileName), fileContents);
 }

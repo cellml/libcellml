@@ -312,7 +312,7 @@ TEST(Printer, printModelWithTabs)
     libcellml::ModelPtr model = parser->parseModel(fileContents("printer/tabulated_model.cellml"));
     libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    EXPECT_EQ(fileContents("printer/spaced_model.cellml"), printer->printModel(model));
+    EXPECT_EQ_FILE_CONTENTS("printer/spaced_model.cellml", printer->printModel(model));
 }
 
 TEST(Printer, printModelWithStandardUnitsAdded)
