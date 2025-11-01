@@ -237,35 +237,10 @@ TEST(Analyser, variableInitialisedTwice)
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
 
-TEST(Analyser, nonConstantInitialisingVariable)
+TEST(Analyser, variableInitialisedUsingANonExistingVariable)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/non_constant_initialising_variable.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2', which is not a constant.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
-}
-
-TEST(Analyser, nonExistingInitialisingVariable)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/non_existing_initialising_variable.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_a_non_existing_variable.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -282,6 +257,38 @@ TEST(Analyser, nonExistingInitialisingVariable)
                                                                    expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
                                                                    expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE_VALUE),
                                                                    expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB08.html?issue=VARIABLE_INITIAL_VALUE_VALUE"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+}
+
+TEST(Analyser, variableInitialisedUsingAnotherVariable)
+{
+    // Note: this should be in sync with the corresponding Generator test.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_another_variable.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'kStateStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'kNlaStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xStateNlaAlgebraic' in component 'main' is initialised using variable 'kStateNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xNlaNlaAlgebraic' in component 'main' is initialised using variable 'kNlaNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xNlaAlgebraic' in component 'main' is initialised using variable 'kNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE"),
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
