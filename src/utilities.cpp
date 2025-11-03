@@ -1328,14 +1328,14 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
     auto states = model->states();
     auto constants = model->constants();
     auto computedConstants = model->computedConstants();
-    auto algebraic = model->algebraic();
-    auto externals = model->externals();
+    auto algebraicVariables = model->algebraicVariables();
+    auto externalVariables = model->externalVariables();
 
     res.insert(res.end(), states.begin(), states.end());
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
-    res.insert(res.end(), algebraic.begin(), algebraic.end());
-    res.insert(res.end(), externals.begin(), externals.end());
+    res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
+    res.insert(res.end(), externalVariables.begin(), externalVariables.end());
 
     return res;
 }
@@ -1344,12 +1344,12 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
 {
     auto res = equation->states();
     auto computedConstants = equation->computedConstants();
-    auto algebraic = equation->algebraic();
-    auto externals = equation->externals();
+    auto algebraicVariables = equation->algebraicVariables();
+    auto externalVariables = equation->externalVariables();
 
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
-    res.insert(res.end(), algebraic.begin(), algebraic.end());
-    res.insert(res.end(), externals.begin(), externals.end());
+    res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
+    res.insert(res.end(), externalVariables.begin(), externalVariables.end());
 
     return res;
 }

@@ -182,11 +182,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceComputedConstantCountString;
     std::string mImplementationComputedConstantCountString;
 
-    std::string mInterfaceAlgebraicCountString;
-    std::string mImplementationAlgebraicCountString;
+    std::string mInterfaceAlgebraicVariableCountString;
+    std::string mImplementationAlgebraicVariableCountString;
 
-    std::string mInterfaceExternalCountString;
-    std::string mImplementationExternalCountString;
+    std::string mInterfaceExternalVariableCountString;
+    std::string mImplementationExternalVariableCountString;
 
     std::string mVariableInfoObjectString;
 
@@ -202,11 +202,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceComputedConstantInfoString;
     std::string mImplementationComputedConstantInfoString;
 
-    std::string mInterfaceAlgebraicInfoString;
-    std::string mImplementationAlgebraicInfoString;
+    std::string mInterfaceAlgebraicVariableInfoString;
+    std::string mImplementationAlgebraicVariableInfoString;
 
-    std::string mInterfaceExternalInfoString;
-    std::string mImplementationExternalInfoString;
+    std::string mInterfaceExternalVariableInfoString;
+    std::string mImplementationExternalVariableInfoString;
 
     std::string mVariableInfoEntryString;
 
@@ -216,8 +216,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mConstantsArrayString;
     std::string mComputedConstantsArrayString;
-    std::string mAlgebraicArrayString;
-    std::string mExternalArrayString;
+    std::string mAlgebraicVariablesArrayString;
+    std::string mExternalVariablesArrayString;
 
     std::string mExternalVariableMethodTypeDefinitionFamString;
     std::string mExternalVariableMethodTypeDefinitionFdmString;
@@ -264,11 +264,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceCreateComputedConstantsArrayMethodString;
     std::string mImplementationCreateComputedConstantsArrayMethodString;
 
-    std::string mInterfaceCreateAlgebraicArrayMethodString;
-    std::string mImplementationCreateAlgebraicArrayMethodString;
+    std::string mInterfaceCreateAlgebraicVariablesArrayMethodString;
+    std::string mImplementationCreateAlgebraicVariablesArrayMethodString;
 
-    std::string mInterfaceCreateExternalsArrayMethodString;
-    std::string mImplementationCreateExternalsArrayMethodString;
+    std::string mInterfaceCreateExternalVariablesArrayMethodString;
+    std::string mImplementationCreateExternalVariablesArrayMethodString;
 
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
