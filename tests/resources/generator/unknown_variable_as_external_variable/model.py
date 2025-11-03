@@ -9,8 +9,8 @@ LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 8
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 1
-EXTERNAL_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 1
+EXTERNAL_VARIABLE_COUNT = 1
 
 CONSTANT_INFO = [
     {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss"},
@@ -43,15 +43,15 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
-def initialise_variables(constants, computed_constants, algebraic):
+def initialise_variables(constants, computed_constants, algebraic_variables):
     constants[0] = 810000.0
     constants[1] = 150.0
     constants[2] = 2.0
@@ -66,6 +66,6 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(constants, computed_constants, algebraic, externals, external_variable):
-    externals[0] = external_variable(constants, computed_constants, algebraic, externals, 0)
-    algebraic[0] = constants[7]*(constants[6]*constants[1]-constants[5]*constants[2])/(constants[4]*constants[2]+externals[0]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])
+def compute_variables(constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraicVariables[0] = constants[7]*(constants[6]*constants[1]-constants[5]*constants[2])/(constants[4]*constants[2]+externalVariables[0]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])

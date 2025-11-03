@@ -176,42 +176,42 @@ AnalyserVariablePtr AnalyserEquation::computedConstant(size_t index) const
     return mPimpl->mComputedConstants[index];
 }
 
-size_t AnalyserEquation::algebraicCount() const
+size_t AnalyserEquation::algebraicVariableCount() const
 {
-    return mPimpl->mAlgebraic.size();
+    return mPimpl->mAlgebraicVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::algebraic() const
+std::vector<AnalyserVariablePtr> AnalyserEquation::algebraicVariables() const
 {
-    return mPimpl->mAlgebraic;
+    return mPimpl->mAlgebraicVariables;
 }
 
-AnalyserVariablePtr AnalyserEquation::algebraic(size_t index) const
+AnalyserVariablePtr AnalyserEquation::algebraicVariable(size_t index) const
 {
-    if (index >= mPimpl->mAlgebraic.size()) {
+    if (index >= mPimpl->mAlgebraicVariables.size()) {
         return {};
     }
 
-    return mPimpl->mAlgebraic[index];
+    return mPimpl->mAlgebraicVariables[index];
 }
 
-size_t AnalyserEquation::externalCount() const
+size_t AnalyserEquation::externalVariableCount() const
 {
-    return mPimpl->mExternals.size();
+    return mPimpl->mExternalVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::externals() const
+std::vector<AnalyserVariablePtr> AnalyserEquation::externalVariables() const
 {
-    return mPimpl->mExternals;
+    return mPimpl->mExternalVariables;
 }
 
-AnalyserVariablePtr AnalyserEquation::external(size_t index) const
+AnalyserVariablePtr AnalyserEquation::externalVariable(size_t index) const
 {
-    if (index >= mPimpl->mExternals.size()) {
+    if (index >= mPimpl->mExternalVariables.size()) {
         return {};
     }
 
-    return mPimpl->mExternals[index];
+    return mPimpl->mExternalVariables[index];
 }
 
 } // namespace libcellml

@@ -44,8 +44,8 @@ public:
         STATE, /**< The variable is a state. */
         CONSTANT, /**< The variable is a constant (e.g. x = 3). */
         COMPUTED_CONSTANT, /**< The variable is a computed constant (e.g. x = 3+5, x = 3+z, x = y+z where y and z are constants). */
-        ALGEBRAIC, /**< The variable is an algebraic variable. */
-        EXTERNAL /**< The variable is an external variable, i.e. not computed as part of the model. */
+        ALGEBRAIC_VARIABLE, /**< The variable is an algebraic variable. */
+        EXTERNAL_VARIABLE /**< The variable is an external variable, i.e. not computed as part of the model. */
     };
 
     ~AnalyserVariable(); /**< Destructor, @private. */

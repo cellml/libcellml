@@ -72,14 +72,14 @@ describe("Analyser Model tests", () => {
         expect(am.computedConstant(2).variable().name()).toBe("E_K")
     });
     test('Checking Analyser Model algebraic variables related API.', () => {
-        expect(am.algebraicCount()).toBe(10)
+        expect(am.algebraicVariableCount()).toBe(10)
         expect(am.algebraicVariables().size()).toBe(10)
         expect(am.algebraicVariable(2).variable().name()).toBe("i_K")
     });
     test('Checking Analyser Model external variables related API.', () => {
-        expect(am.externalCount()).toBe(0)
-        expect(am.externals().size()).toBe(0)
-        expect(am.external(0)).toBeNull()
+        expect(am.externalVariableCount()).toBe(0)
+        expect(am.externalVariables().size()).toBe(0)
+        expect(am.externalVariable(0)).toBeNull()
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)

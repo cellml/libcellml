@@ -36,8 +36,8 @@ struct AnalyserEquation::AnalyserEquationImpl
 
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mComputedConstants;
-    std::vector<AnalyserVariablePtr> mAlgebraic;
-    std::vector<AnalyserVariablePtr> mExternals;
+    std::vector<AnalyserVariablePtr> mAlgebraicVariables;
+    std::vector<AnalyserVariablePtr> mExternalVariables;
 
     std::vector<AnalyserEquationWeakPtr> mDependencies;
     std::vector<AnalyserEquationWeakPtr> mNlaSiblings;

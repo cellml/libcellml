@@ -356,21 +356,21 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
                             "[COMPUTED_CONSTANT_COUNT]", std::to_string(mModel->computedConstantCount()));
     }
 
-    if ((interface && !mProfile->interfaceAlgebraicCountString().empty())
-        || (!interface && !mProfile->implementationAlgebraicCountString().empty())) {
+    if ((interface && !mProfile->interfaceAlgebraicVariableCountString().empty())
+        || (!interface && !mProfile->implementationAlgebraicVariableCountString().empty())) {
         code += interface ?
-                    mProfile->interfaceAlgebraicCountString() :
-                    replace(mProfile->implementationAlgebraicCountString(),
-                            "[ALGEBRAIC_COUNT]", std::to_string(mModel->algebraicCount()));
+                    mProfile->interfaceAlgebraicVariableCountString() :
+                    replace(mProfile->implementationAlgebraicVariableCountString(),
+                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string(mModel->algebraicVariableCount()));
     }
 
-    if ((mModel->externalCount() != 0)
-        && ((interface && !mProfile->interfaceExternalCountString().empty())
-            || (!interface && !mProfile->implementationExternalCountString().empty()))) {
+    if ((mModel->externalVariableCount() != 0)
+        && ((interface && !mProfile->interfaceExternalVariableCountString().empty())
+            || (!interface && !mProfile->implementationExternalVariableCountString().empty()))) {
         code += interface ?
-                    mProfile->interfaceExternalCountString() :
-                    replace(mProfile->implementationExternalCountString(),
-                            "[EXTERNAL_COUNT]", std::to_string(mModel->externalCount()));
+                    mProfile->interfaceExternalVariableCountString() :
+                    replace(mProfile->implementationExternalVariableCountString(),
+                            "[EXTERNAL_VARIABLE_COUNT]", std::to_string(mModel->externalVariableCount()));
     }
 
     if (!code.empty()) {
@@ -435,13 +435,13 @@ void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
         code += mProfile->interfaceComputedConstantInfoString();
     }
 
-    if (!mProfile->interfaceAlgebraicInfoString().empty()) {
-        code += mProfile->interfaceAlgebraicInfoString();
+    if (!mProfile->interfaceAlgebraicVariableInfoString().empty()) {
+        code += mProfile->interfaceAlgebraicVariableInfoString();
     }
 
     if (mModel->hasExternalVariables()
-        && !mProfile->interfaceExternalInfoString().empty()) {
-        code += mProfile->interfaceExternalInfoString();
+        && !mProfile->interfaceExternalVariableInfoString().empty()) {
+        code += mProfile->interfaceExternalVariableInfoString();
     }
 
     if (!code.empty()) {
@@ -493,10 +493,10 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
     doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), mModel->constants(), false);
     doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), mModel->computedConstants(), false);
-    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicInfoString(), mModel->algebraic(), false);
+    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicVariableInfoString(), mModel->algebraicVariables(), false);
 
     if (mModel->hasExternalVariables()) {
-        doAddImplementationVariableInfoCode(mProfile->implementationExternalInfoString(), mModel->externals(), false);
+        doAddImplementationVariableInfoCode(mProfile->implementationExternalVariableInfoString(), mModel->externalVariables(), false);
     }
 }
 
@@ -667,13 +667,13 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
         code += mProfile->interfaceCreateComputedConstantsArrayMethodString();
     }
 
-    if (!mProfile->interfaceCreateAlgebraicArrayMethodString().empty()) {
-        code += mProfile->interfaceCreateAlgebraicArrayMethodString();
+    if (!mProfile->interfaceCreateAlgebraicVariablesArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateAlgebraicVariablesArrayMethodString();
     }
 
     if (mModel->hasExternalVariables()
-        && !mProfile->interfaceCreateExternalsArrayMethodString().empty()) {
-        code += mProfile->interfaceCreateExternalsArrayMethodString();
+        && !mProfile->interfaceCreateExternalVariablesArrayMethodString().empty()) {
+        code += mProfile->interfaceCreateExternalVariablesArrayMethodString();
     }
 
     if (!mProfile->interfaceDeleteArrayMethodString().empty()) {
@@ -705,15 +705,15 @@ void Generator::GeneratorImpl::addImplementationCreateDeleteArrayMethodsCode()
                  + mProfile->implementationCreateComputedConstantsArrayMethodString();
     }
 
-    if (!mProfile->implementationCreateAlgebraicArrayMethodString().empty()) {
+    if (!mProfile->implementationCreateAlgebraicVariablesArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateAlgebraicArrayMethodString();
+                 + mProfile->implementationCreateAlgebraicVariablesArrayMethodString();
     }
 
     if (mModel->hasExternalVariables()
-        && !mProfile->implementationCreateExternalsArrayMethodString().empty()) {
+        && !mProfile->implementationCreateExternalVariablesArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateExternalsArrayMethodString();
+                 + mProfile->implementationCreateExternalVariablesArrayMethodString();
     }
 
     if (!mProfile->implementationDeleteArrayMethodString().empty()) {
@@ -773,7 +773,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (const auto &variable : variables) {
                     auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->algebraicArrayString();
+                                           mProfile->algebraicVariablesArrayString();
 
                     methodBody += mProfile->indentString()
                                   + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
@@ -816,7 +816,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (const auto &variable : variables) {
                     auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->algebraicArrayString();
+                                           mProfile->algebraicVariablesArrayString();
 
                     methodBody += mProfile->indentString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
@@ -840,7 +840,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (const auto &variable : variables) {
                     auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->algebraicArrayString();
+                                           mProfile->algebraicVariablesArrayString();
 
                     methodBody += mProfile->indentString()
                                   + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
@@ -923,10 +923,10 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
         arrayName = mProfile->constantsArrayString();
     } else if (analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
         arrayName = mProfile->computedConstantsArrayString();
-    } else if (analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC) {
-        arrayName = mProfile->algebraicArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::ALGEBRAIC_VARIABLE) {
+        arrayName = mProfile->algebraicVariablesArrayString();
     } else {
-        arrayName = mProfile->externalArrayString();
+        arrayName = mProfile->externalVariablesArrayString();
     }
 
     return arrayName + mProfile->openArrayString() + convertToString(analyserVariable->index()) + mProfile->closeArrayString();
@@ -1897,11 +1897,11 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         //       using an NLA system for which we need an initial guess. We use an initial guess of zero, which is fine
         //       since such an NLA system has only one solution.
 
-        for (const auto &algebraic : mModel->algebraic()) {
-            if (algebraic->initialisingVariable() != nullptr) {
-                methodBody += generateInitialisationCode(algebraic);
-            } else if (algebraic->equation(0)->type() == AnalyserEquation::Type::NLA) {
-                methodBody += generateZeroInitialisationCode(algebraic);
+        for (const auto &algebraicVariable : mModel->algebraicVariables()) {
+            if (algebraicVariable->initialisingVariable() != nullptr) {
+                methodBody += generateInitialisationCode(algebraicVariable);
+            } else if (algebraicVariable->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                methodBody += generateZeroInitialisationCode(algebraicVariable);
             }
         }
 

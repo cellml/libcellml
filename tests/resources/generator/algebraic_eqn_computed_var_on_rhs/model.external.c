@@ -10,8 +10,8 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 1;
-const size_t EXTERNAL_COUNT = 1;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 1;
+const size_t EXTERNAL_VARIABLE_COUNT = 1;
 
 const VariableInfo CONSTANT_INFO[] = {
 };
@@ -49,22 +49,22 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
     return res;
 }
 
-double * createExternalsArray()
+double * createExternalVariablesArray()
 {
-    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));
+    double *res = (double *) malloc(EXTERNAL_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {
+    for (size_t i = 0; i < EXTERNAL_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -76,7 +76,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
+void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 
@@ -84,8 +84,8 @@ void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
-    externals[0] = externalVariable(constants, computedConstants, algebraic, externals, 0);
-    algebraic[0] = externals[0];
+    externalVariables[0] = externalVariable(constants, computedConstants, algebraicVariables, externalVariables, 0);
+    algebraicVariables[0] = externalVariables[0];
 }
