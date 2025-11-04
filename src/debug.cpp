@@ -168,7 +168,7 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
 {
     size_t varNb = 0;
 
-    for (const auto &var : variables(model)) {
+    for (const auto &var : analyserVariables(model)) {
         Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());

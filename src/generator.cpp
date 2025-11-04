@@ -76,10 +76,10 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        auto modelVariables = variables(mModel);
+        auto modelAnalyserVariables = analyserVariables(mModel);
 
-        res = *std::find_if(modelVariables.begin(), modelVariables.end(), [=](const auto &modelVariable) {
-            return mModel->areEquivalentVariables(modelVariable->variable(), variable);
+        res = *std::find_if(modelAnalyserVariables.begin(), modelAnalyserVariables.end(), [=](const auto &modelAnalyserVariable) {
+            return mModel->areEquivalentVariables(modelAnalyserVariable->variable(), variable);
         });
     }
 
@@ -368,7 +368,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    for (const auto &variable : variables(mModel)) {
+    for (const auto &variable : analyserVariables(mModel)) {
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
@@ -748,7 +748,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())) {
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
-                auto variables = libcellml::variables(equation);
+                auto variables = libcellml::analyserVariables(equation);
 
                 for (const auto &variable : variables) {
                     auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
@@ -1721,12 +1721,12 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
-            for (const auto &variable : variables(equation)) {
+            for (const auto &analyserVariable : analyserVariables(equation)) {
                 res += mProfile->indentString()
-                       + generateVariableNameCode(variable->variable())
+                       + generateVariableNameCode(analyserVariable->variable())
                        + mProfile->equalityString()
                        + replace(mProfile->externalVariableMethodCallString(modelHasOdes()),
-                                 "[INDEX]", convertToString(variable->index()))
+                                 "[INDEX]", convertToString(analyserVariable->index()))
                        + mProfile->commandSeparatorString() + "\n";
             }
 
@@ -1922,7 +1922,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             // NLA equation in case the rate is not on its own on either the LHS
             // or RHS of the equation.
 
-            auto variables = libcellml::variables(equation);
+            auto variables = libcellml::analyserVariables(equation);
 
             if ((equation->type() == AnalyserEquation::Type::ODE)
                 || ((equation->type() == AnalyserEquation::Type::NLA)
