@@ -76,29 +76,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        // Normally, we would have something like:
-        //
-        //     for (const auto &modelVariable : variables(mModel)) {
-        //         if (mModel->areEquivalentVariables(variable, modelVariable->variable())) {
-        //             res = modelVariable;
-        //
-        //             break;
-        //         }
-        //     }
-        //
-        // but we always have variables, so llvm-cov will complain that the false branch of our for loop is never
-        // reached. The below code is a bit more verbose but at least it makes llvm-cov happy.
-
         auto modelVariables = variables(mModel);
-        auto modelVariable = modelVariables.begin();
 
-        do {
-            if (mModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
-                res = *modelVariable;
-            } else {
-                ++modelVariable;
-            }
-        } while (res == nullptr);
+        res = *std::find_if(modelVariables.begin(), modelVariables.end(), [=](const auto &modelVariable) {
+            return mModel->areEquivalentVariables(modelVariable->variable(), variable);
+        });
     }
 
     return res;
