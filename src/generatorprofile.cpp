@@ -477,17 +477,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables);\n";
-        mImplementationInitialiseVariablesMethodFamString = "void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables)\n"
-                                                            "{\n"
-                                                            "[CODE]"
-                                                            "}\n";
+        mInterfaceInitialiseArraysMethodFamString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationInitialiseArraysMethodFamString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)\n"
+                                                         "{\n"
+                                                         "[CODE]"
+                                                         "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmString = "void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
-        mImplementationInitialiseVariablesMethodFdmString = "void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
-                                                            "{\n"
-                                                            "[CODE]"
-                                                            "}\n";
+        mInterfaceInitialiseArraysMethodFdmString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationInitialiseArraysMethodFdmString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
+                                                         "{\n"
+                                                         "[CODE]"
+                                                         "}\n";
 
         mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
         mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
@@ -913,15 +913,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitialiseVariablesMethodFamString = "";
-        mImplementationInitialiseVariablesMethodFamString = "\n"
-                                                            "def initialise_variables(constants, computed_constants, algebraic_variables):\n"
-                                                            "[CODE]";
+        mInterfaceInitialiseArraysMethodFamString = "";
+        mImplementationInitialiseArraysMethodFamString = "\n"
+                                                         "def initialise_arrays(constants, computed_constants, algebraic_variables):\n"
+                                                         "[CODE]";
 
-        mInterfaceInitialiseVariablesMethodFdmString = "";
-        mImplementationInitialiseVariablesMethodFdmString = "\n"
-                                                            "def initialise_variables(states, rates, constants, computed_constants, algebraic_variables):\n"
-                                                            "[CODE]";
+        mInterfaceInitialiseArraysMethodFdmString = "";
+        mImplementationInitialiseArraysMethodFdmString = "\n"
+                                                         "def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):\n"
+                                                         "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
@@ -2764,41 +2764,41 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceInitialiseVariablesMethodString(bool forDifferentialModel) const
+std::string GeneratorProfile::interfaceInitialiseArraysMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mInterfaceInitialiseVariablesMethodFdmString;
+        return mPimpl->mInterfaceInitialiseArraysMethodFdmString;
     }
 
-    return mPimpl->mInterfaceInitialiseVariablesMethodFamString;
+    return mPimpl->mInterfaceInitialiseArraysMethodFamString;
 }
 
-void GeneratorProfile::setInterfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                   const std::string &interfaceInitialiseVariablesMethodString)
+void GeneratorProfile::setInterfaceInitialiseArraysMethodString(bool forDifferentialModel,
+                                                                const std::string &interfaceInitialiseArraysMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mInterfaceInitialiseVariablesMethodFdmString = interfaceInitialiseVariablesMethodString;
+        mPimpl->mInterfaceInitialiseArraysMethodFdmString = interfaceInitialiseArraysMethodString;
     } else {
-        mPimpl->mInterfaceInitialiseVariablesMethodFamString = interfaceInitialiseVariablesMethodString;
+        mPimpl->mInterfaceInitialiseArraysMethodFamString = interfaceInitialiseArraysMethodString;
     }
 }
 
-std::string GeneratorProfile::implementationInitialiseVariablesMethodString(bool forDifferentialModel) const
+std::string GeneratorProfile::implementationInitialiseArraysMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mImplementationInitialiseVariablesMethodFdmString;
+        return mPimpl->mImplementationInitialiseArraysMethodFdmString;
     }
 
-    return mPimpl->mImplementationInitialiseVariablesMethodFamString;
+    return mPimpl->mImplementationInitialiseArraysMethodFamString;
 }
 
-void GeneratorProfile::setImplementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                                        const std::string &implementationInitialiseVariablesMethodString)
+void GeneratorProfile::setImplementationInitialiseArraysMethodString(bool forDifferentialModel,
+                                                                     const std::string &implementationInitialiseArraysMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mImplementationInitialiseVariablesMethodFdmString = implementationInitialiseVariablesMethodString;
+        mPimpl->mImplementationInitialiseArraysMethodFdmString = implementationInitialiseArraysMethodString;
     } else {
-        mPimpl->mImplementationInitialiseVariablesMethodFamString = implementationInitialiseVariablesMethodString;
+        mPimpl->mImplementationInitialiseArraysMethodFamString = implementationInitialiseArraysMethodString;
     }
 }
 

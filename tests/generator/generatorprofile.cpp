@@ -558,21 +558,21 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(false));
-    EXPECT_EQ("void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables)\n"
+    EXPECT_EQ("void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);\n",
+              generatorProfile->interfaceInitialiseArraysMethodString(false));
+    EXPECT_EQ("void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(false));
+              generatorProfile->implementationInitialiseArraysMethodString(false));
 
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(true));
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
+    EXPECT_EQ("void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
+              generatorProfile->interfaceInitialiseArraysMethodString(true));
+    EXPECT_EQ("void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(true));
+              generatorProfile->implementationInitialiseArraysMethodString(true));
 
     EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
@@ -1051,11 +1051,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceDeleteArrayMethodString(value);
     generatorProfile->setImplementationDeleteArrayMethodString(value);
 
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(false, value);
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(true, value);
+    generatorProfile->setInterfaceInitialiseArraysMethodString(false, value);
+    generatorProfile->setInterfaceInitialiseArraysMethodString(true, value);
 
-    generatorProfile->setImplementationInitialiseVariablesMethodString(false, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(true, value);
+    generatorProfile->setImplementationInitialiseArraysMethodString(false, value);
+    generatorProfile->setImplementationInitialiseArraysMethodString(true, value);
 
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
@@ -1206,11 +1206,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(false));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(false));
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseArraysMethodString(false));
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseArraysMethodString(false));
 
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(true));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(true));
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseArraysMethodString(true));
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseArraysMethodString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());

@@ -1041,23 +1041,23 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationDeleteArrayMethodString("something")
     expect(x.implementationDeleteArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceInitialiseVariablesMethodString.", () => {
+  test("Checking GeneratorProfile.interfaceInitialiseArraysMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceInitialiseVariablesMethodString(false, "something")
-    expect(x.interfaceInitialiseVariablesMethodString(false)).toBe("something")
+    x.setInterfaceInitialiseArraysMethodString(false, "something")
+    expect(x.interfaceInitialiseArraysMethodString(false)).toBe("something")
 
-    x.setInterfaceInitialiseVariablesMethodString(true, "something")
-    expect(x.interfaceInitialiseVariablesMethodString(true)).toBe("something")
+    x.setInterfaceInitialiseArraysMethodString(true, "something")
+    expect(x.interfaceInitialiseArraysMethodString(true)).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationInitialiseVariablesMethodString.", () => {
+  test("Checking GeneratorProfile.implementationInitialiseArraysMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationInitialiseVariablesMethodString(false, "something")
-    expect(x.implementationInitialiseVariablesMethodString(false)).toBe("something")
+    x.setImplementationInitialiseArraysMethodString(false, "something")
+    expect(x.implementationInitialiseArraysMethodString(false)).toBe("something")
 
-    x.setImplementationInitialiseVariablesMethodString(true, "something")
-    expect(x.implementationInitialiseVariablesMethodString(true)).toBe("something")
+    x.setImplementationInitialiseArraysMethodString(true, "something")
+    expect(x.implementationInitialiseArraysMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceComputeComputedConstantsMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

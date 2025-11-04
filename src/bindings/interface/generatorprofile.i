@@ -1012,16 +1012,16 @@ tag, which will be replaced with some code to create the external variables arra
 %feature("docstring") libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString
 "Sets the string for the implementation to delete an array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseArraysMethodString
 "Returns the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseArraysMethodString
 "Sets the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseArraysMethodString
 "Returns the string for the implementation to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseArraysMethodString
 "Sets the string for the implementation to initialise variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString

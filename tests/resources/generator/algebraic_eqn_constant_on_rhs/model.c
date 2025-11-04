@@ -60,7 +60,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables)
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
     computedConstants[0] = 1.0;
 }

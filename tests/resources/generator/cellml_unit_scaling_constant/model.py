@@ -52,7 +52,7 @@ def create_algebraic_variables_array():
     return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def initialise_variables(constants, computed_constants, algebraic_variables):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[2] = 123.0
     constants[1] = constants[2]
     constants[0] = constants[1]

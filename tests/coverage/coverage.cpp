@@ -757,8 +757,8 @@ TEST(Coverage, generator)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationInitialiseVariablesMethodString(false, "");
-    profile->setImplementationInitialiseVariablesMethodString(true, "");
+    profile->setImplementationInitialiseArraysMethodString(false, "");
+    profile->setImplementationInitialiseArraysMethodString(true, "");
 
     profile->setImplementationComputeVariablesMethodString(false, false, "");
     profile->setImplementationComputeVariablesMethodString(false, true, "");

@@ -152,7 +152,7 @@ void findRoot1(double voi, double *states, double *rates, double *constants, dou
     algebraicVariables[2] = u[0];
 }
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = 1.0;
     states[1] = 0.0;

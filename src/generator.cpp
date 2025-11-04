@@ -1760,11 +1760,11 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(modelHasOdes());
+    auto interfaceInitialiseArraysMethodString = mProfile->interfaceInitialiseArraysMethodString(modelHasOdes());
     std::string code;
 
-    if (!interfaceInitialiseVariablesMethodString.empty()) {
-        code += interfaceInitialiseVariablesMethodString;
+    if (!interfaceInitialiseArraysMethodString.empty()) {
+        code += interfaceInitialiseArraysMethodString;
     }
 
     if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
@@ -1816,11 +1816,11 @@ std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const s
     return code;
 }
 
-void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(modelHasOdes());
+    auto implementationInitialiseArraysMethodString = mProfile->implementationInitialiseArraysMethodString(modelHasOdes());
 
-    if (!implementationInitialiseVariablesMethodString.empty()) {
+    if (!implementationInitialiseArraysMethodString.empty()) {
         // Initialise our states (after, if needed, initialising the constant on which it depends).
 
         std::string methodBody;
@@ -1887,7 +1887,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         }
 
         mCode += newLineIfNeeded()
-                 + replace(implementationInitialiseVariablesMethodString,
+                 + replace(implementationInitialiseArraysMethodString,
                            "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
@@ -2104,12 +2104,12 @@ std::string Generator::implementationCode() const
     mPimpl->addExternNlaSolveMethodCode();
     mPimpl->addNlaSystemsCode();
 
-    // Add code for the implementation to initialise our variables.
+    // Add code for the implementation to initialise our arrays.
 
     auto equations = mPimpl->mModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mPimpl->addImplementationInitialiseVariablesMethodCode(remainingEquations);
+    mPimpl->addImplementationInitialiseArraysMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our computed constants.
 

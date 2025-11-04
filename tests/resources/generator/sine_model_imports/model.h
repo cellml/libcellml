@@ -31,7 +31,7 @@ double * createAlgebraicVariablesArray();
 
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
 void computeComputedConstants(double *constants, double *computedConstants);
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
