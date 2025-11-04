@@ -84,7 +84,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraicVariables)
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
     constants[0] = 810000.0;
     constants[1] = 150.0;

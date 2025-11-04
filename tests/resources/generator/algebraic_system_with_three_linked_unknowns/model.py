@@ -67,7 +67,7 @@ def find_root_0(constants, computed_constants, algebraic_variables):
     algebraicVariables[2] = u[2]
 
 
-def initialise_variables(constants, computed_constants, algebraic_variables):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     algebraicVariables[0] = 1.0
     algebraicVariables[1] = 1.0
     algebraicVariables[2] = 1.0

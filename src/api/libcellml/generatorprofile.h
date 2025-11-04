@@ -3719,7 +3719,7 @@ public:
      *
      * @return The @c std::string for the interface to initialise variables.
      */
-    std::string interfaceInitialiseVariablesMethodString(bool forDifferentialModel) const;
+    std::string interfaceInitialiseArraysMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to initialise variables.
@@ -3728,11 +3728,11 @@ public:
      *
      * @param forDifferentialModel Whether the interface to initialise variables
      * is for a differential model, as opposed to an algebraic model.
-     * @param interfaceInitialiseVariablesMethodString The @c std::string to use
+     * @param interfaceInitialiseArraysMethodString The @c std::string to use
      * for the interface to initialise variables.
      */
-    void setInterfaceInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                     const std::string &interfaceInitialiseVariablesMethodString);
+    void setInterfaceInitialiseArraysMethodString(bool forDifferentialModel,
+                                                  const std::string &interfaceInitialiseArraysMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to initialise
@@ -3746,7 +3746,7 @@ public:
      * @return The @c std::string for the implementation to initialise
      * variables.
      */
-    std::string implementationInitialiseVariablesMethodString(bool forDifferentialModel) const;
+    std::string implementationInitialiseArraysMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise
@@ -3758,11 +3758,11 @@ public:
      *
      * @param forDifferentialModel Whether the implementation to initialise
      * variables is for a differential model, as opposed to an algebraic model.
-     * @param implementationInitialiseVariablesMethodString The @c std::string
+     * @param implementationInitialiseArraysMethodString The @c std::string
      * to use for the implementation to initialise variables.
      */
-    void setImplementationInitialiseVariablesMethodString(bool forDifferentialModel,
-                                                          const std::string &implementationInitialiseVariablesMethodString);
+    void setImplementationInitialiseArraysMethodString(bool forDifferentialModel,
+                                                       const std::string &implementationInitialiseArraysMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to compute computed

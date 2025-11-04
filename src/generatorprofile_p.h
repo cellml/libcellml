@@ -273,11 +273,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInterfaceInitialiseVariablesMethodFamString;
-    std::string mImplementationInitialiseVariablesMethodFamString;
+    std::string mInterfaceInitialiseArraysMethodFamString;
+    std::string mImplementationInitialiseArraysMethodFamString;
 
-    std::string mInterfaceInitialiseVariablesMethodFdmString;
-    std::string mImplementationInitialiseVariablesMethodFdmString;
+    std::string mInterfaceInitialiseArraysMethodFdmString;
+    std::string mImplementationInitialiseArraysMethodFdmString;
 
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
