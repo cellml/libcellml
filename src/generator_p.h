@@ -90,8 +90,8 @@ struct Generator::GeneratorImpl
 
     void addInterfaceVariableInfoCode();
 
-    void doAddImplementationVariableInfoCode(const std::string &variableInfoString,
-                                             const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
+    void addImplementationVariableInfoCode(const std::string &variableInfoString,
+                                           const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
     void addImplementationVariableInfoCode();
 
     void addArithmeticFunctionsCode();
