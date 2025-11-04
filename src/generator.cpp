@@ -208,12 +208,12 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const AnalyserEquationAstPtr
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &nameSize,
                                                        size_t &unitsSize,
-                                                       const AnalyserVariablePtr &variable) const
+                                                       const AnalyserVariablePtr &analyserVariable) const
 {
-    auto variableVariable = variable->variable();
-    auto variableComponentSize = owningComponent(variableVariable)->name().length() + 1;
-    auto variableNameSize = variableVariable->name().length() + 1;
-    auto variableUnitsSize = variableVariable->units()->name().length() + 1;
+    auto analyserVariableVariable = analyserVariable->variable();
+    auto variableComponentSize = owningComponent(analyserVariableVariable)->name().length() + 1;
+    auto variableNameSize = analyserVariableVariable->name().length() + 1;
+    auto variableUnitsSize = analyserVariableVariable->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
 
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
@@ -447,12 +447,12 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            auto variableVariable = analyserVariable->variable();
+            auto analyserVariableVariable = analyserVariable->variable();
 
             infoElementsCode += (voiVariable ? "" : mProfile->indentString())
-                                + generateVariableInfoEntryCode(variableVariable->name(),
-                                                                variableVariable->units()->name(),
-                                                                owningComponent(variableVariable)->name());
+                                + generateVariableInfoEntryCode(analyserVariableVariable->name(),
+                                                                analyserVariableVariable->units()->name(),
+                                                                owningComponent(analyserVariableVariable)->name());
         }
 
         if (!voiVariable && !infoElementsCode.empty()) {
@@ -1658,18 +1658,18 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
            || (!includeComputedConstants && (type == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT));
 }
 
-std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const
+std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &analyserVariable) const
 {
     return mProfile->indentString()
-           + generateVariableNameCode(variable->variable(), false)
+           + generateVariableNameCode(analyserVariable->variable(), false)
            + mProfile->equalityString()
            + "0.0"
            + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
+std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &analyserVariable) const
 {
-    auto initialisingVariable = variable->initialisingVariable();
+    auto initialisingVariable = analyserVariable->initialisingVariable();
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
     std::string scalingFactorCode;
 
@@ -1678,7 +1678,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
     }
 
     return mProfile->indentString()
-           + generateVariableNameCode(variable->variable())
+           + generateVariableNameCode(analyserVariable->variable())
            + mProfile->equalityString()
            + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
            + mProfile->commandSeparatorString() + "\n";
