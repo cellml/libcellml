@@ -1731,14 +1731,15 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
 
             break;
-        case AnalyserEquation::Type::NLA:
-            if (!mProfile->findRootCallString(modelHasOdes(), mModel->hasExternalVariables()).empty()) {
+        case AnalyserEquation::Type::NLA: {
+            auto modelHasOdes = this->modelHasOdes();
+
+            if (!mProfile->findRootCallString(modelHasOdes, mModel->hasExternalVariables()).empty()) {
                 res += mProfile->indentString()
-                       + replace(mProfile->findRootCallString(modelHasOdes(), mModel->hasExternalVariables()),
+                       + replace(mProfile->findRootCallString(modelHasOdes, mModel->hasExternalVariables()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
             }
-
-            break;
+        } break;
         default:
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
 
