@@ -468,9 +468,6 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
     if (modelHasOdes()) {
         doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {mModel->voi()}, true);
-    }
-
-    if (modelHasOdes()) {
         doAddImplementationVariableInfoCode(mProfile->implementationStateInfoString(), mModel->states(), false);
     }
 
