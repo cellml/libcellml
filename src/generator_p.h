@@ -65,7 +65,7 @@ struct Generator::GeneratorImpl
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
-                                 const AnalyserVariablePtr &variable) const;
+                                 const AnalyserVariablePtr &analyserVariable) const;
 
     bool modifiedProfile() const;
 
@@ -91,7 +91,7 @@ struct Generator::GeneratorImpl
     void addInterfaceVariableInfoCode();
 
     void addImplementationVariableInfoCode(const std::string &variableInfoString,
-                                           const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
+                                           const std::vector<AnalyserVariablePtr> &analyserVariables, bool voiVariable);
     void addImplementationVariableInfoCode();
 
     void addArithmeticFunctionsCode();
@@ -128,8 +128,8 @@ struct Generator::GeneratorImpl
     bool isSomeConstant(const AnalyserEquationPtr &equation,
                         bool includeComputedConstants) const;
 
-    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
-    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &analyserVariable) const;
+    std::string generateInitialisationCode(const AnalyserVariablePtr &analyserVariable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,
