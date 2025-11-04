@@ -95,10 +95,11 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) cons
 
     if ((analyserVariable->type() == AnalyserVariable::Type::CONSTANT)
         && !isCellMLReal(variable->initialValue())) {
-        auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
+        auto variableComponent = owningComponent(variable);
+        auto initialValueVariable = variableComponent->variable(variable->initialValue());
         auto initialValueAnalyserVariable = Generator::GeneratorImpl::analyserVariable(initialValueVariable);
 
-        if (owningComponent(variable) != owningComponent(initialValueAnalyserVariable->variable())) {
+        if (variableComponent != owningComponent(initialValueAnalyserVariable->variable())) {
             return Units::scalingFactor(initialValueVariable->units(), variable->units());
         }
     }
