@@ -434,7 +434,7 @@ void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
 }
 
 void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::string &variableInfoString,
-                                                                   const std::vector<AnalyserVariablePtr> &variables,
+                                                                   const std::vector<AnalyserVariablePtr> &analyserVariables,
                                                                    bool voiVariable)
 {
     if (!variableInfoString.empty()
@@ -442,12 +442,12 @@ void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::st
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
 
-        for (const auto &variable : variables) {
+        for (const auto &analyserVariable : analyserVariables) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            auto variableVariable = variable->variable();
+            auto variableVariable = analyserVariable->variable();
 
             infoElementsCode += (voiVariable ? "" : mProfile->indentString())
                                 + generateVariableInfoEntryCode(variableVariable->name(),
