@@ -433,9 +433,9 @@ void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
     }
 }
 
-void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::string &variableInfoString,
-                                                                   const std::vector<AnalyserVariablePtr> &analyserVariables,
-                                                                   bool voiVariable)
+void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::string &variableInfoString,
+                                                                 const std::vector<AnalyserVariablePtr> &analyserVariables,
+                                                                 bool voiVariable)
 {
     if (!variableInfoString.empty()
         && !mProfile->variableInfoEntryString().empty()
@@ -467,16 +467,16 @@ void Generator::GeneratorImpl::doAddImplementationVariableInfoCode(const std::st
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
     if (modelHasOdes()) {
-        doAddImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {mModel->voi()}, true);
-        doAddImplementationVariableInfoCode(mProfile->implementationStateInfoString(), mModel->states(), false);
+        addImplementationVariableInfoCode(mProfile->implementationVoiInfoString(), {mModel->voi()}, true);
+        addImplementationVariableInfoCode(mProfile->implementationStateInfoString(), mModel->states(), false);
     }
 
-    doAddImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), mModel->constants(), false);
-    doAddImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), mModel->computedConstants(), false);
-    doAddImplementationVariableInfoCode(mProfile->implementationAlgebraicVariableInfoString(), mModel->algebraicVariables(), false);
+    addImplementationVariableInfoCode(mProfile->implementationConstantInfoString(), mModel->constants(), false);
+    addImplementationVariableInfoCode(mProfile->implementationComputedConstantInfoString(), mModel->computedConstants(), false);
+    addImplementationVariableInfoCode(mProfile->implementationAlgebraicVariableInfoString(), mModel->algebraicVariables(), false);
 
     if (mModel->hasExternalVariables()) {
-        doAddImplementationVariableInfoCode(mProfile->implementationExternalVariableInfoString(), mModel->externalVariables(), false);
+        addImplementationVariableInfoCode(mProfile->implementationExternalVariableInfoString(), mModel->externalVariables(), false);
     }
 }
 
