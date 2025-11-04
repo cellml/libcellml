@@ -1317,7 +1317,7 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &model)
 {
     std::vector<AnalyserVariablePtr> res;
 
@@ -1340,7 +1340,7 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &equation)
 {
     auto res = equation->states();
     auto computedConstants = equation->computedConstants();
