@@ -159,7 +159,7 @@ public:
     AnalyserInternalVariablePtrs mInternalVariables;
     AnalyserInternalEquationPtrs mInternalEquations;
 
-    GeneratorProfilePtr mGeneratorProfile = libcellml::GeneratorProfile::create();
+    GeneratorProfilePtr mGeneratorProfile = GeneratorProfile::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;

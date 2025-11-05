@@ -31,9 +31,9 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto variables = libcellml::analyserVariables(dependency.lock());
+    auto analyserVariables = libcellml::analyserVariables(dependency.lock());
 
-    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
+    if (std::any_of(analyserVariables.begin(), analyserVariables.end(), [](const auto &av) { return av != nullptr; })) {
         return false;
     }
 
