@@ -2290,8 +2290,12 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
         descriptionEnd = "is used in an ODE, but it is not initialised";
 
         break;
+    case AnalyserInternalVariable::Type::UNDERCONSTRAINED:
+        descriptionEnd = "is underconstrained";
+
+        break;
     default: // AnalyserInternalVariable::Type::OVERCONSTRAINED.
-        descriptionEnd = "is computed more than once";
+        descriptionEnd = "is overconstrained";
 
         break;
     }
@@ -2571,7 +2575,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             break;
         case AnalyserInternalVariable::Type::OVERCONSTRAINED:
-            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
 
             break;
         default: // Other types we don't care about.
@@ -2736,6 +2740,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     //       were removed (as a result of some variables in an NLA equation
     //       having been marked as external).
 
+    AnalyserInternalVariablePtrs underconstrainedVariables;
     AnalyserInternalVariablePtrs overconstrainedVariables;
 
     for (const auto &internalEquation : mInternalEquations) {
@@ -2762,16 +2767,28 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         } break;
         case AnalyserInternalEquation::Type::NLA:
-            if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
-                // There are more NLA equations than unknown variables, so all
-                // the unknown variables involved in the NLA system should be
-                // considered as overconstrained.
+            if (internalEquation->mNlaSiblings.size() + 1 < internalEquation->mUnknownVariables.size()) {
+                // There are fewer NLA equations than unknown variables, so all the unknown variables involved in the
+                // NLA system should be considered as underconstrained.
+
+                for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+                    if (std::find(underconstrainedVariables.begin(), underconstrainedVariables.end(), unknownVariable) == underconstrainedVariables.end()) {
+                        unknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+
+                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
+
+                        underconstrainedVariables.push_back(unknownVariable);
+                    }
+                }
+            } else if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
+                // There are more NLA equations than unknown variables, so all the unknown variables involved in the NLA
+                // system should be considered as overconstrained.
 
                 for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
                     if (std::find(overconstrainedVariables.begin(), overconstrainedVariables.end(), unknownVariable) == overconstrainedVariables.end()) {
                         unknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
 
-                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
+                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
 
                         overconstrainedVariables.push_back(unknownVariable);
                     }
@@ -2785,7 +2802,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     if (mAnalyser->errorCount() != 0) {
-        mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+        if (!underconstrainedVariables.empty()) {
+            if (!overconstrainedVariables.empty()) {
+                mModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
+            } else {
+                mModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
+            }
+        } else {
+            mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+        }
 
         return;
     }
