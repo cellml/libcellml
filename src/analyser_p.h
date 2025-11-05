@@ -51,6 +51,7 @@ struct AnalyserInternalVariable
         COMPUTED_VARIABLE_BASED_CONSTANT,
         INITIALISED_ALGEBRAIC,
         ALGEBRAIC,
+        UNDERCONSTRAINED,
         OVERCONSTRAINED
     };
 
