@@ -37,12 +37,12 @@
         <variable initial_value="1" name="v_out" units="C_per_s"/>
         <!-- State variables-->
         <variable initial_value="1" name="q_1" units="coulomb"/>
-        <variable initial_value="0" name="v_1" units="C_per_s"/>
+        <variable name="v_1" units="C_per_s"/>
         <variable name="v_2" units="C_per_s"/>
         <variable initial_value="0" name="v_3" units="C_per_s"/>
         <variable name="u_1" units="J_per_C"/>
         <variable name="u_2" units="J_per_C"/>
-        <variable initial_value="0" name="u_3" units="J_per_C"/>
+        <variable name="u_3" units="J_per_C"/>
         <!--var p_3: Js_per_C {init: 0};-->
         <!-- Constitutive parameters-->
         <variable initial_value="20" name="C" units="C2_per_J"/>

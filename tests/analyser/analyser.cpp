@@ -985,28 +985,3 @@ TEST(Analyser, overconstrainedNlaSystem)
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
-
-TEST(Analyser, nlaVariableWithNoInitialGuess)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/nla_variable_with_no_initial_guess.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_algebraic_system' is computed using an NLA system, but it has no initial guess.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NO_INITIAL_GUESS),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_NO_INITIAL_GUESS"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
-}

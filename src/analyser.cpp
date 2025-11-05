@@ -2819,32 +2819,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Make sure that all the variables computed using an NLA system have an initial guess (i.e. an initial value).
-
-    for (const auto &internalEquation : mInternalEquations) {
-        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
-            for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                if (unknownVariable->mVariable->initialValue().empty()) {
-                    auto issue = Issue::IssueImpl::create();
-
-                    issue->mPimpl->setDescription("Variable '" + unknownVariable->mVariable->name()
-                                                  + "' in component '" + owningComponent(unknownVariable->mVariable)->name()
-                                                  + "' is computed using an NLA system, but it has no initial guess.");
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NO_INITIAL_GUESS);
-                    issue->mPimpl->mItem->mPimpl->setVariable(unknownVariable->mVariable);
-
-                    addIssue(issue);
-                }
-            }
-        }
-    }
-
-    if (mAnalyser->errorCount() != 0) {
-        mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
-
-        return;
-    }
-
     // Add a dummy equation for each of our true constants.
     // Note: this is so that a constant can be marked as an external variable.
 
@@ -2970,11 +2944,23 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Retrieve the equations used to compute the variable.
 
         AnalyserEquationPtrs equations;
+        auto isNlaEquation = false;
 
         for (const auto &internalEquation : mInternalEquations) {
             if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
                 equations.push_back(aie2aeMappings[internalEquation]);
+
+                if ((aie2aetMappings.find(internalEquation) != aie2aetMappings.end())
+                    && (aie2aetMappings[internalEquation] == AnalyserEquation::Type::NLA)) {
+                    isNlaEquation = true;
+                }
             }
+        }
+
+        // Correct the type of the variable if it is a computed constant that is computed using an NLA equation.
+
+        if ((variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) && isNlaEquation) {
+            variableType = AnalyserVariable::Type::ALGEBRAIC;
         }
 
         // Populate and keep track of the state/variable.
