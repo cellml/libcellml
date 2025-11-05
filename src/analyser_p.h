@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// #include "libcellml/analyser.h"
-
 #include "analysermodel_p.h"
 #include "internaltypes.h"
 #include "issue_p.h"
