@@ -115,9 +115,15 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(am.states())
         self.assertIsNotNone(am.state(3))
 
-        self.assertEqual(17, am.variableCount())
-        self.assertIsNotNone(am.variables())
-        self.assertIsNotNone(am.variable(3))
+        self.assertEqual(5, am.constantCount())
+        self.assertIsNotNone(am.constants())
+        self.assertIsNotNone(am.constant(3))
+        self.assertEqual(0, am.computedConstantCount())
+        self.assertIsNotNone(am.computedConstants())
+        self.assertIsNone(am.computedConstant(3))
+        self.assertEqual(12, am.algebraicVariableCount())
+        self.assertIsNotNone(am.algebraicVariables())
+        self.assertIsNotNone(am.algebraicVariable(3))
 
         self.assertEqual(16, am.equationCount())
         self.assertIsNotNone(am.equations())
@@ -152,17 +158,17 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserVariable.
 
-        av = am.variable(4)
+        av = am.algebraicVariable(3)
 
-        self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
-        self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
-        self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
-        self.assertEqual(4, av.index())
-        self.assertIsNotNone(av.initialisingVariable())
+        self.assertEqual(AnalyserVariable.Type.ALGEBRAIC_VARIABLE, av.type())
+        self.assertEqual("algebraic_variable", AnalyserVariable.typeAsString(av.type()))
+        self.assertEqual("algebraic_variable", AnalyserVariable_typeAsString(av.type()))
+        self.assertEqual(3, av.index())
+        self.assertIsNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
         self.assertEqual(1, av.equationCount())
         self.assertIsNotNone(av.equations())
-        self.assertIsNone(av.equation(0))
+        self.assertIsNotNone(av.equation(0))
 
         # Ensure coverage for AnalyserEquation.
 
@@ -180,9 +186,15 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(ae.nlaSiblings())
         self.assertIsNone(ae.nlaSibling(0))
         self.assertTrue(ae.isStateRateBased())
-        self.assertEqual(1, ae.variableCount())
-        self.assertIsNotNone(ae.variables())
-        self.assertIsNotNone(ae.variable(0))
+        self.assertEqual(0, ae.computedConstantCount())
+        self.assertIsNotNone(ae.computedConstants())
+        self.assertIsNone(ae.computedConstant(0))
+        self.assertEqual(1, ae.algebraicVariableCount())
+        self.assertIsNotNone(ae.algebraicVariables())
+        self.assertIsNotNone(ae.algebraicVariable(0))
+        self.assertEqual(0, ae.externalVariableCount())
+        self.assertIsNotNone(ae.externalVariables())
+        self.assertIsNone(ae.externalVariable(0))
 
         # Check Analyser Equation type with invalid values.
 

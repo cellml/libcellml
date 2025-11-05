@@ -4,29 +4,28 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 1
+CONSTANT_COUNT = 1
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 0
 
-
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "t", "units": "second", "component": "component_1", "type": VariableType.VARIABLE_OF_INTEGRATION}
+VOI_INFO = {"name": "t", "units": "second", "component": "component_1"}
 
 STATE_INFO = [
-    {"name": "X", "units": "dimensionless", "component": "component_1", "type": VariableType.STATE}
+    {"name": "X", "units": "dimensionless", "component": "component_1"}
 ]
 
-VARIABLE_INFO = [
-    {"name": "X_init", "units": "dimensionless", "component": "component_2", "type": VariableType.CONSTANT}
+CONSTANT_INFO = [
+    {"name": "X_init", "units": "dimensionless", "component": "component_2"}
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 
@@ -34,22 +33,30 @@ def create_states_array():
     return [nan]*STATE_COUNT
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(states, rates, variables):
-    variables[0] = 7.0
-    states[0] = variables[0]
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
+    constants[0] = 7.0
+    states[0] = constants[0]
+
+
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     rates[0] = 3.0
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
     pass

@@ -4,53 +4,68 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
-VARIABLE_COUNT = 10
+CONSTANT_COUNT = 8
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 1
+EXTERNAL_VARIABLE_COUNT = 1
 
+CONSTANT_INFO = [
+    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss"},
+    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss"},
+    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss"},
+    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss"},
+    {"name": "E", "units": "fmol", "component": "SLC_template3_ss"}
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
+COMPUTED_CONSTANT_INFO = [
+]
 
+ALGEBRAIC_INFO = [
+    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
+]
 
-VARIABLE_INFO = [
-    {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "q_Ai", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.EXTERNAL},
-    {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_1", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "E", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.ALGEBRAIC}
+EXTERNAL_INFO = [
+    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss"}
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables, external_variable):
-    variables[0] = 810000.0
-    variables[1] = 150.0
-    variables[2] = 2.0
-    variables[3] = 247140.0
-    variables[5] = 2902500.0
-    variables[6] = 3402000.0
-    variables[7] = 21262500.0
-    variables[8] = 1.1
-    variables[4] = external_variable(variables, 4)
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
+
+
+def initialise_arrays(constants, computed_constants, algebraic_variables):
+    constants[0] = 810000.0
+    constants[1] = 150.0
+    constants[2] = 2.0
+    constants[3] = 247140.0
+    constants[4] = 2902500.0
+    constants[5] = 3402000.0
+    constants[6] = 21262500.0
+    constants[7] = 1.1
+
+
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(variables, external_variable):
-    variables[4] = external_variable(variables, 4)
-    variables[9] = variables[8]*(variables[7]*variables[1]-variables[6]*variables[2])/(variables[5]*variables[2]+variables[4]*variables[1]+variables[3]*variables[2]*variables[1]+variables[0])
+def compute_variables(constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraicVariables[0] = constants[7]*(constants[6]*constants[1]-constants[5]*constants[2])/(constants[4]*constants[2]+externalVariables[0]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])

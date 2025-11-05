@@ -271,7 +271,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.5.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.6.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
@@ -279,52 +279,22 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
     EXPECT_EQ("const size_t STATE_COUNT = [STATE_COUNT];\n", generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ("extern const size_t VARIABLE_COUNT;\n", generatorProfile->interfaceVariableCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n", generatorProfile->implementationVariableCountString());
+    EXPECT_EQ("extern const size_t CONSTANT_COUNT;\n", generatorProfile->interfaceConstantCountString());
+    EXPECT_EQ("const size_t CONSTANT_COUNT = [CONSTANT_COUNT];\n", generatorProfile->implementationConstantCountString());
 
-    EXPECT_EQ("typedef enum {\n"
-              "    CONSTANT,\n"
-              "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC\n"
-              "} VariableType;\n",
-              generatorProfile->variableTypeObjectString(false, false));
-    EXPECT_EQ("typedef enum {\n"
-              "    CONSTANT,\n"
-              "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC,\n"
-              "    EXTERNAL\n"
-              "} VariableType;\n",
-              generatorProfile->variableTypeObjectString(false, true));
-    EXPECT_EQ("typedef enum {\n"
-              "    VARIABLE_OF_INTEGRATION,\n"
-              "    STATE,\n"
-              "    CONSTANT,\n"
-              "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC\n"
-              "} VariableType;\n",
-              generatorProfile->variableTypeObjectString(true, false));
-    EXPECT_EQ("typedef enum {\n"
-              "    VARIABLE_OF_INTEGRATION,\n"
-              "    STATE,\n"
-              "    CONSTANT,\n"
-              "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC,\n"
-              "    EXTERNAL\n"
-              "} VariableType;\n",
-              generatorProfile->variableTypeObjectString(true, true));
+    EXPECT_EQ("extern const size_t COMPUTED_CONSTANT_COUNT;\n", generatorProfile->interfaceComputedConstantCountString());
+    EXPECT_EQ("const size_t COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT];\n", generatorProfile->implementationComputedConstantCountString());
 
-    EXPECT_EQ("VARIABLE_OF_INTEGRATION", generatorProfile->variableOfIntegrationVariableTypeString());
-    EXPECT_EQ("STATE", generatorProfile->stateVariableTypeString());
-    EXPECT_EQ("CONSTANT", generatorProfile->constantVariableTypeString());
-    EXPECT_EQ("COMPUTED_CONSTANT", generatorProfile->computedConstantVariableTypeString());
-    EXPECT_EQ("ALGEBRAIC", generatorProfile->algebraicVariableTypeString());
-    EXPECT_EQ("EXTERNAL", generatorProfile->externalVariableTypeString());
+    EXPECT_EQ("extern const size_t ALGEBRAIC_VARIABLE_COUNT;\n", generatorProfile->interfaceAlgebraicVariableCountString());
+    EXPECT_EQ("const size_t ALGEBRAIC_VARIABLE_COUNT = [ALGEBRAIC_VARIABLE_COUNT];\n", generatorProfile->implementationAlgebraicVariableCountString());
+
+    EXPECT_EQ("extern const size_t EXTERNAL_VARIABLE_COUNT;\n", generatorProfile->interfaceExternalVariableCountString());
+    EXPECT_EQ("const size_t EXTERNAL_VARIABLE_COUNT = [EXTERNAL_VARIABLE_COUNT];\n", generatorProfile->implementationExternalVariableCountString());
 
     EXPECT_EQ("typedef struct {\n"
               "    char name[[NAME_SIZE]];\n"
               "    char units[[UNITS_SIZE]];\n"
               "    char component[[COMPONENT_SIZE]];\n"
-              "    VariableType type;\n"
               "} VariableInfo;\n",
               generatorProfile->variableInfoObjectString());
 
@@ -337,25 +307,178 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "};\n",
               generatorProfile->implementationStateInfoString());
 
-    EXPECT_EQ("extern const VariableInfo VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
-    EXPECT_EQ("const VariableInfo VARIABLE_INFO[] = {\n"
+    EXPECT_EQ("extern const VariableInfo CONSTANT_INFO[];\n", generatorProfile->interfaceConstantInfoString());
+    EXPECT_EQ("const VariableInfo CONSTANT_INFO[] = {\n"
               "[CODE]"
               "};\n",
-              generatorProfile->implementationVariableInfoString());
+              generatorProfile->implementationConstantInfoString());
 
-    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}", generatorProfile->variableInfoEntryString());
+    EXPECT_EQ("extern const VariableInfo COMPUTED_CONSTANT_INFO[];\n", generatorProfile->interfaceComputedConstantInfoString());
+    EXPECT_EQ("const VariableInfo COMPUTED_CONSTANT_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationComputedConstantInfoString());
+
+    EXPECT_EQ("extern const VariableInfo ALGEBRAIC_INFO[];\n", generatorProfile->interfaceAlgebraicVariableInfoString());
+    EXPECT_EQ("const VariableInfo ALGEBRAIC_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationAlgebraicVariableInfoString());
+
+    EXPECT_EQ("extern const VariableInfo EXTERNAL_INFO[];\n", generatorProfile->interfaceExternalVariableInfoString());
+    EXPECT_EQ("const VariableInfo EXTERNAL_INFO[] = {\n"
+              "[CODE]"
+              "};\n",
+              generatorProfile->implementationExternalVariableInfoString());
+
+    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\"}", generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
-    EXPECT_EQ("variables", generatorProfile->variablesArrayString());
+    EXPECT_EQ("constants", generatorProfile->constantsArrayString());
+    EXPECT_EQ("computedConstants", generatorProfile->computedConstantsArrayString());
+    EXPECT_EQ("algebraicVariables", generatorProfile->algebraicVariablesArrayString());
+    EXPECT_EQ("externalVariables", generatorProfile->externalVariablesArrayString());
 
-    EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
-    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
+    EXPECT_EQ("typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
+    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
 
-    EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
-    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
+    EXPECT_EQ("externalVariable(constants, computedConstants, algebraicVariables, externalVariables, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
+    EXPECT_EQ("externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
+
+    EXPECT_EQ("typedef struct {\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraicVariables;\n"
+              "} RootFindingInfo;\n",
+              generatorProfile->rootFindingInfoObjectString(false, false));
+    EXPECT_EQ("typedef struct {\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraicVariables;\n"
+              "    double *externalVariables;\n"
+              "} RootFindingInfo;\n",
+              generatorProfile->rootFindingInfoObjectString(false, true));
+    EXPECT_EQ("typedef struct {\n"
+              "    double voi;\n"
+              "    double *states;\n"
+              "    double *rates;\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraicVariables;\n"
+              "} RootFindingInfo;\n",
+              generatorProfile->rootFindingInfoObjectString(true, false));
+    EXPECT_EQ("typedef struct {\n"
+              "    double voi;\n"
+              "    double *states;\n"
+              "    double *rates;\n"
+              "    double *constants;\n"
+              "    double *computedConstants;\n"
+              "    double *algebraicVariables;\n"
+              "    double *externalVariables;\n"
+              "} RootFindingInfo;\n",
+              generatorProfile->rootFindingInfoObjectString(true, true));
+    EXPECT_EQ("extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
+              "                     double *u, size_t n, void *data);\n",
+              generatorProfile->externNlaSolveMethodString());
+    EXPECT_EQ("findRoot[INDEX](constants, computedConstants, algebraicVariables);\n",
+              generatorProfile->findRootCallString(false, false));
+    EXPECT_EQ("findRoot[INDEX](constants, computedConstants, algebraicVariables, externalVariables);\n",
+              generatorProfile->findRootCallString(false, true));
+    EXPECT_EQ("findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraicVariables);\n",
+              generatorProfile->findRootCallString(true, false));
+    EXPECT_EQ("findRoot[INDEX](voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);\n",
+              generatorProfile->findRootCallString(true, true));
+    EXPECT_EQ("void findRoot[INDEX](double *constants, double *computedConstants, double *algebraicVariables)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { constants, computedConstants, algebraicVariables };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(false, false));
+    EXPECT_EQ("void findRoot[INDEX](double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { constants, computedConstants, algebraicVariables, externalVariables };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(false, true));
+    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(true, false));
+    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)\n"
+              "{\n"
+              "    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };\n"
+              "    double u[[SIZE]];\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->findRootMethodString(true, true));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(false, false));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(false, true));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(true, false));
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
+              generatorProfile->nlaSolveCallString(true, true));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(false, false));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;\n"
+              "    double *externalVariables = ((RootFindingInfo *) data)->externalVariables;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(false, true));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double voi = ((RootFindingInfo *) data)->voi;\n"
+              "    double *states = ((RootFindingInfo *) data)->states;\n"
+              "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(true, false));
+    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+              "{\n"
+              "    double voi = ((RootFindingInfo *) data)->voi;\n"
+              "    double *states = ((RootFindingInfo *) data)->states;\n"
+              "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+              "    double *constants = ((RootFindingInfo *) data)->constants;\n"
+              "    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;\n"
+              "    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;\n"
+              "    double *externalVariables = ((RootFindingInfo *) data)->externalVariables;\n"
+              "\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->objectiveFunctionMethodString(true, true));
+    EXPECT_EQ("u",
+              generatorProfile->uArrayString());
+    EXPECT_EQ("f",
+              generatorProfile->fArrayString());
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -371,79 +494,61 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationCreateStatesArrayMethodString());
 
-    EXPECT_EQ("typedef struct {\n"
-              "    double *variables;\n"
-              "} RootFindingInfo;\n",
-              generatorProfile->rootFindingInfoObjectString(false));
-    EXPECT_EQ("typedef struct {\n"
-              "    double voi;\n"
-              "    double *states;\n"
-              "    double *rates;\n"
-              "    double *variables;\n"
-              "} RootFindingInfo;\n",
-              generatorProfile->rootFindingInfoObjectString(true));
-    EXPECT_EQ("extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
-              "                     double *u, size_t n, void *data);\n",
-              generatorProfile->externNlaSolveMethodString());
-    EXPECT_EQ("findRoot[INDEX](variables);\n",
-              generatorProfile->findRootCallString(false));
-    EXPECT_EQ("findRoot[INDEX](voi, states, rates, variables);\n",
-              generatorProfile->findRootCallString(true));
-    EXPECT_EQ("void findRoot[INDEX](double *variables)\n"
+    EXPECT_EQ("double * createConstantsArray();\n",
+              generatorProfile->interfaceCreateConstantsArrayMethodString());
+    EXPECT_EQ("double * createConstantsArray()\n"
               "{\n"
-              "    RootFindingInfo rfi = { variables };\n"
-              "    double u[[SIZE]];\n"
+              "    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));\n"
               "\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->findRootMethodString(false));
-    EXPECT_EQ("void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n"
-              "{\n"
-              "    RootFindingInfo rfi = { voi, states, rates, variables };\n"
-              "    double u[[SIZE]];\n"
-              "\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->findRootMethodString(true));
-    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
-              generatorProfile->nlaSolveCallString(false));
-    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
-              generatorProfile->nlaSolveCallString(true));
-    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
-              "{\n"
-              "    double *variables = ((RootFindingInfo *) data)->variables;\n"
-              "\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->objectiveFunctionMethodString(false));
-    EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
-              "{\n"
-              "    double voi = ((RootFindingInfo *) data)->voi;\n"
-              "    double *states = ((RootFindingInfo *) data)->states;\n"
-              "    double *rates = ((RootFindingInfo *) data)->rates;\n"
-              "    double *variables = ((RootFindingInfo *) data)->variables;\n"
-              "\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->objectiveFunctionMethodString(true));
-    EXPECT_EQ("u",
-              generatorProfile->uArrayString());
-    EXPECT_EQ("f",
-              generatorProfile->fArrayString());
-
-    EXPECT_EQ("double * createVariablesArray();\n",
-              generatorProfile->interfaceCreateVariablesArrayMethodString());
-    EXPECT_EQ("double * createVariablesArray()\n"
-              "{\n"
-              "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
-              "\n"
-              "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+              "    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {\n"
               "        res[i] = NAN;\n"
               "    }\n"
               "\n"
               "    return res;\n"
               "}\n",
-              generatorProfile->implementationCreateVariablesArrayMethodString());
+              generatorProfile->implementationCreateConstantsArrayMethodString());
+
+    EXPECT_EQ("double * createComputedConstantsArray();\n",
+              generatorProfile->interfaceCreateComputedConstantsArrayMethodString());
+    EXPECT_EQ("double * createComputedConstantsArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateComputedConstantsArrayMethodString());
+
+    EXPECT_EQ("double * createAlgebraicVariablesArray();\n",
+              generatorProfile->interfaceCreateAlgebraicVariablesArrayMethodString());
+    EXPECT_EQ("double * createAlgebraicVariablesArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateAlgebraicVariablesArrayMethodString());
+
+    EXPECT_EQ("double * createExternalVariablesArray();\n",
+              generatorProfile->interfaceCreateExternalVariablesArrayMethodString());
+    EXPECT_EQ("double * createExternalVariablesArray()\n"
+              "{\n"
+              "    double *res = (double *) malloc(EXTERNAL_VARIABLE_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < EXTERNAL_VARIABLE_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
+              "}\n",
+              generatorProfile->implementationCreateExternalVariablesArrayMethodString());
 
     EXPECT_EQ("void deleteArray(double *array);\n",
               generatorProfile->interfaceDeleteArrayMethodString());
@@ -453,89 +558,73 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initialiseVariables(double *variables);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(false, false));
-    EXPECT_EQ("void initialiseVariables(double *variables)\n"
+    EXPECT_EQ("void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);\n",
+              generatorProfile->interfaceInitialiseArraysMethodString(false));
+    EXPECT_EQ("void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(false, false));
+              generatorProfile->implementationInitialiseArraysMethodString(false));
 
-    EXPECT_EQ("void initialiseVariables(double *variables, ExternalVariable externalVariable);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(false, true));
-    EXPECT_EQ("void initialiseVariables(double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
+              generatorProfile->interfaceInitialiseArraysMethodString(true));
+    EXPECT_EQ("void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(false, true));
+              generatorProfile->implementationInitialiseArraysMethodString(true));
 
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *variables);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(true, false));
-    EXPECT_EQ("void initialiseVariables(double *states, double *rates, double *variables)\n"
-              "{\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(true, false));
-
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n",
-              generatorProfile->interfaceInitialiseVariablesMethodString(true, true));
-    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
-              "{\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->implementationInitialiseVariablesMethodString(true, true));
-
-    EXPECT_EQ("void computeComputedConstants(double *variables);\n",
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ("void computeComputedConstants(double *variables)\n"
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeComputedConstantsMethodString());
 
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables);\n",
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeRatesMethodString(false));
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n"
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeRatesMethodString(false));
 
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceComputeRatesMethodString(true));
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeRatesMethodString(true));
 
-    EXPECT_EQ("void computeVariables(double *variables);\n",
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeVariablesMethodString(false, false));
-    EXPECT_EQ("void computeVariables(double *variables)\n"
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(false, false));
 
-    EXPECT_EQ("void computeVariables(double *variables, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceComputeVariablesMethodString(false, true));
-    EXPECT_EQ("void computeVariables(double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(false, true));
 
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeVariablesMethodString(true, false));
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(true, false));
 
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceComputeVariablesMethodString(true, true));
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
@@ -865,20 +954,17 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceStateCountString(value);
     generatorProfile->setImplementationStateCountString(value);
 
-    generatorProfile->setInterfaceVariableCountString(value);
-    generatorProfile->setImplementationVariableCountString(value);
+    generatorProfile->setInterfaceConstantCountString(value);
+    generatorProfile->setImplementationConstantCountString(value);
 
-    generatorProfile->setVariableTypeObjectString(false, false, value);
-    generatorProfile->setVariableTypeObjectString(false, true, value);
-    generatorProfile->setVariableTypeObjectString(true, false, value);
-    generatorProfile->setVariableTypeObjectString(true, true, value);
+    generatorProfile->setInterfaceComputedConstantCountString(value);
+    generatorProfile->setImplementationComputedConstantCountString(value);
 
-    generatorProfile->setVariableOfIntegrationVariableTypeString(value);
-    generatorProfile->setStateVariableTypeString(value);
-    generatorProfile->setConstantVariableTypeString(value);
-    generatorProfile->setComputedConstantVariableTypeString(value);
-    generatorProfile->setAlgebraicVariableTypeString(value);
-    generatorProfile->setExternalVariableTypeString(value);
+    generatorProfile->setInterfaceAlgebraicVariableCountString(value);
+    generatorProfile->setImplementationAlgebraicVariableCountString(value);
+
+    generatorProfile->setInterfaceExternalVariableCountString(value);
+    generatorProfile->setImplementationExternalVariableCountString(value);
 
     generatorProfile->setVariableInfoObjectString(value);
 
@@ -888,8 +974,17 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceStateInfoString(value);
     generatorProfile->setImplementationStateInfoString(value);
 
-    generatorProfile->setInterfaceVariableInfoString(value);
-    generatorProfile->setImplementationVariableInfoString(value);
+    generatorProfile->setInterfaceConstantInfoString(value);
+    generatorProfile->setImplementationConstantInfoString(value);
+
+    generatorProfile->setInterfaceComputedConstantInfoString(value);
+    generatorProfile->setImplementationComputedConstantInfoString(value);
+
+    generatorProfile->setInterfaceAlgebraicVariableInfoString(value);
+    generatorProfile->setImplementationAlgebraicVariableInfoString(value);
+
+    generatorProfile->setInterfaceExternalVariableInfoString(value);
+    generatorProfile->setImplementationExternalVariableInfoString(value);
 
     generatorProfile->setVariableInfoEntryString(value);
 
@@ -897,7 +992,10 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setStatesArrayString(value);
     generatorProfile->setRatesArrayString(value);
-    generatorProfile->setVariablesArrayString(value);
+    generatorProfile->setConstantsArrayString(value);
+    generatorProfile->setComputedConstantsArrayString(value);
+    generatorProfile->setAlgebraicVariablesArrayString(value);
+    generatorProfile->setExternalVariablesArrayString(value);
 
     generatorProfile->setExternalVariableMethodTypeDefinitionString(false, value);
     generatorProfile->setExternalVariableMethodTypeDefinitionString(true, value);
@@ -905,60 +1003,77 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setExternalVariableMethodCallString(false, value);
     generatorProfile->setExternalVariableMethodCallString(true, value);
 
-    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
-    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
+    generatorProfile->setRootFindingInfoObjectString(false, false, value);
+    generatorProfile->setRootFindingInfoObjectString(false, true, value);
+    generatorProfile->setRootFindingInfoObjectString(true, false, value);
+    generatorProfile->setRootFindingInfoObjectString(true, true, value);
 
-    generatorProfile->setRootFindingInfoObjectString(false, value);
-    generatorProfile->setRootFindingInfoObjectString(true, value);
     generatorProfile->setExternNlaSolveMethodString(value);
-    generatorProfile->setFindRootCallString(false, value);
-    generatorProfile->setFindRootCallString(true, value);
-    generatorProfile->setFindRootMethodString(false, value);
-    generatorProfile->setFindRootMethodString(true, value);
-    generatorProfile->setNlaSolveCallString(false, value);
-    generatorProfile->setNlaSolveCallString(true, value);
-    generatorProfile->setObjectiveFunctionMethodString(false, value);
-    generatorProfile->setObjectiveFunctionMethodString(true, value);
+
+    generatorProfile->setFindRootCallString(false, false, value);
+    generatorProfile->setFindRootCallString(false, true, value);
+    generatorProfile->setFindRootCallString(true, false, value);
+    generatorProfile->setFindRootCallString(true, true, value);
+
+    generatorProfile->setFindRootMethodString(false, false, value);
+    generatorProfile->setFindRootMethodString(false, true, value);
+    generatorProfile->setFindRootMethodString(true, false, value);
+    generatorProfile->setFindRootMethodString(true, true, value);
+
+    generatorProfile->setNlaSolveCallString(false, false, value);
+    generatorProfile->setNlaSolveCallString(false, true, value);
+    generatorProfile->setNlaSolveCallString(true, false, value);
+    generatorProfile->setNlaSolveCallString(true, true, value);
+
+    generatorProfile->setObjectiveFunctionMethodString(false, false, value);
+    generatorProfile->setObjectiveFunctionMethodString(false, true, value);
+    generatorProfile->setObjectiveFunctionMethodString(true, false, value);
+    generatorProfile->setObjectiveFunctionMethodString(true, true, value);
+
     generatorProfile->setUArrayString(value);
     generatorProfile->setFArrayString(value);
 
-    generatorProfile->setInterfaceCreateVariablesArrayMethodString(value);
-    generatorProfile->setImplementationCreateVariablesArrayMethodString(value);
+    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
+    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateConstantsArrayMethodString(value);
+    generatorProfile->setImplementationCreateConstantsArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateComputedConstantsArrayMethodString(value);
+    generatorProfile->setImplementationCreateComputedConstantsArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateAlgebraicVariablesArrayMethodString(value);
+    generatorProfile->setImplementationCreateAlgebraicVariablesArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateExternalVariablesArrayMethodString(value);
+    generatorProfile->setImplementationCreateExternalVariablesArrayMethodString(value);
 
     generatorProfile->setInterfaceDeleteArrayMethodString(value);
     generatorProfile->setImplementationDeleteArrayMethodString(value);
 
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(false, false, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(false, false, value);
+    generatorProfile->setInterfaceInitialiseArraysMethodString(false, value);
+    generatorProfile->setInterfaceInitialiseArraysMethodString(true, value);
 
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(false, true, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(false, true, value);
-
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(true, false, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(true, false, value);
-
-    generatorProfile->setInterfaceInitialiseVariablesMethodString(true, true, value);
-    generatorProfile->setImplementationInitialiseVariablesMethodString(true, true, value);
+    generatorProfile->setImplementationInitialiseArraysMethodString(false, value);
+    generatorProfile->setImplementationInitialiseArraysMethodString(true, value);
 
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
 
     generatorProfile->setInterfaceComputeRatesMethodString(false, value);
-    generatorProfile->setImplementationComputeRatesMethodString(false, value);
-
     generatorProfile->setInterfaceComputeRatesMethodString(true, value);
+
+    generatorProfile->setImplementationComputeRatesMethodString(false, value);
     generatorProfile->setImplementationComputeRatesMethodString(true, value);
 
     generatorProfile->setInterfaceComputeVariablesMethodString(false, false, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(false, false, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(false, true, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(false, true, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(true, false, value);
-    generatorProfile->setImplementationComputeVariablesMethodString(true, false, value);
-
     generatorProfile->setInterfaceComputeVariablesMethodString(true, true, value);
+
+    generatorProfile->setImplementationComputeVariablesMethodString(false, false, value);
+    generatorProfile->setImplementationComputeVariablesMethodString(false, true, value);
+    generatorProfile->setImplementationComputeVariablesMethodString(true, false, value);
     generatorProfile->setImplementationComputeVariablesMethodString(true, true, value);
 
     generatorProfile->setEmptyMethodString(value);
@@ -994,20 +1109,17 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceStateCountString());
     EXPECT_EQ(value, generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
-    EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
+    EXPECT_EQ(value, generatorProfile->interfaceConstantCountString());
+    EXPECT_EQ(value, generatorProfile->implementationConstantCountString());
 
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, false));
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, true));
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(true, false));
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(true, true));
+    EXPECT_EQ(value, generatorProfile->interfaceComputedConstantCountString());
+    EXPECT_EQ(value, generatorProfile->implementationComputedConstantCountString());
 
-    EXPECT_EQ(value, generatorProfile->variableOfIntegrationVariableTypeString());
-    EXPECT_EQ(value, generatorProfile->stateVariableTypeString());
-    EXPECT_EQ(value, generatorProfile->constantVariableTypeString());
-    EXPECT_EQ(value, generatorProfile->computedConstantVariableTypeString());
-    EXPECT_EQ(value, generatorProfile->algebraicVariableTypeString());
-    EXPECT_EQ(value, generatorProfile->externalVariableTypeString());
+    EXPECT_EQ(value, generatorProfile->interfaceAlgebraicVariableCountString());
+    EXPECT_EQ(value, generatorProfile->implementationAlgebraicVariableCountString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceExternalVariableCountString());
+    EXPECT_EQ(value, generatorProfile->implementationExternalVariableCountString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
@@ -1017,8 +1129,17 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceStateInfoString());
     EXPECT_EQ(value, generatorProfile->implementationStateInfoString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceVariableInfoString());
-    EXPECT_EQ(value, generatorProfile->implementationVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->interfaceConstantInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationConstantInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputedConstantInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationComputedConstantInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAlgebraicVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationAlgebraicVariableInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceExternalVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationExternalVariableInfoString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
 
@@ -1026,7 +1147,10 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
-    EXPECT_EQ(value, generatorProfile->variablesArrayString());
+    EXPECT_EQ(value, generatorProfile->constantsArrayString());
+    EXPECT_EQ(value, generatorProfile->computedConstantsArrayString());
+    EXPECT_EQ(value, generatorProfile->algebraicVariablesArrayString());
+    EXPECT_EQ(value, generatorProfile->externalVariablesArrayString());
 
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString(false));
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString(true));
@@ -1034,40 +1158,59 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(false));
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(true));
 
-    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(false, false));
+    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(false, true));
+    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true, false));
+    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true, true));
 
-    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(false));
-    EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString(true));
     EXPECT_EQ(value, generatorProfile->externNlaSolveMethodString());
-    EXPECT_EQ(value, generatorProfile->findRootCallString(false));
-    EXPECT_EQ(value, generatorProfile->findRootCallString(true));
-    EXPECT_EQ(value, generatorProfile->findRootMethodString(false));
-    EXPECT_EQ(value, generatorProfile->findRootMethodString(true));
-    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false));
-    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true));
-    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false));
-    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true));
+
+    EXPECT_EQ(value, generatorProfile->findRootCallString(false, false));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(false, true));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(true, false));
+    EXPECT_EQ(value, generatorProfile->findRootCallString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(false, false));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(false, true));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(true, false));
+    EXPECT_EQ(value, generatorProfile->findRootMethodString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false, false));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(false, true));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true, false));
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString(true, true));
+
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false, false));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(false, true));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true, false));
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString(true, true));
+
     EXPECT_EQ(value, generatorProfile->uArrayString());
     EXPECT_EQ(value, generatorProfile->fArrayString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceCreateVariablesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationCreateVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateConstantsArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateConstantsArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateComputedConstantsArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateComputedConstantsArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateAlgebraicVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateAlgebraicVariablesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateExternalVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateExternalVariablesArrayMethodString());
 
     EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(false, false));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(false, false));
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseArraysMethodString(false));
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseArraysMethodString(false));
 
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(false, true));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(false, true));
-
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(true, false));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(true, false));
-
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseVariablesMethodString(true, true));
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseVariablesMethodString(true, true));
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseArraysMethodString(true));
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseArraysMethodString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());

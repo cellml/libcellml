@@ -34,8 +34,13 @@ struct AnalyserModel::AnalyserModelImpl
     bool mHasExternalVariables = false;
 
     AnalyserVariablePtr mVoi;
+
     std::vector<AnalyserVariablePtr> mStates;
-    std::vector<AnalyserVariablePtr> mVariables;
+    std::vector<AnalyserVariablePtr> mConstants;
+    std::vector<AnalyserVariablePtr> mComputedConstants;
+    std::vector<AnalyserVariablePtr> mAlgebraicVariables;
+    std::vector<AnalyserVariablePtr> mExternalVariables;
+
     std::vector<AnalyserEquationPtr> mEquations;
 
     bool mNeedEqFunction = false;

@@ -8,32 +8,35 @@ extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
 extern const size_t STATE_COUNT;
-extern const size_t VARIABLE_COUNT;
-
-typedef enum {
-    VARIABLE_OF_INTEGRATION,
-    STATE,
-    CONSTANT,
-    COMPUTED_CONSTANT,
-    ALGEBRAIC
-} VariableType;
+extern const size_t CONSTANT_COUNT;
+extern const size_t COMPUTED_CONSTANT_COUNT;
+extern const size_t ALGEBRAIC_VARIABLE_COUNT;
+extern const size_t EXTERNAL_VARIABLE_COUNT;
 
 typedef struct {
     char name[38];
     char units[14];
     char component[13];
-    VariableType type;
 } VariableInfo;
 
 extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
-extern const VariableInfo VARIABLE_INFO[];
+extern const VariableInfo CONSTANT_INFO[];
+extern const VariableInfo COMPUTED_CONSTANT_INFO[];
+extern const VariableInfo ALGEBRAIC_INFO[];
+extern const VariableInfo EXTERNAL_INFO[];
 
 double * createStatesVector();
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicVariablesArray();
+double * createExternalVariablesArray();
+
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *rates, double *variables);
-void computeComputedConstants(double *variables);
-void computeRates(double voi, double *states, double *rates, double *variables);
-void computeVariables(double voi, double *states, double *rates, double *variables);
+typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);
+
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
+void computeComputedConstants(double *constants, double *computedConstants);
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);

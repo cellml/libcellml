@@ -4,237 +4,240 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 209
+CONSTANT_COUNT = 7
+COMPUTED_CONSTANT_COUNT = 199
+ALGEBRAIC_VARIABLE_COUNT = 2
+EXTERNAL_VARIABLE_COUNT = 1
 
-
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "t", "units": "second", "component": "my_component", "type": VariableType.VARIABLE_OF_INTEGRATION}
+VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
 STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.STATE}
+    {"name": "x", "units": "dimensionless", "component": "my_component"}
 ]
 
-VARIABLE_INFO = [
-    {"name": "n", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "m", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "eqnEq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnEqCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnNeq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "o", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "eqnNeqCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLt", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLtCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLeq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLeqCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnGt", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnGtCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnGeq", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnGeqCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAnd", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "p", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "eqnAndParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesLeftRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAndCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOr", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesLeftRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXor", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesLeftRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnXorCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnNot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPlus", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPlusMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPlusParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPlusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinus", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusParenthesesPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusParenthesesPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusParenthesesDirectUnaryMinus", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusParenthesesIndirectUnaryMinus", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinusUnaryParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTimesParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnDivideParenthesesRightDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerSqrt", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerSqr", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerCube", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerCi", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesLeftDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPowerParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootSqrt", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootSqrtOther", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootCube", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootCi", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesLeftDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightTimes", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightDivide", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRootParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnAbs", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnExp", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLn", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLog", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLog2", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLog10", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnLogCi", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCeiling", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnFloor", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMin", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMinMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMax", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnMaxMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnRem", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnSin", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCos", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTan", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnSec", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCsc", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnSinh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCosh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTanh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnSech", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCsch", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoth", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArcsin", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccos", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArctan", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArcsec", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccsc", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArcsinh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccosh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArctanh", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArcsech", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccsch", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnArccoth", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPiecewisePiece", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPiecewisePieceOtherwise", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "q", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "r", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "eqnPiecewisePiecePiecePiece", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "s", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT},
-    {"name": "eqnPiecewisePiecePiecePieceOtherwise", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnWithPiecewise", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCnInteger", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCnDouble", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCnIntegerWithExponent", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCnDoubleWithExponent", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCi", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnTrue", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnFalse", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnExponentiale", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnPi", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnInfinity", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnNotanumber", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForPlusOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForMinusOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForTimesOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForDivideOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForAndOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForOrOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForXorOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForPowerOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
+CONSTANT_INFO = [
+    {"name": "n", "units": "dimensionless", "component": "my_component"},
+    {"name": "m", "units": "dimensionless", "component": "my_component"},
+    {"name": "o", "units": "dimensionless", "component": "my_component"},
+    {"name": "p", "units": "dimensionless", "component": "my_component"},
+    {"name": "q", "units": "dimensionless", "component": "my_component"},
+    {"name": "r", "units": "dimensionless", "component": "my_component"},
+    {"name": "s", "units": "dimensionless", "component": "my_component"}
+]
+
+COMPUTED_CONSTANT_INFO = [
+    {"name": "eqnEq", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnEqCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnNeq", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnNeqCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLt", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLtCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLeq", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLeqCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnGt", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnGtCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnGeq", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnGeqCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAnd", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesLeftRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndParenthesesRightRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAndCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOr", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesLeftRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrParenthesesRightRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnOrCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXor", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesLeftRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorParenthesesRightRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnXorCoverageParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnNot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPlusMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPlusParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPlusUnary", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinus", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusParenthesesPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusParenthesesPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusParenthesesDirectUnaryMinus", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusParenthesesIndirectUnaryMinus", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusUnary", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinusUnaryParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTimesParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnDivideParenthesesRightDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerSqrt", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerSqr", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerCube", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerCi", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesLeftDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPowerParenthesesRightRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootSqrt", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootSqrtOther", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootCube", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootCi", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParentheses", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesLeftDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightPlusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightPlusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightMinusWith", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightMinusWithout", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightTimes", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightDivide", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightPower", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRootParenthesesRightRoot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnAbs", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnExp", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLn", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLog", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLog2", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLog10", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnLogCi", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCeiling", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnFloor", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMin", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMinMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMax", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnMaxMultiple", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnRem", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnSin", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCos", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTan", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnSec", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCsc", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnSinh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCosh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTanh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnSech", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCsch", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoth", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArcsin", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccos", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArctan", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArcsec", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccsc", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccot", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArcsinh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccosh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArctanh", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArcsech", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccsch", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnArccoth", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPiecewisePiece", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPiecewisePieceOtherwise", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPiecewisePiecePiecePiece", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPiecewisePiecePiecePieceOtherwise", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnWithPiecewise", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCnInteger", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCnDouble", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCnIntegerWithExponent", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCnDoubleWithExponent", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCi", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnTrue", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnFalse", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnExponentiale", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnPi", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnInfinity", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnNotanumber", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForPlusOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForMinusOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForTimesOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForDivideOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForAndOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForOrOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForXorOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForPowerOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component"}
+]
+
+ALGEBRAIC_INFO = [
+    {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component"}
+]
+
+EXTERNAL_INFO = [
+    {"name": "eqnPlus", "units": "dimensionless", "component": "my_component"}
 ]
 
 
@@ -344,8 +347,20 @@ def create_states_array():
     return [nan]*STATE_COUNT
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
+
+
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -355,246 +370,249 @@ def objective_function_0(u, f, data):
     voi = data[0]
     states = data[1]
     rates = data[2]
-    variables = data[3]
+    constants = data[3]
+    computed_constants = data[4]
+    algebraic_variables = data[5]
+    external_variables = data[6]
 
-    variables[205] = u[0]
-    variables[206] = u[1]
+    algebraicVariables[0] = u[0]
+    algebraicVariables[1] = u[1]
 
-    f[0] = variables[206]+variables[205]+states[0]-0.0
-    f[1] = variables[206]-variables[205]-(variables[208]+variables[207])
+    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0
+    f[1] = algebraicVariables[1]-algebraicVariables[0]-(computed_constants[198]+computed_constants[197])
 
 
-def find_root_0(voi, states, rates, variables):
+def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables):
     u = [nan]*2
 
-    u[0] = variables[205]
-    u[1] = variables[206]
+    u[0] = algebraicVariables[0]
+    u[1] = algebraicVariables[1]
 
-    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, variables])
+    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, constants, computed_constants, algebraic_variables, external_variables])
 
-    variables[205] = u[0]
-    variables[206] = u[1]
+    algebraicVariables[0] = u[0]
+    algebraicVariables[1] = u[1]
 
 
-def initialise_variables(states, rates, variables):
-    variables[0] = 1.23
-    variables[1] = 123.0
-    variables[5] = 1.0e1
-    variables[17] = 1.23e1
-    variables[178] = 1.0E1
-    variables[179] = 1.23E1
-    variables[181] = 7.0
-    variables[205] = 2.0
-    variables[206] = 1.0
-    variables[184] = 123.0
-    variables[185] = 123.456789
-    variables[186] = 123.0e99
-    variables[187] = 123.456789e99
-    variables[189] = 1.0
-    variables[190] = 0.0
-    variables[191] = 2.71828182845905
-    variables[192] = 3.14159265358979
-    variables[193] = inf
-    variables[194] = nan
-    variables[208] = 1.0
-    variables[207] = 3.0
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
+    constants[0] = 1.23
+    constants[1] = 123.0
+    constants[2] = 1.0e1
+    constants[3] = 1.23e1
+    constants[4] = 1.0E1
+    constants[5] = 1.23E1
+    constants[6] = 7.0
+    computed_constants[176] = 123.0
+    computed_constants[177] = 123.456789
+    computed_constants[178] = 123.0e99
+    computed_constants[179] = 123.456789e99
+    computed_constants[181] = 1.0
+    computed_constants[182] = 0.0
+    computed_constants[183] = 2.71828182845905
+    computed_constants[184] = 3.14159265358979
+    computed_constants[185] = inf
+    computed_constants[186] = nan
+    computed_constants[198] = 1.0
+    computed_constants[197] = 3.0
+    algebraicVariables[0] = 2.0
+    algebraicVariables[1] = 1.0
 
 
-def compute_computed_constants(variables):
-    variables[2] = eq_func(variables[1], variables[0])
-    variables[3] = variables[1]/eq_func(variables[0], variables[0])
-    variables[4] = neq_func(variables[1], variables[0])
-    variables[6] = variables[1]/neq_func(variables[0], variables[5])
-    variables[7] = lt_func(variables[1], variables[0])
-    variables[8] = variables[1]/lt_func(variables[0], variables[5])
-    variables[9] = leq_func(variables[1], variables[0])
-    variables[10] = variables[1]/leq_func(variables[0], variables[5])
-    variables[11] = gt_func(variables[1], variables[0])
-    variables[12] = variables[1]/gt_func(variables[0], variables[5])
-    variables[13] = geq_func(variables[1], variables[0])
-    variables[14] = variables[1]/geq_func(variables[0], variables[5])
-    variables[15] = and_func(variables[1], variables[0])
-    variables[16] = and_func(variables[1], and_func(variables[0], variables[5]))
-    variables[18] = and_func(lt_func(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[19] = and_func(variables[1]+variables[0], gt_func(variables[5], variables[17]))
-    variables[20] = and_func(variables[1], gt_func(variables[0], variables[5]))
-    variables[21] = and_func(variables[1]-variables[0], gt_func(variables[5], variables[17]))
-    variables[22] = and_func(-variables[1], gt_func(variables[0], variables[5]))
-    variables[23] = and_func(pow(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[24] = and_func(pow(variables[1], 1.0/variables[0]), gt_func(variables[5], variables[17]))
-    variables[25] = and_func(lt_func(variables[1], variables[0]), variables[5]+variables[17])
-    variables[26] = and_func(lt_func(variables[1], variables[0]), variables[5])
-    variables[27] = and_func(lt_func(variables[1], variables[0]), variables[5]-variables[17])
-    variables[28] = and_func(lt_func(variables[1], variables[0]), -variables[5])
-    variables[29] = and_func(lt_func(variables[1], variables[0]), pow(variables[5], variables[17]))
-    variables[30] = and_func(lt_func(variables[1], variables[0]), pow(variables[5], 1.0/variables[17]))
-    variables[31] = variables[1]/and_func(variables[0], variables[5])
-    variables[32] = or_func(variables[1], variables[0])
-    variables[33] = or_func(variables[1], or_func(variables[0], variables[5]))
-    variables[34] = or_func(lt_func(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[35] = or_func(variables[1]+variables[0], gt_func(variables[5], variables[17]))
-    variables[36] = or_func(variables[1], gt_func(variables[0], variables[5]))
-    variables[37] = or_func(variables[1]-variables[0], gt_func(variables[5], variables[17]))
-    variables[38] = or_func(-variables[1], gt_func(variables[0], variables[5]))
-    variables[39] = or_func(pow(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[40] = or_func(pow(variables[1], 1.0/variables[0]), gt_func(variables[5], variables[17]))
-    variables[41] = or_func(lt_func(variables[1], variables[0]), variables[5]+variables[17])
-    variables[42] = or_func(lt_func(variables[1], variables[0]), variables[5])
-    variables[43] = or_func(lt_func(variables[1], variables[0]), variables[5]-variables[17])
-    variables[44] = or_func(lt_func(variables[1], variables[0]), -variables[5])
-    variables[45] = or_func(lt_func(variables[1], variables[0]), pow(variables[5], variables[17]))
-    variables[46] = or_func(lt_func(variables[1], variables[0]), pow(variables[5], 1.0/variables[17]))
-    variables[47] = variables[1]/or_func(variables[0], variables[5])
-    variables[48] = xor_func(variables[1], variables[0])
-    variables[49] = xor_func(variables[1], xor_func(variables[0], variables[5]))
-    variables[50] = xor_func(lt_func(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[51] = xor_func(variables[1]+variables[0], gt_func(variables[5], variables[17]))
-    variables[52] = xor_func(variables[1], gt_func(variables[0], variables[5]))
-    variables[53] = xor_func(variables[1]-variables[0], gt_func(variables[5], variables[17]))
-    variables[54] = xor_func(-variables[1], gt_func(variables[0], variables[5]))
-    variables[55] = xor_func(pow(variables[1], variables[0]), gt_func(variables[5], variables[17]))
-    variables[56] = xor_func(pow(variables[1], 1.0/variables[0]), gt_func(variables[5], variables[17]))
-    variables[57] = xor_func(lt_func(variables[1], variables[0]), variables[5]+variables[17])
-    variables[58] = xor_func(lt_func(variables[1], variables[0]), variables[5])
-    variables[59] = xor_func(lt_func(variables[1], variables[0]), variables[5]-variables[17])
-    variables[60] = xor_func(lt_func(variables[1], variables[0]), -variables[5])
-    variables[61] = xor_func(lt_func(variables[1], variables[0]), pow(variables[5], variables[17]))
-    variables[62] = xor_func(lt_func(variables[1], variables[0]), pow(variables[5], 1.0/variables[17]))
-    variables[63] = variables[1]/xor_func(variables[0], variables[5])
-    variables[64] = not_func(variables[1])
-    variables[65] = variables[1]+variables[0]
-    variables[66] = variables[1]+variables[0]+variables[5]
-    variables[67] = lt_func(variables[1], variables[0])+gt_func(variables[5], variables[17])
-    variables[68] = variables[1]
-    variables[69] = variables[1]-variables[0]
-    variables[70] = lt_func(variables[1], variables[0])-gt_func(variables[5], variables[17])
-    variables[71] = lt_func(variables[1], variables[0])-(variables[5]+variables[17])
-    variables[72] = lt_func(variables[1], variables[0])-variables[5]
-    variables[73] = variables[1]-(-variables[0])
-    variables[74] = variables[1]-(-variables[0]*variables[5])
-    variables[75] = -variables[1]
-    variables[76] = -lt_func(variables[1], variables[0])
-    variables[77] = variables[1]*variables[0]
-    variables[78] = variables[1]*variables[0]*variables[5]
-    variables[79] = lt_func(variables[1], variables[0])*gt_func(variables[5], variables[17])
-    variables[80] = (variables[1]+variables[0])*gt_func(variables[5], variables[17])
-    variables[81] = variables[1]*gt_func(variables[0], variables[5])
-    variables[82] = (variables[1]-variables[0])*gt_func(variables[5], variables[17])
-    variables[83] = -variables[1]*gt_func(variables[0], variables[5])
-    variables[84] = lt_func(variables[1], variables[0])*(variables[5]+variables[17])
-    variables[85] = lt_func(variables[1], variables[0])*variables[5]
-    variables[86] = lt_func(variables[1], variables[0])*(variables[5]-variables[17])
-    variables[87] = lt_func(variables[1], variables[0])*-variables[5]
-    variables[88] = variables[1]/variables[0]
-    variables[89] = lt_func(variables[1], variables[0])/gt_func(variables[17], variables[5])
-    variables[90] = (variables[1]+variables[0])/gt_func(variables[17], variables[5])
-    variables[91] = variables[1]/gt_func(variables[5], variables[0])
-    variables[92] = (variables[1]-variables[0])/gt_func(variables[17], variables[5])
-    variables[93] = -variables[1]/gt_func(variables[5], variables[0])
-    variables[94] = lt_func(variables[1], variables[0])/(variables[5]+variables[17])
-    variables[95] = lt_func(variables[1], variables[0])/variables[5]
-    variables[96] = lt_func(variables[1], variables[0])/(variables[5]-variables[17])
-    variables[97] = lt_func(variables[1], variables[0])/-variables[5]
-    variables[98] = lt_func(variables[1], variables[0])/(variables[5]*variables[17])
-    variables[99] = lt_func(variables[1], variables[0])/(variables[5]/variables[17])
-    variables[100] = sqrt(variables[1])
-    variables[101] = pow(variables[1], 2.0)
-    variables[102] = pow(variables[1], 3.0)
-    variables[103] = pow(variables[1], variables[0])
-    variables[104] = pow(leq_func(variables[1], variables[0]), geq_func(variables[5], variables[17]))
-    variables[105] = pow(variables[1]+variables[0], geq_func(variables[5], variables[17]))
-    variables[106] = pow(variables[1], geq_func(variables[0], variables[5]))
-    variables[107] = pow(variables[1]-variables[0], geq_func(variables[5], variables[17]))
-    variables[108] = pow(-variables[1], geq_func(variables[0], variables[5]))
-    variables[109] = pow(variables[1]*variables[0], geq_func(variables[5], variables[17]))
-    variables[110] = pow(variables[1]/variables[0], geq_func(variables[5], variables[17]))
-    variables[111] = pow(leq_func(variables[1], variables[0]), variables[5]+variables[17])
-    variables[112] = pow(leq_func(variables[1], variables[0]), variables[5])
-    variables[113] = pow(leq_func(variables[1], variables[0]), variables[5]-variables[17])
-    variables[114] = pow(leq_func(variables[1], variables[0]), -variables[5])
-    variables[115] = pow(leq_func(variables[1], variables[0]), variables[5]*variables[17])
-    variables[116] = pow(leq_func(variables[1], variables[0]), variables[5]/variables[17])
-    variables[117] = pow(leq_func(variables[1], variables[0]), pow(variables[5], variables[17]))
-    variables[118] = pow(leq_func(variables[1], variables[0]), pow(variables[5], 1.0/variables[17]))
-    variables[119] = sqrt(variables[1])
-    variables[120] = sqrt(variables[1])
-    variables[121] = pow(variables[1], 1.0/3.0)
-    variables[122] = pow(variables[1], 1.0/variables[0])
-    variables[123] = pow(lt_func(variables[1], variables[0]), 1.0/gt_func(variables[17], variables[5]))
-    variables[124] = pow(variables[1]+variables[0], 1.0/gt_func(variables[17], variables[5]))
-    variables[125] = pow(variables[1], 1.0/gt_func(variables[5], variables[0]))
-    variables[126] = pow(variables[1]-variables[0], 1.0/gt_func(variables[17], variables[5]))
-    variables[127] = pow(-variables[1], 1.0/gt_func(variables[5], variables[0]))
-    variables[128] = pow(variables[1]*variables[0], 1.0/gt_func(variables[17], variables[5]))
-    variables[129] = pow(variables[1]/variables[0], 1.0/gt_func(variables[17], variables[5]))
-    variables[130] = pow(lt_func(variables[1], variables[0]), 1.0/(variables[5]+variables[17]))
-    variables[131] = pow(lt_func(variables[1], variables[0]), 1.0/variables[5])
-    variables[132] = pow(lt_func(variables[1], variables[0]), 1.0/(variables[5]-variables[17]))
-    variables[133] = pow(lt_func(variables[1], variables[0]), 1.0/-variables[5])
-    variables[134] = pow(lt_func(variables[1], variables[0]), 1.0/(variables[5]*variables[17]))
-    variables[135] = pow(lt_func(variables[1], variables[0]), 1.0/(variables[5]/variables[17]))
-    variables[136] = pow(lt_func(variables[1], variables[0]), 1.0/pow(variables[5], variables[17]))
-    variables[137] = pow(lt_func(variables[1], variables[0]), 1.0/pow(variables[5], 1.0/variables[17]))
-    variables[138] = fabs(variables[1])
-    variables[139] = exp(variables[1])
-    variables[140] = log(variables[1])
-    variables[141] = log10(variables[1])
-    variables[142] = log(variables[1])/log(2.0)
-    variables[143] = log10(variables[1])
-    variables[144] = log(variables[1])/log(variables[0])
-    variables[145] = ceil(variables[1])
-    variables[146] = floor(variables[1])
-    variables[147] = min(variables[1], variables[0])
-    variables[148] = min(variables[1], min(variables[0], variables[5]))
-    variables[149] = max(variables[1], variables[0])
-    variables[150] = max(variables[1], max(variables[0], variables[5]))
-    variables[151] = fmod(variables[1], variables[0])
-    variables[152] = sin(variables[1])
-    variables[153] = cos(variables[1])
-    variables[154] = tan(variables[1])
-    variables[155] = sec(variables[1])
-    variables[156] = csc(variables[1])
-    variables[157] = cot(variables[1])
-    variables[158] = sinh(variables[1])
-    variables[159] = cosh(variables[1])
-    variables[160] = tanh(variables[1])
-    variables[161] = sech(variables[1])
-    variables[162] = csch(variables[1])
-    variables[163] = coth(variables[1])
-    variables[164] = asin(variables[1])
-    variables[165] = acos(variables[1])
-    variables[166] = atan(variables[1])
-    variables[167] = asec(variables[1])
-    variables[168] = acsc(variables[1])
-    variables[169] = acot(variables[1])
-    variables[170] = asinh(variables[1])
-    variables[171] = acosh(variables[1])
-    variables[172] = atanh(variables[1]/2.0)
-    variables[173] = asech(variables[1])
-    variables[174] = acsch(variables[1])
-    variables[175] = acoth(2.0*variables[1])
-    variables[176] = variables[1] if gt_func(variables[1], variables[0]) else nan
-    variables[177] = variables[1] if gt_func(variables[1], variables[0]) else variables[5]
-    variables[180] = variables[1] if gt_func(variables[1], variables[0]) else variables[5] if gt_func(variables[5], variables[17]) else variables[178] if gt_func(variables[178], variables[179]) else nan
-    variables[182] = variables[1] if gt_func(variables[1], variables[0]) else variables[5] if gt_func(variables[5], variables[17]) else variables[178] if gt_func(variables[178], variables[179]) else variables[181]
-    variables[183] = 123.0+(variables[1] if gt_func(variables[1], variables[0]) else nan)
-    variables[188] = variables[1]
-    variables[195] = and_func(variables[1], variables[0])+(variables[0] if gt_func(variables[5], variables[17]) else nan)+variables[178]+and_func(variables[179], variables[181])
-    variables[196] = and_func(variables[1], variables[0])-((variables[0] if gt_func(variables[5], variables[17]) else nan)-(variables[178]-(variables[0] if gt_func(variables[5], variables[17]) else nan)))-and_func(variables[179], variables[181])
-    variables[197] = and_func(variables[1], variables[0])*(variables[0] if gt_func(variables[5], variables[17]) else nan)*variables[178]*(variables[0] if gt_func(variables[5], variables[17]) else nan)*and_func(variables[179], variables[181])
-    variables[198] = and_func(variables[1], variables[0])/((variables[0] if gt_func(variables[5], variables[17]) else nan)/(variables[178]/(variables[0] if gt_func(variables[5], variables[17]) else nan)))
-    variables[199] = and_func(or_func(variables[1], variables[0]), and_func(xor_func(variables[1], variables[0]), and_func(variables[0] if gt_func(variables[5], variables[17]) else nan, and_func(and_func(and_func(variables[178], variables[0] if gt_func(variables[5], variables[17]) else nan), xor_func(variables[1], variables[0])), or_func(variables[1], variables[0])))))
-    variables[200] = or_func(and_func(variables[1], variables[0]), or_func(xor_func(variables[1], variables[0]), or_func(variables[0] if gt_func(variables[5], variables[17]) else nan, or_func(or_func(or_func(variables[178], variables[0] if gt_func(variables[5], variables[17]) else nan), xor_func(variables[1], variables[0])), and_func(variables[1], variables[0])))))
-    variables[201] = xor_func(and_func(variables[1], variables[0]), xor_func(or_func(variables[1], variables[0]), xor_func(variables[0] if gt_func(variables[5], variables[17]) else nan, xor_func(xor_func(xor_func(variables[178], variables[0] if gt_func(variables[5], variables[17]) else nan), or_func(variables[1], variables[0])), and_func(variables[1], variables[0])))))
-    variables[202] = pow(and_func(variables[1], variables[0]), pow(variables[0] if gt_func(variables[5], variables[17]) else nan, pow(pow(variables[178], variables[0] if gt_func(variables[5], variables[17]) else nan), and_func(variables[1], variables[0]))))
-    variables[203] = pow(pow(pow(and_func(variables[1], variables[0]), 1.0/pow(variables[0] if gt_func(variables[5], variables[17]) else nan, 1.0/variables[178])), 1.0/(variables[0] if gt_func(variables[5], variables[17]) else nan)), 1.0/and_func(variables[1], variables[0]))
-    variables[204] = -and_func(variables[1], variables[0])+-(variables[0] if gt_func(variables[5], variables[17]) else nan)
+def compute_computed_constants(constants, computed_constants):
+    computed_constants[0] = eq_func(constants[1], constants[0])
+    computed_constants[1] = constants[1]/eq_func(constants[0], constants[0])
+    computed_constants[2] = neq_func(constants[1], constants[0])
+    computed_constants[3] = constants[1]/neq_func(constants[0], constants[2])
+    computed_constants[4] = lt_func(constants[1], constants[0])
+    computed_constants[5] = constants[1]/lt_func(constants[0], constants[2])
+    computed_constants[6] = leq_func(constants[1], constants[0])
+    computed_constants[7] = constants[1]/leq_func(constants[0], constants[2])
+    computed_constants[8] = gt_func(constants[1], constants[0])
+    computed_constants[9] = constants[1]/gt_func(constants[0], constants[2])
+    computed_constants[10] = geq_func(constants[1], constants[0])
+    computed_constants[11] = constants[1]/geq_func(constants[0], constants[2])
+    computed_constants[12] = and_func(constants[1], constants[0])
+    computed_constants[13] = and_func(constants[1], and_func(constants[0], constants[2]))
+    computed_constants[14] = and_func(lt_func(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[15] = and_func(constants[1]+constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[16] = and_func(constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[17] = and_func(constants[1]-constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[18] = and_func(-constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[19] = and_func(pow(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[20] = and_func(pow(constants[1], 1.0/constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[21] = and_func(lt_func(constants[1], constants[0]), constants[2]+constants[3])
+    computed_constants[22] = and_func(lt_func(constants[1], constants[0]), constants[2])
+    computed_constants[23] = and_func(lt_func(constants[1], constants[0]), constants[2]-constants[3])
+    computed_constants[24] = and_func(lt_func(constants[1], constants[0]), -constants[2])
+    computed_constants[25] = and_func(lt_func(constants[1], constants[0]), pow(constants[2], constants[3]))
+    computed_constants[26] = and_func(lt_func(constants[1], constants[0]), pow(constants[2], 1.0/constants[3]))
+    computed_constants[27] = constants[1]/and_func(constants[0], constants[2])
+    computed_constants[28] = or_func(constants[1], constants[0])
+    computed_constants[29] = or_func(constants[1], or_func(constants[0], constants[2]))
+    computed_constants[30] = or_func(lt_func(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[31] = or_func(constants[1]+constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[32] = or_func(constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[33] = or_func(constants[1]-constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[34] = or_func(-constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[35] = or_func(pow(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[36] = or_func(pow(constants[1], 1.0/constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[37] = or_func(lt_func(constants[1], constants[0]), constants[2]+constants[3])
+    computed_constants[38] = or_func(lt_func(constants[1], constants[0]), constants[2])
+    computed_constants[39] = or_func(lt_func(constants[1], constants[0]), constants[2]-constants[3])
+    computed_constants[40] = or_func(lt_func(constants[1], constants[0]), -constants[2])
+    computed_constants[41] = or_func(lt_func(constants[1], constants[0]), pow(constants[2], constants[3]))
+    computed_constants[42] = or_func(lt_func(constants[1], constants[0]), pow(constants[2], 1.0/constants[3]))
+    computed_constants[43] = constants[1]/or_func(constants[0], constants[2])
+    computed_constants[44] = xor_func(constants[1], constants[0])
+    computed_constants[45] = xor_func(constants[1], xor_func(constants[0], constants[2]))
+    computed_constants[46] = xor_func(lt_func(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[47] = xor_func(constants[1]+constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[48] = xor_func(constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[49] = xor_func(constants[1]-constants[0], gt_func(constants[2], constants[3]))
+    computed_constants[50] = xor_func(-constants[1], gt_func(constants[0], constants[2]))
+    computed_constants[51] = xor_func(pow(constants[1], constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[52] = xor_func(pow(constants[1], 1.0/constants[0]), gt_func(constants[2], constants[3]))
+    computed_constants[53] = xor_func(lt_func(constants[1], constants[0]), constants[2]+constants[3])
+    computed_constants[54] = xor_func(lt_func(constants[1], constants[0]), constants[2])
+    computed_constants[55] = xor_func(lt_func(constants[1], constants[0]), constants[2]-constants[3])
+    computed_constants[56] = xor_func(lt_func(constants[1], constants[0]), -constants[2])
+    computed_constants[57] = xor_func(lt_func(constants[1], constants[0]), pow(constants[2], constants[3]))
+    computed_constants[58] = xor_func(lt_func(constants[1], constants[0]), pow(constants[2], 1.0/constants[3]))
+    computed_constants[59] = constants[1]/xor_func(constants[0], constants[2])
+    computed_constants[60] = not_func(constants[1])
+    computed_constants[61] = constants[1]+constants[0]+constants[2]
+    computed_constants[62] = lt_func(constants[1], constants[0])+gt_func(constants[2], constants[3])
+    computed_constants[63] = constants[1]
+    computed_constants[64] = constants[1]-constants[0]
+    computed_constants[65] = lt_func(constants[1], constants[0])-gt_func(constants[2], constants[3])
+    computed_constants[66] = lt_func(constants[1], constants[0])-(constants[2]+constants[3])
+    computed_constants[67] = lt_func(constants[1], constants[0])-constants[2]
+    computed_constants[68] = constants[1]-(-constants[0])
+    computed_constants[69] = constants[1]-(-constants[0]*constants[2])
+    computed_constants[70] = -constants[1]
+    computed_constants[71] = -lt_func(constants[1], constants[0])
+    computed_constants[72] = constants[1]*constants[0]
+    computed_constants[73] = constants[1]*constants[0]*constants[2]
+    computed_constants[74] = lt_func(constants[1], constants[0])*gt_func(constants[2], constants[3])
+    computed_constants[75] = (constants[1]+constants[0])*gt_func(constants[2], constants[3])
+    computed_constants[76] = constants[1]*gt_func(constants[0], constants[2])
+    computed_constants[77] = (constants[1]-constants[0])*gt_func(constants[2], constants[3])
+    computed_constants[78] = -constants[1]*gt_func(constants[0], constants[2])
+    computed_constants[79] = lt_func(constants[1], constants[0])*(constants[2]+constants[3])
+    computed_constants[80] = lt_func(constants[1], constants[0])*constants[2]
+    computed_constants[81] = lt_func(constants[1], constants[0])*(constants[2]-constants[3])
+    computed_constants[82] = lt_func(constants[1], constants[0])*-constants[2]
+    computed_constants[83] = constants[1]/constants[0]
+    computed_constants[84] = lt_func(constants[1], constants[0])/gt_func(constants[3], constants[2])
+    computed_constants[85] = (constants[1]+constants[0])/gt_func(constants[3], constants[2])
+    computed_constants[86] = constants[1]/gt_func(constants[2], constants[0])
+    computed_constants[87] = (constants[1]-constants[0])/gt_func(constants[3], constants[2])
+    computed_constants[88] = -constants[1]/gt_func(constants[2], constants[0])
+    computed_constants[89] = lt_func(constants[1], constants[0])/(constants[2]+constants[3])
+    computed_constants[90] = lt_func(constants[1], constants[0])/constants[2]
+    computed_constants[91] = lt_func(constants[1], constants[0])/(constants[2]-constants[3])
+    computed_constants[92] = lt_func(constants[1], constants[0])/-constants[2]
+    computed_constants[93] = lt_func(constants[1], constants[0])/(constants[2]*constants[3])
+    computed_constants[94] = lt_func(constants[1], constants[0])/(constants[2]/constants[3])
+    computed_constants[95] = sqrt(constants[1])
+    computed_constants[96] = pow(constants[1], 2.0)
+    computed_constants[97] = pow(constants[1], 3.0)
+    computed_constants[98] = pow(constants[1], constants[0])
+    computed_constants[99] = pow(leq_func(constants[1], constants[0]), geq_func(constants[2], constants[3]))
+    computed_constants[100] = pow(constants[1]+constants[0], geq_func(constants[2], constants[3]))
+    computed_constants[101] = pow(constants[1], geq_func(constants[0], constants[2]))
+    computed_constants[102] = pow(constants[1]-constants[0], geq_func(constants[2], constants[3]))
+    computed_constants[103] = pow(-constants[1], geq_func(constants[0], constants[2]))
+    computed_constants[104] = pow(constants[1]*constants[0], geq_func(constants[2], constants[3]))
+    computed_constants[105] = pow(constants[1]/constants[0], geq_func(constants[2], constants[3]))
+    computed_constants[106] = pow(leq_func(constants[1], constants[0]), constants[2]+constants[3])
+    computed_constants[107] = pow(leq_func(constants[1], constants[0]), constants[2])
+    computed_constants[108] = pow(leq_func(constants[1], constants[0]), constants[2]-constants[3])
+    computed_constants[109] = pow(leq_func(constants[1], constants[0]), -constants[2])
+    computed_constants[110] = pow(leq_func(constants[1], constants[0]), constants[2]*constants[3])
+    computed_constants[111] = pow(leq_func(constants[1], constants[0]), constants[2]/constants[3])
+    computed_constants[112] = pow(leq_func(constants[1], constants[0]), pow(constants[2], constants[3]))
+    computed_constants[113] = pow(leq_func(constants[1], constants[0]), pow(constants[2], 1.0/constants[3]))
+    computed_constants[114] = sqrt(constants[1])
+    computed_constants[115] = sqrt(constants[1])
+    computed_constants[116] = pow(constants[1], 1.0/3.0)
+    computed_constants[117] = pow(constants[1], 1.0/constants[0])
+    computed_constants[118] = pow(lt_func(constants[1], constants[0]), 1.0/gt_func(constants[3], constants[2]))
+    computed_constants[119] = pow(constants[1]+constants[0], 1.0/gt_func(constants[3], constants[2]))
+    computed_constants[120] = pow(constants[1], 1.0/gt_func(constants[2], constants[0]))
+    computed_constants[121] = pow(constants[1]-constants[0], 1.0/gt_func(constants[3], constants[2]))
+    computed_constants[122] = pow(-constants[1], 1.0/gt_func(constants[2], constants[0]))
+    computed_constants[123] = pow(constants[1]*constants[0], 1.0/gt_func(constants[3], constants[2]))
+    computed_constants[124] = pow(constants[1]/constants[0], 1.0/gt_func(constants[3], constants[2]))
+    computed_constants[125] = pow(lt_func(constants[1], constants[0]), 1.0/(constants[2]+constants[3]))
+    computed_constants[126] = pow(lt_func(constants[1], constants[0]), 1.0/constants[2])
+    computed_constants[127] = pow(lt_func(constants[1], constants[0]), 1.0/(constants[2]-constants[3]))
+    computed_constants[128] = pow(lt_func(constants[1], constants[0]), 1.0/-constants[2])
+    computed_constants[129] = pow(lt_func(constants[1], constants[0]), 1.0/(constants[2]*constants[3]))
+    computed_constants[130] = pow(lt_func(constants[1], constants[0]), 1.0/(constants[2]/constants[3]))
+    computed_constants[131] = pow(lt_func(constants[1], constants[0]), 1.0/pow(constants[2], constants[3]))
+    computed_constants[132] = pow(lt_func(constants[1], constants[0]), 1.0/pow(constants[2], 1.0/constants[3]))
+    computed_constants[133] = fabs(constants[1])
+    computed_constants[134] = exp(constants[1])
+    computed_constants[135] = log(constants[1])
+    computed_constants[136] = log10(constants[1])
+    computed_constants[137] = log(constants[1])/log(2.0)
+    computed_constants[138] = log10(constants[1])
+    computed_constants[139] = log(constants[1])/log(constants[0])
+    computed_constants[140] = ceil(constants[1])
+    computed_constants[141] = floor(constants[1])
+    computed_constants[142] = min(constants[1], constants[0])
+    computed_constants[143] = min(constants[1], min(constants[0], constants[2]))
+    computed_constants[144] = max(constants[1], constants[0])
+    computed_constants[145] = max(constants[1], max(constants[0], constants[2]))
+    computed_constants[146] = fmod(constants[1], constants[0])
+    computed_constants[147] = sin(constants[1])
+    computed_constants[148] = cos(constants[1])
+    computed_constants[149] = tan(constants[1])
+    computed_constants[150] = sec(constants[1])
+    computed_constants[151] = csc(constants[1])
+    computed_constants[152] = cot(constants[1])
+    computed_constants[153] = sinh(constants[1])
+    computed_constants[154] = cosh(constants[1])
+    computed_constants[155] = tanh(constants[1])
+    computed_constants[156] = sech(constants[1])
+    computed_constants[157] = csch(constants[1])
+    computed_constants[158] = coth(constants[1])
+    computed_constants[159] = asin(constants[1])
+    computed_constants[160] = acos(constants[1])
+    computed_constants[161] = atan(constants[1])
+    computed_constants[162] = asec(constants[1])
+    computed_constants[163] = acsc(constants[1])
+    computed_constants[164] = acot(constants[1])
+    computed_constants[165] = asinh(constants[1])
+    computed_constants[166] = acosh(constants[1])
+    computed_constants[167] = atanh(constants[1]/2.0)
+    computed_constants[168] = asech(constants[1])
+    computed_constants[169] = acsch(constants[1])
+    computed_constants[170] = acoth(2.0*constants[1])
+    computed_constants[171] = constants[1] if gt_func(constants[1], constants[0]) else nan
+    computed_constants[172] = constants[1] if gt_func(constants[1], constants[0]) else constants[2]
+    computed_constants[173] = constants[1] if gt_func(constants[1], constants[0]) else constants[2] if gt_func(constants[2], constants[3]) else constants[4] if gt_func(constants[4], constants[5]) else nan
+    computed_constants[174] = constants[1] if gt_func(constants[1], constants[0]) else constants[2] if gt_func(constants[2], constants[3]) else constants[4] if gt_func(constants[4], constants[5]) else constants[6]
+    computed_constants[175] = 123.0+(constants[1] if gt_func(constants[1], constants[0]) else nan)
+    computed_constants[180] = constants[1]
+    computed_constants[187] = and_func(constants[1], constants[0])+(constants[0] if gt_func(constants[2], constants[3]) else nan)+constants[4]+and_func(constants[5], constants[6])
+    computed_constants[188] = and_func(constants[1], constants[0])-((constants[0] if gt_func(constants[2], constants[3]) else nan)-(constants[4]-(constants[0] if gt_func(constants[2], constants[3]) else nan)))-and_func(constants[5], constants[6])
+    computed_constants[189] = and_func(constants[1], constants[0])*(constants[0] if gt_func(constants[2], constants[3]) else nan)*constants[4]*(constants[0] if gt_func(constants[2], constants[3]) else nan)*and_func(constants[5], constants[6])
+    computed_constants[190] = and_func(constants[1], constants[0])/((constants[0] if gt_func(constants[2], constants[3]) else nan)/(constants[4]/(constants[0] if gt_func(constants[2], constants[3]) else nan)))
+    computed_constants[191] = and_func(or_func(constants[1], constants[0]), and_func(xor_func(constants[1], constants[0]), and_func(constants[0] if gt_func(constants[2], constants[3]) else nan, and_func(and_func(and_func(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), xor_func(constants[1], constants[0])), or_func(constants[1], constants[0])))))
+    computed_constants[192] = or_func(and_func(constants[1], constants[0]), or_func(xor_func(constants[1], constants[0]), or_func(constants[0] if gt_func(constants[2], constants[3]) else nan, or_func(or_func(or_func(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), xor_func(constants[1], constants[0])), and_func(constants[1], constants[0])))))
+    computed_constants[193] = xor_func(and_func(constants[1], constants[0]), xor_func(or_func(constants[1], constants[0]), xor_func(constants[0] if gt_func(constants[2], constants[3]) else nan, xor_func(xor_func(xor_func(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), or_func(constants[1], constants[0])), and_func(constants[1], constants[0])))))
+    computed_constants[194] = pow(and_func(constants[1], constants[0]), pow(constants[0] if gt_func(constants[2], constants[3]) else nan, pow(pow(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), and_func(constants[1], constants[0]))))
+    computed_constants[195] = pow(pow(pow(and_func(constants[1], constants[0]), 1.0/pow(constants[0] if gt_func(constants[2], constants[3]) else nan, 1.0/constants[4])), 1.0/(constants[0] if gt_func(constants[2], constants[3]) else nan)), 1.0/and_func(constants[1], constants[0]))
+    computed_constants[196] = -and_func(constants[1], constants[0])+-(constants[0] if gt_func(constants[2], constants[3]) else nan)
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     rates[0] = 1.0
 
 
-def compute_variables(voi, states, rates, variables):
-    find_root_0(voi, states, rates, variables)
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)

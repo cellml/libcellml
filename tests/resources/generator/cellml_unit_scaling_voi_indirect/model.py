@@ -4,30 +4,29 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 3
-VARIABLE_COUNT = 0
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 0
 
-
-class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 0
-    STATE = 1
-    CONSTANT = 2
-    COMPUTED_CONSTANT = 3
-    ALGEBRAIC = 4
-
-
-VOI_INFO = {"name": "t", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
+VOI_INFO = {"name": "t", "units": "second", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "x", "units": "metre", "component": "t_in_s", "type": VariableType.STATE},
-    {"name": "x", "units": "metre", "component": "t_in_ms", "type": VariableType.STATE},
-    {"name": "x", "units": "metre", "component": "t_in_ks", "type": VariableType.STATE}
+    {"name": "x", "units": "metre", "component": "t_in_s"},
+    {"name": "x", "units": "metre", "component": "t_in_ms"},
+    {"name": "x", "units": "metre", "component": "t_in_ks"}
 ]
 
-VARIABLE_INFO = [
+CONSTANT_INFO = [
+]
+
+COMPUTED_CONSTANT_INFO = [
+]
+
+ALGEBRAIC_INFO = [
 ]
 
 
@@ -35,25 +34,33 @@ def create_states_array():
     return [nan]*STATE_COUNT
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(states, rates, variables):
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 3.0
     states[1] = 7.0
     states[2] = 11.0
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     rates[0] = 5.0
     rates[1] = 1000.0*9.0
     rates[2] = 0.001*13.0
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
     pass
