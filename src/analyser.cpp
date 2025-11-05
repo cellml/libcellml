@@ -766,7 +766,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             auto iter = mStandardUnits.find(unitsName);
 
             if (iter == mStandardUnits.end()) {
-                auto units = libcellml::Units::create(unitsName);
+                auto units = Units::create(unitsName);
 
                 mCiCnUnits.emplace(ast, units);
                 mStandardUnits.emplace(unitsName, units);
