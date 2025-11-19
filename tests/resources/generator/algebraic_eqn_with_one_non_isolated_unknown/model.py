@@ -4,61 +4,72 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
-VARIABLE_COUNT = 4
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 3
+ALGEBRAIC_VARIABLE_COUNT = 1
 
+CONSTANT_INFO = [
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
+COMPUTED_CONSTANT_INFO = [
+    {"name": "b", "units": "dimensionless", "component": "my_algebraic_eqn"},
+    {"name": "c", "units": "dimensionless", "component": "my_algebraic_eqn"},
+    {"name": "d", "units": "dimensionless", "component": "my_algebraic_eqn"}
+]
 
-
-VARIABLE_INFO = [
-    {"name": "b", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "c", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "d", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC}
+ALGEBRAIC_INFO = [
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn"}
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
+
+
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
+
+
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
 
 
 def objective_function_0(u, f, data):
-    variables = data[0]
+    constants = data[0]
+    computed_constants = data[1]
+    algebraic_variables = data[2]
 
-    variables[3] = u[0]
+    algebraicVariables[0] = u[0]
 
-    f[0] = variables[3]+variables[0]-(variables[1]+variables[2])
+    f[0] = algebraicVariables[0]+computed_constants[0]-(computed_constants[1]+computed_constants[2])
 
 
-def find_root_0(variables):
+def find_root_0(constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = variables[3]
+    u[0] = algebraicVariables[0]
 
-    u = nla_solve(objective_function_0, u, 1, [variables])
+    u = nla_solve(objective_function_0, u, 1, [constants, computed_constants, algebraic_variables])
 
-    variables[3] = u[0]
-
-
-def initialise_variables(variables):
-    variables[3] = 1.0
-    variables[0] = 3.0
-    variables[1] = 5.0
-    variables[2] = 7.0
+    algebraicVariables[0] = u[0]
 
 
-def compute_computed_constants(variables):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
+    computed_constants[0] = 3.0
+    computed_constants[1] = 5.0
+    computed_constants[2] = 7.0
+    algebraicVariables[0] = 1.0
+
+
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(variables):
-    find_root_0(variables)
+def compute_variables(constants, computed_constants, algebraic_variables):
+    find_root_0(constants, computed_constants, algebraic_variables)

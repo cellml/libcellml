@@ -34,14 +34,41 @@
 %feature("docstring") libcellml::AnalyserModel::state
 "Returns the state, specified by index, contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::variableCount
-"Returns the number of variables contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::constantCount
+"Returns the number of constants contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::variables
-"Returns the variables contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::constants
+"Returns the constants contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::variable
-"Returns the variable, specified by index, contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::constant
+"Returns the constant, specified by index, contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::computedConstantCount
+"Returns the number of computed constants contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::computedConstants
+"Returns the computed constants contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::computedConstant
+"Returns the computed constant, specified by index, contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::algebraicVariableCount
+"Returns the number of algebraic variables contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::algebraicVariables
+"Returns the algebraic variables contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::algebraicVariable
+"Returns the algebraic variable, specified by index, contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::externalVariableCount
+"Returns the number of external variables contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::externalVariables
+"Returns the external variables contained by this :class:`AnalyserModel` object.";
+
+%feature("docstring") libcellml::AnalyserModel::externalVariable
+"Returns the external variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::equationCount
 "Returns the number of equations contained by this :class:`AnalyserModel` object.";

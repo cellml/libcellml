@@ -442,20 +442,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceStateCountString()
                        + generatorProfile->implementationStateCountString();
 
-    profileContents += generatorProfile->interfaceVariableCountString()
-                       + generatorProfile->implementationVariableCountString();
+    profileContents += generatorProfile->interfaceConstantCountString()
+                       + generatorProfile->implementationConstantCountString();
 
-    profileContents += generatorProfile->variableTypeObjectString(false, false);
-    profileContents += generatorProfile->variableTypeObjectString(false, true);
-    profileContents += generatorProfile->variableTypeObjectString(true, false);
-    profileContents += generatorProfile->variableTypeObjectString(true, true);
+    profileContents += generatorProfile->interfaceComputedConstantCountString()
+                       + generatorProfile->implementationComputedConstantCountString();
 
-    profileContents += generatorProfile->variableOfIntegrationVariableTypeString()
-                       + generatorProfile->stateVariableTypeString()
-                       + generatorProfile->constantVariableTypeString()
-                       + generatorProfile->computedConstantVariableTypeString()
-                       + generatorProfile->algebraicVariableTypeString()
-                       + generatorProfile->externalVariableTypeString();
+    profileContents += generatorProfile->interfaceAlgebraicVariableCountString()
+                       + generatorProfile->implementationAlgebraicVariableCountString();
+
+    profileContents += generatorProfile->interfaceExternalVariableCountString()
+                       + generatorProfile->implementationExternalVariableCountString();
 
     profileContents += generatorProfile->variableInfoObjectString();
 
@@ -465,8 +462,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceStateInfoString()
                        + generatorProfile->implementationStateInfoString();
 
-    profileContents += generatorProfile->interfaceVariableInfoString()
-                       + generatorProfile->implementationVariableInfoString();
+    profileContents += generatorProfile->interfaceConstantInfoString()
+                       + generatorProfile->implementationConstantInfoString();
+
+    profileContents += generatorProfile->interfaceComputedConstantInfoString()
+                       + generatorProfile->implementationComputedConstantInfoString();
+
+    profileContents += generatorProfile->interfaceAlgebraicVariableInfoString()
+                       + generatorProfile->implementationAlgebraicVariableInfoString();
+
+    profileContents += generatorProfile->interfaceExternalVariableInfoString()
+                       + generatorProfile->implementationExternalVariableInfoString();
 
     profileContents += generatorProfile->variableInfoEntryString();
 
@@ -474,7 +480,10 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
 
     profileContents += generatorProfile->statesArrayString()
                        + generatorProfile->ratesArrayString()
-                       + generatorProfile->variablesArrayString();
+                       + generatorProfile->constantsArrayString()
+                       + generatorProfile->computedConstantsArrayString()
+                       + generatorProfile->algebraicVariablesArrayString()
+                       + generatorProfile->externalVariablesArrayString();
 
     profileContents += generatorProfile->externalVariableMethodTypeDefinitionString(false)
                        + generatorProfile->externalVariableMethodTypeDefinitionString(true);
@@ -482,40 +491,53 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->externalVariableMethodCallString(false)
                        + generatorProfile->externalVariableMethodCallString(true);
 
-    profileContents += generatorProfile->rootFindingInfoObjectString(false)
-                       + generatorProfile->rootFindingInfoObjectString(true)
+    profileContents += generatorProfile->rootFindingInfoObjectString(false, false)
+                       + generatorProfile->rootFindingInfoObjectString(false, true)
+                       + generatorProfile->rootFindingInfoObjectString(true, false)
+                       + generatorProfile->rootFindingInfoObjectString(true, true)
                        + generatorProfile->externNlaSolveMethodString()
-                       + generatorProfile->findRootCallString(false)
-                       + generatorProfile->findRootCallString(true)
-                       + generatorProfile->findRootMethodString(false)
-                       + generatorProfile->findRootMethodString(true)
-                       + generatorProfile->nlaSolveCallString(false)
-                       + generatorProfile->nlaSolveCallString(true)
-                       + generatorProfile->objectiveFunctionMethodString(false)
-                       + generatorProfile->objectiveFunctionMethodString(true)
+                       + generatorProfile->findRootCallString(false, false)
+                       + generatorProfile->findRootCallString(false, true)
+                       + generatorProfile->findRootCallString(true, false)
+                       + generatorProfile->findRootCallString(true, true)
+                       + generatorProfile->findRootMethodString(false, false)
+                       + generatorProfile->findRootMethodString(false, true)
+                       + generatorProfile->findRootMethodString(true, false)
+                       + generatorProfile->findRootMethodString(true, true)
+                       + generatorProfile->nlaSolveCallString(false, false)
+                       + generatorProfile->nlaSolveCallString(false, true)
+                       + generatorProfile->nlaSolveCallString(true, false)
+                       + generatorProfile->nlaSolveCallString(true, true)
+                       + generatorProfile->objectiveFunctionMethodString(false, false)
+                       + generatorProfile->objectiveFunctionMethodString(false, true)
+                       + generatorProfile->objectiveFunctionMethodString(true, false)
+                       + generatorProfile->objectiveFunctionMethodString(true, true)
                        + generatorProfile->uArrayString()
                        + generatorProfile->fArrayString();
 
     profileContents += generatorProfile->interfaceCreateStatesArrayMethodString()
                        + generatorProfile->implementationCreateStatesArrayMethodString();
 
-    profileContents += generatorProfile->interfaceCreateVariablesArrayMethodString()
-                       + generatorProfile->implementationCreateVariablesArrayMethodString();
+    profileContents += generatorProfile->interfaceCreateConstantsArrayMethodString()
+                       + generatorProfile->implementationCreateConstantsArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateComputedConstantsArrayMethodString()
+                       + generatorProfile->implementationCreateComputedConstantsArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateAlgebraicVariablesArrayMethodString()
+                       + generatorProfile->implementationCreateAlgebraicVariablesArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateExternalVariablesArrayMethodString()
+                       + generatorProfile->implementationCreateExternalVariablesArrayMethodString();
 
     profileContents += generatorProfile->interfaceDeleteArrayMethodString()
                        + generatorProfile->implementationDeleteArrayMethodString();
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false, false)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(false, false);
+    profileContents += generatorProfile->interfaceInitialiseArraysMethodString(false)
+                       + generatorProfile->implementationInitialiseArraysMethodString(false);
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false, true)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(false, true);
-
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true, false)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(true, false);
-
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true, true)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(true, true);
+    profileContents += generatorProfile->interfaceInitialiseArraysMethodString(true)
+                       + generatorProfile->implementationInitialiseArraysMethodString(true);
 
     profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString()
                        + generatorProfile->implementationComputeComputedConstantsMethodString();

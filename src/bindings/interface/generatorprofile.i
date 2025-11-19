@@ -611,15 +611,15 @@
 "Returns the string for a comment.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCommentString
-"Sets the string for a comment. To be useful, the string should contain the <CODE> tag, which will be replaced
+"Sets the string for a comment. To be useful, the string should contain the [CODE] tag, which will be replaced
 with a (proper) comment.";
 
 %feature("docstring") libcellml::GeneratorProfile::originCommentString
 "Returns the string for an origin comment.";
 
 %feature("docstring") libcellml::GeneratorProfile::setOriginCommentString
-"Sets the string for an origin comment. To be useful, the string should contain the <PROFILE_INFORMATION> and
-<LIBCELLML_VERSION> tags, which will be replaced with a statement about the profile and the version of libCellML
+"Sets the string for an origin comment. To be useful, the string should contain the [PROFILE_INFORMATION] and
+[LIBCELLML_VERSION] tags, which will be replaced with a statement about the profile and the version of libCellML
 used respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceFileNameString
@@ -675,69 +675,66 @@ used respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::setImplementationStateCountString
 "Sets the string for the implementation of the state count constant. To be useful, the string should contain the
-<STATE_COUNT> tag, which will be replaced with the number of states in the model.";
+[STATE_COUNT] tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceVariableCountString
-"Returns the string for the interface of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceConstantCountString
+"Returns the string for the interface of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceVariableCountString
-"Sets the string for the interface of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceConstantCountString
+"Sets the string for the interface of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationVariableCountString
-"Returns the string for the implementation of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::implementationConstantCountString
+"Returns the string for the implementation of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationVariableCountString
-"Sets the string for the implementation of the variable count constant. To be useful, the string should contain
-the <VARIABLE_COUNT> tag, which will be replaced with the number of states in the model.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationConstantCountString
+"Sets the string for the implementation of the constant count constant. To be useful, the string should contain
+the [CONSTANT_COUNT] tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
-"Returns the string for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceComputedConstantCountString
+"Returns the string for the interface of the computed constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
-"Sets the string for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputedConstantCountString
+"Sets the string for the interface of the computed constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
-"Returns the string for the name of the variable of integration variable type.";
+%feature("docstring") libcellml::GeneratorProfile::implementationComputedConstantCountString
+"Returns the string for the implementation of the computed constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableOfIntegrationVariableTypeString
-"Sets the string for the name of the variable of integration variable type.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationComputedConstantCountString
+"Sets the string for the implementation of the computed constant count constant. To be useful, the string should contain
+the [COMPUTED_CONSTANT_COUNT] tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::stateVariableTypeString
-"Returns the string for the name of the state variable type.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceAlgebraicVariableCountString
+"Returns the string for the interface of the algebraic variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setStateVariableTypeString
-"Sets the string for the name of the state variable type.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceAlgebraicVariableCountString
+"Sets the string for the interface of the algebraic variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::constantVariableTypeString
-"Returns the string for the name of the constant variable type.";
+%feature("docstring") libcellml::GeneratorProfile::implementationAlgebraicVariableCountString
+"Returns the string for the implementation of the algebraic variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setConstantVariableTypeString
-"Sets the string for the name of the constant variable type.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationAlgebraicVariableCountString
+"Sets the string for the implementation of the algebraic variable count constant. To be useful, the string should contain
+the [ALGEBRAIC_VARIABLE_COUNT] tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::computedConstantVariableTypeString
-"Returns the string for the name of the computed constant variable type.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceExternalVariableCountString
+"Returns the string for the interface of the external variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setComputedConstantVariableTypeString
-"Sets the string for the name of the computed constant variable type.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceExternalVariableCountString
+"Sets the string for the interface of the external variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::algebraicVariableTypeString
-"Returns the string for the name of the algebraic variable type.";
+%feature("docstring") libcellml::GeneratorProfile::implementationExternalVariableCountString
+"Returns the string for the implementation of the external variable count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setAlgebraicVariableTypeString
-"Sets the string for the name of the algebraic variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::externalVariableTypeString
-"Returns the string for the name of the external variable type.";
-
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableTypeString
-"Sets the string for the name of the external variable type.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationExternalVariableCountString
+"Sets the string for the implementation of the external variable count constant. To be useful, the string should contain
+the [EXTERNAL_VARIABLE_COUNT] tag, which will be replaced with the number of states in the model.";
 
 %feature("docstring") libcellml::GeneratorProfile::variableInfoObjectString
 "Returns the string for the data structure for the variable information object.";
 
 %feature("docstring") libcellml::GeneratorProfile::setVariableInfoObjectString
 "Sets the string for the data structure for the variable information object. To be useful, the string should
-contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be replaced with the maximum size of
+contain the [NAME_SIZE], [UNITS_SIZE] and [COMPONENT_SIZE] tags, which will be replaced with the maximum size of
 a string for holding the name of a component, variable and units, respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceVoiInfoString
@@ -751,7 +748,7 @@ a string for holding the name of a component, variable and units, respectively."
 
 %feature("docstring") libcellml::GeneratorProfile::setImplementationVoiInfoString
 "Sets the string for the implementation of some information about the variable of integration. To be useful, the
-string should contain the <CODE> tag, which will be replaced with some information about the variable of
+string should contain the [CODE] tag, which will be replaced with some information about the variable of
 integration.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceStateInfoString
@@ -765,28 +762,66 @@ integration.";
 
 %feature("docstring") libcellml::GeneratorProfile::setImplementationStateInfoString
 "Sets the string for the implementation of some information about the different states. To be useful, the string
-should contain the <CODE> tag, which will be replaced with some information about the different states.";
+should contain the [CODE] tag, which will be replaced with some information about the different states.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceVariableInfoString
-"Returns the string for the interface of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceConstantInfoString
+"Returns the string for the interface of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceVariableInfoString
-"Sets the string for the interface of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceConstantInfoString
+"Sets the string for the interface of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationVariableInfoString
-"Returns the string for the implementation of some information about the different variables.";
+%feature("docstring") libcellml::GeneratorProfile::implementationConstantInfoString
+"Returns the string for the implementation of some information about the different constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationVariableInfoString
-"Sets the string for the implementation of some information about the different variables. To be useful, the
-string should contain the <CODE> tag, which will be replaced with some information about the different
-variables.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationConstantInfoString
+"Sets the string for the implementation of some information about the different constants. To be useful, the string
+should contain the [CODE] tag, which will be replaced with some information about the different constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceComputedConstantInfoString
+"Returns the string for the interface of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputedConstantInfoString
+"Sets the string for the interface of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationComputedConstantInfoString
+"Returns the string for the implementation of some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationComputedConstantInfoString
+"Sets the string for the implementation of some information about the different computed constants. To be useful, the string
+should contain the [CODE] tag, which will be replaced with some information about the different computed constants.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceAlgebraicVariableInfoString
+"Returns the string for the interface of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceAlgebraicVariableInfoString
+"Sets the string for the interface of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationAlgebraicVariableInfoString
+"Returns the string for the implementation of some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationAlgebraicVariableInfoString
+"Sets the string for the implementation of some information about the different algebraic variables. To be useful, the string
+should contain the [CODE] tag, which will be replaced with some information about the different algebraic variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceExternalVariableInfoString
+"Returns the string for the interface of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceExternalVariableInfoString
+"Sets the string for the interface of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationExternalVariableInfoString
+"Returns the string for the implementation of some information about the different external variables.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationExternalVariableInfoString
+"Sets the string for the implementation of some information about the different external variables. To be useful, the string
+should contain the [CODE] tag, which will be replaced with some information about the different external variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::variableInfoEntryString
 "Returns the string for an entry in an array for some information about a variable.";
 
 %feature("docstring") libcellml::GeneratorProfile::setVariableInfoEntryString
 "Sets the string for an entry in an array for some information about a variable. To be useful, the string should
-contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the name of the component, name
+contain the [COMPONENT], [NAME] and [UNITS] tags, which will be replaced with the name of the component, name
 and units of a variable respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::voiString
@@ -807,11 +842,29 @@ and units of a variable respectively.";
 %feature("docstring") libcellml::GeneratorProfile::setRatesArrayString
 "Sets the string for the name of the rates array.";
 
-%feature("docstring") libcellml::GeneratorProfile::variablesArrayString
-"Returns the string for the name of the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::constantsArrayString
+"Returns the string for the name of the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariablesArrayString
-"Sets the string for the name of the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setConstantsArrayString
+"Sets the string for the name of the constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::computedConstantsArrayString
+"Returns the string for the name of the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setComputedConstantsArrayString
+"Sets the string for the name of the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::algebraicVariablesArrayString
+"Returns the string for the name of the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setAlgebraicVariablesArrayString
+"Sets the string for the name of the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::externalVariablesArrayString
+"Returns the string for the name of the external variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariablesArrayString
+"Sets the string for the name of the external variables array.";
 
 %feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString
 "Returns the string for the type definition of an external variable method.";
@@ -874,14 +927,14 @@ and units of a variable respectively.";
 "Sets the string for the f array used in the objective function and find root methods.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
-"Sets the string for returning a created array. To be useful, the string should contain the <ARRAY_SIZE> tag,
+"Sets the string for returning a created array. To be useful, the string should contain the [ARRAY_SIZE] tag,
 which will be replaced with the size of the array to be created.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceCreateStatesArrayMethodString
 "Returns the string for the interface to create the states array.";
 
 %feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateStatesArrayMethodString
-"Sets the string for the interface to create the states array. To be useful, the string should contain the <CODE>
+"Sets the string for the interface to create the states array. To be useful, the string should contain the [CODE]
 tag, which will be replaced with some code to create the states array.";
 
 %feature("docstring") libcellml::GeneratorProfile::implementationCreateStatesArrayMethodString
@@ -889,21 +942,63 @@ tag, which will be replaced with some code to create the states array.";
 
 %feature("docstring") libcellml::GeneratorProfile::setImplementationCreateStatesArrayMethodString
 "Sets the string for the implementation to create the states array. To be useful, the string should contain the
-<CODE> tag, which will be replaced with some code to create the states array.";
+[CODE] tag, which will be replaced with some code to create the states array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceCreateVariablesArrayMethodString
-"Returns the string for the interface to create variables array.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateConstantsArrayMethodString
+"Returns the string for the interface to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateVariablesArrayMethodString
-"Sets the string for the interface to create variables array. To be useful, the string should contain the <CODE>
-tag, which will be replaced with some code to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateConstantsArrayMethodString
+"Sets the string for the interface to create the constants array. To be useful, the string should contain the [CODE]
+tag, which will be replaced with some code to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationCreateVariablesArrayMethodString
-"Returns the string for the implementation to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateConstantsArrayMethodString
+"Returns the string for the implementation to create the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateVariablesArrayMethodString
-"Sets the string for the implementation to create the variables array. To be useful, the string should contain the
-<CODE> tag, which will be replaced with some code to create the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateConstantsArrayMethodString
+"Sets the string for the implementation to create the constants array. To be useful, the string should contain the
+[CODE] tag, which will be replaced with some code to create the constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateComputedConstantsArrayMethodString
+"Returns the string for the interface to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateComputedConstantsArrayMethodString
+"Sets the string for the interface to create the computed constants array. To be useful, the string should contain the [CODE]
+tag, which will be replaced with some code to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateComputedConstantsArrayMethodString
+"Returns the string for the implementation to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateComputedConstantsArrayMethodString
+"Sets the string for the implementation to create the computed constants array. To be useful, the string should contain the
+[CODE] tag, which will be replaced with some code to create the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateAlgebraicVariablesArrayMethodString
+"Returns the string for the interface to create the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateAlgebraicVariablesArrayMethodString
+"Sets the string for the interface to create the algebraic variables array. To be useful, the string should contain the [CODE]
+tag, which will be replaced with some code to create the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateAlgebraicVariablesArrayMethodString
+"Returns the string for the implementation to create the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateAlgebraicVariablesArrayMethodString
+"Sets the string for the implementation to create the algebraic variables array. To be useful, the string should contain the
+[CODE] tag, which will be replaced with some code to create the algebraic variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceCreateExternalVariablesArrayMethodString
+"Returns the string for the interface to create the external variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceCreateExternalVariablesArrayMethodString
+"Sets the string for the interface to create the external variables array. To be useful, the string should contain the [CODE]
+tag, which will be replaced with some code to create the external variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationCreateExternalVariablesArrayMethodString
+"Returns the string for the implementation to create the external variables array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationCreateExternalVariablesArrayMethodString
+"Sets the string for the implementation to create the external variables array. To be useful, the string should contain the
+[CODE] tag, which will be replaced with some code to create the external variables array.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceDeleteArrayMethodString
 "Returns the string for the interface to delete an array.";
@@ -917,16 +1012,16 @@ tag, which will be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString
 "Sets the string for the implementation to delete an array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseArraysMethodString
 "Returns the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseArraysMethodString
 "Sets the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseArraysMethodString
 "Returns the string for the implementation to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseArraysMethodString
 "Sets the string for the implementation to initialise variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString

@@ -5,23 +5,68 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
-const size_t VARIABLE_COUNT = 4;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 2;
+const size_t EXTERNAL_VARIABLE_COUNT = 2;
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"L", "centimeter", "cell_geometry", EXTERNAL},
-    {"rad", "centimeter", "cell_geometry", EXTERNAL},
-    {"vcell", "microlitre", "cell_geometry", ALGEBRAIC},
-    {"vss", "microlitre", "cell_geometry", ALGEBRAIC}
+const VariableInfo CONSTANT_INFO[] = {
 };
 
-double * createVariablesArray()
-{
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+const VariableInfo ALGEBRAIC_INFO[] = {
+    {"vcell", "microlitre", "cell_geometry"},
+    {"vss", "microlitre", "cell_geometry"}
+};
+
+const VariableInfo EXTERNAL_INFO[] = {
+    {"L", "centimeter", "cell_geometry"},
+    {"rad", "centimeter", "cell_geometry"}
+};
+
+double * createConstantsArray()
+{
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicVariablesArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createExternalVariablesArray()
+{
+    double *res = (double *) malloc(EXTERNAL_VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < EXTERNAL_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -33,20 +78,18 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
-{
-    variables[0] = externalVariable(variables, 0);
-    variables[1] = externalVariable(variables, 1);
-}
-
-void computeComputedConstants(double *variables)
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 
-void computeVariables(double *variables, ExternalVariable externalVariable)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
-    variables[0] = externalVariable(variables, 0);
-    variables[1] = externalVariable(variables, 1);
-    variables[2] = 1000.0*3.14*variables[1]*variables[1]*variables[0];
-    variables[3] = 0.02*variables[2];
+}
+
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
+{
+    externalVariables[0] = externalVariable(constants, computedConstants, algebraicVariables, externalVariables, 0);
+    externalVariables[1] = externalVariable(constants, computedConstants, algebraicVariables, externalVariables, 1);
+    algebraicVariables[0] = 1000.0*3.14*externalVariables[1]*externalVariables[1]*externalVariables[0];
+    algebraicVariables[1] = 0.02*algebraicVariables[0];
 }

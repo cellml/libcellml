@@ -5,21 +5,29 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 2;
-const size_t VARIABLE_COUNT = 1;
+const size_t CONSTANT_COUNT = 1;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 0;
 
-const VariableInfo VOI_INFO = {"t", "second", "environment", VARIABLE_OF_INTEGRATION};
+const VariableInfo VOI_INFO = {"t", "second", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_first_ode", STATE},
-    {"x", "dimensionless", "my_second_ode", STATE}
+    {"x", "dimensionless", "my_first_ode"},
+    {"x", "dimensionless", "my_second_ode"}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"a", "per_s", "my_second_ode", CONSTANT}
+const VariableInfo CONSTANT_INFO[] = {
+    {"a", "per_s", "my_second_ode"}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+};
+
+const VariableInfo ALGEBRAIC_INFO[] = {
 };
 
 double * createStatesArray()
@@ -33,11 +41,33 @@ double * createStatesArray()
     return res;
 }
 
-double * createVariablesArray()
+double * createConstantsArray()
 {
-    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicVariablesArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -49,23 +79,23 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *variables)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    variables[0] = 1.0;
     states[0] = 1.0;
     states[1] = 1.0;
+    constants[0] = 1.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     rates[0] = 1.0;
-    rates[1] = variables[0];
+    rates[1] = constants[0];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
 }

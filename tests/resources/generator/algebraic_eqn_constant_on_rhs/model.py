@@ -4,34 +4,43 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
-VARIABLE_COUNT = 1
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 0
 
+CONSTANT_INFO = [
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
+COMPUTED_CONSTANT_INFO = [
+    {"name": "x", "units": "dimensionless", "component": "my_component"}
+]
 
-
-VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
+ALGEBRAIC_INFO = [
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables):
-    variables[0] = 1.0
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def initialise_arrays(constants, computed_constants, algebraic_variables):
+    computed_constants[0] = 1.0
+
+
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(variables):
+def compute_variables(constants, computed_constants, algebraic_variables):
     pass
