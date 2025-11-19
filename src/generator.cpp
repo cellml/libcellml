@@ -62,7 +62,7 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     for (;;) {
         auto var = variables[++i];
 
-        if (isTrackedVariable(analyserModel, var)) {
+        if (isTrackedVariable(analyserModel, var, true)) {
             ++res;
         }
 
@@ -82,24 +82,14 @@ bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &anal
     case AnalyserEquation::Type::COMPUTED_CONSTANT:
         analyserVariable = analyserEquation->computedConstants().front();
 
-        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
+        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable, true) == tracked;
     case AnalyserEquation::Type::ALGEBRAIC:
         analyserVariable = analyserEquation->algebraicVariables().front();
 
-        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
+        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable, true) == tracked;
     default:
         return true;
     }
-}
-
-bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &analyserEquation)
-{
-    return isTrackedEquation(analyserEquation, true);
-}
-
-bool Generator::GeneratorImpl::isUntrackedEquation(const AnalyserEquationPtr &analyserEquation)
-{
-    return isTrackedEquation(analyserEquation, false);
 }
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
@@ -121,16 +111,6 @@ bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &anal
     }
 
     return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable, tracked);
-}
-
-bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &analyserVariable)
-{
-    return isTrackedVariable(analyserVariable, true);
-}
-
-bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &analyserVariable)
-{
-    return isTrackedVariable(analyserVariable, false);
 }
 
 void Generator::GeneratorImpl::addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked,
@@ -312,16 +292,6 @@ void Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &analyser
                     Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE);
 }
 
-void Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &analyserVariable)
-{
-    return trackVariable(analyserVariable, true);
-}
-
-void Generator::GeneratorImpl::untrackVariable(const AnalyserVariablePtr &analyserVariable)
-{
-    return trackVariable(analyserVariable, false);
-}
-
 void Generator::GeneratorImpl::trackVariables(const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked)
 {
     removeAllIssues();
@@ -349,45 +319,24 @@ bool Generator::GeneratorImpl::validModel(const AnalyserModelPtr &analyserModel)
     return true;
 }
 
-void Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (validModel(analyserModel)) {
-        trackVariables(analyserModel->constants(), true);
+        trackVariables(analyserModel->constants(), tracked);
     }
 }
 
-void Generator::GeneratorImpl::untrackAllConstants(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (validModel(analyserModel)) {
-        trackVariables(analyserModel->constants(), false);
+        trackVariables(analyserModel->computedConstants(), tracked);
     }
 }
 
-void Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (validModel(analyserModel)) {
-        trackVariables(analyserModel->computedConstants(), true);
-    }
-}
-
-void Generator::GeneratorImpl::untrackAllComputedConstants(const AnalyserModelPtr &analyserModel)
-{
-    if (validModel(analyserModel)) {
-        trackVariables(analyserModel->computedConstants(), false);
-    }
-}
-
-void Generator::GeneratorImpl::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
-{
-    if (validModel(analyserModel)) {
-        trackVariables(analyserModel->algebraicVariables(), true);
-    }
-}
-
-void Generator::GeneratorImpl::untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
-{
-    if (validModel(analyserModel)) {
-        trackVariables(analyserModel->algebraicVariables(), false);
+        trackVariables(analyserModel->algebraicVariables(), tracked);
     }
 }
 
@@ -403,17 +352,10 @@ std::vector<AnalyserVariablePtr> Generator::GeneratorImpl::trackableVariables(co
     return res;
 }
 
-void Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (validModel(analyserModel)) {
-        trackVariables(trackableVariables(analyserModel), true);
-    }
-}
-
-void Generator::GeneratorImpl::untrackAllVariables(const AnalyserModelPtr &analyserModel)
-{
-    if (validModel(analyserModel)) {
-        trackVariables(trackableVariables(analyserModel), false);
+        trackVariables(trackableVariables(analyserModel), tracked);
     }
 }
 
@@ -437,76 +379,40 @@ size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &an
     return res;
 }
 
-size_t Generator::GeneratorImpl::trackedConstantCount(const AnalyserModelPtr &analyserModel)
+size_t Generator::GeneratorImpl::trackedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (analyserModel == nullptr) {
         return 0;
     }
 
-    return trackedVariableCount(analyserModel, analyserModel->constants(), true);
+    return trackedVariableCount(analyserModel, analyserModel->constants(), tracked);
 }
 
-size_t Generator::GeneratorImpl::untrackedConstantCount(const AnalyserModelPtr &analyserModel)
+size_t Generator::GeneratorImpl::trackedComputedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (analyserModel == nullptr) {
         return 0;
     }
 
-    return trackedVariableCount(analyserModel, analyserModel->constants(), false);
+    return trackedVariableCount(analyserModel, analyserModel->computedConstants(), tracked);
 }
 
-size_t Generator::GeneratorImpl::trackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
+size_t Generator::GeneratorImpl::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (analyserModel == nullptr) {
         return 0;
     }
 
-    return trackedVariableCount(analyserModel, analyserModel->computedConstants(), true);
+    return trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), tracked);
 }
 
-size_t Generator::GeneratorImpl::untrackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
+size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (analyserModel == nullptr) {
         return 0;
     }
 
-    return trackedVariableCount(analyserModel, analyserModel->computedConstants(), false);
-}
-
-size_t Generator::GeneratorImpl::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
-{
-    if (analyserModel == nullptr) {
-        return 0;
-    }
-
-    return trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), true);
-}
-
-size_t Generator::GeneratorImpl::untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
-{
-    if (analyserModel == nullptr) {
-        return 0;
-    }
-
-    return trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), false);
-}
-
-size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &analyserModel)
-{
-    if (analyserModel == nullptr) {
-        return 0;
-    }
-
-    return trackedVariableCount(analyserModel, trackableVariables(analyserModel), true);
-}
-
-size_t Generator::GeneratorImpl::untrackedVariableCount(const AnalyserModelPtr &analyserModel)
-{
-    if (analyserModel == nullptr) {
-        return 0;
-    }
-
-    return trackedVariableCount(analyserModel, trackableVariables(analyserModel), false);
+    return trackedVariableCount(analyserModel, trackableVariables(analyserModel), tracked);
 }
 
 bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &analyserModel) const
@@ -804,7 +710,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const Analy
     size_t unitsSize = 0;
 
     for (const auto &analyserVariable : analyserVariables(analyserModel)) {
-        if (isTrackedVariable(analyserModel, analyserVariable)) {
+        if (isTrackedVariable(analyserModel, analyserVariable, true)) {
             updateVariableInfoSizes(componentSize, nameSize, unitsSize, analyserVariable);
         }
     }
@@ -881,7 +787,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
         std::string infoElementsCode;
 
         for (const auto &analyserVariable : analyserVariables) {
-            if (isTrackedVariable(analyserModel, analyserVariable)) {
+            if (isTrackedVariable(analyserModel, analyserVariable, true)) {
                 if (!infoElementsCode.empty()) {
                     infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
                 }
@@ -1222,7 +1128,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &analyse
                 for (const auto &dependency : analyserEquation->dependencies()) {
                     if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                          || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
-                        && isUntrackedEquation(dependency)) {
+                        && isTrackedEquation(dependency, false)) {
                         methodBody += generateEquationCode(analyserModel, dependency, dummyRemainingAnalyserEquations,
                                                            dummyAnalyserEquationsForDependencies,
                                                            dummyGeneratedConstantDependencies, false,
@@ -2141,7 +2047,7 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &an
     case AnalyserEquation::Type::ALGEBRAIC:
         if (analyserEquation->isStateRateBased()) {
             for (const auto &analyserVariable : analyserVariables(analyserEquation)) {
-                if (isTrackedVariable(analyserVariable->analyserModel(), analyserVariable)) {
+                if (isTrackedVariable(analyserVariable->analyserModel(), analyserVariable, true)) {
                     return true;
                 }
             }
@@ -2151,7 +2057,7 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &an
 
         return false;
     case AnalyserEquation::Type::EXTERNAL:
-        return isTrackedEquation(analyserEquation);
+        return isTrackedEquation(analyserEquation, true);
     default:
         return false;
     }
@@ -2240,14 +2146,14 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
             for (const auto &dependency : analyserEquation->dependencies()) {
                 if (((analyserEquation->type() != AnalyserEquation::Type::NLA)
                      && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
-                     && isUntrackedEquation(dependency))
+                     && isTrackedEquation(dependency, false))
                     || (((target == GenerateEquationCodeTarget::NORMAL)
                          || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
                              && ((dependency->type() != AnalyserEquation::Type::NLA)
                                  || isToBeComputedAgain(dependency)
                                  || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
                         && (dependency->type() != AnalyserEquation::Type::ODE)
-                        && (isTrackedEquation(dependency)
+                        && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (analyserEquationsForDependencies.empty()
@@ -2448,7 +2354,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
         for (const auto &analyserEquation : analyserModel->analyserEquations()) {
             if ((analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
-                && isTrackedEquation(analyserEquation)) {
+                && isTrackedEquation(analyserEquation, true)) {
                 methodBody += generateEquationCode(analyserModel, analyserEquation, remainingAnalyserEquations, generatedConstantDependencies);
             }
         }
@@ -2505,7 +2411,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
         for (const auto &analyserEquation : analyserEquations) {
             if (((std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end())
                  || isToBeComputedAgain(analyserEquation))
-                && isTrackedEquation(analyserEquation)) {
+                && isTrackedEquation(analyserEquation, true)) {
                 methodBody += generateEquationCode(analyserModel, analyserEquation, newRemainingAnalyserEquations, remainingAnalyserEquations,
                                                    generatedConstantDependencies, false,
                                                    GenerateEquationCodeTarget::COMPUTE_VARIABLES);
@@ -2557,102 +2463,102 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
 
 bool Generator::isTrackedVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    return pFunc()->isTrackedVariable(analyserVariable);
+    return pFunc()->isTrackedVariable(analyserVariable, true);
 }
 
 bool Generator::isUntrackedVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    return pFunc()->isUntrackedVariable(analyserVariable);
+    return pFunc()->isTrackedVariable(analyserVariable, false);
 }
 
 void Generator::trackVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    pFunc()->trackVariable(analyserVariable);
+    pFunc()->trackVariable(analyserVariable, true);
 }
 
 void Generator::untrackVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    pFunc()->untrackVariable(analyserVariable);
+    pFunc()->trackVariable(analyserVariable, false);
 }
 
 void Generator::trackAllConstants(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->trackAllConstants(analyserModel);
+    pFunc()->trackAllConstants(analyserModel, true);
 }
 
 void Generator::untrackAllConstants(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->untrackAllConstants(analyserModel);
+    pFunc()->trackAllConstants(analyserModel, false);
 }
 
 void Generator::trackAllComputedConstants(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->trackAllComputedConstants(analyserModel);
+    pFunc()->trackAllComputedConstants(analyserModel, true);
 }
 
 void Generator::untrackAllComputedConstants(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->untrackAllComputedConstants(analyserModel);
+    pFunc()->trackAllComputedConstants(analyserModel, false);
 }
 
 void Generator::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->trackAllAlgebraicVariables(analyserModel);
+    pFunc()->trackAllAlgebraicVariables(analyserModel, true);
 }
 
 void Generator::untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->untrackAllAlgebraicVariables(analyserModel);
+    pFunc()->trackAllAlgebraicVariables(analyserModel, false);
 }
 
 void Generator::trackAllVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->trackAllVariables(analyserModel);
+    pFunc()->trackAllVariables(analyserModel, true);
 }
 
 void Generator::untrackAllVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->untrackAllVariables(analyserModel);
+    pFunc()->trackAllVariables(analyserModel, false);
 }
 
 size_t Generator::trackedConstantCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedConstantCount(analyserModel);
+    return pFunc()->trackedConstantCount(analyserModel, true);
 }
 
 size_t Generator::untrackedConstantCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->untrackedConstantCount(analyserModel);
+    return pFunc()->trackedConstantCount(analyserModel, false);
 }
 
 size_t Generator::trackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedComputedConstantCount(analyserModel);
+    return pFunc()->trackedComputedConstantCount(analyserModel, true);
 }
 
 size_t Generator::untrackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->untrackedComputedConstantCount(analyserModel);
+    return pFunc()->trackedComputedConstantCount(analyserModel, false);
 }
 
 size_t Generator::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedAlgebraicCount(analyserModel);
+    return pFunc()->trackedAlgebraicCount(analyserModel, true);
 }
 
 size_t Generator::untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->untrackedAlgebraicCount(analyserModel);
+    return pFunc()->trackedAlgebraicCount(analyserModel, false);
 }
 
 size_t Generator::trackedVariableCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedVariableCount(analyserModel);
+    return pFunc()->trackedVariableCount(analyserModel, true);
 }
 
 size_t Generator::untrackedVariableCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->untrackedVariableCount(analyserModel);
+    return pFunc()->trackedVariableCount(analyserModel, false);
 }
 
 std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel)
