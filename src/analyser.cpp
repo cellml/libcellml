@@ -3308,7 +3308,7 @@ size_t Analyser::externalVariableCount() const
     return pFunc()->mExternalVariables.size();
 }
 
-AnalyserModelPtr Analyser::model() const
+AnalyserModelPtr Analyser::analyserModel() const
 {
     return pFunc()->mAnalyserModel;
 }

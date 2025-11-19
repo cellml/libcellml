@@ -1324,12 +1324,12 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &an
 
     switch (analyserVariable->type()) {
     case AnalyserVariable::Type::CONSTANT:
-        return analyserVariable->model()->constants();
+        return analyserVariable->analyserModel()->constants();
     case AnalyserVariable::Type::COMPUTED_CONSTANT:
-        return analyserVariable->model()->computedConstants();
+        return analyserVariable->analyserModel()->computedConstants();
 
     case AnalyserVariable::Type::ALGEBRAIC_VARIABLE:
-        return analyserVariable->model()->algebraicVariables();
+        return analyserVariable->analyserModel()->algebraicVariables();
     default:
         break;
     }

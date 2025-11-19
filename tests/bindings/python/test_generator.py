@@ -27,7 +27,7 @@ class GeneratorTestCase(unittest.TestCase):
         a = Analyser()
         a.analyseModel(m)
 
-        am = a.model()
+        am = a.analyserModel()
 
         self.assertEqual(AnalyserModel.Type.ALGEBRAIC, am.type())
 
@@ -63,7 +63,7 @@ class GeneratorTestCase(unittest.TestCase):
 
         a.analyseModel(m)
 
-        am = a.model()
+        am = a.analyserModel()
         av = am.analyserVariable(v)
         g = Generator()
 

@@ -39,12 +39,12 @@ describe("Annotator tests", () => {
     });
     test('Checking Annotator model.', () => {
         expect(a.hasModel()).toBe(false)
-        expect(a.model()).toBeNull()
+        expect(a.analyserModel()).toBeNull()
 
         a.setModel(m)
 
         expect(a.hasModel()).toBe(true)
-        expect(a.model()).not.toBeNull()
+        expect(a.analyserModel()).not.toBeNull()
     });
     test('Checking Annotator assigning all.', () => {
         a.setModel(m)
