@@ -121,6 +121,7 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyser_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable_p.h

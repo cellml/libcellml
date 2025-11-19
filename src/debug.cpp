@@ -71,11 +71,11 @@ std::string astAsCode(const AnalyserEquationAstPtr &ast)
     return Generator::equationCode(ast, generatorProfile);
 }
 
-void printAnalyserModelEquations(const AnalyserModelPtr &model)
+void printAnalyserModelEquations(const AnalyserModelPtr &analyserModel)
 {
     size_t eqnNb = 0;
 
-    for (const auto &eqn : model->equations()) {
+    for (const auto &eqn : analyserModel->analyserEquations()) {
         Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
 
         if (eqn->ast() != nullptr) {
@@ -106,21 +106,21 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
             Debug() << "\nNo computed constants";
         }
 
-        if (eqn->algebraicCount() != 0) {
+        if (eqn->algebraicVariableCount() != 0) {
             Debug() << "\nAlgebraic variables:";
 
-            for (const auto &var : eqn->algebraic()) {
-                Debug() << " - " << var->variable()->name();
+            for (const auto &algVar : eqn->algebraicVariables()) {
+                Debug() << " - " << algVar->variable()->name();
             }
         } else {
             Debug() << "\nNo algebraic variables";
         }
 
-        if (eqn->externalCount() != 0) {
+        if (eqn->externalVariableCount() != 0) {
             Debug() << "\nExternal variables:";
 
-            for (const auto &var : eqn->externals()) {
-                Debug() << " - " << var->variable()->name();
+            for (const auto &extVar : eqn->externalVariables()) {
+                Debug() << " - " << extVar->variable()->name();
             }
         } else {
             Debug() << "\nNo external variables";
@@ -133,7 +133,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                 if (dep->ast() != nullptr) {
                     Debug() << " - " << astAsCode(dep->ast());
                 } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << dep->external(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << dep->externalVariable(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
                 }
@@ -150,7 +150,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                     if (nlaSibling->ast() != nullptr) {
                         Debug() << " - " << astAsCode(nlaSibling->ast());
                     } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
-                        Debug() << " - External equation for '" << nlaSibling->external(0)->variable()->name() << "'";
+                        Debug() << " - External equation for '" << nlaSibling->externalVariable(0)->variable()->name() << "'";
                     } else {
                         Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
                     }
@@ -164,23 +164,23 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
     Debug() << "\n---------------------------------------[END]\n";
 }
 
-void printAnalyserModelVariables(const AnalyserModelPtr &model)
+void printAnalyserModelVariables(const AnalyserModelPtr &analyserModel)
 {
     size_t varNb = 0;
 
-    for (const auto &var : variables(model)) {
+    for (const auto &var : analyserVariables(analyserModel)) {
         Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
 
-        if (var->equationCount() != 0) {
+        if (var->analyserEquationCount() != 0) {
             Debug() << "\nEquations:";
 
-            for (const auto &eqn : var->equations()) {
+            for (const auto &eqn : var->analyserEquations()) {
                 if (eqn->ast() != nullptr) {
                     Debug() << " - " << astAsCode(eqn->ast());
                 } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << eqn->external(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << eqn->externalVariable(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
                 }
@@ -232,21 +232,21 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
-void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
+void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &analyserModel)
 {
     for (const auto &iter : map) {
         auto key = iter.first;
         Debug(false) << "key: ";
-        printStackWithModelInfo(key, model);
+        printStackWithModelInfo(key, analyserModel);
         auto vector = iter.second;
         for (const auto &vectorIt : vector) {
             Debug(false) << "value: ";
-            printStackWithModelInfo(vectorIt, model);
+            printStackWithModelInfo(vectorIt, analyserModel);
         }
     }
 }
 
-void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
+void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &analyserModel)
 {
     bool first = true;
     ComponentPtr entity;
@@ -257,7 +257,7 @@ void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
         }
         auto next = iter;
         if (first) {
-            entity = model->component(*iter);
+            entity = analyserModel->component(*iter);
             Debug(false) << entity->name();
         } else if (++next == stack.end()) {
             Debug(false) << entity->variable(*iter)->name();

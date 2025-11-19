@@ -28,8 +28,8 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
         .value("STATE", libcellml::AnalyserVariable::Type::STATE)
         .value("CONSTANT", libcellml::AnalyserVariable::Type::CONSTANT)
         .value("COMPUTED_CONSTANT", libcellml::AnalyserVariable::Type::COMPUTED_CONSTANT)
-        .value("ALGEBRAIC", libcellml::AnalyserVariable::Type::ALGEBRAIC)
-        .value("EXTERNAL", libcellml::AnalyserVariable::Type::EXTERNAL)
+        .value("ALGEBRAIC_VARIABLE", libcellml::AnalyserVariable::Type::ALGEBRAIC_VARIABLE)
+        .value("EXTERNAL_VARIABLE", libcellml::AnalyserVariable::Type::EXTERNAL_VARIABLE)
     ;
 
     class_<libcellml::AnalyserVariable>("AnalyserVariable")
@@ -40,9 +40,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
         .function("initialisingVariable", &libcellml::AnalyserVariable::initialisingVariable)
         .function("variable", &libcellml::AnalyserVariable::variable)
         .function("model", &libcellml::AnalyserVariable::model)
-        .function("equationCount", &libcellml::AnalyserVariable::equationCount)
-        .function("equations", &libcellml::AnalyserVariable::equations)
-        .function("equation", &libcellml::AnalyserVariable::equation)
+        .function("analyserEquationCount", &libcellml::AnalyserVariable::analyserEquationCount)
+        .function("analyserEquations", &libcellml::AnalyserVariable::analyserEquations)
+        .function("analyserEquation", &libcellml::AnalyserVariable::analyserEquation)
     ;
 
     EM_ASM(

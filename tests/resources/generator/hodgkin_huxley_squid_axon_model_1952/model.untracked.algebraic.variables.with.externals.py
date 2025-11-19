@@ -10,8 +10,8 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 4
 CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 1
-EXTERNAL_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 1
+EXTERNAL_VARIABLE_COUNT = 1
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -69,15 +69,15 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
     states[1] = 0.6
     states[2] = 0.05
@@ -95,15 +95,15 @@ def compute_computed_constants(states, rates, constants, computed_constants, alg
     computed_constants[2] = constants[1]+12.0
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_i_L = constants[2]*(states[0]-computed_constants[0])
     potassium_channel_i_K = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
-    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
+    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    rates[0] = -(-membrane_i_Stim+externalVariables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
     sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
-    rates[2] = algebraic[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
+    rates[2] = algebraicVariables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
     sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
     sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0)
     rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1]
@@ -112,6 +112,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic, 
     rates[3] = potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3]
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)

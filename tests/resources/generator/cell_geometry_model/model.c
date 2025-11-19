@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t CONSTANT_COUNT = 2;
 const size_t COMPUTED_CONSTANT_COUNT = 2;
-const size_t ALGEBRAIC_COUNT = 0;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 0;
 
 const VariableInfo CONSTANT_INFO[] = {
     {"L", "centimeter", "cell_geometry"},
@@ -47,11 +47,11 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -63,7 +63,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
     constants[0] = 0.01;
     constants[1] = 0.0011;
@@ -75,6 +75,6 @@ void computeComputedConstants(double *constants, double *computedConstants, doub
     computedConstants[1] = 0.02*computedConstants[0];
 }
 
-void computeVariables(double *constants, double *computedConstants, double *algebraic)
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }

@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 3;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 3;
 
 const VariableInfo CONSTANT_INFO[] = {
 };
@@ -46,11 +46,11 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -65,7 +65,7 @@ void deleteArray(double *array)
 typedef struct {
     double *constants;
     double *computedConstants;
-    double *algebraic;
+    double *algebraicVariables;
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
@@ -75,45 +75,45 @@ void objectiveFunction0(double *u, double *f, void *data)
 {
     double *constants = ((RootFindingInfo *) data)->constants;
     double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
-    double *algebraic = ((RootFindingInfo *) data)->algebraic;
+    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;
 
-    algebraic[0] = u[0];
-    algebraic[1] = u[1];
-    algebraic[2] = u[2];
+    algebraicVariables[0] = u[0];
+    algebraicVariables[1] = u[1];
+    algebraicVariables[2] = u[2];
 
-    f[0] = 2.0*algebraic[2]+algebraic[1]-2.0*algebraic[0]-(-1.0);
-    f[1] = 3.0*algebraic[2]-3.0*algebraic[1]-algebraic[0]-5.0;
-    f[2] = algebraic[2]-2.0*algebraic[1]+3.0*algebraic[0]-6.0;
+    f[0] = 2.0*algebraicVariables[2]+algebraicVariables[1]-2.0*algebraicVariables[0]-(-1.0);
+    f[1] = 3.0*algebraicVariables[2]-3.0*algebraicVariables[1]-algebraicVariables[0]-5.0;
+    f[2] = algebraicVariables[2]-2.0*algebraicVariables[1]+3.0*algebraicVariables[0]-6.0;
 }
 
-void findRoot0(double *constants, double *computedConstants, double *algebraic)
+void findRoot0(double *constants, double *computedConstants, double *algebraicVariables)
 {
-    RootFindingInfo rfi = { constants, computedConstants, algebraic };
+    RootFindingInfo rfi = { constants, computedConstants, algebraicVariables };
     double u[3];
 
-    u[0] = algebraic[0];
-    u[1] = algebraic[1];
-    u[2] = algebraic[2];
+    u[0] = algebraicVariables[0];
+    u[1] = algebraicVariables[1];
+    u[2] = algebraicVariables[2];
 
     nlaSolve(objectiveFunction0, u, 3, &rfi);
 
-    algebraic[0] = u[0];
-    algebraic[1] = u[1];
-    algebraic[2] = u[2];
+    algebraicVariables[0] = u[0];
+    algebraicVariables[1] = u[1];
+    algebraicVariables[2] = u[2];
 }
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
-    algebraic[0] = 1.0;
-    algebraic[1] = 1.0;
-    algebraic[2] = 1.0;
+    algebraicVariables[0] = 1.0;
+    algebraicVariables[1] = 1.0;
+    algebraicVariables[2] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)
 {
 }
 
-void computeVariables(double *constants, double *computedConstants, double *algebraic)
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables)
 {
-    findRoot0(constants, computedConstants, algebraic);
+    findRoot0(constants, computedConstants, algebraicVariables);
 }

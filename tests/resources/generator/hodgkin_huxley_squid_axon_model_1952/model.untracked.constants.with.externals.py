@@ -10,8 +10,8 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 4
 CONSTANT_COUNT = 1
 COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 9
-EXTERNAL_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 9
+EXTERNAL_VARIABLE_COUNT = 1
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -73,15 +73,15 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
     states[1] = 0.6
     states[2] = 0.05
@@ -96,34 +96,34 @@ def compute_computed_constants(states, rates, constants, computed_constants, alg
     computed_constants[2] = membrane_E_R+12.0
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    algebraicVariables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_g_L = 0.3
-    algebraic[1] = leakage_current_g_L*(states[0]-computed_constants[0])
+    algebraicVariables[1] = leakage_current_g_L*(states[0]-computed_constants[0])
     potassium_channel_g_K = 36.0
-    algebraic[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
-    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    rates[0] = -(-algebraic[0]+externals[0]+algebraic[2]+algebraic[1])/constants[0]
-    algebraic[4] = 4.0*exp(states[0]/18.0)
-    rates[2] = algebraic[3]*(1.0-states[2])-algebraic[4]*states[2]
-    algebraic[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    algebraic[5] = 0.07*exp(states[0]/20.0)
-    rates[1] = algebraic[5]*(1.0-states[1])-algebraic[6]*states[1]
-    algebraic[8] = 0.125*exp(states[0]/80.0)
-    algebraic[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    rates[3] = algebraic[7]*(1.0-states[3])-algebraic[8]*states[3]
+    algebraicVariables[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
+    algebraicVariables[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    rates[0] = -(-algebraicVariables[0]+externalVariables[0]+algebraicVariables[2]+algebraicVariables[1])/constants[0]
+    algebraicVariables[4] = 4.0*exp(states[0]/18.0)
+    rates[2] = algebraicVariables[3]*(1.0-states[2])-algebraicVariables[4]*states[2]
+    algebraicVariables[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    algebraicVariables[5] = 0.07*exp(states[0]/20.0)
+    rates[1] = algebraicVariables[5]*(1.0-states[1])-algebraicVariables[6]*states[1]
+    algebraicVariables[8] = 0.125*exp(states[0]/80.0)
+    algebraicVariables[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    rates[3] = algebraicVariables[7]*(1.0-states[3])-algebraicVariables[8]*states[3]
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     leakage_current_g_L = 0.3
-    algebraic[1] = leakage_current_g_L*(states[0]-computed_constants[0])
-    algebraic[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    algebraic[4] = 4.0*exp(states[0]/18.0)
-    algebraic[5] = 0.07*exp(states[0]/20.0)
-    algebraic[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    algebraicVariables[1] = leakage_current_g_L*(states[0]-computed_constants[0])
+    algebraicVariables[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraicVariables[4] = 4.0*exp(states[0]/18.0)
+    algebraicVariables[5] = 0.07*exp(states[0]/20.0)
+    algebraicVariables[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
     potassium_channel_g_K = 36.0
-    algebraic[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
-    algebraic[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    algebraic[8] = 0.125*exp(states[0]/80.0)
+    algebraicVariables[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
+    algebraicVariables[7] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    algebraicVariables[8] = 0.125*exp(states[0]/80.0)
