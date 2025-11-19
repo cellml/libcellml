@@ -42,10 +42,10 @@
 %feature("docstring") libcellml::Generator::untrackAllComputedConstants
 "Untracks all the computed constants in the given model.";
 
-%feature("docstring") libcellml::Generator::trackAllAlgebraic
+%feature("docstring") libcellml::Generator::trackAllAlgebraicVariables
 "Tracks all the algebraic variables in the given model.";
 
-%feature("docstring") libcellml::Generator::untrackAllAlgebraic
+%feature("docstring") libcellml::Generator::untrackAllAlgebraicVariables
 "Untracks all the algebraic variables in the given model.";
 
 %feature("docstring") libcellml::Generator::trackAllVariables
