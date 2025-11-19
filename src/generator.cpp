@@ -62,7 +62,7 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     for (;;) {
         auto var = variables[++i];
 
-        if (doIsTrackedVariable(analyserModel, var)) {
+        if (isTrackedVariable(analyserModel, var)) {
             ++res;
         }
 
@@ -74,7 +74,7 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     return convertToString(res);
 }
 
-bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked)
+bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked)
 {
     AnalyserVariablePtr analyserVariable;
 
@@ -82,11 +82,11 @@ bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &an
     case AnalyserEquation::Type::COMPUTED_CONSTANT:
         analyserVariable = analyserEquation->computedConstants().front();
 
-        return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
+        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
     case AnalyserEquation::Type::ALGEBRAIC:
         analyserVariable = analyserEquation->algebraicVariables().front();
 
-        return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
+        return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
     default:
         return true;
     }
@@ -94,16 +94,16 @@ bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &an
 
 bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &analyserEquation)
 {
-    return doIsTrackedEquation(analyserEquation, true);
+    return isTrackedEquation(analyserEquation, true);
 }
 
 bool Generator::GeneratorImpl::isUntrackedEquation(const AnalyserEquationPtr &analyserEquation)
 {
-    return doIsTrackedEquation(analyserEquation, false);
+    return isTrackedEquation(analyserEquation, false);
 }
 
-bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
-                                                   bool tracked)
+bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
+                                                 bool tracked)
 {
     // By default an analyser variable is always tracked.
 
@@ -114,23 +114,23 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserModelPtr &analy
     return mTrackedVariables[analyserModel][analyserVariable] == tracked;
 }
 
-bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked)
+bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked)
 {
     if (analyserVariable == nullptr) {
         return false;
     }
 
-    return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable, tracked);
+    return isTrackedVariable(analyserVariable->analyserModel(), analyserVariable, tracked);
 }
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    return doIsTrackedVariable(analyserVariable, true);
+    return isTrackedVariable(analyserVariable, true);
 }
 
 bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &analyserVariable)
 {
-    return doIsTrackedVariable(analyserVariable, false);
+    return isTrackedVariable(analyserVariable, false);
 }
 
 void Generator::GeneratorImpl::addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked)
@@ -433,14 +433,14 @@ void Generator::GeneratorImpl::untrackAllVariables(const AnalyserModelPtr &analy
     }
 }
 
-size_t Generator::GeneratorImpl::doTrackedVariableCount(const AnalyserModelPtr &analyserModel,
-                                                        const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked)
+size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &analyserModel,
+                                                      const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked)
 {
     size_t res = 0;
 
     for (const auto &analyserVariable : analyserVariables) {
         if (trackableVariable(analyserVariable, tracked, false)) {
-            if (doIsTrackedVariable(analyserModel, analyserVariable, tracked)) {
+            if (isTrackedVariable(analyserModel, analyserVariable, tracked)) {
                 ++res;
             }
         } else {
@@ -459,7 +459,7 @@ size_t Generator::GeneratorImpl::trackedConstantCount(const AnalyserModelPtr &an
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->constants(), true);
+    return trackedVariableCount(analyserModel, analyserModel->constants(), true);
 }
 
 size_t Generator::GeneratorImpl::untrackedConstantCount(const AnalyserModelPtr &analyserModel)
@@ -468,7 +468,7 @@ size_t Generator::GeneratorImpl::untrackedConstantCount(const AnalyserModelPtr &
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->constants(), false);
+    return trackedVariableCount(analyserModel, analyserModel->constants(), false);
 }
 
 size_t Generator::GeneratorImpl::trackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
@@ -477,7 +477,7 @@ size_t Generator::GeneratorImpl::trackedComputedConstantCount(const AnalyserMode
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->computedConstants(), true);
+    return trackedVariableCount(analyserModel, analyserModel->computedConstants(), true);
 }
 
 size_t Generator::GeneratorImpl::untrackedComputedConstantCount(const AnalyserModelPtr &analyserModel)
@@ -486,7 +486,7 @@ size_t Generator::GeneratorImpl::untrackedComputedConstantCount(const AnalyserMo
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->computedConstants(), false);
+    return trackedVariableCount(analyserModel, analyserModel->computedConstants(), false);
 }
 
 size_t Generator::GeneratorImpl::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
@@ -495,7 +495,7 @@ size_t Generator::GeneratorImpl::trackedAlgebraicCount(const AnalyserModelPtr &a
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->algebraicVariables(), true);
+    return trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), true);
 }
 
 size_t Generator::GeneratorImpl::untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
@@ -504,7 +504,7 @@ size_t Generator::GeneratorImpl::untrackedAlgebraicCount(const AnalyserModelPtr 
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, analyserModel->algebraicVariables(), false);
+    return trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), false);
 }
 
 size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &analyserModel)
@@ -513,7 +513,7 @@ size_t Generator::GeneratorImpl::trackedVariableCount(const AnalyserModelPtr &an
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, trackableVariables(analyserModel), true);
+    return trackedVariableCount(analyserModel, trackableVariables(analyserModel), true);
 }
 
 size_t Generator::GeneratorImpl::untrackedVariableCount(const AnalyserModelPtr &analyserModel)
@@ -522,7 +522,7 @@ size_t Generator::GeneratorImpl::untrackedVariableCount(const AnalyserModelPtr &
         return 0;
     }
 
-    return doTrackedVariableCount(analyserModel, trackableVariables(analyserModel), false);
+    return trackedVariableCount(analyserModel, trackableVariables(analyserModel), false);
 }
 
 bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &analyserModel) const
@@ -778,7 +778,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceConstantCountString() :
                     replace(mProfile->implementationConstantCountString(),
-                            "[CONSTANT_COUNT]", std::to_string(doTrackedVariableCount(analyserModel, analyserModel->constants(), true)));
+                            "[CONSTANT_COUNT]", std::to_string(trackedVariableCount(analyserModel, analyserModel->constants(), true)));
     }
 
     if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
@@ -786,7 +786,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceComputedConstantCountString() :
                     replace(mProfile->implementationComputedConstantCountString(),
-                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(doTrackedVariableCount(analyserModel, analyserModel->computedConstants(), true)));
+                            "[COMPUTED_CONSTANT_COUNT]", std::to_string(trackedVariableCount(analyserModel, analyserModel->computedConstants(), true)));
     }
 
     if ((interface && !mProfile->interfaceAlgebraicVariableCountString().empty())
@@ -794,7 +794,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceAlgebraicVariableCountString() :
                     replace(mProfile->implementationAlgebraicVariableCountString(),
-                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string(doTrackedVariableCount(analyserModel, analyserModel->algebraicVariables(), true)));
+                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string(trackedVariableCount(analyserModel, analyserModel->algebraicVariables(), true)));
     }
 
     if ((analyserModel->externalVariableCount() != 0)
@@ -820,7 +820,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const Analy
     size_t unitsSize = 0;
 
     for (const auto &analyserVariable : analyserVariables(analyserModel)) {
-        if (doIsTrackedVariable(analyserModel, analyserVariable)) {
+        if (isTrackedVariable(analyserModel, analyserVariable)) {
             updateVariableInfoSizes(componentSize, nameSize, unitsSize, analyserVariable);
         }
     }
@@ -897,7 +897,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
         std::string infoElementsCode;
 
         for (const auto &analyserVariable : analyserVariables) {
-            if (doIsTrackedVariable(analyserModel, analyserVariable)) {
+            if (isTrackedVariable(analyserModel, analyserVariable)) {
                 if (!infoElementsCode.empty()) {
                     infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
                 }
@@ -1226,7 +1226,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode(const AnalyserModelPtr &analyse
                 auto methodBodySize = methodBody.size();
 
                 for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
-                    if (doIsTrackedVariable(analyserModel, constantDependency, false)) {
+                    if (isTrackedVariable(analyserModel, constantDependency, false)) {
                         methodBody += generateInitialisationCode(analyserModel, constantDependency, true);
                     }
                 }
@@ -1387,7 +1387,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserMod
         return mProfile->voiString();
     }
 
-    if (doIsTrackedVariable(analyserModel, analyserVariable, false)) {
+    if (isTrackedVariable(analyserModel, analyserVariable, false)) {
         return owningComponent(analyserVariable->variable())->name() + "_" + analyserVariable->variable()->name();
     }
 
@@ -2096,7 +2096,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserModelPtr &analy
         if ((analyserModel != nullptr)
             && (astParent->type() == AnalyserEquationAst::Type::EQUALITY)
             && (astParent->leftChild() == ast)
-            && doIsTrackedVariable(analyserModel, analyserModel->analyserVariable(ast->variable()), false)) {
+            && isTrackedVariable(analyserModel, analyserModel->analyserVariable(ast->variable()), false)) {
             // Note: we want this AST to be its parent's left child since a declaration is always of the form x = RHS,
             //       not LHS = x.
 
@@ -2157,7 +2157,7 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &an
     case AnalyserEquation::Type::ALGEBRAIC:
         if (analyserEquation->isStateRateBased()) {
             for (const auto &analyserVariable : analyserVariables(analyserEquation)) {
-                if (doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable)) {
+                if (isTrackedVariable(analyserVariable->analyserModel(), analyserVariable)) {
                     return true;
                 }
             }
@@ -2193,7 +2193,7 @@ std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const Analy
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserModelPtr &analyserModel,
                                                                  const AnalyserVariablePtr &analyserVariable, bool force)
 {
-    if (!force && doIsTrackedVariable(analyserModel, analyserVariable, false)) {
+    if (!force && isTrackedVariable(analyserModel, analyserVariable, false)) {
         return {};
     }
 
@@ -2210,7 +2210,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserM
                 + scalingFactorCode + generateDoubleOrConstantVariableNameCode(analyserModel, initialisingVariable)
                 + mProfile->commandSeparatorString() + "\n";
 
-    if (doIsTrackedVariable(analyserModel, analyserVariable, false)) {
+    if (isTrackedVariable(analyserModel, analyserVariable, false)) {
         code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
     }
 
@@ -2244,7 +2244,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
 
         for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
             if ((analyserEquation->type() != AnalyserEquation::Type::NLA)
-                && doIsTrackedVariable(analyserModel, constantDependency, false)
+                && isTrackedVariable(analyserModel, constantDependency, false)
                 && (std::find(generatedConstantDependencies.begin(), generatedConstantDependencies.end(), constantDependency) == generatedConstantDependencies.end())) {
                 res += generateInitialisationCode(analyserModel, constantDependency, true);
 

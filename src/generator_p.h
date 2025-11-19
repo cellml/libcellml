@@ -46,14 +46,14 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     std::string analyserVariableIndexString(const AnalyserModelPtr &analyserModel,
                                             const AnalyserVariablePtr &analyserVariable);
 
-    bool doIsTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked);
+    bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked);
 
     bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation);
     bool isUntrackedEquation(const AnalyserEquationPtr &analyserEquation);
 
-    bool doIsTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
-                             bool tracked = true);
-    bool doIsTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
+    bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
+                           bool tracked = true);
+    bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
 
     bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable);
     bool isUntrackedVariable(const AnalyserVariablePtr &analyserVariable);
@@ -87,8 +87,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     void trackAllVariables(const AnalyserModelPtr &analyserModel);
     void untrackAllVariables(const AnalyserModelPtr &analyserModel);
 
-    size_t doTrackedVariableCount(const AnalyserModelPtr &analyserModel,
-                                  const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
+    size_t trackedVariableCount(const AnalyserModelPtr &analyserModel,
+                                const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
     size_t trackedConstantCount(const AnalyserModelPtr &analyserModel);
     size_t untrackedConstantCount(const AnalyserModelPtr &analyserModel);
