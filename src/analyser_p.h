@@ -125,7 +125,7 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, bool checkNlaSystems);
+    bool check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems);
 };
 
 /**
@@ -152,7 +152,7 @@ public:
 
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
+    AnalyserModelPtr mAnalyserModel = AnalyserModel::AnalyserModelImpl::create();
 
     AnalyserExternalVariablePtrs mExternalVariables;
 
@@ -178,8 +178,8 @@ public:
     void analyseComponent(const ComponentPtr &component);
     void analyseComponentVariables(const ComponentPtr &component);
 
-    void doEquivalentVariables(const VariablePtr &variable,
-                               VariablePtrs &equivalentVariables) const;
+    void equivalentVariables(const VariablePtr &variable,
+                             VariablePtrs &equivalentVariables) const;
     VariablePtrs equivalentVariables(const VariablePtr &variable) const;
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
@@ -247,7 +247,7 @@ public:
 
     static bool isExternalVariable(const AnalyserInternalVariablePtr &variable);
 
-    bool isStateRateBased(const AnalyserEquationPtr &equation,
+    bool isStateRateBased(const AnalyserEquationPtr &analyserEquation,
                           AnalyserEquationPtrs &checkedEquations);
 
     void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,

@@ -124,8 +124,8 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(12, am.algebraicVariableCount())
         self.assertIsNotNone(am.algebraicVariables())
         self.assertIsNotNone(am.algebraicVariable(3))
-        self.assertIsNone(am.variable(None))
-        self.assertIsNotNone(am.variable(m.component("membrane").variable("V")))
+        self.assertIsNone(am.analyserVariable(None))
+        self.assertIsNotNone(am.analyserVariable(m.component("membrane").variable("V")))
 
         self.assertEqual(16, am.analyserEquationCount())
         self.assertIsNotNone(am.analyserEquations())
@@ -175,7 +175,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserEquation.
 
-        ae = am.equation(3)
+        ae = am.analyserEquation(3)
 
         self.assertEqual(AnalyserEquation.Type.ALGEBRAIC, ae.type())
         self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))

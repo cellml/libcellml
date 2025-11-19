@@ -101,10 +101,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     size_t trackedVariableCount(const AnalyserModelPtr &analyserModel);
     size_t untrackedVariableCount(const AnalyserModelPtr &analyserModel);
 
-    AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const;
-
     bool modelHasOdes(const AnalyserModelPtr &analyserModel) const;
-    bool modelHasNlas(const AnalyserModelPtr &analyserModel) const;
 
     double scalingFactor(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const;
 

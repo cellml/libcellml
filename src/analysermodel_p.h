@@ -41,7 +41,7 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mAlgebraicVariables;
     std::vector<AnalyserVariablePtr> mExternalVariables;
 
-    std::vector<AnalyserEquationPtr> mEquations;
+    std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
