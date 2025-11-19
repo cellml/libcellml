@@ -49,8 +49,8 @@ struct AnalyserInternalVariable
         CONSTANT,
         COMPUTED_TRUE_CONSTANT,
         COMPUTED_VARIABLE_BASED_CONSTANT,
-        INITIALISED_ALGEBRAIC,
-        ALGEBRAIC,
+        INITIALISED_ALGEBRAIC_VARIABLE,
+        ALGEBRAIC_VARIABLE,
         UNDERCONSTRAINED,
         OVERCONSTRAINED
     };
@@ -126,7 +126,7 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, bool checkNlaSystems);
+    bool check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems);
 };
 
 /**
@@ -153,14 +153,14 @@ public:
 
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
+    AnalyserModelPtr mAnalyserModel = AnalyserModel::AnalyserModelImpl::create();
 
     AnalyserExternalVariablePtrs mExternalVariables;
 
     AnalyserInternalVariablePtrs mInternalVariables;
     AnalyserInternalEquationPtrs mInternalEquations;
 
-    GeneratorProfilePtr mGeneratorProfile = libcellml::GeneratorProfile::create();
+    GeneratorProfilePtr mGeneratorProfile = GeneratorProfile::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
@@ -179,8 +179,8 @@ public:
     void analyseComponent(const ComponentPtr &component);
     void analyseComponentVariables(const ComponentPtr &component);
 
-    void doEquivalentVariables(const VariablePtr &variable,
-                               VariablePtrs &equivalentVariables) const;
+    void equivalentVariables(const VariablePtr &variable,
+                             VariablePtrs &equivalentVariables) const;
     VariablePtrs equivalentVariables(const VariablePtr &variable) const;
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
@@ -248,7 +248,7 @@ public:
 
     static bool isExternalVariable(const AnalyserInternalVariablePtr &variable);
 
-    bool isStateRateBased(const AnalyserEquationPtr &equation,
+    bool isStateRateBased(const AnalyserEquationPtr &analyserEquation,
                           AnalyserEquationPtrs &checkedEquations);
 
     void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,

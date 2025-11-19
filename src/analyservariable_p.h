@@ -35,14 +35,14 @@ struct AnalyserVariable::AnalyserVariableImpl
     size_t mIndex = 0;
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    AnalyserModelWeakPtr mModel;
-    std::vector<AnalyserEquationWeakPtr> mEquations;
+    AnalyserModelWeakPtr mAnalyserModel;
+    std::vector<AnalyserEquationWeakPtr> mAnalyserEquations;
 
     static AnalyserVariablePtr create();
 
     void populate(AnalyserVariable::Type type, size_t index, const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable, const AnalyserModelPtr &model,
-                  const std::vector<AnalyserEquationPtr> &equations);
+                  const VariablePtr &variable, const AnalyserModelPtr &analyserModel,
+                  const std::vector<AnalyserEquationPtr> &analyserEquations);
 
     bool constantWithDummyEquation() const;
 };

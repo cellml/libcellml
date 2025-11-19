@@ -10,7 +10,7 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 1
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 2
+ALGEBRAIC_VARIABLE_COUNT = 2
 
 VOI_INFO = {"name": "time", "units": "second", "component": "my_component"}
 
@@ -42,11 +42,11 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
 
 
@@ -54,10 +54,10 @@ def compute_computed_constants(states, rates, constants, computed_constants, alg
     pass
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     rates[0] = 1.0
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[0] = 2.0*voi
-    algebraic[1] = 3.0*algebraic[0]
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
+    algebraicVariables[0] = 2.0*voi
+    algebraicVariables[1] = 3.0*algebraicVariables[0]

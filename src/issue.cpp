@@ -209,7 +209,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER, {"ANALYSER_ODE_NOT_FIRST_ORDER", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED, {"ANALYSER_VARIABLE_UNUSED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED, {"ANALYSER_STATE_NOT_INITIALISED", "", docsUrl, ""}},
-    {Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC, {"ANALYSER_STATE_RATE_AS_ALGEBRAIC", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE, {"ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED, {"ANALYSER_VARIABLE_UNDERCONSTRAINED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED, {"ANALYSER_VARIABLE_OVERCONSTRAINED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL, {"ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL", "", docsUrl, ""}},

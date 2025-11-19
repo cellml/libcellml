@@ -10,8 +10,8 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 3
 CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 3
-ALGEBRAIC_COUNT = 8
-EXTERNAL_COUNT = 3
+ALGEBRAIC_VARIABLE_COUNT = 8
+EXTERNAL_VARIABLE_COUNT = 3
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
@@ -77,15 +77,15 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.6
     states[1] = 0.05
     states[2] = 0.325
@@ -102,23 +102,23 @@ def compute_computed_constants(states, rates, constants, computed_constants, alg
     computed_constants[2] = constants[1]+12.0
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
-    algebraic[4] = 4.0*exp(externals[1]/18.0)
-    algebraic[3] = 0.1*(externals[1]+25.0)/(exp((externals[1]+25.0)/10.0)-1.0)
-    rates[1] = algebraic[3]*(1.0-states[1])-algebraic[4]*states[1]
-    algebraic[6] = 1.0/(exp((externals[1]+30.0)/10.0)+1.0)
-    algebraic[5] = 0.07*exp(externals[1]/20.0)
-    rates[0] = algebraic[5]*(1.0-states[0])-algebraic[6]*states[0]
-    algebraic[7] = 0.125*exp(externals[1]/80.0)
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    rates[2] = externals[2]*(1.0-states[2])-algebraic[7]*states[2]
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
+    algebraicVariables[4] = 4.0*exp(externalVariables[1]/18.0)
+    algebraicVariables[3] = 0.1*(externalVariables[1]+25.0)/(exp((externalVariables[1]+25.0)/10.0)-1.0)
+    rates[1] = algebraicVariables[3]*(1.0-states[1])-algebraicVariables[4]*states[1]
+    algebraicVariables[6] = 1.0/(exp((externalVariables[1]+30.0)/10.0)+1.0)
+    algebraicVariables[5] = 0.07*exp(externalVariables[1]/20.0)
+    rates[0] = algebraicVariables[5]*(1.0-states[0])-algebraicVariables[6]*states[0]
+    algebraicVariables[7] = 0.125*exp(externalVariables[1]/80.0)
+    externalVariables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
+    rates[2] = externalVariables[2]*(1.0-states[2])-algebraicVariables[7]*states[2]
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    externals[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 1)
-    algebraic[1] = constants[2]*(externals[1]-computed_constants[0])
-    externals[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 2)
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    algebraic[2] = constants[4]*pow(states[2], 4.0)*(externals[1]-computed_constants[2])
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    algebraicVariables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    externalVariables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
+    algebraicVariables[1] = constants[2]*(externalVariables[1]-computed_constants[0])
+    externalVariables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraicVariables[2] = constants[4]*pow(states[2], 4.0)*(externalVariables[1]-computed_constants[2])

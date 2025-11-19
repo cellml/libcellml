@@ -31,7 +31,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_EXTERNAL_VARIABLE_VOI, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_ODE_NOT_FIRST_ORDER, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_STATE_NOT_INITIALISED, int)
-        self.assertIsInstance(Issue.ReferenceRule.ANALYSER_STATE_RATE_AS_ALGEBRAIC, int)
+        self.assertIsInstance(Issue.ReferenceRule.ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_UNITS, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_UNLINKED_UNITS, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_UNDERCONSTRAINED, int)

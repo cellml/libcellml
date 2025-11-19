@@ -448,11 +448,11 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceComputedConstantCountString()
                        + generatorProfile->implementationComputedConstantCountString();
 
-    profileContents += generatorProfile->interfaceAlgebraicCountString()
-                       + generatorProfile->implementationAlgebraicCountString();
+    profileContents += generatorProfile->interfaceAlgebraicVariableCountString()
+                       + generatorProfile->implementationAlgebraicVariableCountString();
 
-    profileContents += generatorProfile->interfaceExternalCountString()
-                       + generatorProfile->implementationExternalCountString();
+    profileContents += generatorProfile->interfaceExternalVariableCountString()
+                       + generatorProfile->implementationExternalVariableCountString();
 
     profileContents += generatorProfile->variableInfoObjectString();
 
@@ -468,11 +468,11 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceComputedConstantInfoString()
                        + generatorProfile->implementationComputedConstantInfoString();
 
-    profileContents += generatorProfile->interfaceAlgebraicInfoString()
-                       + generatorProfile->implementationAlgebraicInfoString();
+    profileContents += generatorProfile->interfaceAlgebraicVariableInfoString()
+                       + generatorProfile->implementationAlgebraicVariableInfoString();
 
-    profileContents += generatorProfile->interfaceExternalInfoString()
-                       + generatorProfile->implementationExternalInfoString();
+    profileContents += generatorProfile->interfaceExternalVariableInfoString()
+                       + generatorProfile->implementationExternalVariableInfoString();
 
     profileContents += generatorProfile->variableInfoEntryString();
 
@@ -482,8 +482,8 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
                        + generatorProfile->ratesArrayString()
                        + generatorProfile->constantsArrayString()
                        + generatorProfile->computedConstantsArrayString()
-                       + generatorProfile->algebraicArrayString()
-                       + generatorProfile->externalArrayString();
+                       + generatorProfile->algebraicVariablesArrayString()
+                       + generatorProfile->externalVariablesArrayString();
 
     profileContents += generatorProfile->externalVariableMethodTypeDefinitionString(false)
                        + generatorProfile->externalVariableMethodTypeDefinitionString(true);
@@ -524,20 +524,20 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceCreateComputedConstantsArrayMethodString()
                        + generatorProfile->implementationCreateComputedConstantsArrayMethodString();
 
-    profileContents += generatorProfile->interfaceCreateAlgebraicArrayMethodString()
-                       + generatorProfile->implementationCreateAlgebraicArrayMethodString();
+    profileContents += generatorProfile->interfaceCreateAlgebraicVariablesArrayMethodString()
+                       + generatorProfile->implementationCreateAlgebraicVariablesArrayMethodString();
 
-    profileContents += generatorProfile->interfaceCreateExternalsArrayMethodString()
-                       + generatorProfile->implementationCreateExternalsArrayMethodString();
+    profileContents += generatorProfile->interfaceCreateExternalVariablesArrayMethodString()
+                       + generatorProfile->implementationCreateExternalVariablesArrayMethodString();
 
     profileContents += generatorProfile->interfaceDeleteArrayMethodString()
                        + generatorProfile->implementationDeleteArrayMethodString();
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(false)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(false);
+    profileContents += generatorProfile->interfaceInitialiseArraysMethodString(false)
+                       + generatorProfile->implementationInitialiseArraysMethodString(false);
 
-    profileContents += generatorProfile->interfaceInitialiseVariablesMethodString(true)
-                       + generatorProfile->implementationInitialiseVariablesMethodString(true);
+    profileContents += generatorProfile->interfaceInitialiseArraysMethodString(true)
+                       + generatorProfile->implementationInitialiseArraysMethodString(true);
 
     profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString(false)
                        + generatorProfile->implementationComputeComputedConstantsMethodString(false);

@@ -46,8 +46,8 @@ class GeneratorTestCase(unittest.TestCase):
 
         self.assertEqual(GeneratorProfile.Profile.PYTHON, g.profile().profile())
 
-        self.assertEqual("x = a", Generator.equationCode(am.equation(0).ast()))
-        self.assertEqual("x = a", Generator_equationCode(am.equation(0).ast()))
+        self.assertEqual("x = a", Generator.equationCode(am.analyserEquation(0).ast()))
+        self.assertEqual("x = a", Generator_equationCode(am.analyserEquation(0).ast()))
 
     def test_tracked_untracked_variables(self):
         from libcellml import Analyser
@@ -64,7 +64,7 @@ class GeneratorTestCase(unittest.TestCase):
         a.analyseModel(m)
 
         am = a.model()
-        av = am.variable(v)
+        av = am.analyserVariable(v)
         g = Generator()
 
         g.untrackVariable(av)
