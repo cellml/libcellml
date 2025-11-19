@@ -708,29 +708,29 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationComputedConstantCountString("something")
     expect(x.implementationComputedConstantCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceAlgebraicCountString.", () => {
+  test("Checking GeneratorProfile.interfaceAlgebraicVariableCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceAlgebraicCountString("something")
-    expect(x.interfaceAlgebraicCountString()).toBe("something")
+    x.setInterfaceAlgebraicVariableCountString("something")
+    expect(x.interfaceAlgebraicVariableCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationAlgebraicCountString.", () => {
+  test("Checking GeneratorProfile.implementationAlgebraicVariableCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationAlgebraicCountString("something")
-    expect(x.implementationAlgebraicCountString()).toBe("something")
+    x.setImplementationAlgebraicVariableCountString("something")
+    expect(x.implementationAlgebraicVariableCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceExternalCountString.", () => {
+  test("Checking GeneratorProfile.interfaceExternalVariableCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceExternalCountString("something")
-    expect(x.interfaceExternalCountString()).toBe("something")
+    x.setInterfaceExternalVariableCountString("something")
+    expect(x.interfaceExternalVariableCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationExternalCountString.", () => {
+  test("Checking GeneratorProfile.implementationExternalVariableCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationExternalCountString("something")
-    expect(x.implementationExternalCountString()).toBe("something")
+    x.setImplementationExternalVariableCountString("something")
+    expect(x.implementationExternalVariableCountString()).toBe("something")
   });
   test("Checking GeneratorProfile.variableInfoObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -786,29 +786,29 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationComputedConstantInfoString("something")
     expect(x.implementationComputedConstantInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceAlgebraicInfoString.", () => {
+  test("Checking GeneratorProfile.interfaceAlgebraicVariableInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceAlgebraicInfoString("something")
-    expect(x.interfaceAlgebraicInfoString()).toBe("something")
+    x.setInterfaceAlgebraicVariableInfoString("something")
+    expect(x.interfaceAlgebraicVariableInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationAlgebraicInfoString.", () => {
+  test("Checking GeneratorProfile.implementationAlgebraicVariableInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationAlgebraicInfoString("something")
-    expect(x.implementationAlgebraicInfoString()).toBe("something")
+    x.setImplementationAlgebraicVariableInfoString("something")
+    expect(x.implementationAlgebraicVariableInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceExternalInfoString.", () => {
+  test("Checking GeneratorProfile.interfaceExternalVariableInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceExternalInfoString("something")
-    expect(x.interfaceExternalInfoString()).toBe("something")
+    x.setInterfaceExternalVariableInfoString("something")
+    expect(x.interfaceExternalVariableInfoString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationExternalInfoString.", () => {
+  test("Checking GeneratorProfile.implementationExternalVariableInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationExternalInfoString("something")
-    expect(x.implementationExternalInfoString()).toBe("something")
+    x.setImplementationExternalVariableInfoString("something")
+    expect(x.implementationExternalVariableInfoString()).toBe("something")
   });
   test("Checking GeneratorProfile.variableInfoEntryString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -939,17 +939,17 @@ describe("GeneratorProfile tests", () => {
     x.setComputedConstantsArrayString("something")
     expect(x.computedConstantsArrayString()).toBe("something")
   });
-  test("Checking GeneratorProfile.algebraicArrayString.", () => {
+  test("Checking GeneratorProfile.algebraicVariablesArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setAlgebraicArrayString("something")
-    expect(x.algebraicArrayString()).toBe("something")
+    x.setAlgebraicVariablesArrayString("something")
+    expect(x.algebraicVariablesArrayString()).toBe("something")
   });
-  test("Checking GeneratorProfile.externalArrayString.", () => {
+  test("Checking GeneratorProfile.externalVariablesArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setExternalArrayString("something")
-    expect(x.externalArrayString()).toBe("something")
+    x.setExternalVariablesArrayString("something")
+    expect(x.externalVariablesArrayString()).toBe("something")
   });
   test("Checking GeneratorProfile.externalVariableMethodTypeDefinitionString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -1005,29 +1005,29 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationCreateComputedConstantsArrayMethodString("something")
     expect(x.implementationCreateComputedConstantsArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceCreateAlgebraicArrayMethodString.", () => {
+  test("Checking GeneratorProfile.interfaceCreateAlgebraicVariablesArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceCreateAlgebraicArrayMethodString("something")
-    expect(x.interfaceCreateAlgebraicArrayMethodString()).toBe("something")
+    x.setInterfaceCreateAlgebraicVariablesArrayMethodString("something")
+    expect(x.interfaceCreateAlgebraicVariablesArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationCreateAlgebraicArrayMethodString.", () => {
+  test("Checking GeneratorProfile.implementationCreateAlgebraicVariablesArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationCreateAlgebraicArrayMethodString("something")
-    expect(x.implementationCreateAlgebraicArrayMethodString()).toBe("something")
+    x.setImplementationCreateAlgebraicVariablesArrayMethodString("something")
+    expect(x.implementationCreateAlgebraicVariablesArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceCreateExternalsArrayMethodString.", () => {
+  test("Checking GeneratorProfile.interfaceCreateExternalVariablesArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceCreateExternalsArrayMethodString("something")
-    expect(x.interfaceCreateExternalsArrayMethodString()).toBe("something")
+    x.setInterfaceCreateExternalVariablesArrayMethodString("something")
+    expect(x.interfaceCreateExternalVariablesArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationCreateExternalsArrayMethodString.", () => {
+  test("Checking GeneratorProfile.implementationCreateExternalVariablesArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationCreateExternalsArrayMethodString("something")
-    expect(x.implementationCreateExternalsArrayMethodString()).toBe("something")
+    x.setImplementationCreateExternalVariablesArrayMethodString("something")
+    expect(x.implementationCreateExternalVariablesArrayMethodString()).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceDeleteArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -1041,23 +1041,23 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationDeleteArrayMethodString("something")
     expect(x.implementationDeleteArrayMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceInitialiseVariablesMethodString.", () => {
+  test("Checking GeneratorProfile.interfaceInitialiseArraysMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceInitialiseVariablesMethodString(false, "something")
-    expect(x.interfaceInitialiseVariablesMethodString(false)).toBe("something")
+    x.setInterfaceInitialiseArraysMethodString(false, "something")
+    expect(x.interfaceInitialiseArraysMethodString(false)).toBe("something")
 
-    x.setInterfaceInitialiseVariablesMethodString(true, "something")
-    expect(x.interfaceInitialiseVariablesMethodString(true)).toBe("something")
+    x.setInterfaceInitialiseArraysMethodString(true, "something")
+    expect(x.interfaceInitialiseArraysMethodString(true)).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationInitialiseVariablesMethodString.", () => {
+  test("Checking GeneratorProfile.implementationInitialiseArraysMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationInitialiseVariablesMethodString(false, "something")
-    expect(x.implementationInitialiseVariablesMethodString(false)).toBe("something")
+    x.setImplementationInitialiseArraysMethodString(false, "something")
+    expect(x.implementationInitialiseArraysMethodString(false)).toBe("something")
 
-    x.setImplementationInitialiseVariablesMethodString(true, "something")
-    expect(x.implementationInitialiseVariablesMethodString(true)).toBe("something")
+    x.setImplementationInitialiseArraysMethodString(true, "something")
+    expect(x.implementationInitialiseArraysMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceComputeComputedConstantsMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

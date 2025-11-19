@@ -10,8 +10,8 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 1
 CONSTANT_COUNT = 7
 COMPUTED_CONSTANT_COUNT = 199
-ALGEBRAIC_COUNT = 2
-EXTERNAL_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 2
+EXTERNAL_VARIABLE_COUNT = 1
 
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
@@ -355,12 +355,12 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -372,29 +372,29 @@ def objective_function_0(u, f, data):
     rates = data[2]
     constants = data[3]
     computed_constants = data[4]
-    algebraic = data[5]
-    externals = data[6]
+    algebraic_variables = data[5]
+    external_variables = data[6]
 
-    algebraic[0] = u[0]
-    algebraic[1] = u[1]
+    algebraicVariables[0] = u[0]
+    algebraicVariables[1] = u[1]
 
-    f[0] = algebraic[1]+algebraic[0]+states[0]-0.0
-    f[1] = algebraic[1]-algebraic[0]-(computed_constants[198]+computed_constants[197])
+    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0
+    f[1] = algebraicVariables[1]-algebraicVariables[0]-(computed_constants[198]+computed_constants[197])
 
 
-def find_root_0(voi, states, rates, constants, computed_constants, algebraic, externals):
+def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables):
     u = [nan]*2
 
-    u[0] = algebraic[0]
-    u[1] = algebraic[1]
+    u[0] = algebraicVariables[0]
+    u[1] = algebraicVariables[1]
 
-    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, constants, computed_constants, algebraic, externals])
+    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, constants, computed_constants, algebraic_variables, external_variables])
 
-    algebraic[0] = u[0]
-    algebraic[1] = u[1]
+    algebraicVariables[0] = u[0]
+    algebraicVariables[1] = u[1]
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
     constants[0] = 1.23
     constants[1] = 123.0
@@ -415,8 +415,8 @@ def initialise_variables(states, rates, constants, computed_constants, algebraic
     computed_constants[186] = nan
     computed_constants[198] = 1.0
     computed_constants[197] = 3.0
-    algebraic[0] = 2.0
-    algebraic[1] = 1.0
+    algebraicVariables[0] = 2.0
+    algebraicVariables[1] = 1.0
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -609,10 +609,10 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[196] = -and_func(constants[1], constants[0])+-(constants[0] if gt_func(constants[2], constants[3]) else nan)
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     rates[0] = 1.0
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic, externals, external_variable):
-    externals[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic, externals, 0)
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic, externals)
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)

@@ -216,7 +216,7 @@ public:
      *
      * @return The number of algebraic variables.
      */
-    size_t algebraicCount() const;
+    size_t algebraicVariableCount() const;
 
     /**
      * @brief Get the algebraic variables.
@@ -225,7 +225,7 @@ public:
      *
      * @return The algebraic variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> algebraic() const;
+    std::vector<AnalyserVariablePtr> algebraicVariables() const;
 
     /**
      * @brief Get the algebraic variable at @p index.
@@ -237,7 +237,7 @@ public:
      * @return The algebraic variable at the given @p index on success, @c nullptr on
      * failure.
      */
-    AnalyserVariablePtr algebraic(size_t index) const;
+    AnalyserVariablePtr algebraicVariable(size_t index) const;
 
     /**
      * @brief Get the number of external variables.
@@ -246,7 +246,7 @@ public:
      *
      * @return The number of external variables.
      */
-    size_t externalCount() const;
+    size_t externalVariableCount() const;
 
     /**
      * @brief Get the external variables.
@@ -255,7 +255,7 @@ public:
      *
      * @return The external variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> externals() const;
+    std::vector<AnalyserVariablePtr> externalVariables() const;
 
     /**
      * @brief Get the external variable at @p index.
@@ -267,7 +267,7 @@ public:
      * @return The external variable at the given @p index on success, @c nullptr on
      * failure.
      */
-    AnalyserVariablePtr external(size_t index) const;
+    AnalyserVariablePtr externalVariable(size_t index) const;
 
     /**
      * @brief Get the analyser variable for the given @p variable.

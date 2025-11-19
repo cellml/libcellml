@@ -49,8 +49,8 @@ struct AnalyserInternalVariable
         CONSTANT,
         COMPUTED_TRUE_CONSTANT,
         COMPUTED_VARIABLE_BASED_CONSTANT,
-        INITIALISED_ALGEBRAIC,
-        ALGEBRAIC,
+        INITIALISED_ALGEBRAIC_VARIABLE,
+        ALGEBRAIC_VARIABLE,
         OVERCONSTRAINED
     };
 
@@ -159,7 +159,7 @@ public:
     AnalyserInternalVariablePtrs mInternalVariables;
     AnalyserInternalEquationPtrs mInternalEquations;
 
-    GeneratorProfilePtr mGeneratorProfile = libcellml::GeneratorProfile::create();
+    GeneratorProfilePtr mGeneratorProfile = GeneratorProfile::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;

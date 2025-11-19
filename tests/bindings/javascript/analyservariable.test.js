@@ -39,13 +39,13 @@ describe("Analyser Variable tests", () => {
 
         expect(am.constantCount()).toBe(5)
         expect(am.computedConstantCount()).toBe(3)
-        expect(am.algebraicCount()).toBe(10)
-        expect(am.externalCount()).toBe(0)
+        expect(am.algebraicVariableCount()).toBe(10)
+        expect(am.externalVariableCount()).toBe(0)
     });
     test('Checking Analyser Variable type.', () => {
         const av = am.algebraicVariable(0)
-        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.ALGEBRAIC.value)
-        expect(libcellml.AnalyserVariable.typeAsString(av.type())).toBe("algebraic")
+        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.ALGEBRAIC_VARIABLE.value)
+        expect(libcellml.AnalyserVariable.typeAsString(av.type())).toBe("algebraic_variable")
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.algebraicVariable(7)

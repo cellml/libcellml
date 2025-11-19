@@ -11,7 +11,7 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 const size_t STATE_COUNT = 2;
 const size_t CONSTANT_COUNT = 2;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 0;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 0;
 
 const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
@@ -64,11 +64,11 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -80,7 +80,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     constants[0] = 123.0;
     states[0] = constants[0];
@@ -92,12 +92,12 @@ void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     rates[0] = 1.23;
     rates[1] = 7.89;
 }
 
-void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
 }

@@ -9,7 +9,7 @@ LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 2
 COMPUTED_CONSTANT_COUNT = 2
-ALGEBRAIC_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 0
 
 CONSTANT_INFO = [
     {"name": "L", "units": "centimeter", "component": "cell_geometry"},
@@ -33,11 +33,11 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def initialise_variables(constants, computed_constants, algebraic):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[0] = 0.01
     constants[1] = 0.0011
 
@@ -47,5 +47,5 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[1] = 0.02*computed_constants[0]
 
 
-def compute_variables(constants, computed_constants, algebraic):
+def compute_variables(constants, computed_constants, algebraic_variables):
     pass

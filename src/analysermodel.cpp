@@ -177,58 +177,58 @@ AnalyserVariablePtr AnalyserModel::computedConstant(size_t index) const
     return mPimpl->mComputedConstants[index];
 }
 
-size_t AnalyserModel::algebraicCount() const
+size_t AnalyserModel::algebraicVariableCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mAlgebraic.size();
+    return mPimpl->mAlgebraicVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::algebraic() const
+std::vector<AnalyserVariablePtr> AnalyserModel::algebraicVariables() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mAlgebraic;
+    return mPimpl->mAlgebraicVariables;
 }
 
-AnalyserVariablePtr AnalyserModel::algebraic(size_t index) const
+AnalyserVariablePtr AnalyserModel::algebraicVariable(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mAlgebraic.size())) {
+    if (!isValid() || (index >= mPimpl->mAlgebraicVariables.size())) {
         return {};
     }
 
-    return mPimpl->mAlgebraic[index];
+    return mPimpl->mAlgebraicVariables[index];
 }
 
-size_t AnalyserModel::externalCount() const
+size_t AnalyserModel::externalVariableCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mExternals.size();
+    return mPimpl->mExternalVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::externals() const
+std::vector<AnalyserVariablePtr> AnalyserModel::externalVariables() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mExternals;
+    return mPimpl->mExternalVariables;
 }
 
-AnalyserVariablePtr AnalyserModel::external(size_t index) const
+AnalyserVariablePtr AnalyserModel::externalVariable(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mExternals.size())) {
+    if (!isValid() || (index >= mPimpl->mExternalVariables.size())) {
         return {};
     }
 
-    return mPimpl->mExternals[index];
+    return mPimpl->mExternalVariables[index];
 }
 
 AnalyserVariablePtr AnalyserModel::variable(const VariablePtr &variable)

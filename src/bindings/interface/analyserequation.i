@@ -61,22 +61,22 @@
 %feature("docstring") libcellml::AnalyserEquation::computedConstant
 "Returns the computed constant, at the given index, computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::algebraicCount
+%feature("docstring") libcellml::AnalyserEquation::algebraicVariableCount
 "Returns the number of algebraic variables computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::algebraic
+%feature("docstring") libcellml::AnalyserEquation::algebraicVariables
 "Returns the algebraic variables computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::algebraic
+%feature("docstring") libcellml::AnalyserEquation::algebraicVariable
 "Returns the algebraic variable, at the given index, computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::externalCount
+%feature("docstring") libcellml::AnalyserEquation::externalVariableCount
 "Returns the number of external variables computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::externals
+%feature("docstring") libcellml::AnalyserEquation::externalVariables
 "Returns the external variables computed by this :class:`AnalyserEquation` object.";
 
-%feature("docstring") libcellml::AnalyserEquation::external
+%feature("docstring") libcellml::AnalyserEquation::externalVariable
 "Returns the external variable, at the given index, computed by this :class:`AnalyserEquation` object.";
 
 %{

@@ -9,7 +9,7 @@ extern const char LIBCELLML_VERSION[];
 
 extern const size_t CONSTANT_COUNT;
 extern const size_t COMPUTED_CONSTANT_COUNT;
-extern const size_t ALGEBRAIC_COUNT;
+extern const size_t ALGEBRAIC_VARIABLE_COUNT;
 
 typedef struct {
     char name[6];
@@ -23,10 +23,10 @@ extern const VariableInfo ALGEBRAIC_INFO[];
 
 double * createConstantsArray();
 double * createComputedConstantsArray();
-double * createAlgebraicArray();
+double * createAlgebraicVariablesArray();
 
 void deleteArray(double *array);
 
-void initialiseVariables(double *constants, double *computedConstants, double *algebraic);
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);
 void computeComputedConstants(double *constants, double *computedConstants);
-void computeVariables(double *constants, double *computedConstants, double *algebraic);
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables);

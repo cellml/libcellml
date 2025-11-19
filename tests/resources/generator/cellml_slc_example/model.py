@@ -9,7 +9,7 @@ LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 9
 COMPUTED_CONSTANT_COUNT = 1
-ALGEBRAIC_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 0
 
 CONSTANT_INFO = [
     {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss"},
@@ -39,11 +39,11 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def initialise_variables(constants, computed_constants, algebraic):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[0] = 810000.0
     constants[1] = 150.0
     constants[2] = 2.0
@@ -59,5 +59,5 @@ def compute_computed_constants(constants, computed_constants):
     computed_constants[0] = constants[8]*(constants[7]*constants[1]-constants[6]*constants[2])/(constants[5]*constants[2]+constants[4]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])
 
 
-def compute_variables(constants, computed_constants, algebraic):
+def compute_variables(constants, computed_constants, algebraic_variables):
     pass

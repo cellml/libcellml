@@ -10,7 +10,7 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 2
 CONSTANT_COUNT = 3
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 2
+ALGEBRAIC_VARIABLE_COUNT = 2
 
 VOI_INFO = {"name": "t", "units": "dimensionless", "component": "main"}
 
@@ -46,8 +46,8 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -59,42 +59,42 @@ def objective_function_0(u, f, data):
     rates = data[2]
     constants = data[3]
     computed_constants = data[4]
-    algebraic = data[5]
+    algebraic_variables = data[5]
 
-    algebraic[0] = u[0]
+    algebraicVariables[0] = u[0]
 
-    f[0] = 1.0-(states[1]+states[0]+algebraic[0])
+    f[0] = 1.0-(states[1]+states[0]+algebraicVariables[0])
 
 
-def find_root_0(voi, states, rates, constants, computed_constants, algebraic):
+def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraic[0]
+    u[0] = algebraicVariables[0]
 
-    u = nla_solve(objective_function_0, u, 1, [voi, states, rates, constants, computed_constants, algebraic])
+    u = nla_solve(objective_function_0, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraic[0] = u[0]
+    algebraicVariables[0] = u[0]
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
     states[1] = 1.0
     constants[0] = 1.0e4
     constants[1] = 0.04
     constants[2] = 3.0e7
-    algebraic[0] = 0.0
+    algebraicVariables[0] = 0.0
 
 
 def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    rates[1] = -constants[1]*states[1]+constants[0]*states[0]*algebraic[0]
-    rates[0] = constants[1]*states[1]-constants[2]*pow(states[0], 2.0)-constants[0]*states[0]*algebraic[0]
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
+    rates[1] = -constants[1]*states[1]+constants[0]*states[0]*algebraicVariables[0]
+    rates[0] = constants[1]*states[1]-constants[2]*pow(states[0], 2.0)-constants[0]*states[0]*algebraicVariables[0]
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic)
-    algebraic[1] = 10000.0*states[0]
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
+    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
+    algebraicVariables[1] = 10000.0*states[0]
