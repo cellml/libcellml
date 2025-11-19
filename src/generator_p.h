@@ -58,6 +58,10 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable);
     bool isUntrackedVariable(const AnalyserVariablePtr &analyserVariable);
 
+    void addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked, const std::string &variableInfo,
+                          const std::string &trackedInfo, const std::string &untrackedInfo,
+                          Issue::ReferenceRule trackedReferenceRule, Issue::ReferenceRule untrackedReferenceRule);
+
     void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked);
 
     bool trackableVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool canAddIssue = true);
