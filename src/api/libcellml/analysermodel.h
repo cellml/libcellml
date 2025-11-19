@@ -278,37 +278,37 @@ public:
      *
      * @return The analyser variable for the given @p variable on success, @c nullptr on failure.
      */
-    AnalyserVariablePtr variable(const VariablePtr &variable);
+    AnalyserVariablePtr analyserVariable(const VariablePtr &variable);
 
     /**
-     * @brief Get the number of equations.
+     * @brief Get the number of analyser equations.
      *
-     * Return the number of equations in the @ref AnalyserModel.
+     * Return the number of analyser equations in the @ref AnalyserModel.
      *
-     * @return The number of equations.
+     * @return The number of analyser equations.
      */
-    size_t equationCount() const;
+    size_t analyserEquationCount() const;
 
     /**
-     * @brief Get the equations.
+     * @brief Get the analyser equations.
      *
-     * Return the equations in the @ref AnalyserModel.
+     * Return the analyser equations in the @ref AnalyserModel.
      *
-     * @return The equations as a @c std::vector.
+     * @return The analyser equations as a @c std::vector.
      */
-    std::vector<AnalyserEquationPtr> equations() const;
+    std::vector<AnalyserEquationPtr> analyserEquations() const;
 
     /**
-     * @brief Get the equation at @p index.
+     * @brief Get the analyser equation at @p index.
      *
-     * Return the equation at the index @p index in this @ref AnalyserModel.
+     * Return the analyser equation at the index @p index in this @ref AnalyserModel.
      *
-     * @param index The index of the equation to return.
+     * @param index The index of the analyser equation to return.
      *
-     * @return The equation at the given @p index on success, @c nullptr on
+     * @return The analyser equation at the given @p index on success, @c nullptr on
      * failure.
      */
-    AnalyserEquationPtr equation(size_t index) const;
+    AnalyserEquationPtr analyserEquation(size_t index) const;
 
     /**
      * @brief Test to determine if @ref AnalyserModel needs an "equal to"

@@ -536,40 +536,6 @@ bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &analyserMode
     }
 }
 
-bool Generator::GeneratorImpl::modelHasNlas(const AnalyserModelPtr &analyserModel) const
-{
-    switch (analyserModel->type()) {
-    case AnalyserModel::Type::NLA:
-    case AnalyserModel::Type::DAE:
-        return true;
-    default:
-        return false;
-    }
-}
-
-AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const AnalyserModelPtr &analyserModel,
-                                                               const VariablePtr &variable) const
-{
-    // Find and return the analyser variable associated with the given variable.
-
-    AnalyserVariablePtr res;
-    auto modelVoi = analyserModel->voi();
-    VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
-
-    if ((modelVoiVariable != nullptr)
-        && analyserModel->areEquivalentVariables(variable, modelVoiVariable)) {
-        res = modelVoi;
-    } else {
-        auto modelAnalyserVariables = analyserVariables(analyserModel);
-
-        res = *std::find_if(modelAnalyserVariables.begin(), modelAnalyserVariables.end(), [=](const auto &modelAnalyserVariable) {
-            return analyserModel->areEquivalentVariables(modelAnalyserVariable->variable(), variable);
-        });
-    }
-
-    return res;
-}
-
 double Generator::GeneratorImpl::scalingFactor(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable, accounting for the fact that a constant may be initialised by

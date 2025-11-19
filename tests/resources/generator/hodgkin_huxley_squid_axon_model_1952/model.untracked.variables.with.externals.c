@@ -11,8 +11,8 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 const size_t STATE_COUNT = 4;
 const size_t CONSTANT_COUNT = 1;
 const size_t COMPUTED_CONSTANT_COUNT = 1;
-const size_t ALGEBRAIC_COUNT = 1;
-const size_t EXTERNAL_COUNT = 1;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 1;
+const size_t EXTERNAL_VARIABLE_COUNT = 1;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
 
@@ -72,22 +72,22 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
     return res;
 }
 
-double * createExternalsArray()
+double * createExternalVariablesArray()
 {
-    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));
+    double *res = (double *) malloc(EXTERNAL_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {
+    for (size_t i = 0; i < EXTERNAL_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -99,7 +99,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = 0.0;
     states[1] = 0.6;
@@ -114,7 +114,7 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[0] = membrane_E_R+12.0;
 }
 
-void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     double membrane_i_Stim = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     double leakage_current_g_L = 0.3;
@@ -123,11 +123,11 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     double leakage_current_i_L = leakage_current_g_L*(states[0]-leakage_current_E_L);
     double potassium_channel_g_K = 36.0;
     double potassium_channel_i_K = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[0]);
-    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    rates[0] = -(-membrane_i_Stim+externals[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0];
+    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
+    rates[0] = -(-membrane_i_Stim+externalVariables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0];
     double sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0);
-    rates[2] = algebraic[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
+    rates[2] = algebraicVariables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
     double sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
     double sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0);
     rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1];
@@ -136,8 +136,8 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     rates[3] = potassium_channel_n_gate_alpha_n*(1.0-states[3])-potassium_channel_n_gate_beta_n*states[3];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
-    algebraic[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
+    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
 }

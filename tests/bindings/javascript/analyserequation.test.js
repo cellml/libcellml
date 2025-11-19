@@ -38,9 +38,9 @@ describe("Analyser Equation tests", () => {
 
         am = a.model()
 
-        expect(am.equationCount()).toBe(1)
+        expect(am.analyserEquationCount()).toBe(1)
 
-        eqn = am.equation(0)
+        eqn = am.analyserEquation(0)
     });
     test('Checking Analyser Equation type.', () => {
         expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)

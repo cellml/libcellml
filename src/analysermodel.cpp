@@ -231,46 +231,46 @@ AnalyserVariablePtr AnalyserModel::externalVariable(size_t index) const
     return mPimpl->mExternalVariables[index];
 }
 
-AnalyserVariablePtr AnalyserModel::variable(const VariablePtr &variable)
+AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
 {
     if (!isValid() || (variable == nullptr)) {
         return {};
     }
 
-    for (const auto &modelVariable : variables(shared_from_this())) {
-        if (areEquivalentVariables(variable, modelVariable->variable())) {
-            return modelVariable;
+    for (const auto &analyserVariable : analyserVariables(shared_from_this())) {
+        if (areEquivalentVariables(variable, analyserVariable->variable())) {
+            return analyserVariable;
         }
     }
 
     return {};
 }
 
-size_t AnalyserModel::equationCount() const
+size_t AnalyserModel::analyserEquationCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mEquations.size();
+    return mPimpl->mAnalyserEquations.size();
 }
 
-std::vector<AnalyserEquationPtr> AnalyserModel::equations() const
+std::vector<AnalyserEquationPtr> AnalyserModel::analyserEquations() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mEquations;
+    return mPimpl->mAnalyserEquations;
 }
 
-AnalyserEquationPtr AnalyserModel::equation(size_t index) const
+AnalyserEquationPtr AnalyserModel::analyserEquation(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mEquations.size())) {
+    if (!isValid() || (index >= mPimpl->mAnalyserEquations.size())) {
         return {};
     }
 
-    return mPimpl->mEquations[index];
+    return mPimpl->mAnalyserEquations[index];
 }
 
 bool AnalyserModel::needEqFunction() const

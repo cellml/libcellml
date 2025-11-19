@@ -40,9 +40,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
         .function("initialisingVariable", &libcellml::AnalyserVariable::initialisingVariable)
         .function("variable", &libcellml::AnalyserVariable::variable)
         .function("model", &libcellml::AnalyserVariable::model)
-        .function("equationCount", &libcellml::AnalyserVariable::equationCount)
-        .function("equations", &libcellml::AnalyserVariable::equations)
-        .function("equation", &libcellml::AnalyserVariable::equation)
+        .function("analyserEquationCount", &libcellml::AnalyserVariable::analyserEquationCount)
+        .function("analyserEquations", &libcellml::AnalyserVariable::analyserEquations)
+        .function("analyserEquation", &libcellml::AnalyserVariable::analyserEquation)
     ;
 
     EM_ASM(

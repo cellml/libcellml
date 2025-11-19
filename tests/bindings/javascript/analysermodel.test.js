@@ -51,10 +51,10 @@ describe("Analyser Model tests", () => {
         expect(am.voi().variable().name()).toBe("time")
     });
     test('Checking Analyser Model equations related API.', () => {
-        expect(am.equationCount()).toBe(17)
-        expect(am.equations().size()).toBe(17)
-        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
-        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(am.analyserEquationCount()).toBe(17)
+        expect(am.analyserEquations().size()).toBe(17)
+        expect(am.analyserEquations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(am.analyserEquation(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
     });
     test('Checking Analyser Model states related API.', () => {
         expect(am.stateCount()).toBe(4)
@@ -82,8 +82,8 @@ describe("Analyser Model tests", () => {
         expect(am.externalVariable(0)).toBeNull()
     });
     test('Checking Analyser Model variable API.', () => {
-        expect(am.variable(null)).toBeNull()
-        expect(am.variable(m.componentByName("membrane").variableByName("V"))).not.toBeNull()
+        expect(am.analyserVariable(null)).toBeNull()
+        expect(am.analyserVariable(m.componentByName("membrane").variableByName("V"))).not.toBeNull()
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)

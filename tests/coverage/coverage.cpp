@@ -466,11 +466,11 @@ TEST(Coverage, analyser)
     EXPECT_EQ(size_t(0), analyserModel->externalVariables().size());
     EXPECT_EQ(nullptr, analyserModel->externalVariable(0));
 
-    EXPECT_EQ(nullptr, analyserModel->variable(nullptr));
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(nullptr));
 
-    EXPECT_EQ(size_t(0), analyserModel->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->equations().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(0));
 
     EXPECT_FALSE(analyserModel->needEqFunction());
     EXPECT_FALSE(analyserModel->needNeqFunction());
@@ -522,14 +522,14 @@ TEST(Coverage, analyser)
 
     EXPECT_TRUE(analyserModel->isValid());
 
-    EXPECT_EQ(nullptr, analyserModel->variable(nullptr));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("environment")->variable("time")));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("sodium_channel_m_gate")->variable("m")));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("Cm")));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("leakage_current")->variable("E_L")));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("i_Stim")));
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("membrane")->variable("V")));
-    EXPECT_EQ(nullptr, analyserModel->variable(otherVariable));
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(nullptr));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("environment")->variable("time")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("sodium_channel_m_gate")->variable("m")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("Cm")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("leakage_current")->variable("E_L")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("i_Stim")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("V")));
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(otherVariable));
 
     model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
 
@@ -537,7 +537,7 @@ TEST(Coverage, analyser)
 
     analyserModel = analyser->model();
 
-    EXPECT_NE(nullptr, analyserModel->variable(model->component("my_algebraic_eqn")->variable("x")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("my_algebraic_eqn")->variable("x")));
 }
 
 TEST(Coverage, analyserConvertToInt)
@@ -587,7 +587,7 @@ TEST(Coverage, analyserTypes)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->analyserEquation(0)->type()));
     EXPECT_EQ("algebraic_variable", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraicVariable(0)->type()));
 }
 
@@ -628,66 +628,66 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
     EXPECT_EQ(size_t(2), analyserModel->algebraicVariableCount());
     EXPECT_EQ(size_t(1), analyserModel->externalVariableCount());
-    EXPECT_EQ(size_t(203), analyserModel->equationCount());
+    EXPECT_EQ(size_t(203), analyserModel->analyserEquationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->voi()->equations().size());
-    EXPECT_EQ(nullptr, analyserModel->voi()->equation(0));
+    EXPECT_EQ(size_t(0), analyserModel->voi()->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->voi()->analyserEquation(0));
     EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
-    EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0)->state(0));
+    EXPECT_NE(size_t(0), analyserModel->state(0)->analyserEquationCount());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->analyserEquations().size());
+    EXPECT_NE(nullptr, analyserModel->state(0)->analyserEquation(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->analyserEquation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->constant(0));
-    EXPECT_EQ(size_t(0), analyserModel->constant(0)->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->constant(0)->equations().size());
-    EXPECT_EQ(nullptr, analyserModel->constant(0)->equation(0));
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->constant(0)->analyserEquation(0));
     EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0));
-    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->analyserEquation(0)->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
     EXPECT_NE(nullptr, analyserModel->algebraicVariable(0));
-    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0)->equation(0)->algebraicVariable(0));
+    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0)->analyserEquation(0)->algebraicVariable(0));
     EXPECT_EQ(nullptr, analyserModel->algebraicVariable(analyserModel->algebraicVariableCount()));
     EXPECT_NE(nullptr, analyserModel->externalVariable(0));
-    EXPECT_NE(nullptr, analyserModel->externalVariable(0)->equation(0)->externalVariable(0));
+    EXPECT_NE(nullptr, analyserModel->externalVariable(0)->analyserEquation(0)->externalVariable(0));
     EXPECT_EQ(nullptr, analyserModel->externalVariable(analyserModel->algebraicVariableCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(0)->stateCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
-    EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(199));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstantCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstants().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(analyserModel->equation(199)->computedConstantCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraicVariable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraicVariable(analyserModel->equation(199)->algebraicVariableCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariableCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariables().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(analyserModel->equation(199)->externalVariableCount()));
-    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->states().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(0)->state(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(0)->state(analyserModel->analyserEquation(0)->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199));
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->dependency(analyserModel->analyserEquation(199)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->nlaSibling(analyserModel->analyserEquation(199)->nlaSiblingCount()));
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->computedConstantCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->computedConstants().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->computedConstant(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->computedConstant(analyserModel->analyserEquation(199)->computedConstantCount()));
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->algebraicVariableCount());
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->algebraicVariables().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->algebraicVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->algebraicVariable(analyserModel->analyserEquation(199)->algebraicVariableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->externalVariableCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->externalVariables().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->externalVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->externalVariable(analyserModel->analyserEquation(199)->externalVariableCount()));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(analyserModel->analyserEquationCount()));
 
-    for (const auto &equation : analyserModel->equations()) {
-        checkAstTypeAsString(equation->ast());
+    for (const auto &analyserEquation : analyserModel->analyserEquations()) {
+        checkAstTypeAsString(analyserEquation->ast());
     }
 
     auto generator = libcellml::Generator::create();
 
-    generator->trackVariable(analyserModel->variable(model->component("my_component")->variable("eqnNlaVariable1")));
+    generator->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
 
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generator);
 
@@ -973,7 +973,7 @@ TEST(Coverage, generator)
 
     generator->implementationCode(analyserModel);
 
-    libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
+    libcellml::Generator::equationCode(analyser->model()->analyserEquation(0)->ast());
 }
 
 TEST(Coverage, generatorWithNoTracking)

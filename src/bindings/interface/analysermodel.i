@@ -70,17 +70,17 @@
 %feature("docstring") libcellml::AnalyserModel::externalVariable
 "Returns the external variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::variable
-"Returns the :class:`AnalyserVariable` for the given variable.";
+%feature("docstring") libcellml::AnalyserModel::analyserVariable
+"Returns the analyser variable for the given variable.";
 
-%feature("docstring") libcellml::AnalyserModel::equationCount
-"Returns the number of equations contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::analyserEquationCount
+"Returns the number of analyser equations contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::equations
-"Returns the equations contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::analyserEquations
+"Returns the analyser equations contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::equation
-"Returns the equation, specified by index, contained by this :class:`AnalyserModel` object.";
+%feature("docstring") libcellml::AnalyserModel::analyserEquation
+"Returns the analyser equation, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::needEqFunction
 "Tests if this :class:`AnalyserModel` object needs an \"equal to\" function.";

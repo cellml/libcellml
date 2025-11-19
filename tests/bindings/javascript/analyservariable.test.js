@@ -63,16 +63,16 @@ describe("Analyser Variable tests", () => {
         const av = am.algebraicVariable(3)
         expect(av.model()).toStrictEqual(am)
     });
-    test('Checking Analyser Equation equationCount.', () => {
+    test('Checking Analyser Equation analyserEquationCount.', () => {
         const av = am.computedConstant(1)
-        expect(av.equationCount()).toBe(1)
+        expect(av.analyserEquationCount()).toBe(1)
     });
-    test('Checking Analyser Variable equations.', () => {
+    test('Checking Analyser Variable analyserEquations.', () => {
         const av = am.computedConstant(1)
-        expect(av.equations().size()).toBe(1)
+        expect(av.analyserEquations().size()).toBe(1)
     });
-    test('Checking Analyser Variable equation.', () => {
+    test('Checking Analyser Variable analyserEquation.', () => {
         const av = am.computedConstant(1)
-        expect(av.equation(0).type().value).toBe(libcellml.AnalyserEquation.Type.COMPUTED_CONSTANT.value)
+        expect(av.analyserEquation(0).type().value).toBe(libcellml.AnalyserEquation.Type.COMPUTED_CONSTANT.value)
     });
  })
