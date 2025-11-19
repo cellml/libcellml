@@ -40,7 +40,7 @@ public:
      */
     enum class Type
     {
-        CONSTANT, /**< An equation that computes a (true) constant (e.g. x = 3). */
+        CONSTANT, /**< An equation that computes a (true) constant (e.g., x = 3). */
         COMPUTED_CONSTANT, /**< An equation that computes a computed constant (e.g., x = 3+5, x = 3+z, x = y+z where y and z are constants). */
         ODE, /**< An equation that computes an ordinary differential equation (e.g., d(y)/dt = f(t, x)). */
         NLA, /**< An equation that computes one or several algebraic variables (e.g., x+y = f(z) where x and y are known, but not z). */
