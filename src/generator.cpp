@@ -133,25 +133,33 @@ bool Generator::GeneratorImpl::isUntrackedVariable(const AnalyserVariablePtr &an
     return isTrackedVariable(analyserVariable, false);
 }
 
-void Generator::GeneratorImpl::addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked)
+void Generator::GeneratorImpl::addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked,
+                                                const std::string &variableInfo, const std::string &trackedInfo,
+                                                const std::string &untrackedInfo,
+                                                Issue::ReferenceRule trackedReferenceRule,
+                                                Issue::ReferenceRule untrackedReferenceRule)
 {
     auto issue = Issue::IssueImpl::create();
 
     issue->mPimpl->setDescription("Variable '" + analyserVariable->variable()->name()
                                   + "' in component '" + owningComponent(analyserVariable->variable())->name()
-                                  + "' is needed to compute an external variable and "
-                                  + (tracked ?
-                                         "is therefore always tracked." :
-                                         "cannot therefore be untracked."));
-    issue->mPimpl->setReferenceRule(tracked ?
-                                        Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED :
-                                        Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE);
+                                  + "' is " + variableInfo + " and "
+                                  + (tracked ? trackedInfo : untrackedInfo) + ".");
+    issue->mPimpl->setReferenceRule(tracked ? trackedReferenceRule : untrackedReferenceRule);
 
     if (tracked) {
         issue->mPimpl->setLevel(Issue::Level::MESSAGE);
     }
 
     addIssue(issue);
+}
+
+void Generator::GeneratorImpl::addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked)
+{
+    addTrackingIssue(analyserVariable, tracked, "needed to compute an external variable",
+                     "is therefore always tracked", "cannot therefore be untracked",
+                     Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED,
+                     Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE);
 }
 
 bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool canAddIssue)
@@ -163,23 +171,10 @@ bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &anal
     for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
         if (analyserEquation->type() == AnalyserEquation::Type::NLA) {
             if (canAddIssue) {
-                auto issue = Issue::IssueImpl::create();
-
-                issue->mPimpl->setDescription("Variable '" + analyserVariable->variable()->name()
-                                              + "' in component '" + owningComponent(analyserVariable->variable())->name()
-                                              + "' is computed using an NLA system and "
-                                              + (tracked ?
-                                                     "is therefore always tracked." :
-                                                     "cannot therefore be untracked."));
-                issue->mPimpl->setReferenceRule(tracked ?
-                                                    Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED :
-                                                    Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
-
-                if (tracked) {
-                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                }
-
-                addIssue(issue);
+                addTrackingIssue(analyserVariable, tracked, "computed using an NLA system",
+                                 "is therefore always tracked", "cannot therefore be untracked",
+                                 Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED,
+                                 Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
             }
 
             return false;
@@ -239,26 +234,15 @@ bool Generator::GeneratorImpl::specialVariable(const AnalyserVariablePtr &analys
                                                Issue::ReferenceRule untrackedReferenceRule)
 {
     if (analyserVariable == specialAnalyserVariable) {
-        auto issue = Issue::IssueImpl::create();
-        auto variableType = (specialAnalyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+        auto variableInfo = (specialAnalyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
                                 "the variable of integration" :
                                 ((specialAnalyserVariable->type() == AnalyserVariable::Type::STATE) ?
                                      "a state variable" :
                                      "an external variable");
 
-        issue->mPimpl->setDescription("Variable '" + analyserVariable->variable()->name()
-                                      + "' in component '" + owningComponent(analyserVariable->variable())->name()
-                                      + "' is " + variableType + " and "
-                                      + (tracked ?
-                                             "is therefore always tracked." :
-                                             "cannot therefore be untracked."));
-        issue->mPimpl->setReferenceRule(tracked ? trackedReferenceRule : untrackedReferenceRule);
-
-        if (tracked) {
-            issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-        }
-
-        addIssue(issue);
+        addTrackingIssue(analyserVariable, tracked, variableInfo,
+                         "is therefore always tracked", "cannot therefore be untracked",
+                         trackedReferenceRule, untrackedReferenceRule);
 
         return true;
     }
