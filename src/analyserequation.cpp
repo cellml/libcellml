@@ -29,26 +29,26 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-bool AnalyserEquation::AnalyserEquationImpl::isDummyDependency(const AnalyserEquationWeakPtr &dependency)
+bool AnalyserEquation::AnalyserEquationImpl::isStagingDependency(const AnalyserEquationWeakPtr &dependency)
 {
     return libcellml::analyserVariables(dependency.lock()).empty();
 }
 
-void AnalyserEquation::AnalyserEquationImpl::removeDummyDependencies()
+void AnalyserEquation::AnalyserEquationImpl::removeStagingDependencies()
 {
     // Keep track of our constant dependencies, so that we can generate some code for them, should they be untracked.
 
     for (const auto &dependency : mDependencies) {
         auto constantDependency = dependency.lock()->mPimpl->mConstant;
 
-        if (isDummyDependency(dependency)) {
+        if (isStagingDependency(dependency)) {
             mConstantDependencies.push_back(constantDependency);
         }
     }
 
-    // Effectively remove our dummy dependencies.
+    // Effectively remove our staging dependencies.
 
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isDummyDependency), mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isStagingDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
