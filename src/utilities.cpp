@@ -26,6 +26,8 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#include "libcellml/analyserequation.h"
+#include "libcellml/analysermodel.h"
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -1311,6 +1313,43 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
             ++childNodeIndex;
         }
     }
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &model)
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    if (model->voi() != nullptr) {
+        res.push_back(model->voi());
+    }
+
+    auto states = model->states();
+    auto constants = model->constants();
+    auto computedConstants = model->computedConstants();
+    auto algebraicVariables = model->algebraicVariables();
+    auto externalVariables = model->externalVariables();
+
+    res.insert(res.end(), states.begin(), states.end());
+    res.insert(res.end(), constants.begin(), constants.end());
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
+    res.insert(res.end(), externalVariables.begin(), externalVariables.end());
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &equation)
+{
+    auto res = equation->states();
+    auto computedConstants = equation->computedConstants();
+    auto algebraicVariables = equation->algebraicVariables();
+    auto externalVariables = equation->externalVariables();
+
+    res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
+    res.insert(res.end(), externalVariables.begin(), externalVariables.end());
 
     return res;
 }

@@ -61,10 +61,25 @@ describe("Analyser Model tests", () => {
         expect(am.states().size()).toBe(4)
         expect(am.state(2).variable().name()).toBe("m")
     });
-    test('Checking Analyser Model variables related API.', () => {
-        expect(am.variableCount()).toBe(18)
-        expect(am.variables().size()).toBe(18)
-        expect(am.variable(2).variable().name()).toBe("i_L")
+    test('Checking Analyser Model constants related API.', () => {
+        expect(am.constantCount()).toBe(5)
+        expect(am.constants().size()).toBe(5)
+        expect(am.constant(2).variable().name()).toBe("g_L")
+    });
+    test('Checking Analyser Model computed constants related API.', () => {
+        expect(am.computedConstantCount()).toBe(3)
+        expect(am.computedConstants().size()).toBe(3)
+        expect(am.computedConstant(2).variable().name()).toBe("E_K")
+    });
+    test('Checking Analyser Model algebraic variables related API.', () => {
+        expect(am.algebraicVariableCount()).toBe(10)
+        expect(am.algebraicVariables().size()).toBe(10)
+        expect(am.algebraicVariable(2).variable().name()).toBe("i_K")
+    });
+    test('Checking Analyser Model external variables related API.', () => {
+        expect(am.externalVariableCount()).toBe(0)
+        expect(am.externalVariables().size()).toBe(0)
+        expect(am.externalVariable(0)).toBeNull()
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)
@@ -93,6 +108,6 @@ describe("Analyser Model tests", () => {
         expect(am.needAcothFunction()).toBe(false)
     });
     test('Checking Analyser Model are equivalent variables.', () => {
-        expect(am.areEquivalentVariables(am.variable(2).variable(), am.variable(7).variable())).toBe(false)
+        expect(am.areEquivalentVariables(am.algebraicVariable(2).variable(), am.algebraicVariable(7).variable())).toBe(false)
     });
  })

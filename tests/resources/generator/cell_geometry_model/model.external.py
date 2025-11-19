@@ -4,42 +4,57 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.6.3"
 
-VARIABLE_COUNT = 4
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_VARIABLE_COUNT = 2
+EXTERNAL_VARIABLE_COUNT = 2
 
+CONSTANT_INFO = [
+]
 
-class VariableType(Enum):
-    CONSTANT = 0
-    COMPUTED_CONSTANT = 1
-    ALGEBRAIC = 2
-    EXTERNAL = 3
+COMPUTED_CONSTANT_INFO = [
+]
 
+ALGEBRAIC_INFO = [
+    {"name": "vcell", "units": "microlitre", "component": "cell_geometry"},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry"}
+]
 
-VARIABLE_INFO = [
-    {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
-    {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC}
+EXTERNAL_INFO = [
+    {"name": "L", "units": "centimeter", "component": "cell_geometry"},
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry"}
 ]
 
 
-def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+def create_constants_array():
+    return [nan]*CONSTANT_COUNT
 
 
-def initialise_variables(variables, external_variable):
-    variables[0] = external_variable(variables, 0)
-    variables[1] = external_variable(variables, 1)
+def create_computed_constants_array():
+    return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def compute_computed_constants(variables):
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
+
+
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
+
+
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     pass
 
 
-def compute_variables(variables, external_variable):
-    variables[0] = external_variable(variables, 0)
-    variables[1] = external_variable(variables, 1)
-    variables[2] = 1000.0*3.14*variables[1]*variables[1]*variables[0]
-    variables[3] = 0.02*variables[2]
+def compute_computed_constants(constants, computed_constants):
+    pass
+
+
+def compute_variables(constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
+    externalVariables[1] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 1)
+    algebraicVariables[0] = 1000.0*3.14*externalVariables[1]*externalVariables[1]*externalVariables[0]
+    algebraicVariables[1] = 0.02*algebraicVariables[0]

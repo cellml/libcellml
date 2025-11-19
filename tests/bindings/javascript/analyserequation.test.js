@@ -56,7 +56,7 @@ describe("Analyser Equation tests", () => {
         expect(eqn.dependencies().size()).toBe(0)
     });
     test('Checking Analyser Equation dependency.', () => {
-        expect(eqn.dependency(0)).toBe(null)
+        expect(eqn.dependency(0)).toBeNull()
     });
     test('Checking Analyser Equation nlaSystemIndex.', () => {
         expect(eqn.nlaSystemIndex()).toBe(4294967295)
@@ -68,16 +68,34 @@ describe("Analyser Equation tests", () => {
         expect(eqn.nlaSiblings().size()).toBe(0)
     });
     test('Checking Analyser Equation nlaSibling.', () => {
-        expect(eqn.nlaSibling(0)).toBe(null)
+        expect(eqn.nlaSibling(0)).toBeNull()
     });
-    test('Checking Analyser Equation variableCount.', () => {
-        expect(eqn.variableCount()).toBe(1)
+    test('Checking Analyser Equation computedConstantCount.', () => {
+        expect(eqn.computedConstantCount()).toBe(0)
     });
-    test('Checking Analyser Equation variables.', () => {
-        expect(eqn.variables().size()).toBe(1)
+    test('Checking Analyser Equation computedConstants.', () => {
+        expect(eqn.computedConstants().size()).toBe(0)
     });
-    test('Checking Analyser Equation variable.', () => {
-        expect(eqn.variable(0).variable().name()).toBe("x")
+    test('Checking Analyser Equation computedConstant.', () => {
+        expect(eqn.computedConstant(0)).toBeNull()
+    });
+    test('Checking Analyser Equation algebraicVariableCount.', () => {
+        expect(eqn.algebraicVariableCount()).toBe(0)
+    });
+    test('Checking Analyser Equation algebraicVariables.', () => {
+        expect(eqn.algebraicVariables().size()).toBe(0)
+    });
+    test('Checking Analyser Equation algebraicVariable.', () => {
+        expect(eqn.algebraicVariable(0)).toBeNull()
+    });
+    test('Checking Analyser Equation externalVariableCount.', () => {
+        expect(eqn.externalVariableCount()).toBe(0)
+    });
+    test('Checking Analyser Equation externalVariables.', () => {
+        expect(eqn.externalVariables().size()).toBe(0)
+    });
+    test('Checking Analyser Equation externalVariable.', () => {
+        expect(eqn.externalVariable(0)).toBeNull()
     });
     test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")

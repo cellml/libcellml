@@ -5,10 +5,16 @@
 #include <stddef.h>
 
 double * createStatesArray();
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicVariablesArray();
+double * createExternalVariablesArray();
+
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *rates, double *variables);
-void computeComputedConstants(double *variables);
-void computeRates(double voi, double *states, double *rates, double *variables);
-void computeVariables(double voi, double *states, double *rates, double *variables);
+typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);
+
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
+void computeComputedConstants(double *constants, double *computedConstants);
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable);
