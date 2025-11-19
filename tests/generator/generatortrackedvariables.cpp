@@ -59,10 +59,10 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     generator->untrackAllComputedConstants(nullptr);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
-    generator->trackAllAlgebraic(nullptr);
+    generator->trackAllAlgebraicVariables(nullptr);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
-    generator->untrackAllAlgebraic(nullptr);
+    generator->untrackAllAlgebraicVariables(nullptr);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
 
     generator->trackAllVariables(nullptr);
@@ -403,7 +403,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
 
-    generator->untrackAllAlgebraic(analyserModel);
+    generator->untrackAllAlgebraicVariables(analyserModel);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(analyserModel));
@@ -411,7 +411,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     EXPECT_EQ(size_t(8), generator->trackedVariableCount(analyserModel));
     EXPECT_EQ(size_t(10), generator->untrackedVariableCount(analyserModel));
 
-    generator->trackAllAlgebraic(analyserModel);
+    generator->trackAllAlgebraicVariables(analyserModel);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
 
     EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
@@ -473,7 +473,7 @@ void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::
 
         break;
     case TrackingType::ALGEBRAIC:
-        generator->untrackAllAlgebraic(analyserModel);
+        generator->untrackAllAlgebraicVariables(analyserModel);
 
         break;
     default: // CONTROL.

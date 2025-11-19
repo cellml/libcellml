@@ -97,12 +97,12 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual(3, g.trackedComputedConstantCount(am))
         self.assertEqual(0, g.untrackedComputedConstantCount(am))
 
-        g.untrackAllAlgebraic(am)
+        g.untrackAllAlgebraicVariables(am)
 
         self.assertEqual(0, g.trackedAlgebraicCount(am))
         self.assertEqual(10, g.untrackedAlgebraicCount(am))
 
-        g.trackAllAlgebraic(am)
+        g.trackAllAlgebraicVariables(am)
 
         self.assertEqual(10, g.trackedAlgebraicCount(am))
         self.assertEqual(0, g.untrackedAlgebraicCount(am))

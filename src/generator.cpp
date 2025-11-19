@@ -393,14 +393,14 @@ void Generator::GeneratorImpl::untrackAllComputedConstants(const AnalyserModelPt
     }
 }
 
-void Generator::GeneratorImpl::trackAllAlgebraic(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
     if (validModel(analyserModel)) {
         trackVariables(analyserModel->algebraicVariables(), true);
     }
 }
 
-void Generator::GeneratorImpl::untrackAllAlgebraic(const AnalyserModelPtr &analyserModel)
+void Generator::GeneratorImpl::untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
     if (validModel(analyserModel)) {
         trackVariables(analyserModel->algebraicVariables(), false);
@@ -2611,14 +2611,14 @@ void Generator::untrackAllComputedConstants(const AnalyserModelPtr &analyserMode
     pFunc()->untrackAllComputedConstants(analyserModel);
 }
 
-void Generator::trackAllAlgebraic(const AnalyserModelPtr &analyserModel)
+void Generator::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->trackAllAlgebraic(analyserModel);
+    pFunc()->trackAllAlgebraicVariables(analyserModel);
 }
 
-void Generator::untrackAllAlgebraic(const AnalyserModelPtr &analyserModel)
+void Generator::untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel)
 {
-    pFunc()->untrackAllAlgebraic(analyserModel);
+    pFunc()->untrackAllAlgebraicVariables(analyserModel);
 }
 
 void Generator::trackAllVariables(const AnalyserModelPtr &analyserModel)

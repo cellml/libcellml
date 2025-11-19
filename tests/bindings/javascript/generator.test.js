@@ -76,12 +76,12 @@ describe("Generator tests", () => {
         expect(g.trackedComputedConstantCount(am)).toBe(3)
         expect(g.untrackedComputedConstantCount(am)).toBe(0)
 
-        g.untrackAllAlgebraic(am)
+        g.untrackAllAlgebraicVariables(am)
 
         expect(g.trackedAlgebraicCount(am)).toBe(0)
         expect(g.untrackedAlgebraicCount(am)).toBe(10)
 
-        g.trackAllAlgebraic(am)
+        g.trackAllAlgebraicVariables(am)
 
         expect(g.trackedAlgebraicCount(am)).toBe(10)
         expect(g.untrackedAlgebraicCount(am)).toBe(0)

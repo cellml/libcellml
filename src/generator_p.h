@@ -79,8 +79,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     void trackAllComputedConstants(const AnalyserModelPtr &analyserModel);
     void untrackAllComputedConstants(const AnalyserModelPtr &analyserModel);
 
-    void trackAllAlgebraic(const AnalyserModelPtr &analyserModel);
-    void untrackAllAlgebraic(const AnalyserModelPtr &analyserModel);
+    void trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
+    void untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
 
     std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &analyserModel) const;
 
