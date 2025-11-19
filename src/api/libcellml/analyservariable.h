@@ -126,7 +126,7 @@ public:
      *
      * @return The @ref AnalyserModel.
      */
-    AnalyserModelPtr model() const;
+    AnalyserModelPtr analyserModel() const;
 
     /**
      * @brief Get the number of analyser equations used to compute this @ref AnalyserVariable.

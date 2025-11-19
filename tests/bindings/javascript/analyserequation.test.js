@@ -36,7 +36,7 @@ describe("Analyser Equation tests", () => {
         a.analyseModel(m)
         expect(a.issueCount()).toBe(0)
 
-        am = a.model()
+        am = a.analyserModel()
 
         expect(am.analyserEquationCount()).toBe(1)
 

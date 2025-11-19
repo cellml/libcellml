@@ -31,7 +31,7 @@ TEST(Generator, emptyModel)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
@@ -51,7 +51,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -79,7 +79,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -109,7 +109,7 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_const_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -135,7 +135,7 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_constant_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -161,7 +161,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -187,7 +187,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -213,7 +213,7 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -239,7 +239,7 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -265,7 +265,7 @@ TEST(Generator, algebraicUnknownVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_unknown_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -291,7 +291,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.h", generator->interfaceCode(analyserModel));
@@ -319,7 +319,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -349,7 +349,7 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.h", generator->interfaceCode(analyserModel));
@@ -379,7 +379,7 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -409,7 +409,7 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -439,7 +439,7 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -469,7 +469,7 @@ TEST(Generator, odeComputedVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -495,7 +495,7 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_computed_var_on_rhs_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -521,7 +521,7 @@ TEST(Generator, odeConstVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -547,7 +547,7 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_const_var_on_rhs_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -573,7 +573,7 @@ TEST(Generator, odeConstantOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -599,7 +599,7 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -625,7 +625,7 @@ TEST(Generator, odeMultipleDependentOdes)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes/model.h", generator->interfaceCode(analyserModel));
@@ -651,7 +651,7 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_dependent_odes_one_component/model.h", generator->interfaceCode(analyserModel));
@@ -677,7 +677,7 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.h", generator->interfaceCode(analyserModel));
@@ -703,7 +703,7 @@ TEST(Generator, odeUnknownVarOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
@@ -729,7 +729,7 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_mappings_and_encapsulations/model.h", generator->interfaceCode(analyserModel));
@@ -755,7 +755,7 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_state_initialised_using_variable/model.h", generator->interfaceCode(analyserModel));
@@ -781,7 +781,7 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_indirect/model.h", generator->interfaceCode(analyserModel));
@@ -807,7 +807,7 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_voi_direct/model.h", generator->interfaceCode(analyserModel));
@@ -838,7 +838,7 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_constant/model.h", generator->interfaceCode(analyserModel));
@@ -864,7 +864,7 @@ TEST(Generator, cellmlUnitScalingState)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state/model.h", generator->interfaceCode(analyserModel));
@@ -890,7 +890,7 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_constant/model.h", generator->interfaceCode(analyserModel));
@@ -916,7 +916,7 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_state_initialised_using_variable/model.h", generator->interfaceCode(analyserModel));
@@ -942,7 +942,7 @@ TEST(Generator, cellmlUnitScalingRate)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_unit_scaling_rate/model.h", generator->interfaceCode(analyserModel));
@@ -968,7 +968,7 @@ TEST(Generator, dependentEqns)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/dependent_eqns/model.h", generator->interfaceCode(analyserModel));
@@ -994,7 +994,7 @@ TEST(Generator, cellGeometryModel)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/cell_geometry_model/model.h", generator->interfaceCode(analyserModel));
@@ -1023,7 +1023,7 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1053,7 +1053,7 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.h", generator->interfaceCode(analyserModel));
@@ -1079,7 +1079,7 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.h", generator->interfaceCode(analyserModel));
@@ -1105,7 +1105,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode(analyserModel));
@@ -1131,7 +1131,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode(analyserModel));
@@ -1162,7 +1162,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1204,7 +1204,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1239,7 +1239,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1280,7 +1280,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1315,7 +1315,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1356,7 +1356,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1391,7 +1391,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1432,7 +1432,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1480,7 +1480,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1513,7 +1513,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel195Dae)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1554,7 +1554,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1584,7 +1584,7 @@ TEST(Generator, nobleModel1962)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/noble_model_1962/model.h", generator->interfaceCode(analyserModel));
@@ -1610,7 +1610,7 @@ TEST(Generator, robertsonOdeModel1966)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1640,7 +1640,7 @@ TEST(Generator, robertsonDaeModel1966)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto profile = generator->profile();
@@ -1678,7 +1678,7 @@ TEST(Generator, sineImports)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/sine_model_imports/model.h", generator->interfaceCode(analyserModel));
@@ -1705,7 +1705,7 @@ TEST(Generator, analyserModelScopeTest)
 
         EXPECT_EQ(size_t(0), analyser->errorCount());
 
-        analyserModel = analyser->model();
+        analyserModel = analyser->analyserModel();
     }
 
     auto generator = libcellml::Generator::create();
@@ -1727,7 +1727,7 @@ TEST(Generator, daeModel)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/dae_cellml_1_1_model/model.h", generator->interfaceCode(analyserModel));
@@ -1753,7 +1753,7 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_a_constant/model.h", generator->interfaceCode(analyserModel));
@@ -1781,7 +1781,7 @@ TEST(Generator, modelOutOfScope)
 
         EXPECT_EQ(size_t(0), analyser->errorCount());
 
-        analyserModel = analyser->model();
+        analyserModel = analyser->analyserModel();
     }
 
     auto generator = libcellml::Generator::create();
@@ -1808,7 +1808,7 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/unknown_variable_as_external_variable/model.h", generator->interfaceCode(analyserModel));
@@ -1841,7 +1841,7 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
         analyser->analyseModel(model);
         EXPECT_EQ(size_t(0), analyser->errorCount());
 
-        analyserModel = analyser->model();
+        analyserModel = analyser->analyserModel();
     }
 
     auto generator = libcellml::Generator::create();

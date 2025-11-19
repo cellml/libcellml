@@ -28,7 +28,7 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_FALSE(generator->isTrackedVariable(nullptr));
@@ -96,7 +96,7 @@ TEST(GeneratorTrackedVariables, tracAndkUntrackVariableOfIntegration)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("environment")->variable("time");
@@ -131,7 +131,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackStateVariable)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("membrane")->variable("V");
@@ -166,7 +166,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("membrane")->variable("Cm");
@@ -201,7 +201,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("leakage_current")->variable("E_L");
@@ -236,7 +236,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("membrane")->variable("i_Stim");
@@ -273,7 +273,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto variable = model->component("membrane")->variable("V");
@@ -309,7 +309,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackVariableFromOtherModel)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     auto otherVariable = otherModel->component("membrane")->variable("Cm");
@@ -329,7 +329,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
@@ -362,7 +362,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
@@ -395,7 +395,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
@@ -428,7 +428,7 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
@@ -506,7 +506,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     untrack(analyserModel, generator, trackingType);
 
@@ -540,7 +540,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     analyser->analyseModel(model);
 
-    analyserModel = analyser->model();
+    analyserModel = analyser->analyserModel();
 
     untrack(analyserModel, generator, trackingType);
 

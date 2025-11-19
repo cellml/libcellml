@@ -82,11 +82,11 @@ bool Generator::GeneratorImpl::doIsTrackedEquation(const AnalyserEquationPtr &an
     case AnalyserEquation::Type::COMPUTED_CONSTANT:
         analyserVariable = analyserEquation->computedConstants().front();
 
-        return doIsTrackedVariable(analyserVariable->model(), analyserVariable) == tracked;
+        return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
     case AnalyserEquation::Type::ALGEBRAIC:
         analyserVariable = analyserEquation->algebraicVariables().front();
 
-        return doIsTrackedVariable(analyserVariable->model(), analyserVariable) == tracked;
+        return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable) == tracked;
     default:
         return true;
     }
@@ -120,7 +120,7 @@ bool Generator::GeneratorImpl::doIsTrackedVariable(const AnalyserVariablePtr &an
         return false;
     }
 
-    return doIsTrackedVariable(analyserVariable->model(), analyserVariable, tracked);
+    return doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable, tracked);
 }
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &analyserVariable)
@@ -188,7 +188,7 @@ bool Generator::GeneratorImpl::trackableVariable(const AnalyserVariablePtr &anal
 
     // A trackable analyser variable is also not an analyser variable that is needed to compute an external variable.
 
-    for (const auto &externalVariable : analyserVariable->model()->externalVariables()) {
+    for (const auto &externalVariable : analyserVariable->analyserModel()->externalVariables()) {
         auto externalEquationPimpl = externalVariable->analyserEquations().front()->mPimpl;
 
         // Check whether the analyser variable is a constant dependency.
@@ -289,12 +289,12 @@ void Generator::GeneratorImpl::trackVariable(const AnalyserVariablePtr &analyser
     // Check whether we want to track/untrack a constant, a computed constant, or an algebraic variable though we can
     // only track/untrack a variable if it is actually trackable.
 
-    auto analyserModel = analyserVariable->model();
+    auto analyserModel = analyserVariable->analyserModel();
 
     for (const auto &analyserModelVariable : analyserVariables(analyserVariable)) {
         if (analyserVariable == analyserModelVariable) {
             if (trackableVariable(analyserVariable, tracked)) {
-                mTrackedVariables[analyserModelVariable->model()][analyserModelVariable] = tracked;
+                mTrackedVariables[analyserModelVariable->analyserModel()][analyserModelVariable] = tracked;
             }
 
             return;
@@ -893,7 +893,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
     if (!variableInfoString.empty()
         && !mProfile->variableInfoEntryString().empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
-        auto analyserModel = analyserVariables.empty() ? nullptr : analyserVariables.front()->model();
+        auto analyserModel = analyserVariables.empty() ? nullptr : analyserVariables.front()->analyserModel();
         std::string infoElementsCode;
 
         for (const auto &analyserVariable : analyserVariables) {
@@ -2157,7 +2157,7 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &an
     case AnalyserEquation::Type::ALGEBRAIC:
         if (analyserEquation->isStateRateBased()) {
             for (const auto &analyserVariable : analyserVariables(analyserEquation)) {
-                if (doIsTrackedVariable(analyserVariable->model(), analyserVariable)) {
+                if (doIsTrackedVariable(analyserVariable->analyserModel(), analyserVariable)) {
                     return true;
                 }
             }

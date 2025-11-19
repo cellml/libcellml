@@ -202,7 +202,7 @@ public:
      *
      * @return The analysed model for the @ref Model analysed by this @ref Analyser.
      */
-    AnalyserModelPtr model() const;
+    AnalyserModelPtr analyserModel() const;
 
 private:
     Analyser(); /**< Constructor, @private. */

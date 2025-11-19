@@ -285,7 +285,7 @@ TEST(Coverage, sha1)
 
         generatorProfile->setVoiString(xs);
 
-        generator->implementationCode(analyser->model());
+        generator->implementationCode(analyser->analyserModel());
     }
 }
 
@@ -435,7 +435,7 @@ TEST(Coverage, analyser)
 
     EXPECT_EQ(size_t(1), analyser->issueCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     EXPECT_FALSE(analyserModel->isValid());
 
@@ -518,7 +518,7 @@ TEST(Coverage, analyser)
 
     analyser->analyseModel(model);
 
-    analyserModel = analyser->model();
+    analyserModel = analyser->analyserModel();
 
     EXPECT_TRUE(analyserModel->isValid());
 
@@ -535,7 +535,7 @@ TEST(Coverage, analyser)
 
     analyser->analyseModel(model);
 
-    analyserModel = analyser->model();
+    analyserModel = analyser->analyserModel();
 
     EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("my_algebraic_eqn")->variable("x")));
 }
@@ -585,7 +585,7 @@ TEST(Coverage, analyserTypes)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->analyserEquation(0)->type()));
     EXPECT_EQ("algebraic_variable", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraicVariable(0)->type()));
@@ -618,7 +618,7 @@ TEST(Coverage, generator)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
@@ -898,7 +898,7 @@ TEST(Coverage, generator)
 
     analyser->analyseModel(model);
 
-    analyserModel = analyser->model();
+    analyserModel = analyser->analyserModel();
 
     generator->setProfile(profile);
 
@@ -973,7 +973,7 @@ TEST(Coverage, generator)
 
     generator->implementationCode(analyserModel);
 
-    libcellml::Generator::equationCode(analyser->model()->analyserEquation(0)->ast());
+    libcellml::Generator::equationCode(analyser->analyserModel()->analyserEquation(0)->ast());
 }
 
 TEST(Coverage, generatorWithNoTracking)
@@ -984,7 +984,7 @@ TEST(Coverage, generatorWithNoTracking)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
     generator->untrackAllVariables(analyserModel);

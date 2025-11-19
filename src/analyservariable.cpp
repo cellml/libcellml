@@ -94,7 +94,7 @@ VariablePtr AnalyserVariable::variable() const
     return mPimpl->mVariable;
 }
 
-AnalyserModelPtr AnalyserVariable::model() const
+AnalyserModelPtr AnalyserVariable::analyserModel() const
 {
     return mPimpl->mAnalyserModel.lock();
 }
