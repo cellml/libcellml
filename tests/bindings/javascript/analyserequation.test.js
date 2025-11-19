@@ -38,9 +38,9 @@ describe("Analyser Equation tests", () => {
 
         am = a.model()
 
-        expect(am.equationCount()).toBe(1)
+        expect(am.analyserEquationCount()).toBe(1)
 
-        eqn = am.equation(0)
+        eqn = am.analyserEquation(0)
     });
     test('Checking Analyser Equation type.', () => {
         expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
@@ -79,8 +79,8 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation computedConstant.', () => {
         expect(eqn.computedConstant(0)).toBeNull()
     });
-    test('Checking Analyser Equation algebraicCount.', () => {
-        expect(eqn.algebraicCount()).toBe(0)
+    test('Checking Analyser Equation algebraicVariableCount.', () => {
+        expect(eqn.algebraicVariableCount()).toBe(0)
     });
     test('Checking Analyser Equation algebraicVariables.', () => {
         expect(eqn.algebraicVariables().size()).toBe(0)
@@ -88,14 +88,14 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation algebraicVariable.', () => {
         expect(eqn.algebraicVariable(0)).toBeNull()
     });
-    test('Checking Analyser Equation externalCount.', () => {
-        expect(eqn.externalCount()).toBe(0)
+    test('Checking Analyser Equation externalVariableCount.', () => {
+        expect(eqn.externalVariableCount()).toBe(0)
     });
-    test('Checking Analyser Equation externals.', () => {
-        expect(eqn.externals().size()).toBe(0)
+    test('Checking Analyser Equation externalVariables.', () => {
+        expect(eqn.externalVariables().size()).toBe(0)
     });
-    test('Checking Analyser Equation external.', () => {
-        expect(eqn.external(0)).toBeNull()
+    test('Checking Analyser Equation externalVariable.', () => {
+        expect(eqn.externalVariable(0)).toBeNull()
     });
     test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")

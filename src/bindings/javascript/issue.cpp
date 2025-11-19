@@ -36,7 +36,7 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .value("ANALYSER_EXTERNAL_VARIABLE_VOI", libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI)
         .value("ANALYSER_ODE_NOT_FIRST_ORDER", libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER)
         .value("ANALYSER_STATE_NOT_INITIALISED", libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED)
-        .value("ANALYSER_STATE_RATE_AS_ALGEBRAIC", libcellml::Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC)
+        .value("ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE", libcellml::Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE)
         .value("ANALYSER_UNITS", libcellml::Issue::ReferenceRule::ANALYSER_UNITS)
         .value("ANALYSER_UNLINKED_UNITS", libcellml::Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS)
         .value("ANALYSER_VARIABLE_UNDERCONSTRAINED", libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED)
