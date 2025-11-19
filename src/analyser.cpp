@@ -238,13 +238,13 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model, bool checkNl
         for (const auto &variable : mAllVariables) {
             switch (variable->mType) {
             case AnalyserInternalVariable::Type::INITIALISED:
-            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
+            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC_VARIABLE:
                 // The equation contains an initialised variable, so track it
                 // and consider it as an algebraic variable.
 
                 initialisedVariables.push_back(variable);
 
-                variable->mType = AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC;
+                variable->mType = AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC_VARIABLE;
 
                 break;
             default:
@@ -302,15 +302,15 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model, bool checkNl
                                       AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT :
                                   mComputedVariableBasedConstant ?
                                       AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
-                                      AnalyserInternalVariable::Type::ALGEBRAIC;
+                                      AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE;
             }
 
             switch (variable->mType) {
             case AnalyserInternalVariable::Type::STATE:
             case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
             case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
-            case AnalyserInternalVariable::Type::ALGEBRAIC:
+            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC_VARIABLE:
+            case AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE:
                 variable->mIsKnownStateVariable = variable->mType == AnalyserInternalVariable::Type::STATE;
 
                 mUnknownVariables.push_back(variable);
@@ -767,7 +767,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             auto iter = mStandardUnits.find(unitsName);
 
             if (iter == mStandardUnits.end()) {
-                auto units = libcellml::Units::create(unitsName);
+                auto units = Units::create(unitsName);
 
                 mCiCnUnits.emplace(ast, units);
                 mStandardUnits.emplace(unitsName, units);
@@ -2731,7 +2731,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     // an initial guess) that needs to be computed using an NLA
                     // system. So, requalify the unknown variable and equation.
 
-                    unknownVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+                    unknownVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE;
                     internalEquation->mType = AnalyserInternalEquation::Type::ALGEBRAIC;
 
                     break;
@@ -2881,8 +2881,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     auto stateIndex = MAX_SIZE_T;
     auto constantIndex = MAX_SIZE_T;
     auto computedConstantIndex = MAX_SIZE_T;
-    auto algebraicIndex = MAX_SIZE_T;
-    auto externalIndex = MAX_SIZE_T;
+    auto algebraicVariableIndex = MAX_SIZE_T;
+    auto externalVariableIndex = MAX_SIZE_T;
 
     for (const auto &internalVariable : mInternalVariables) {
         // Determine the type of the variable.
@@ -2890,7 +2890,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         AnalyserVariable::Type variableType;
 
         if (internalVariable->mIsExternalVariable) {
-            variableType = AnalyserVariable::Type::EXTERNAL;
+            variableType = AnalyserVariable::Type::EXTERNAL_VARIABLE;
         } else {
             switch (internalVariable->mType) {
             case AnalyserInternalVariable::Type::STATE:
@@ -2906,9 +2906,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 variableType = AnalyserVariable::Type::COMPUTED_CONSTANT;
 
                 break;
-            case AnalyserInternalVariable::Type::ALGEBRAIC:
-            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
-                variableType = AnalyserVariable::Type::ALGEBRAIC;
+            case AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE:
+            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC_VARIABLE:
+                variableType = AnalyserVariable::Type::ALGEBRAIC_VARIABLE;
 
                 break;
             default: // AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION.
@@ -2937,7 +2937,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Correct the type of the variable if it is a computed constant that is computed using an NLA equation.
 
         if ((variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) && isNlaEquation) {
-            variableType = AnalyserVariable::Type::ALGEBRAIC;
+            variableType = AnalyserVariable::Type::ALGEBRAIC_VARIABLE;
         }
 
         // Populate and keep track of the state/variable.
@@ -2951,10 +2951,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        ++constantIndex :
                                    (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
                                        ++computedConstantIndex :
-                                   (variableType == AnalyserVariable::Type::ALGEBRAIC) ?
-                                       ++algebraicIndex :
-                                       ++externalIndex,
-                                   (variableType == AnalyserVariable::Type::EXTERNAL) ?
+                                   (variableType == AnalyserVariable::Type::ALGEBRAIC_VARIABLE) ?
+                                       ++algebraicVariableIndex :
+                                       ++externalVariableIndex,
+                                   (variableType == AnalyserVariable::Type::EXTERNAL_VARIABLE) ?
                                        nullptr :
                                        internalVariable->mInitialisingVariable,
                                    internalVariable->mVariable, mModel, equations);
@@ -2968,10 +2968,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             mModel->mPimpl->mConstants.push_back(variable);
         } else if (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) {
             mModel->mPimpl->mComputedConstants.push_back(variable);
-        } else if (variableType == AnalyserVariable::Type::ALGEBRAIC) {
-            mModel->mPimpl->mAlgebraic.push_back(variable);
-        } else { // AnalyserVariable::Type::EXTERNAL.
-            mModel->mPimpl->mExternals.push_back(variable);
+        } else if (variableType == AnalyserVariable::Type::ALGEBRAIC_VARIABLE) {
+            mModel->mPimpl->mAlgebraicVariables.push_back(variable);
+        } else { // AnalyserVariable::Type::EXTERNAL_VARIABLE.
+            mModel->mPimpl->mExternalVariables.push_back(variable);
         }
     }
 
@@ -3086,10 +3086,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 equation->mPimpl->mStates.push_back(variable);
             } else if (variableType == AnalyserVariable::Type::COMPUTED_CONSTANT) {
                 equation->mPimpl->mComputedConstants.push_back(variable);
-            } else if (variableType == AnalyserVariable::Type::ALGEBRAIC) {
-                equation->mPimpl->mAlgebraic.push_back(variable);
-            } else { // AnalyserVariable::Type::EXTERNAL.
-                equation->mPimpl->mExternals.push_back(variable);
+            } else if (variableType == AnalyserVariable::Type::ALGEBRAIC_VARIABLE) {
+                equation->mPimpl->mAlgebraicVariables.push_back(variable);
+            } else { // AnalyserVariable::Type::EXTERNAL_VARIABLE.
+                equation->mPimpl->mExternalVariables.push_back(variable);
             }
         }
 

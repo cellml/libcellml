@@ -43,66 +43,70 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void reset();
 
-    std::string variableIndexString(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable);
+    std::string analyserVariableIndexString(const AnalyserModelPtr &analyserModel,
+                                            const AnalyserVariablePtr &analyserVariable);
 
-    bool doIsTrackedEquation(const AnalyserEquationPtr &equation, bool tracked);
+    bool doIsTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked);
 
-    bool isTrackedEquation(const AnalyserEquationPtr &equation);
-    bool isUntrackedEquation(const AnalyserEquationPtr &equation);
+    bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation);
+    bool isUntrackedEquation(const AnalyserEquationPtr &analyserEquation);
 
-    bool doIsTrackedVariable(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable, bool tracked = true);
-    bool doIsTrackedVariable(const AnalyserVariablePtr &variable, bool tracked);
+    bool doIsTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
+                             bool tracked = true);
+    bool doIsTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
 
-    bool isTrackedVariable(const AnalyserVariablePtr &variable);
-    bool isUntrackedVariable(const AnalyserVariablePtr &variable);
+    bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable);
+    bool isUntrackedVariable(const AnalyserVariablePtr &analyserVariable);
 
-    void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &variable, bool tracked);
+    void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked);
 
-    bool trackableVariable(const AnalyserVariablePtr &variable, bool tracked, bool canAddIssue = true);
-    bool specialVariable(const AnalyserVariablePtr &variable, const AnalyserVariablePtr &specialVariable, bool tracked,
+    bool trackableVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool canAddIssue = true);
+    bool specialVariable(const AnalyserVariablePtr &analyserVariable, const AnalyserVariablePtr &specialAnalyserVariable, bool tracked,
                          Issue::ReferenceRule trackedReferenceRule, Issue::ReferenceRule untrackedReferenceRule);
 
-    void doTrackVariable(const AnalyserVariablePtr &variable, bool tracked, bool needRemoveAllIssues = true);
+    void trackVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool needRemoveAllIssues = true);
 
-    void trackVariable(const AnalyserVariablePtr &variable);
-    void untrackVariable(const AnalyserVariablePtr &variable);
+    void trackVariable(const AnalyserVariablePtr &analyserVariable);
+    void untrackVariable(const AnalyserVariablePtr &analyserVariable);
 
-    void doTrackVariables(const std::vector<AnalyserVariablePtr> &variables, bool tracked);
+    void trackVariables(const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
-    bool validModel(const AnalyserModelPtr &model);
+    bool validModel(const AnalyserModelPtr &analyserModel);
 
-    void trackAllConstants(const AnalyserModelPtr &model);
-    void untrackAllConstants(const AnalyserModelPtr &model);
+    void trackAllConstants(const AnalyserModelPtr &analyserModel);
+    void untrackAllConstants(const AnalyserModelPtr &analyserModel);
 
-    void trackAllComputedConstants(const AnalyserModelPtr &model);
-    void untrackAllComputedConstants(const AnalyserModelPtr &model);
+    void trackAllComputedConstants(const AnalyserModelPtr &analyserModel);
+    void untrackAllComputedConstants(const AnalyserModelPtr &analyserModel);
 
-    void trackAllAlgebraic(const AnalyserModelPtr &model);
-    void untrackAllAlgebraic(const AnalyserModelPtr &model);
+    void trackAllAlgebraic(const AnalyserModelPtr &analyserModel);
+    void untrackAllAlgebraic(const AnalyserModelPtr &analyserModel);
 
-    std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &model) const;
+    std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &analyserModel) const;
 
-    void trackAllVariables(const AnalyserModelPtr &model);
-    void untrackAllVariables(const AnalyserModelPtr &model);
+    void trackAllVariables(const AnalyserModelPtr &analyserModel);
+    void untrackAllVariables(const AnalyserModelPtr &analyserModel);
 
-    size_t doTrackedVariableCount(const AnalyserModelPtr &model, const std::vector<AnalyserVariablePtr> &variables,
-                                  bool tracked);
+    size_t doTrackedVariableCount(const AnalyserModelPtr &analyserModel,
+                                  const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
-    size_t trackedConstantCount(const AnalyserModelPtr &model);
-    size_t untrackedConstantCount(const AnalyserModelPtr &model);
+    size_t trackedConstantCount(const AnalyserModelPtr &analyserModel);
+    size_t untrackedConstantCount(const AnalyserModelPtr &analyserModel);
+    size_t trackedComputedConstantCount(const AnalyserModelPtr &analyserModel);
+    size_t untrackedComputedConstantCount(const AnalyserModelPtr &analyserModel);
 
-    size_t trackedComputedConstantCount(const AnalyserModelPtr &model);
-    size_t untrackedComputedConstantCount(const AnalyserModelPtr &model);
+    size_t trackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
+    size_t untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
 
-    size_t trackedAlgebraicCount(const AnalyserModelPtr &model);
-    size_t untrackedAlgebraicCount(const AnalyserModelPtr &model);
+    size_t trackedVariableCount(const AnalyserModelPtr &analyserModel);
+    size_t untrackedVariableCount(const AnalyserModelPtr &analyserModel);
 
-    size_t trackedVariableCount(const AnalyserModelPtr &model);
-    size_t untrackedVariableCount(const AnalyserModelPtr &model);
+    AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const;
 
-    bool modelHasOdes(const AnalyserModelPtr &model) const;
+    bool modelHasOdes(const AnalyserModelPtr &analyserModel) const;
+    bool modelHasNlas(const AnalyserModelPtr &analyserModel) const;
 
-    double scalingFactor(const AnalyserModelPtr &model, const VariablePtr &variable) const;
+    double scalingFactor(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const;
 
     bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
 
@@ -121,7 +125,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
-                                 const AnalyserVariablePtr &variable) const;
+                                 const AnalyserVariablePtr &analyserVariable) const;
 
     bool modifiedProfile() const;
 
@@ -134,55 +138,55 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void addVersionAndLibcellmlVersionCode(bool interface = false);
 
-    void addStateAndVariableCountCode(const AnalyserModelPtr &model, bool interface = false);
+    void addStateAndVariableCountCode(const AnalyserModelPtr &analyserModel, bool interface = false);
 
-    std::string generateVariableInfoObjectCode(const AnalyserModelPtr &model, const std::string &objectString);
+    std::string generateVariableInfoObjectCode(const AnalyserModelPtr &analyserModel, const std::string &objectString);
 
-    void addVariableInfoObjectCode(const AnalyserModelPtr &model);
+    void addVariableInfoObjectCode(const AnalyserModelPtr &analyserModel);
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
                                               const std::string &component) const;
 
-    void addInterfaceVariableInfoCode(const AnalyserModelPtr &model);
+    void addInterfaceVariableInfoCode(const AnalyserModelPtr &analyserModel);
 
-    void doAddImplementationVariableInfoCode(const std::string &variableInfoString,
-                                             const std::vector<AnalyserVariablePtr> &variables, bool voiVariable);
-    void addImplementationVariableInfoCode(const AnalyserModelPtr &model);
+    void addImplementationVariableInfoCode(const std::string &variableInfoString,
+                                           const std::vector<AnalyserVariablePtr> &analyserVariables, bool voiVariable);
+    void addImplementationVariableInfoCode(const AnalyserModelPtr &analyserModel);
 
-    void addArithmeticFunctionsCode(const AnalyserModelPtr &model);
-    void addTrigonometricFunctionsCode(const AnalyserModelPtr &model);
+    void addArithmeticFunctionsCode(const AnalyserModelPtr &analyserModel);
+    void addTrigonometricFunctionsCode(const AnalyserModelPtr &analyserModel);
 
-    void addInterfaceCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model);
-    void addImplementationCreateDeleteArrayMethodsCode(const AnalyserModelPtr &model);
+    void addInterfaceCreateDeleteArrayMethodsCode(const AnalyserModelPtr &analyserModel);
+    void addImplementationCreateDeleteArrayMethodsCode(const AnalyserModelPtr &analyserModel);
 
-    void addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &model);
+    void addExternalVariableMethodTypeDefinitionCode(const AnalyserModelPtr &analyserModel);
 
-    void addRootFindingInfoObjectCode(const AnalyserModelPtr &model);
+    void addRootFindingInfoObjectCode(const AnalyserModelPtr &analyserModel);
     void addExternNlaSolveMethodCode();
-    void addNlaSystemsCode(const AnalyserModelPtr &model);
+    void addNlaSystemsCode(const AnalyserModelPtr &analyserModel);
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &model,
+    std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &analyserModel,
                                                          const VariablePtr &variable);
-    std::string generateVariableNameCode(const AnalyserModelPtr &model, const VariablePtr &variable,
+    std::string generateVariableNameCode(const AnalyserModelPtr &analyserModel, const VariablePtr &variable,
                                          bool state = true);
 
-    std::string generateOperatorCode(const AnalyserModelPtr &model, const std::string &op,
+    std::string generateOperatorCode(const AnalyserModelPtr &analyserModel, const std::string &op,
                                      const AnalyserEquationAstPtr &ast);
-    std::string generateMinusUnaryCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
-    std::string generateOneParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
+    std::string generateMinusUnaryCode(const AnalyserModelPtr &analyserModel, const AnalyserEquationAstPtr &ast);
+    std::string generateOneParameterFunctionCode(const AnalyserModelPtr &analyserModel, const std::string &function,
                                                  const AnalyserEquationAstPtr &ast);
-    std::string generateTwoParameterFunctionCode(const AnalyserModelPtr &model, const std::string &function,
+    std::string generateTwoParameterFunctionCode(const AnalyserModelPtr &analyserModel, const std::string &function,
                                                  const AnalyserEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
+    std::string generateCode(const AnalyserModelPtr &analyserModel, const AnalyserEquationAstPtr &ast);
 
-    bool isToBeComputedAgain(const AnalyserEquationPtr &equation);
-    bool isSomeConstant(const AnalyserEquationPtr &equation,
+    bool isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation);
+    bool isSomeConstant(const AnalyserEquationPtr &analyserEquation,
                         bool includeComputedConstants) const;
 
     enum class GenerateEquationCodeTarget
@@ -192,32 +196,32 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
         COMPUTE_VARIABLES
     };
 
-    std::string generateZeroInitialisationCode(const AnalyserModelPtr &model,
-                                               const AnalyserVariablePtr &variable);
-    std::string generateInitialisationCode(const AnalyserModelPtr &model, const AnalyserVariablePtr &variable,
-                                           bool force = false);
-    std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
-                                     std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     std::vector<AnalyserEquationPtr> &equationsForDependencies,
+    std::string generateZeroInitialisationCode(const AnalyserModelPtr &analyserModel,
+                                               const AnalyserVariablePtr &analyserVariable);
+    std::string generateInitialisationCode(const AnalyserModelPtr &analyserModel,
+                                           const AnalyserVariablePtr &analyserVariable, bool force = false);
+    std::string generateEquationCode(const AnalyserModelPtr &analyserModel, const AnalyserEquationPtr &analyserEquation,
+                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                     std::vector<AnalyserEquationPtr> &analyserEquationsForDependencies,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
                                      bool includeComputedConstants,
                                      GenerateEquationCodeTarget target = GenerateEquationCodeTarget::NORMAL);
-    std::string generateEquationCode(const AnalyserModelPtr &model, const AnalyserEquationPtr &equation,
-                                     std::vector<AnalyserEquationPtr> &remainingEquations,
+    std::string generateEquationCode(const AnalyserModelPtr &analyserModel, const AnalyserEquationPtr &analyserEquation,
+                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
 
-    void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &model);
-    std::string generateConstantInitialisationCode(const AnalyserModelPtr &model,
+    void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &analyserModel);
+    std::string generateConstantInitialisationCode(const AnalyserModelPtr &analyserModel,
                                                    const std::vector<AnalyserVariablePtr>::iterator constant,
                                                    std::vector<AnalyserVariablePtr> &remainingConstants);
-    void addImplementationInitialiseVariablesMethodCode(const AnalyserModelPtr &model,
-                                                        std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &model,
-                                                             std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeRatesMethodCode(const AnalyserModelPtr &model,
-                                                 std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeVariablesMethodCode(const AnalyserModelPtr &model,
-                                                     std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationInitialiseArraysMethodCode(const AnalyserModelPtr &analyserModel,
+                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
+    void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &analyserModel,
+                                                             std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
+    void addImplementationComputeRatesMethodCode(const AnalyserModelPtr &analyserModel,
+                                                 std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
+    void addImplementationComputeVariablesMethodCode(const AnalyserModelPtr &analyserModel,
+                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
 };
 
 } // namespace libcellml

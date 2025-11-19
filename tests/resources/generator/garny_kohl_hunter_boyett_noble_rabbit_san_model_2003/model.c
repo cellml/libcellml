@@ -11,7 +11,7 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 const size_t STATE_COUNT = 15;
 const size_t CONSTANT_COUNT = 110;
 const size_t COMPUTED_CONSTANT_COUNT = 23;
-const size_t ALGEBRAIC_COUNT = 52;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 52;
 
 const VariableInfo VOI_INFO = {"time", "second", "environment"};
 
@@ -260,11 +260,11 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -276,7 +276,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = -39.013558536;
     states[1] = 0.092361701692;
@@ -432,129 +432,129 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[22] = (constants[1] == 0.0)?constants[104]+computedConstants[0]*(constants[105]-constants[104]):(constants[1] == 1.0)?constants[108]+computedConstants[0]*(constants[109]-constants[108]):constants[106]+computedConstants[0]*(constants[107]-constants[106]);
 }
 
-void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    algebraic[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
-    algebraic[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
-    algebraic[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
-    algebraic[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
-    algebraic[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
-    algebraic[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
-    algebraic[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
-    algebraic[2] = computedConstants[5]*(states[0]-computedConstants[6]);
-    algebraic[3] = computedConstants[7]*(states[0]-computedConstants[8]);
-    algebraic[4] = computedConstants[3]*(states[0]-computedConstants[4]);
-    algebraic[42] = 0.6*states[12]+0.4*states[11];
-    algebraic[8] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
-    algebraic[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
-    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2];
-    algebraic[13] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
-    rates[0] = -1.0/computedConstants[1]*(algebraic[13]+algebraic[12]+algebraic[11]+algebraic[10]+algebraic[9]+algebraic[8]+algebraic[7]+algebraic[6]+algebraic[5]+algebraic[4]+algebraic[3]+algebraic[2]+algebraic[1]+algebraic[0]+computedConstants[2]);
-    algebraic[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
-    algebraic[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
-    rates[1] = (algebraic[16]-states[1])/algebraic[15];
-    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
-    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
-    rates[3] = (algebraic[19]-states[3])/algebraic[18];
-    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
-    algebraic[21] = algebraic[19];
-    rates[2] = (algebraic[21]-states[2])/algebraic[20];
-    algebraic[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
-    algebraic[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
-    algebraic[22] = 2.0/(algebraic[24]+algebraic[25]);
-    algebraic[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
-    rates[4] = (algebraic[23]-states[4])/algebraic[22];
-    algebraic[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
-    algebraic[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
-    algebraic[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
-    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
-    rates[5] = (algebraic[27]-states[5])/algebraic[26];
-    algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
-    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0);
-    algebraic[30] = 1.0/(algebraic[32]+algebraic[33]);
-    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
-    rates[7] = (algebraic[31]-states[7])/algebraic[30];
-    algebraic[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
-    algebraic[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
-    algebraic[34] = 1.0/(algebraic[36]+algebraic[37]);
-    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
-    rates[6] = (algebraic[35]-states[6])/algebraic[34];
-    algebraic[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
-    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
-    rates[9] = (algebraic[39]-states[9])/algebraic[38];
-    algebraic[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
-    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
-    rates[8] = (algebraic[41]-states[8])/algebraic[40];
-    algebraic[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
-    algebraic[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
-    rates[12] = (algebraic[44]-states[12])/algebraic[43];
-    algebraic[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
-    algebraic[46] = algebraic[44];
-    rates[11] = (algebraic[46]-states[11])/algebraic[45];
-    algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
-    rates[10] = (algebraic[47]-states[10])/computedConstants[19];
-    algebraic[48] = 1.0*exp(-states[0]/45.0);
-    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
-    rates[13] = algebraic[49]*(1.0-states[13])-algebraic[48]*states[13];
-    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25);
-    algebraic[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
-    rates[14] = algebraic[51]*(1.0-states[14])-algebraic[50]*states[14];
+    algebraicVariables[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
+    algebraicVariables[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
+    algebraicVariables[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
+    algebraicVariables[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
+    algebraicVariables[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
+    algebraicVariables[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
+    algebraicVariables[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
+    algebraicVariables[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
+    algebraicVariables[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
+    algebraicVariables[2] = computedConstants[5]*(states[0]-computedConstants[6]);
+    algebraicVariables[3] = computedConstants[7]*(states[0]-computedConstants[8]);
+    algebraicVariables[4] = computedConstants[3]*(states[0]-computedConstants[4]);
+    algebraicVariables[42] = 0.6*states[12]+0.4*states[11];
+    algebraicVariables[8] = computedConstants[18]*algebraicVariables[42]*states[10]*(states[0]-computedConstants[6]);
+    algebraicVariables[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
+    algebraicVariables[14] = (1.0-algebraicVariables[17])*states[3]+algebraicVariables[17]*states[2];
+    algebraicVariables[13] = computedConstants[13]*pow(states[1], 3.0)*algebraicVariables[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
+    rates[0] = -1.0/computedConstants[1]*(algebraicVariables[13]+algebraicVariables[12]+algebraicVariables[11]+algebraicVariables[10]+algebraicVariables[9]+algebraicVariables[8]+algebraicVariables[7]+algebraicVariables[6]+algebraicVariables[5]+algebraicVariables[4]+algebraicVariables[3]+algebraicVariables[2]+algebraicVariables[1]+algebraicVariables[0]+computedConstants[2]);
+    algebraicVariables[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
+    algebraicVariables[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
+    rates[1] = (algebraicVariables[16]-states[1])/algebraicVariables[15];
+    algebraicVariables[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
+    algebraicVariables[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
+    rates[3] = (algebraicVariables[19]-states[3])/algebraicVariables[18];
+    algebraicVariables[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
+    algebraicVariables[21] = algebraicVariables[19];
+    rates[2] = (algebraicVariables[21]-states[2])/algebraicVariables[20];
+    algebraicVariables[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
+    algebraicVariables[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
+    algebraicVariables[22] = 2.0/(algebraicVariables[24]+algebraicVariables[25]);
+    algebraicVariables[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
+    rates[4] = (algebraicVariables[23]-states[4])/algebraicVariables[22];
+    algebraicVariables[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
+    algebraicVariables[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
+    algebraicVariables[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraicVariables[28]+algebraicVariables[29]):1.0/(algebraicVariables[28]+algebraicVariables[29]);
+    algebraicVariables[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
+    rates[5] = (algebraicVariables[27]-states[5])/algebraicVariables[26];
+    algebraicVariables[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
+    algebraicVariables[32] = 1068.0*exp((states[0]+26.3)/30.0);
+    algebraicVariables[30] = 1.0/(algebraicVariables[32]+algebraicVariables[33]);
+    algebraicVariables[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
+    rates[7] = (algebraicVariables[31]-states[7])/algebraicVariables[30];
+    algebraicVariables[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
+    algebraicVariables[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
+    algebraicVariables[34] = 1.0/(algebraicVariables[36]+algebraicVariables[37]);
+    algebraicVariables[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
+    rates[6] = (algebraicVariables[35]-states[6])/algebraicVariables[34];
+    algebraicVariables[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
+    algebraicVariables[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
+    rates[9] = (algebraicVariables[39]-states[9])/algebraicVariables[38];
+    algebraicVariables[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
+    algebraicVariables[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
+    rates[8] = (algebraicVariables[41]-states[8])/algebraicVariables[40];
+    algebraicVariables[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
+    algebraicVariables[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
+    rates[12] = (algebraicVariables[44]-states[12])/algebraicVariables[43];
+    algebraicVariables[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
+    algebraicVariables[46] = algebraicVariables[44];
+    rates[11] = (algebraicVariables[46]-states[11])/algebraicVariables[45];
+    algebraicVariables[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
+    rates[10] = (algebraicVariables[47]-states[10])/computedConstants[19];
+    algebraicVariables[48] = 1.0*exp(-states[0]/45.0);
+    algebraicVariables[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
+    rates[13] = algebraicVariables[49]*(1.0-states[13])-algebraicVariables[48]*states[13];
+    algebraicVariables[50] = 1.0*exp((states[0]+75.13)/21.25);
+    algebraicVariables[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
+    rates[14] = algebraicVariables[51]*(1.0-states[14])-algebraicVariables[50]*states[14];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    algebraic[4] = computedConstants[3]*(states[0]-computedConstants[4]);
-    algebraic[2] = computedConstants[5]*(states[0]-computedConstants[6]);
-    algebraic[3] = computedConstants[7]*(states[0]-computedConstants[8]);
-    algebraic[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
-    algebraic[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
-    algebraic[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
-    algebraic[14] = (1.0-algebraic[17])*states[3]+algebraic[17]*states[2];
-    algebraic[13] = computedConstants[13]*pow(states[1], 3.0)*algebraic[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
-    algebraic[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
-    algebraic[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
-    algebraic[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
-    algebraic[21] = algebraic[19];
-    algebraic[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
-    algebraic[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
-    algebraic[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
-    algebraic[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
-    algebraic[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
-    algebraic[22] = 2.0/(algebraic[24]+algebraic[25]);
-    algebraic[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
-    algebraic[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
-    algebraic[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
-    algebraic[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraic[28]+algebraic[29]):1.0/(algebraic[28]+algebraic[29]);
-    algebraic[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
-    algebraic[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
-    algebraic[32] = 1068.0*exp((states[0]+26.3)/30.0);
-    algebraic[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
-    algebraic[30] = 1.0/(algebraic[32]+algebraic[33]);
-    algebraic[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
-    algebraic[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
-    algebraic[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
-    algebraic[34] = 1.0/(algebraic[36]+algebraic[37]);
-    algebraic[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
-    algebraic[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
-    algebraic[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
-    algebraic[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
-    algebraic[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
-    algebraic[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
-    algebraic[42] = 0.6*states[12]+0.4*states[11];
-    algebraic[8] = computedConstants[18]*algebraic[42]*states[10]*(states[0]-computedConstants[6]);
-    algebraic[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
-    algebraic[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
-    algebraic[46] = algebraic[44];
-    algebraic[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
-    algebraic[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
-    algebraic[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
-    algebraic[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
-    algebraic[48] = 1.0*exp(-states[0]/45.0);
-    algebraic[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
-    algebraic[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
-    algebraic[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
-    algebraic[50] = 1.0*exp((states[0]+75.13)/21.25);
+    algebraicVariables[4] = computedConstants[3]*(states[0]-computedConstants[4]);
+    algebraicVariables[2] = computedConstants[5]*(states[0]-computedConstants[6]);
+    algebraicVariables[3] = computedConstants[7]*(states[0]-computedConstants[8]);
+    algebraicVariables[1] = (constants[1] == 0.0)?computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.0374*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0))):computedConstants[9]*(pow(constants[32], 3.0)*constants[33]*exp(0.03743*states[0]*constants[37])-pow(constants[34], 3.0)*constants[35]*exp(0.03743*states[0]*(constants[37]-1.0)))/(1.0+constants[36]*(constants[35]*pow(constants[34], 3.0)+constants[33]*pow(constants[32], 3.0)));
+    algebraicVariables[0] = computedConstants[10]*pow(constants[32]/(constants[46]+constants[32]), 3.0)*pow(constants[44]/(constants[45]+constants[44]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
+    algebraicVariables[17] = (constants[1] == 0.0)?0.0952*exp(-0.063*(states[0]+34.4))/(1.0+1.66*exp(-0.225*(states[0]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[0]+34.4))/(1.0+1.662*exp(-0.2251*(states[0]+63.7)))+0.08693;
+    algebraicVariables[14] = (1.0-algebraicVariables[17])*states[3]+algebraicVariables[17]*states[2];
+    algebraicVariables[13] = computedConstants[13]*pow(states[1], 3.0)*algebraicVariables[14]*constants[34]*pow(constants[7], 2.0)/(constants[5]*constants[6])*(exp((states[0]-computedConstants[4])*constants[7]/(constants[5]*constants[6]))-1.0)/(exp(states[0]*constants[7]/(constants[5]*constants[6]))-1.0)*states[0];
+    algebraicVariables[16] = (constants[1] == 0.0)?pow(1.0/(1.0+exp(-states[0]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[0]+30.32)/5.46)), 1.0/3.0);
+    algebraicVariables[15] = (constants[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[0]+56.7))+0.627*exp(0.082*(states[0]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[0]+56.7062))+0.6274*exp(0.0823*(states[0]+65.0131)))+4.569e-5;
+    algebraicVariables[19] = 1.0/(1.0+exp((states[0]+66.1)/6.4));
+    algebraicVariables[21] = algebraicVariables[19];
+    algebraicVariables[18] = 3.717e-6*exp(-0.2815*(states[0]+17.11))/(1.0+0.003732*exp(-0.3426*(states[0]+37.76)))+0.0005977;
+    algebraicVariables[20] = 3.186e-8*exp(-0.6219*(states[0]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[0]+34.07)))+0.003556;
+    algebraicVariables[12] = computedConstants[14]*(states[5]*states[4]+0.006/(1.0+exp(-(states[0]+14.1)/6.0)))*(states[0]-constants[66]);
+    algebraicVariables[24] = (constants[1] == 0.0)?-28.38*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):(constants[1] == 1.0)?-28.39*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0):-28.4*(states[0]+35.0)/(exp(-(states[0]+35.0)/2.5)-1.0)-84.9*states[0]/(exp(-0.208*states[0])-1.0);
+    algebraicVariables[25] = (constants[1] == 1.0)?11.43*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0):11.42*(states[0]-5.0)/(exp(0.4*(states[0]-5.0))-1.0);
+    algebraicVariables[22] = 2.0/(algebraicVariables[24]+algebraicVariables[25]);
+    algebraicVariables[23] = (constants[1] == 0.0)?1.0/(1.0+exp(-(states[0]+23.1)/6.0)):(constants[1] == 1.0)?1.0/(1.0+exp(-(states[0]+22.3+0.8*computedConstants[0])/6.0)):1.0/(1.0+exp(-(states[0]+22.2)/6.0));
+    algebraicVariables[28] = (constants[1] == 1.0)?3.75*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0):3.12*(states[0]+28.0)/(exp((states[0]+28.0)/4.0)-1.0);
+    algebraicVariables[29] = (constants[1] == 1.0)?30.0/(1.0+exp(-(states[0]+28.0)/4.0)):25.0/(1.0+exp(-(states[0]+28.0)/4.0));
+    algebraicVariables[26] = (constants[1] == 1.0)?(1.2-0.2*computedConstants[0])/(algebraicVariables[28]+algebraicVariables[29]):1.0/(algebraicVariables[28]+algebraicVariables[29]);
+    algebraicVariables[27] = 1.0/(1.0+exp((states[0]+45.0)/5.0));
+    algebraicVariables[11] = computedConstants[15]*states[7]*states[6]*(states[0]-constants[73]);
+    algebraicVariables[32] = 1068.0*exp((states[0]+26.3)/30.0);
+    algebraicVariables[33] = 1068.0*exp(-(states[0]+26.3)/30.0);
+    algebraicVariables[30] = 1.0/(algebraicVariables[32]+algebraicVariables[33]);
+    algebraicVariables[31] = 1.0/(1.0+exp(-(states[0]+37.0)/6.8));
+    algebraicVariables[36] = (constants[1] == 1.0)?15.3*exp(-(states[0]+71.0+0.7*computedConstants[0])/83.3):15.3*exp(-(states[0]+71.7)/83.3);
+    algebraicVariables[37] = (constants[1] == 1.0)?15.0*exp((states[0]+71.0)/15.38):15.0*exp((states[0]+71.7)/15.38);
+    algebraicVariables[34] = 1.0/(algebraicVariables[36]+algebraicVariables[37]);
+    algebraicVariables[35] = 1.0/(1.0+exp((states[0]+71.0)/9.0));
+    algebraicVariables[10] = computedConstants[16]*states[9]*states[8]*(states[0]-computedConstants[6]);
+    algebraicVariables[9] = computedConstants[17]*states[8]*(states[0]-computedConstants[6]);
+    algebraicVariables[39] = 1.0/(1.0+exp((states[0]+59.37)/13.1));
+    algebraicVariables[38] = (constants[1] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[0]+49.0)))+2.4e-5*exp(0.1*(states[0]+50.93)):(constants[1] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[0]+39.0+10.0*computedConstants[0]))+0.7174*exp((0.2719-0.1719*computedConstants[0])*1.0*(states[0]+40.93+10.0*computedConstants[0])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[0]+39.0))+0.7174*exp(0.2719*(states[0]+40.93)));
+    algebraicVariables[41] = 1.0/(1.0+exp(-(states[0]-10.93)/19.7));
+    algebraicVariables[40] = (constants[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[0]+30.61))+0.369*exp(-0.12*(states[0]+23.84)))):(constants[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[0]+30.61))+0.369*exp(-0.119*(states[0]+23.84))));
+    algebraicVariables[42] = 0.6*states[12]+0.4*states[11];
+    algebraicVariables[8] = computedConstants[18]*algebraicVariables[42]*states[10]*(states[0]-computedConstants[6]);
+    algebraicVariables[44] = (constants[1] != 2.0)?1.0/(1.0+exp(-(states[0]+14.2)/10.6)):1.0/(1.0+exp(-(states[0]+13.2)/10.6));
+    algebraicVariables[43] = (constants[1] != 2.0)?1.0/(37.2*exp((states[0]-9.0)/15.9)+0.96*exp(-(states[0]-9.0)/22.5)):1.0/(37.2*exp((states[0]-10.0)/15.9)+0.96*exp(-(states[0]-10.0)/22.5));
+    algebraicVariables[46] = algebraicVariables[44];
+    algebraicVariables[45] = (constants[1] != 2.0)?1.0/(4.2*exp((states[0]-9.0)/17.0)+0.15*exp(-(states[0]-9.0)/21.6)):1.0/(4.2*exp((states[0]-10.0)/17.0)+0.15*exp(-(states[0]-10.0)/21.6));
+    algebraicVariables[47] = 1.0/(1.0+exp((states[0]+18.6)/10.1));
+    algebraicVariables[7] = computedConstants[20]*pow(states[13], 2.0)*(states[0]-computedConstants[12]);
+    algebraicVariables[49] = 14.0/(1.0+exp(-(states[0]-40.0)/9.0));
+    algebraicVariables[48] = 1.0*exp(-states[0]/45.0);
+    algebraicVariables[6] = (constants[1] != 2.0)?computedConstants[21]*states[14]*(states[0]-computedConstants[4]):computedConstants[21]*states[14]*(states[0]-77.6);
+    algebraicVariables[5] = (constants[1] != 2.0)?computedConstants[22]*states[14]*(states[0]-computedConstants[6]):computedConstants[22]*states[14]*(states[0]+102.0);
+    algebraicVariables[51] = (constants[1] == 0.0)?1.0*exp(-(states[0]+78.91)/26.62):1.0*exp(-(states[0]+78.91)/26.63);
+    algebraicVariables[50] = 1.0*exp((states[0]+75.13)/21.25);
 }

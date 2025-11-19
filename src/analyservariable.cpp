@@ -71,8 +71,8 @@ static const std::map<AnalyserVariable::Type, std::string> typeToString = {
     {AnalyserVariable::Type::STATE, "state"},
     {AnalyserVariable::Type::CONSTANT, "constant"},
     {AnalyserVariable::Type::COMPUTED_CONSTANT, "computed_constant"},
-    {AnalyserVariable::Type::ALGEBRAIC, "algebraic"},
-    {AnalyserVariable::Type::EXTERNAL, "external"}};
+    {AnalyserVariable::Type::ALGEBRAIC_VARIABLE, "algebraic_variable"},
+    {AnalyserVariable::Type::EXTERNAL_VARIABLE, "external_variable"}};
 
 std::string AnalyserVariable::typeAsString(Type type)
 {

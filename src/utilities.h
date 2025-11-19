@@ -871,36 +871,36 @@ size_t mathmlChildCount(const XmlNodePtr &node);
 XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
 
 /**
- * @brief Return the variables of the same type as the given variable.
+ * @brief Return the analyser variables of the same type as the given analyser variable.
  *
- * Return the variables of the same type as the given variable.
+ * Return the analyser variables of the same type as the given analyser variable.
  *
- * @param variable The variable for which we want the variables of the same type.
+ * @param analyserVariable The analyser variable for which we want the analyser variables of the same type.
  *
- * @return The variables of the same type as the given variable.
+ * @return The analyser variables of the same type as the given analyser variable.
  */
-std::vector<AnalyserVariablePtr> variables(const AnalyserVariablePtr &variable);
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &analyserVariable);
 
 /**
- * @brief Return the variables in the given model.
+ * @brief Return the analyser variables in the given analyser model.
  *
- * Return the variables in the given model.
+ * Return the analyser variables in the given analyser model.
  *
- * @param model The model for which we want the variables.
+ * @param analyserModel The analyser model for which we want the analyser variables.
  *
- * @return The variables in the given model.
+ * @return The analyser variables in the given analyser model.
  */
-std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model);
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analyserModel);
 
 /**
- * @brief Return the variables in the given equation.
+ * @brief Return the analyser variables in the given analyser equation.
  *
- * Return the variables in the given equation.
+ * Return the analyser variables in the given analyser equation.
  *
- * @param equation The equation for which we want the variables.
+ * @param analyserEquation The analyser equation for which we want the analyser variables.
  *
- * @return The variables in the given equation.
+ * @return The analyser variables in the given analyser equation.
  */
-std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation);
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &analyserEquation);
 
 } // namespace libcellml

@@ -9,8 +9,8 @@ LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 1
-EXTERNAL_COUNT = 1
+ALGEBRAIC_VARIABLE_COUNT = 1
+EXTERNAL_VARIABLE_COUNT = 1
 
 CONSTANT_INFO = [
 ]
@@ -35,15 +35,15 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def create_externals_array():
-    return [nan]*EXTERNAL_COUNT
+def create_external_variables_array():
+    return [nan]*EXTERNAL_VARIABLE_COUNT
 
 
-def initialise_variables(constants, computed_constants, algebraic):
+def initialise_arrays(constants, computed_constants, algebraic_variables):
     pass
 
 
@@ -51,6 +51,6 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(constants, computed_constants, algebraic, externals, external_variable):
-    externals[0] = external_variable(constants, computed_constants, algebraic, externals, 0)
-    algebraic[0] = externals[0]
+def compute_variables(constants, computed_constants, algebraic_variables, external_variables, external_variable):
+    externalVariables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraicVariables[0] = externalVariables[0]

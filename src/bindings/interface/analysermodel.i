@@ -52,22 +52,22 @@
 %feature("docstring") libcellml::AnalyserModel::computedConstant
 "Returns the computed constant, specified by index, contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::algebraicCount
+%feature("docstring") libcellml::AnalyserModel::algebraicVariableCount
 "Returns the number of algebraic variables contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::algebraic
+%feature("docstring") libcellml::AnalyserModel::algebraicVariables
 "Returns the algebraic variables contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::algebraic
+%feature("docstring") libcellml::AnalyserModel::algebraicVariable
 "Returns the algebraic variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::externalCount
+%feature("docstring") libcellml::AnalyserModel::externalVariableCount
 "Returns the number of external variables contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::externals
+%feature("docstring") libcellml::AnalyserModel::externalVariables
 "Returns the external variables contained by this :class:`AnalyserModel` object.";
 
-%feature("docstring") libcellml::AnalyserModel::external
+%feature("docstring") libcellml::AnalyserModel::externalVariable
 "Returns the external variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::variable

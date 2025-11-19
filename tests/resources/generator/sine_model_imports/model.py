@@ -10,7 +10,7 @@ LIBCELLML_VERSION = "0.6.3"
 STATE_COUNT = 1
 CONSTANT_COUNT = 2
 COMPUTED_CONSTANT_COUNT = 5
-ALGEBRAIC_COUNT = 3
+ALGEBRAIC_VARIABLE_COUNT = 3
 
 VOI_INFO = {"name": "x", "units": "dimensionless", "component": "main"}
 
@@ -54,11 +54,11 @@ def create_computed_constants_array():
     return [nan]*COMPUTED_CONSTANT_COUNT
 
 
-def create_algebraic_array():
-    return [nan]*ALGEBRAIC_COUNT
+def create_algebraic_variables_array():
+    return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, constants, computed_constants, algebraic):
+def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     constants[0] = 0.0
     states[0] = constants[0]
     constants[1] = 0.75
@@ -73,11 +73,11 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     rates[0] = cos(voi)
 
 
-def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[0] = sin(voi)
-    algebraic[2] = voi*computed_constants[0]-0.5 if lt_func(voi, computed_constants[2]) else (3.14159265358979-voi)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[3]) else (voi-3.14159265358979)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[4]) else (computed_constants[1]-voi)*computed_constants[0]-0.5
-    algebraic[1] = -algebraic[2]*algebraic[2]+constants[1]+algebraic[2] if lt_func(voi, computed_constants[2]) else -algebraic[2]*algebraic[2]+constants[1]+algebraic[2] if lt_func(voi, computed_constants[3]) else algebraic[2]*algebraic[2]-constants[1]-algebraic[2] if lt_func(voi, computed_constants[4]) else algebraic[2]*algebraic[2]-constants[1]-algebraic[2]
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
+    algebraicVariables[0] = sin(voi)
+    algebraicVariables[2] = voi*computed_constants[0]-0.5 if lt_func(voi, computed_constants[2]) else (3.14159265358979-voi)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[3]) else (voi-3.14159265358979)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[4]) else (computed_constants[1]-voi)*computed_constants[0]-0.5
+    algebraicVariables[1] = -algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2] if lt_func(voi, computed_constants[2]) else -algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2] if lt_func(voi, computed_constants[3]) else algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2] if lt_func(voi, computed_constants[4]) else algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2]

@@ -458,13 +458,13 @@ TEST(Coverage, analyser)
     EXPECT_EQ(size_t(0), analyserModel->computedConstants().size());
     EXPECT_EQ(nullptr, analyserModel->computedConstant(0));
 
-    EXPECT_EQ(size_t(0), analyserModel->algebraicCount());
-    EXPECT_EQ(size_t(0), analyserModel->algebraic().size());
-    EXPECT_EQ(nullptr, analyserModel->algebraic(0));
+    EXPECT_EQ(size_t(0), analyserModel->algebraicVariableCount());
+    EXPECT_EQ(size_t(0), analyserModel->algebraicVariables().size());
+    EXPECT_EQ(nullptr, analyserModel->algebraicVariable(0));
 
-    EXPECT_EQ(size_t(0), analyserModel->externalCount());
-    EXPECT_EQ(size_t(0), analyserModel->externals().size());
-    EXPECT_EQ(nullptr, analyserModel->external(0));
+    EXPECT_EQ(size_t(0), analyserModel->externalVariableCount());
+    EXPECT_EQ(size_t(0), analyserModel->externalVariables().size());
+    EXPECT_EQ(nullptr, analyserModel->externalVariable(0));
 
     EXPECT_EQ(nullptr, analyserModel->variable(nullptr));
 
@@ -588,7 +588,7 @@ TEST(Coverage, analyserTypes)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
-    EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraic(0)->type()));
+    EXPECT_EQ("algebraic_variable", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraicVariable(0)->type()));
 }
 
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
@@ -626,8 +626,8 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(7), analyserModel->constantCount());
     EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
-    EXPECT_EQ(size_t(2), analyserModel->algebraicCount());
-    EXPECT_EQ(size_t(1), analyserModel->externalCount());
+    EXPECT_EQ(size_t(2), analyserModel->algebraicVariableCount());
+    EXPECT_EQ(size_t(1), analyserModel->externalVariableCount());
     EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
@@ -648,12 +648,12 @@ TEST(Coverage, generator)
     EXPECT_NE(nullptr, analyserModel->computedConstant(0));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
-    EXPECT_NE(nullptr, analyserModel->algebraic(0));
-    EXPECT_NE(nullptr, analyserModel->algebraic(0)->equation(0)->algebraic(0));
-    EXPECT_EQ(nullptr, analyserModel->algebraic(analyserModel->algebraicCount()));
-    EXPECT_NE(nullptr, analyserModel->external(0));
-    EXPECT_NE(nullptr, analyserModel->external(0)->equation(0)->external(0));
-    EXPECT_EQ(nullptr, analyserModel->external(analyserModel->algebraicCount()));
+    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0));
+    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0)->equation(0)->algebraicVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->algebraicVariable(analyserModel->algebraicVariableCount()));
+    EXPECT_NE(nullptr, analyserModel->externalVariable(0));
+    EXPECT_NE(nullptr, analyserModel->externalVariable(0)->equation(0)->externalVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->externalVariable(analyserModel->algebraicVariableCount()));
     EXPECT_EQ(size_t(1), analyserModel->equation(0)->stateCount());
     EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
     EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
@@ -671,14 +671,14 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstants().size());
     EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(analyserModel->equation(199)->computedConstantCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraic().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraic(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraic(analyserModel->equation(199)->algebraicCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externals().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->external(analyserModel->equation(199)->externalCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraicVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraicVariable(analyserModel->equation(199)->algebraicVariableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariableCount());
+    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariables().size());
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(analyserModel->equation(199)->externalVariableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -701,8 +701,8 @@ TEST(Coverage, generator)
         EXPECT_NE(nullptr, analyserModel->constant(i)->initialisingVariable());
     }
 
-    for (size_t i = 0; i < analyserModel->algebraicCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->algebraic(i)->initialisingVariable());
+    for (size_t i = 0; i < analyserModel->algebraicVariableCount(); ++i) {
+        EXPECT_NE(nullptr, analyserModel->algebraicVariable(i)->initialisingVariable());
     }
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(nullptr));
@@ -757,8 +757,8 @@ TEST(Coverage, generator)
 
     profile->setImplementationConstantCountString("");
     profile->setImplementationComputedConstantCountString("");
-    profile->setImplementationAlgebraicCountString("");
-    profile->setImplementationExternalCountString("");
+    profile->setImplementationAlgebraicVariableCountString("");
+    profile->setImplementationExternalVariableCountString("");
 
     profile->setVariableInfoObjectString("");
 
@@ -770,9 +770,9 @@ TEST(Coverage, generator)
 
     profile->setImplementationComputedConstantInfoString("");
 
-    profile->setImplementationAlgebraicInfoString("");
+    profile->setImplementationAlgebraicVariableInfoString("");
 
-    profile->setImplementationExternalInfoString("");
+    profile->setImplementationExternalVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
 
@@ -782,14 +782,14 @@ TEST(Coverage, generator)
 
     profile->setImplementationCreateComputedConstantsArrayMethodString("");
 
-    profile->setImplementationCreateAlgebraicArrayMethodString("");
+    profile->setImplementationCreateAlgebraicVariablesArrayMethodString("");
 
-    profile->setImplementationCreateExternalsArrayMethodString("");
+    profile->setImplementationCreateExternalVariablesArrayMethodString("");
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationInitialiseVariablesMethodString(false, "");
-    profile->setImplementationInitialiseVariablesMethodString(true, "");
+    profile->setImplementationInitialiseArraysMethodString(false, "");
+    profile->setImplementationInitialiseArraysMethodString(true, "");
 
     profile->setImplementationComputeVariablesMethodString(false, false, "");
     profile->setImplementationComputeVariablesMethodString(false, true, "");
@@ -842,11 +842,11 @@ TEST(Coverage, generator)
     profile->setInterfaceComputedConstantCountString("");
     profile->setImplementationComputedConstantCountString("");
 
-    profile->setInterfaceAlgebraicCountString("");
-    profile->setImplementationAlgebraicCountString("");
+    profile->setInterfaceAlgebraicVariableCountString("");
+    profile->setImplementationAlgebraicVariableCountString("");
 
-    profile->setInterfaceExternalCountString("");
-    profile->setImplementationExternalCountString("");
+    profile->setInterfaceExternalVariableCountString("");
+    profile->setImplementationExternalVariableCountString("");
 
     profile->setVariableInfoObjectString("");
 
@@ -862,11 +862,11 @@ TEST(Coverage, generator)
     profile->setInterfaceComputedConstantInfoString("");
     profile->setImplementationComputedConstantInfoString("");
 
-    profile->setInterfaceAlgebraicInfoString("");
-    profile->setImplementationAlgebraicInfoString("");
+    profile->setInterfaceAlgebraicVariableInfoString("");
+    profile->setImplementationAlgebraicVariableInfoString("");
 
-    profile->setInterfaceExternalInfoString("");
-    profile->setImplementationExternalInfoString("");
+    profile->setInterfaceExternalVariableInfoString("");
+    profile->setImplementationExternalVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
 

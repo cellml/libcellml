@@ -11,8 +11,8 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 const size_t STATE_COUNT = 1;
 const size_t CONSTANT_COUNT = 7;
 const size_t COMPUTED_CONSTANT_COUNT = 199;
-const size_t ALGEBRAIC_COUNT = 2;
-const size_t EXTERNAL_COUNT = 1;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 2;
+const size_t EXTERNAL_VARIABLE_COUNT = 1;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component"};
 
@@ -355,22 +355,22 @@ double * createComputedConstantsArray()
     return res;
 }
 
-double * createAlgebraicArray()
+double * createAlgebraicVariablesArray()
 {
-    double *res = (double *) malloc(ALGEBRAIC_COUNT*sizeof(double));
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < ALGEBRAIC_COUNT; ++i) {
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
     return res;
 }
 
-double * createExternalsArray()
+double * createExternalVariablesArray()
 {
-    double *res = (double *) malloc(EXTERNAL_COUNT*sizeof(double));
+    double *res = (double *) malloc(EXTERNAL_VARIABLE_COUNT*sizeof(double));
 
-    for (size_t i = 0; i < EXTERNAL_COUNT; ++i) {
+    for (size_t i = 0; i < EXTERNAL_VARIABLE_COUNT; ++i) {
         res[i] = NAN;
     }
 
@@ -388,8 +388,8 @@ typedef struct {
     double *rates;
     double *constants;
     double *computedConstants;
-    double *algebraic;
-    double *externals;
+    double *algebraicVariables;
+    double *externalVariables;
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
@@ -402,31 +402,31 @@ void objectiveFunction0(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *constants = ((RootFindingInfo *) data)->constants;
     double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
-    double *algebraic = ((RootFindingInfo *) data)->algebraic;
-    double *externals = ((RootFindingInfo *) data)->externals;
+    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;
+    double *externalVariables = ((RootFindingInfo *) data)->externalVariables;
 
-    algebraic[0] = u[0];
-    algebraic[1] = u[1];
+    algebraicVariables[0] = u[0];
+    algebraicVariables[1] = u[1];
 
-    f[0] = algebraic[1]+algebraic[0]+states[0]-0.0;
-    f[1] = algebraic[1]-algebraic[0]-(computedConstants[198]+computedConstants[197]);
+    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0;
+    f[1] = algebraicVariables[1]-algebraicVariables[0]-(computedConstants[198]+computedConstants[197]);
 }
 
-void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals)
+void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
-    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraic, externals };
+    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[2];
 
-    u[0] = algebraic[0];
-    u[1] = algebraic[1];
+    u[0] = algebraicVariables[0];
+    u[1] = algebraicVariables[1];
 
     nlaSolve(objectiveFunction0, u, 2, &rfi);
 
-    algebraic[0] = u[0];
-    algebraic[1] = u[1];
+    algebraicVariables[0] = u[0];
+    algebraicVariables[1] = u[1];
 }
 
-void initialiseVariables(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = 0.0;
     constants[0] = 1.23;
@@ -448,8 +448,8 @@ void initialiseVariables(double *states, double *rates, double *constants, doubl
     computedConstants[186] = NAN;
     computedConstants[198] = 1.0;
     computedConstants[197] = 3.0;
-    algebraic[0] = 2.0;
-    algebraic[1] = 1.0;
+    algebraicVariables[0] = 2.0;
+    algebraicVariables[1] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -643,13 +643,13 @@ void computeComputedConstants(double *constants, double *computedConstants)
     computedConstants[196] = -(constants[1] && constants[0])+-((constants[2] > constants[3])?constants[0]:NAN);
 }
 
-void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     rates[0] = 1.0;
 }
 
-void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, double *externals, ExternalVariable externalVariable)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
-    externals[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraic, externals, 0);
-    findRoot0(voi, states, rates, constants, computedConstants, algebraic, externals);
+    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
+    findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
 }
