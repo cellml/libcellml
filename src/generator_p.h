@@ -48,15 +48,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked);
 
-    bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation);
-    bool isUntrackedEquation(const AnalyserEquationPtr &analyserEquation);
-
-    bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
-                           bool tracked = true);
+    bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable, bool tracked);
     bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
-
-    bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable);
-    bool isUntrackedVariable(const AnalyserVariablePtr &analyserVariable);
 
     void addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked, const std::string &variableInfo,
                           const std::string &trackedInfo, const std::string &untrackedInfo,
@@ -70,40 +63,25 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void trackVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool needRemoveAllIssues = true);
 
-    void trackVariable(const AnalyserVariablePtr &analyserVariable);
-    void untrackVariable(const AnalyserVariablePtr &analyserVariable);
-
     void trackVariables(const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
     bool validModel(const AnalyserModelPtr &analyserModel);
 
-    void trackAllConstants(const AnalyserModelPtr &analyserModel);
-    void untrackAllConstants(const AnalyserModelPtr &analyserModel);
-
-    void trackAllComputedConstants(const AnalyserModelPtr &analyserModel);
-    void untrackAllComputedConstants(const AnalyserModelPtr &analyserModel);
-
-    void trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
-    void untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
+    void trackAllConstants(const AnalyserModelPtr &analyserModel, bool tracked);
+    void trackAllComputedConstants(const AnalyserModelPtr &analyserModel, bool tracked);
+    void trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel, bool tracked);
 
     std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &analyserModel) const;
 
-    void trackAllVariables(const AnalyserModelPtr &analyserModel);
-    void untrackAllVariables(const AnalyserModelPtr &analyserModel);
+    void trackAllVariables(const AnalyserModelPtr &analyserModel, bool tracked);
 
     size_t trackedVariableCount(const AnalyserModelPtr &analyserModel,
                                 const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
-    size_t trackedConstantCount(const AnalyserModelPtr &analyserModel);
-    size_t untrackedConstantCount(const AnalyserModelPtr &analyserModel);
-    size_t trackedComputedConstantCount(const AnalyserModelPtr &analyserModel);
-    size_t untrackedComputedConstantCount(const AnalyserModelPtr &analyserModel);
-
-    size_t trackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
-    size_t untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
-
-    size_t trackedVariableCount(const AnalyserModelPtr &analyserModel);
-    size_t untrackedVariableCount(const AnalyserModelPtr &analyserModel);
+    size_t trackedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked);
+    size_t trackedComputedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked);
+    size_t trackedAlgebraicCount(const AnalyserModelPtr &analyserModel, bool tracked);
+    size_t trackedVariableCount(const AnalyserModelPtr &analyserModel, bool tracked);
 
     bool modelHasOdes(const AnalyserModelPtr &analyserModel) const;
 
