@@ -3099,13 +3099,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         mAnalyserModel->mPimpl->mAnalyserEquations.push_back(equation);
     }
 
-    // Remove the dummy equations for our constants.
+    // Remove the staging equations for our constants.
     // Note: indeed, some equations may have a dependency on one or several constants (for which there are no proper
     //       equations). So, we need to remove those dependencies, and obviously this can only be done once all our
     //       equations are ready.
 
     for (const auto &analyserEquation : mAnalyserModel->mPimpl->mAnalyserEquations) {
-        analyserEquation->mPimpl->removeDummyDependencies();
+        analyserEquation->mPimpl->removeStagingDependencies();
     }
 
     // Determine whether our equations are state/rate based.
