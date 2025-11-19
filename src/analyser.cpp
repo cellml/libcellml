@@ -2614,7 +2614,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
 
-            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
+            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE) {
                 auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
@@ -2630,7 +2630,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     if (mAnalyser->errorCount() != 0) {
-        mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
+        mAnalyserModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
     }
