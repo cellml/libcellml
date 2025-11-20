@@ -984,7 +984,7 @@ TEST(Analyser, underconstrainedNlaSystem)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, overconstrainedNlaSystem)
@@ -1058,5 +1058,5 @@ TEST(Analyser, unsuitablyConstrainedNlaSystem)
                                                                    expectedUrls,
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
 }
