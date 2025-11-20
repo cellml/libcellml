@@ -65,7 +65,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void trackVariables(const std::vector<AnalyserVariablePtr> &analyserVariables, bool tracked);
 
-    bool validModel(const AnalyserModelPtr &analyserModel);
+    bool validAnalyserModel(const AnalyserModelPtr &analyserModel);
 
     void trackAllConstants(const AnalyserModelPtr &analyserModel, bool tracked);
     void trackAllComputedConstants(const AnalyserModelPtr &analyserModel, bool tracked);
