@@ -25,6 +25,7 @@ set(TEST_SRCS
   entity.test.js
   enums.test.js
   generator.test.js
+  generatorcontext.test.js
   generatorprofile.test.js
   importsource.test.js
   model.test.js

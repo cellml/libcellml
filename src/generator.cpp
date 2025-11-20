@@ -2565,6 +2565,16 @@ GeneratorPtr Generator::create() noexcept
     return std::shared_ptr<Generator> {new Generator {}};
 }
 
+GeneratorContextPtr Generator::context()
+{
+    return pFunc()->mContext;
+}
+
+void Generator::setContext(const GeneratorContextPtr &context)
+{
+    pFunc()->mContext = context;
+}
+
 GeneratorProfilePtr Generator::profile()
 {
     return pFunc()->mProfile;

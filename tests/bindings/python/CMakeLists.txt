@@ -21,6 +21,7 @@ set(TEST_SRCS
   test_docstrings.py
   test_entity.py
   test_generator.py
+  test_generator_context.py
   test_generator_profile.py
   test_import_requirement.py
   test_import_source.py
