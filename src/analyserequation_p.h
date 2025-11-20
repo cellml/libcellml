@@ -47,9 +47,9 @@ struct AnalyserEquation::AnalyserEquationImpl
 
     static AnalyserEquationPtr create();
 
-    static bool isDummyDependency(const AnalyserEquationWeakPtr &dependency);
+    static bool isStagingDependency(const AnalyserEquationWeakPtr &dependency);
 
-    void removeDummyDependencies();
+    void removeStagingDependencies();
 };
 
 } // namespace libcellml

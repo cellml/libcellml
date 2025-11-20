@@ -24,7 +24,7 @@
 %feature("docstring") libcellml::AnalyserVariable::variable
 "Returns the :class:`Variable`.";
 
-%feature("docstring") libcellml::AnalyserVariable::model
+%feature("docstring") libcellml::AnalyserVariable::analyserModel
 "Returns the :class:`AnalyserModel`.";
 
 %feature("docstring") libcellml::AnalyserVariable::analyserEquationCount
