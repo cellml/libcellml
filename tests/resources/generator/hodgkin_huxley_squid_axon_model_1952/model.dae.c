@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.6.0";
+const char VERSION[] = "0.7.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 4;
@@ -582,7 +582,7 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     algebraicVariables[12] = 0.0;
 }
 
-void computeComputedConstants(double *constants, double *computedConstants)
+void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
 }
 
@@ -609,13 +609,10 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot16(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
@@ -623,7 +620,6 @@ void computeVariables(double voi, double *states, double *rates, double *constan
     findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot5(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot1(voi, states, rates, constants, computedConstants, algebraicVariables);
 }

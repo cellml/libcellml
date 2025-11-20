@@ -3771,10 +3771,13 @@ public:
      * Return the @c std::string for the interface to compute computed
      * constants.
      *
+     * @param forDifferentialModel Whether the interface to compute computed
+     * constants is for a differential model, as opposed to an algebraic model.
+     *
      * @return The @c std::string for the interface to compute computed
      * constants.
      */
-    std::string interfaceComputeComputedConstantsMethodString() const;
+    std::string interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute computed
@@ -3782,10 +3785,13 @@ public:
      *
      * Set the @c std::string for the interface to compute computed constants.
      *
+     * @param forDifferentialModel Whether the interface to compute computed
+     * constants is for a differential model, as opposed to an algebraic model.
      * @param interfaceComputeComputedConstantsMethodString The @c std::string
      * to use for the interface to compute computed constants.
      */
-    void setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString);
+    void setInterfaceComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                          const std::string &interfaceComputeComputedConstantsMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute computed
@@ -3794,10 +3800,13 @@ public:
      * Return the @c std::string for the implementation to compute computed
      * constants.
      *
+     * @param forDifferentialModel Whether the implementation to compute computed
+     * constants is for a differential model, as opposed to an algebraic model.
+     *
      * @return The @c std::string for the implementation to compute computed
      * constants.
      */
-    std::string implementationComputeComputedConstantsMethodString() const;
+    std::string implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute computed
@@ -3807,11 +3816,14 @@ public:
      * constants. To be useful, the string should contain the [CODE] tag, which
      * will be replaced with some code to compute computed constants.
      *
+     * @param forDifferentialModel Whether the implementation to compute computed
+     * constants is for a differential model, as opposed to an algebraic model.
      * @param implementationComputeComputedConstantsMethodString The
      * @c std::string to use for the implementation to compute computed
      * constants.
      */
-    void setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString);
+    void setImplementationComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                               const std::string &implementationComputeComputedConstantsMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to compute rates.
@@ -3968,42 +3980,23 @@ public:
     void setIndentString(const std::string &indentString);
 
     /**
-     * @brief Get the @c std::string for opening an array initialiser.
+     * @brief Get the @c std::string for declaring a variable.
      *
-     * Return the @c std::string for opening an array initialiser.
+     * Return the @c std::string for declaring a variable.
      *
-     * @return The @c std::string for opening an array initialiser.
+     * @return The @c std::string for declaring a variable.
      */
-    std::string openArrayInitialiserString() const;
+    std::string variableDeclarationString() const;
 
     /**
-     * @brief Set the @c std::string for opening an array initialiser.
+     * @brief Set the @c std::string for declaring a variable.
      *
-     * Set the @c std::string for opening an array initialiser.
+     * Set the @c std::string for declaring a variable. To be useful, the string should contain the [CODE] tag, which
+     * will be replaced with the variable declaration.
      *
-     * @param openArrayInitialiserString The @c std::string to use for opening
-     * an array initialiser.
+     * @param variableDeclarationString The @c std::string to use for declaring an untracked variable.
      */
-    void setOpenArrayInitialiserString(const std::string &openArrayInitialiserString);
-
-    /**
-     * @brief Get the @c std::string for closing an array initialiser.
-     *
-     * Return the @c std::string for closing an array initialiser.
-     *
-     * @return The @c std::string for closing an array initialiser.
-     */
-    std::string closeArrayInitialiserString() const;
-
-    /**
-     * @brief Set the @c std::string for closing an array initialiser.
-     *
-     * Set the @c std::string for closing an array initialiser.
-     *
-     * @param closeArrayInitialiserString The @c std::string to use for closing
-     *  an array initialiser.
-     */
-    void setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString);
+    void setVariableDeclarationString(const std::string &variableDeclarationString);
 
     /**
      * @brief Get the @c std::string for opening an array.
@@ -4059,25 +4052,6 @@ public:
      * separating elements in an array.
      */
     void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
-
-    /**
-     * @brief Get the @c std::string for a string delimiter.
-     *
-     * Return the @c std::string for a string delimiter.
-     *
-     * @return The @c std::string for a string delimiter.
-     */
-    std::string stringDelimiterString() const;
-
-    /**
-     * @brief Set the @c std::string for a string delimiter.
-     *
-     * Set the @c std::string for a string delimiter.
-     *
-     * @param stringDelimiterString The @c std::string to use for a string
-     * delimiter.
-     */
-    void setStringDelimiterString(const std::string &stringDelimiterString);
 
     /**
      * @brief Get the @c std::string for a command separator.
