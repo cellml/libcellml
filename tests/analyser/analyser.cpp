@@ -291,7 +291,7 @@ TEST(Analyser, variableInitialisedUsingAnotherVariable)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, nonInitialisedState)
