@@ -50,9 +50,9 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     // Determine the actual index of the analyser variable in the list of analyser variables by accounting for the fact
     // that some analyser variables may be untracked.
 
-    auto variables = libcellml::analyserVariables(analyserVariable);
+    auto analyserVariables = libcellml::analyserVariables(analyserVariable);
 
-    if (variables.empty()) {
+    if (analyserVariables.empty()) {
         return convertToString(analyserVariable->index());
     }
 
@@ -60,13 +60,13 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     size_t res = MAX_SIZE_T;
 
     for (;;) {
-        auto var = variables[++i];
+        auto analyserVar = analyserVariables[++i];
 
-        if (isTrackedVariable(analyserModel, var, true)) {
+        if (isTrackedVariable(analyserModel, analyserVar, true)) {
             ++res;
         }
 
-        if (analyserVariable == var) {
+        if (analyserVariable == analyserVar) {
             break;
         }
     }
