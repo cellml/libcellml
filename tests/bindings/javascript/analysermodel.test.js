@@ -35,7 +35,7 @@ describe("Analyser Model tests", () => {
         a.analyseModel(m)
         expect(a.issueCount()).toBe(0)
 
-        am = a.model()
+        am = a.analyserModel()
     });
     test('Checking Analyser Model type.', () => {
         expect(am.type().value).toBe(libcellml.AnalyserModel.Type.ODE.value)

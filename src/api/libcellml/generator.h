@@ -152,7 +152,7 @@ public:
      *
      * @param analyserModel The pointer to the @ref AnalyserModel which all the algebraic variables are to be tracked.
      */
-    void trackAllAlgebraic(const AnalyserModelPtr &analyserModel);
+    void trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
 
     /**
      * @brief Untrack all the algebraic variables in the given @p analyserModel.
@@ -162,7 +162,7 @@ public:
      *
      * @param analyserModel The pointer to the @ref AnalyserModel which all the algebraic variables are to be untracked.
      */
-    void untrackAllAlgebraic(const AnalyserModelPtr &analyserModel);
+    void untrackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel);
 
     /**
      * @brief Track all the variables in the given @p analyserModel.

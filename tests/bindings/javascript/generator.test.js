@@ -42,7 +42,7 @@ describe("Generator tests", () => {
 
         a.analyseModel(m)
 
-        const am = a.model()
+        const am = a.analyserModel()
         const av = am.analyserVariable(v)
         const g = new libcellml.Generator()
 
@@ -76,12 +76,12 @@ describe("Generator tests", () => {
         expect(g.trackedComputedConstantCount(am)).toBe(3)
         expect(g.untrackedComputedConstantCount(am)).toBe(0)
 
-        g.untrackAllAlgebraic(am)
+        g.untrackAllAlgebraicVariables(am)
 
         expect(g.trackedAlgebraicCount(am)).toBe(0)
         expect(g.untrackedAlgebraicCount(am)).toBe(10)
 
-        g.trackAllAlgebraic(am)
+        g.trackAllAlgebraicVariables(am)
 
         expect(g.trackedAlgebraicCount(am)).toBe(10)
         expect(g.untrackedAlgebraicCount(am)).toBe(0)
@@ -105,7 +105,7 @@ describe("Generator tests", () => {
 
         a.analyseModel(m)
 
-        am = a.model()
+        am = a.analyserModel()
 
         const interface_lines = g.interfaceCode(am).split('\n')
         expect(interface_lines.length).toBe(38)
@@ -113,11 +113,11 @@ describe("Generator tests", () => {
         const implementation_lines = g.implementationCode(am).split('\n')
         expect(implementation_lines.length).toBe(97)
 
-        const equation_line_1 = libcellml.Generator.equationCode(a.model().analyserEquation(0).ast())
+        const equation_line_1 = libcellml.Generator.equationCode(a.analyserModel().analyserEquation(0).ast())
         expect(equation_line_1.length).toBe(14)
 
         const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
-        const equation_line_2 = libcellml.Generator.equationCodeByProfile(a.model().analyserEquation(0).ast(), gp)
+        const equation_line_2 = libcellml.Generator.equationCodeByProfile(a.analyserModel().analyserEquation(0).ast(), gp)
         expect(equation_line_2.length).toBe(14)
     })
 })

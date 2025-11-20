@@ -35,7 +35,7 @@ describe("Analyser Variable tests", () => {
         a.analyseModel(m)
         expect(a.issueCount()).toBe(0)
 
-        am = a.model()
+        am = a.analyserModel()
 
         expect(am.constantCount()).toBe(5)
         expect(am.computedConstantCount()).toBe(3)
@@ -61,7 +61,7 @@ describe("Analyser Variable tests", () => {
     });
     test('Checking Analyser Variable model.', () => {
         const av = am.algebraicVariable(3)
-        expect(av.model()).toStrictEqual(am)
+        expect(av.analyserModel()).toStrictEqual(am)
     });
     test('Checking Analyser Equation analyserEquationCount.', () => {
         const av = am.computedConstant(1)

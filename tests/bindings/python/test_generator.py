@@ -27,7 +27,7 @@ class GeneratorTestCase(unittest.TestCase):
         a = Analyser()
         a.analyseModel(m)
 
-        am = a.model()
+        am = a.analyserModel()
 
         self.assertEqual(AnalyserModel.Type.ALGEBRAIC, am.type())
 
@@ -63,7 +63,7 @@ class GeneratorTestCase(unittest.TestCase):
 
         a.analyseModel(m)
 
-        am = a.model()
+        am = a.analyserModel()
         av = am.analyserVariable(v)
         g = Generator()
 
@@ -97,12 +97,12 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual(3, g.trackedComputedConstantCount(am))
         self.assertEqual(0, g.untrackedComputedConstantCount(am))
 
-        g.untrackAllAlgebraic(am)
+        g.untrackAllAlgebraicVariables(am)
 
         self.assertEqual(0, g.trackedAlgebraicCount(am))
         self.assertEqual(10, g.untrackedAlgebraicCount(am))
 
-        g.trackAllAlgebraic(am)
+        g.trackAllAlgebraicVariables(am)
 
         self.assertEqual(10, g.trackedAlgebraicCount(am))
         self.assertEqual(0, g.untrackedAlgebraicCount(am))

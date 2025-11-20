@@ -22,7 +22,6 @@ let libcellml = null
 describe("Annotator tests", () => {
     let m
     let a
-    let am
 
     beforeAll(async () => {
         libcellml = await loadLibCellML()
