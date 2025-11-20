@@ -564,15 +564,12 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
 
     profileContents += generatorProfile->indentString();
 
-    profileContents += generatorProfile->openArrayInitialiserString()
-                       + generatorProfile->closeArrayInitialiserString();
+    profileContents += generatorProfile->variableDeclarationString();
 
     profileContents += generatorProfile->openArrayString()
                        + generatorProfile->closeArrayString();
 
     profileContents += generatorProfile->arrayElementSeparatorString();
-
-    profileContents += generatorProfile->stringDelimiterString();
 
     profileContents += generatorProfile->commandSeparatorString();
 
