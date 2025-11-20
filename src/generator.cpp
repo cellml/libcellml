@@ -301,7 +301,7 @@ void Generator::GeneratorImpl::trackVariables(const std::vector<AnalyserVariable
     }
 }
 
-bool Generator::GeneratorImpl::validModel(const AnalyserModelPtr &analyserModel)
+bool Generator::GeneratorImpl::validAnalyserModel(const AnalyserModelPtr &analyserModel)
 {
     removeAllIssues();
 
@@ -321,21 +321,21 @@ bool Generator::GeneratorImpl::validModel(const AnalyserModelPtr &analyserModel)
 
 void Generator::GeneratorImpl::trackAllConstants(const AnalyserModelPtr &analyserModel, bool tracked)
 {
-    if (validModel(analyserModel)) {
+    if (validAnalyserModel(analyserModel)) {
         trackVariables(analyserModel->constants(), tracked);
     }
 }
 
 void Generator::GeneratorImpl::trackAllComputedConstants(const AnalyserModelPtr &analyserModel, bool tracked)
 {
-    if (validModel(analyserModel)) {
+    if (validAnalyserModel(analyserModel)) {
         trackVariables(analyserModel->computedConstants(), tracked);
     }
 }
 
 void Generator::GeneratorImpl::trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel, bool tracked)
 {
-    if (validModel(analyserModel)) {
+    if (validAnalyserModel(analyserModel)) {
         trackVariables(analyserModel->algebraicVariables(), tracked);
     }
 }
@@ -354,7 +354,7 @@ std::vector<AnalyserVariablePtr> Generator::GeneratorImpl::trackableVariables(co
 
 void Generator::GeneratorImpl::trackAllVariables(const AnalyserModelPtr &analyserModel, bool tracked)
 {
-    if (validModel(analyserModel)) {
+    if (validAnalyserModel(analyserModel)) {
         trackVariables(trackableVariables(analyserModel), tracked);
     }
 }
