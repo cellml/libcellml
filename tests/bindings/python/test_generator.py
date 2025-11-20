@@ -5,7 +5,6 @@ import unittest
 
 
 class GeneratorTestCase(unittest.TestCase):
-
     def test_create_destroy(self):
         from libcellml import Generator
 

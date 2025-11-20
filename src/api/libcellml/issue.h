@@ -36,7 +36,8 @@ class LIBCELLML_EXPORT Issue
 {
     friend class Analyser;
     friend class Annotator;
-    friend class Generator;
+    friend class Generator; //---GRY--- TO BE DELETED?
+    friend class GeneratorContext;
     friend class Importer;
     friend class Parser;
     friend class Printer;
