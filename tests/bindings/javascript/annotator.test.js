@@ -22,7 +22,6 @@ let libcellml = null
 describe("Annotator tests", () => {
     let m
     let a
-    let am
 
     beforeAll(async () => {
         libcellml = await loadLibCellML()
@@ -39,12 +38,12 @@ describe("Annotator tests", () => {
     });
     test('Checking Annotator model.', () => {
         expect(a.hasModel()).toBe(false)
-        expect(a.analyserModel()).toBeNull()
+        expect(a.model()).toBeNull()
 
         a.setModel(m)
 
         expect(a.hasModel()).toBe(true)
-        expect(a.analyserModel()).not.toBeNull()
+        expect(a.model()).not.toBeNull()
     });
     test('Checking Annotator assigning all.', () => {
         a.setModel(m)
