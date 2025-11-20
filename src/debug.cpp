@@ -71,11 +71,11 @@ std::string astAsCode(const AnalyserEquationAstPtr &ast)
     return Generator::equationCode(ast, generatorProfile);
 }
 
-void printAnalyserModelEquations(const AnalyserModelPtr &model)
+void printAnalyserModelEquations(const AnalyserModelPtr &analyserModel)
 {
     size_t eqnNb = 0;
 
-    for (const auto &eqn : model->equations()) {
+    for (const auto &eqn : analyserModel->analyserEquations()) {
         Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
 
         if (eqn->ast() != nullptr) {
@@ -164,19 +164,19 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
     Debug() << "\n---------------------------------------[END]\n";
 }
 
-void printAnalyserModelVariables(const AnalyserModelPtr &model)
+void printAnalyserModelVariables(const AnalyserModelPtr &analyserModel)
 {
     size_t varNb = 0;
 
-    for (const auto &var : analyserVariables(model)) {
+    for (const auto &var : analyserVariables(analyserModel)) {
         Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
 
-        if (var->equationCount() != 0) {
+        if (var->analyserEquationCount() != 0) {
             Debug() << "\nEquations:";
 
-            for (const auto &eqn : var->equations()) {
+            for (const auto &eqn : var->analyserEquations()) {
                 if (eqn->ast() != nullptr) {
                     Debug() << " - " << astAsCode(eqn->ast());
                 } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
@@ -232,21 +232,21 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
-void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
+void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &analyserModel)
 {
     for (const auto &iter : map) {
         auto key = iter.first;
         Debug(false) << "key: ";
-        printStackWithModelInfo(key, model);
+        printStackWithModelInfo(key, analyserModel);
         auto vector = iter.second;
         for (const auto &vectorIt : vector) {
             Debug(false) << "value: ";
-            printStackWithModelInfo(vectorIt, model);
+            printStackWithModelInfo(vectorIt, analyserModel);
         }
     }
 }
 
-void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
+void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &analyserModel)
 {
     bool first = true;
     ComponentPtr entity;
@@ -257,7 +257,7 @@ void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
         }
         auto next = iter;
         if (first) {
-            entity = model->component(*iter);
+            entity = analyserModel->component(*iter);
             Debug(false) << entity->name();
         } else if (++next == stack.end()) {
             Debug(false) << entity->variable(*iter)->name();

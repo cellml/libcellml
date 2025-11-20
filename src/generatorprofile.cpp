@@ -225,7 +225,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.6.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.7.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -489,11 +489,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                          "[CODE]"
                                                          "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
-                                                              "{\n"
-                                                              "[CODE]"
-                                                              "}\n";
+        mInterfaceComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+                                                                 "{\n"
+                                                                 "[CODE]"
+                                                                 "}\n";
+
+        mInterfaceComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+                                                                 "{\n"
+                                                                 "[CODE]"
+                                                                 "}\n";
 
         mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
         mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n{\n"
@@ -533,15 +539,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitialiserString = "{";
-        mCloseArrayInitialiserString = "}";
+        mVariableDeclarationString = "double [CODE]";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
-
-        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = ";";
     } else { // GeneratorProfile::Profile::PYTHON.
@@ -738,7 +741,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.5.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.6.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -923,10 +926,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                          "def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):\n"
                                                          "[CODE]";
 
-        mInterfaceComputeComputedConstantsMethodString = "";
-        mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(constants, computed_constants):\n"
-                                                              "[CODE]";
+        mInterfaceComputeComputedConstantsMethodFamString = "";
+        mImplementationComputeComputedConstantsMethodFamString = "\n"
+                                                                 "def compute_computed_constants(constants, computed_constants, algebraic):\n"
+                                                                 "[CODE]";
+
+        mInterfaceComputeComputedConstantsMethodFdmString = "";
+        mImplementationComputeComputedConstantsMethodFdmString = "\n"
+                                                                 "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
+                                                                 "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
@@ -962,15 +970,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitialiserString = "[";
-        mCloseArrayInitialiserString = "]";
+        mVariableDeclarationString = "[CODE]";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
-
-        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = "";
     }
@@ -2802,24 +2807,42 @@ void GeneratorProfile::setImplementationInitialiseArraysMethodString(bool forDif
     }
 }
 
-std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
+std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mInterfaceComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mInterfaceComputeComputedConstantsMethodFdmString;
+    }
+
+    return mPimpl->mInterfaceComputeComputedConstantsMethodFamString;
 }
 
-void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString)
+void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                                        const std::string &interfaceComputeComputedConstantsMethodString)
 {
-    mPimpl->mInterfaceComputeComputedConstantsMethodString = interfaceComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mInterfaceComputeComputedConstantsMethodFdmString = interfaceComputeComputedConstantsMethodString;
+    } else {
+        mPimpl->mInterfaceComputeComputedConstantsMethodFamString = interfaceComputeComputedConstantsMethodString;
+    }
 }
 
-std::string GeneratorProfile::implementationComputeComputedConstantsMethodString() const
+std::string GeneratorProfile::implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mImplementationComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mImplementationComputeComputedConstantsMethodFdmString;
+    }
+
+    return mPimpl->mImplementationComputeComputedConstantsMethodFamString;
 }
 
-void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString)
+void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(bool forDifferentialModel,
+                                                                             const std::string &implementationComputeComputedConstantsMethodString)
 {
-    mPimpl->mImplementationComputeComputedConstantsMethodString = implementationComputeComputedConstantsMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mImplementationComputeComputedConstantsMethodFdmString = implementationComputeComputedConstantsMethodString;
+    } else {
+        mPimpl->mImplementationComputeComputedConstantsMethodFamString = implementationComputeComputedConstantsMethodString;
+    }
 }
 
 std::string GeneratorProfile::interfaceComputeRatesMethodString(bool withExternalVariables) const
@@ -2954,24 +2977,14 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     mPimpl->mIndentString = indentString;
 }
 
-std::string GeneratorProfile::openArrayInitialiserString() const
+std::string GeneratorProfile::variableDeclarationString() const
 {
-    return mPimpl->mOpenArrayInitialiserString;
+    return mPimpl->mVariableDeclarationString;
 }
 
-void GeneratorProfile::setOpenArrayInitialiserString(const std::string &openArrayInitialiserString)
+void GeneratorProfile::setVariableDeclarationString(const std::string &variableDeclarationString)
 {
-    mPimpl->mOpenArrayInitialiserString = openArrayInitialiserString;
-}
-
-std::string GeneratorProfile::closeArrayInitialiserString() const
-{
-    return mPimpl->mCloseArrayInitialiserString;
-}
-
-void GeneratorProfile::setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString)
-{
-    mPimpl->mCloseArrayInitialiserString = closeArrayInitialiserString;
+    mPimpl->mVariableDeclarationString = variableDeclarationString;
 }
 
 std::string GeneratorProfile::openArrayString() const
@@ -3002,16 +3015,6 @@ std::string GeneratorProfile::arrayElementSeparatorString() const
 void GeneratorProfile::setArrayElementSeparatorString(const std::string &arrayElementSeparatorString)
 {
     mPimpl->mArrayElementSeparatorString = arrayElementSeparatorString;
-}
-
-std::string GeneratorProfile::stringDelimiterString() const
-{
-    return mPimpl->mStringDelimiterString;
-}
-
-void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
-{
-    mPimpl->mStringDelimiterString = stringDelimiterString;
 }
 
 std::string GeneratorProfile::commandSeparatorString() const

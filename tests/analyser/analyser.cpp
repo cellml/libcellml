@@ -80,8 +80,8 @@ TEST(Analyser, notEqualityStatement)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
-    EXPECT_EQ("invalid", libcellml::AnalyserModel::typeAsString(analyser->model()->type()));
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
+    EXPECT_EQ("invalid", libcellml::AnalyserModel::typeAsString(analyser->analyserModel()->type()));
 }
 
 TEST(Analyser, initialisedVariableOfIntegration)
@@ -106,7 +106,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VOI_INITIALISED"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
@@ -131,7 +131,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VOI_INITIALISED"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, twoVariablesOfIntegration)
@@ -156,7 +156,7 @@ TEST(Analyser, twoVariablesOfIntegration)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VOI_SEVERAL"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, nonFirstOrderOdes)
@@ -183,7 +183,7 @@ TEST(Analyser, nonFirstOrderOdes)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_ODE_NOT_FIRST_ORDER"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, undefinedVariables)
@@ -209,7 +209,7 @@ TEST(Analyser, undefinedVariables)
                                                                    expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB12.html?issue=MATH_CI_VARIABLE_REFERENCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, variableInitialisedTwice)
@@ -234,38 +234,13 @@ TEST(Analyser, variableInitialisedTwice)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
-TEST(Analyser, nonConstantInitialisingVariable)
+TEST(Analyser, variableInitialisedUsingANonExistingVariable)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/non_constant_initialising_variable.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2', which is not a constant.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
-}
-
-TEST(Analyser, nonExistingInitialisingVariable)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/non_existing_initialising_variable.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_a_non_existing_variable.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -284,7 +259,39 @@ TEST(Analyser, nonExistingInitialisingVariable)
                                                                    expectedUrls(expectedIssues.size(), "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB08.html?issue=VARIABLE_INITIAL_VALUE_VALUE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
+}
+
+TEST(Analyser, variableInitialisedUsingAnotherVariable)
+{
+    // Note: this should be in sync with the corresponding Generator test.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_another_variable.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'kStateStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'kNlaStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xStateNlaAlgebraic' in component 'main' is initialised using variable 'kStateNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xNlaNlaAlgebraic' in component 'main' is initialised using variable 'kNlaNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+        "Variable 'xNlaAlgebraic' in component 'main' is initialised using variable 'kNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, nonInitialisedState)
@@ -311,7 +318,7 @@ TEST(Analyser, nonInitialisedState)
                                                                    analyser);
     EXPECT_EQ(expectedVariableName, analyser->issue(0)->item()->variable()->name());
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, underconstrained)
@@ -336,7 +343,7 @@ TEST(Analyser, underconstrained)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, overconstrained)
@@ -361,7 +368,7 @@ TEST(Analyser, overconstrained)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, unsuitablyConstrained)
@@ -395,7 +402,7 @@ TEST(Analyser, unsuitablyConstrained)
                                                                    expectedUrls,
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, addSameExternalVariableAsVariable)
@@ -922,7 +929,7 @@ TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithTwoExternalVariables)
@@ -950,7 +957,7 @@ TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithTwoExternalVariables)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
 }
 
 TEST(Analyser, overconstrainedNlaSystem)
@@ -976,5 +983,5 @@ TEST(Analyser, overconstrainedNlaSystem)
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
                                                                    analyser);
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
 }
