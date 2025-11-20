@@ -40,9 +40,9 @@ class AnalyserTestCase(unittest.TestCase):
         a.analyseModel(m)
 
         self.assertEqual(0, a.errorCount())
-        self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
-        self.assertEqual("unknown", AnalyserModel.typeAsString(a.model().type()))
-        self.assertEqual("unknown", AnalyserModel_typeAsString(a.model().type()))
+        self.assertEqual(AnalyserModel.Type.UNKNOWN, a.analyserModel().type())
+        self.assertEqual("unknown", AnalyserModel.typeAsString(a.analyserModel().type()))
+        self.assertEqual("unknown", AnalyserModel_typeAsString(a.analyserModel().type()))
 
     def test_coverage(self):
         from libcellml import Analyser
@@ -103,7 +103,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserModel.
 
-        am = a.model()
+        am = a.analyserModel()
 
         self.assertTrue(am.isValid())
 
@@ -168,7 +168,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(3, av.index())
         self.assertIsNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertIsNotNone(av.model())
+        self.assertIsNotNone(av.analyserModel())
         self.assertEqual(1, av.analyserEquationCount())
         self.assertIsNotNone(av.analyserEquations())
         self.assertIsNotNone(av.analyserEquation(0))

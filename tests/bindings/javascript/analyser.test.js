@@ -104,6 +104,6 @@ describe("Analyser tests", () => {
     expect(a.externalVariableCount()).toBe(1)
   });
   test("Checking Analyser.model.", () => {
-    expect(a.model()).toBeDefined()
+    expect(a.analyserModel()).toBeDefined()
   });
 })
