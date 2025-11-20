@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "libcellml/analyserequationast.h"
 #include "libcellml/generator.h"
+#include "libcellml/generatorcontext.h"
 #include "libcellml/generatorprofile.h"
 
 using namespace emscripten;
@@ -26,6 +27,8 @@ EMSCRIPTEN_BINDINGS(libcellml_generator)
 {
     class_<libcellml::Generator, base<libcellml::Logger>>("Generator")
         .smart_ptr_constructor("Generator", &libcellml::Generator::create)
+        .function("context", &libcellml::Generator::context)
+        .function("setContext", &libcellml::Generator::setContext)
         .function("profile", &libcellml::Generator::profile)
         .function("setProfile", &libcellml::Generator::setProfile)
         .function("isTrackedVariable", &libcellml::Generator::isTrackedVariable)

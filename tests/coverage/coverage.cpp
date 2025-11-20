@@ -994,6 +994,19 @@ TEST(Coverage, generatorWithNoTracking)
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));
 }
 
+TEST(Coverage, generatorContext)
+{
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ(nullptr, generator->context());
+
+    auto context = libcellml::GeneratorContext::create();
+
+    generator->setContext(context);
+
+    EXPECT_NE(nullptr, generator->context());
+}
+
 TEST(CoverageValidator, degreeElementWithOneSibling)
 {
     const std::string math =

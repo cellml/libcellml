@@ -37,6 +37,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 {
     std::string mCode;
 
+    GeneratorContextPtr mContext;
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
     std::map<AnalyserModelPtr, std::map<AnalyserVariablePtr, bool>> mTrackedVariables;
@@ -48,17 +49,17 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     bool isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked);
 
-    bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable, bool tracked);
-    bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
+    bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable, bool tracked); //---GRY--- TO BE DELETED.
+    bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked); //---GRY--- TO BE DELETED.
 
-    void addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked, const std::string &variableInfo,
+    void addTrackingIssue(const AnalyserVariablePtr &analyserVariable, bool tracked, const std::string &variableInfo,  //---GRY--- TO BE DELETED.
                           const std::string &trackedInfo, const std::string &untrackedInfo,
                           Issue::ReferenceRule trackedReferenceRule, Issue::ReferenceRule untrackedReferenceRule);
 
-    void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked);
+    void addNeededToComputeExternalVariableIssue(const AnalyserVariablePtr &analyserVariable, bool tracked); //---GRY--- TO BE DELETED.
 
-    bool trackableVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool canAddIssue = true);
-    bool specialVariable(const AnalyserVariablePtr &analyserVariable, const AnalyserVariablePtr &specialAnalyserVariable, bool tracked,
+    bool trackableVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool canAddIssue = true); //---GRY--- TO BE DELETED.
+    bool specialVariable(const AnalyserVariablePtr &analyserVariable, const AnalyserVariablePtr &specialAnalyserVariable, bool tracked, //---GRY--- TO BE DELETED.
                          Issue::ReferenceRule trackedReferenceRule, Issue::ReferenceRule untrackedReferenceRule);
 
     void trackVariable(const AnalyserVariablePtr &analyserVariable, bool tracked, bool needRemoveAllIssues = true);
@@ -71,7 +72,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     void trackAllComputedConstants(const AnalyserModelPtr &analyserModel, bool tracked);
     void trackAllAlgebraicVariables(const AnalyserModelPtr &analyserModel, bool tracked);
 
-    std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &analyserModel) const;
+    std::vector<AnalyserVariablePtr> trackableVariables(const AnalyserModelPtr &analyserModel) const; //---GRY--- TO BE DELETED.
 
     void trackAllVariables(const AnalyserModelPtr &analyserModel, bool tracked);
 

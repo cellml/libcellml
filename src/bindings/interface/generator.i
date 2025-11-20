@@ -6,11 +6,18 @@
 
 %import "analysermodel.i"
 %import "createconstructor.i"
+%import "generatorcontext.i"
 %import "generatorprofile.i"
 %import "logger.i"
 
 %feature("docstring") libcellml::Generator
 "Creates a :class:`Generator` object.";
+
+%feature("docstring") libcellml::Generator::context
+"Returns the context used for code generation.";
+
+%feature("docstring") libcellml::Generator::setContext
+"Sets the context to use for code generation.";
 
 %feature("docstring") libcellml::Generator::profile
 "Returns the profile used for code generation.";
