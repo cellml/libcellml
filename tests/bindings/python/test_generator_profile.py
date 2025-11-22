@@ -333,15 +333,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setCeilingString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.ceilingString())
 
-    def test_close_array_initialiser_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('}', g.closeArrayInitialiserString())
-        g.setCloseArrayInitialiserString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.closeArrayInitialiserString())
-
     def test_close_array_string(self):
         from libcellml import GeneratorProfile
 
@@ -707,10 +698,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants)\n{\n[CODE]}\n',
-                         g.implementationComputeComputedConstantsMethodString())
-        g.setImplementationComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString())
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
+                         g.implementationComputeComputedConstantsMethodString(False))
+        g.setImplementationComputeComputedConstantsMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString(False))
+
+        self.assertEqual('void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
+                         g.implementationComputeComputedConstantsMethodString(True))
+        g.setImplementationComputeComputedConstantsMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString(True))
 
     def test_implementation_compute_rates_method_string(self):
         from libcellml import GeneratorProfile
@@ -953,7 +949,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char VERSION[] = "0.6.0";\n', g.implementationVersionString())
+        self.assertEqual('const char VERSION[] = "0.7.0";\n', g.implementationVersionString())
         g.setImplementationVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVersionString())
 
@@ -989,10 +985,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants);\n',
-                         g.interfaceComputeComputedConstantsMethodString())
-        g.setInterfaceComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString())
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n',
+                         g.interfaceComputeComputedConstantsMethodString(False))
+        g.setInterfaceComputeComputedConstantsMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString(False))
+
+        self.assertEqual('void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n',
+                         g.interfaceComputeComputedConstantsMethodString(True))
+        g.setInterfaceComputeComputedConstantsMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString(True))
 
     def test_interface_compute_rates_method_string(self):
         from libcellml import GeneratorProfile
@@ -1379,14 +1380,14 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setNotString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.notString())
 
-    def test_open_array_initialiser_string(self):
+    def test_double_declaration_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('{', g.openArrayInitialiserString())
-        g.setOpenArrayInitialiserString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.openArrayInitialiserString())
+        self.assertEqual('double [CODE]', g.variableDeclarationString())
+        g.setVariableDeclarationString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableDeclarationString())
 
     def test_open_array_string(self):
         from libcellml import GeneratorProfile
@@ -1569,15 +1570,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('states', g.statesArrayString())
         g.setStatesArrayString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.statesArrayString())
-
-    def test_string_delimiter_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('"', g.stringDelimiterString())
-        g.setStringDelimiterString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.stringDelimiterString())
 
     def test_tan_string(self):
         from libcellml import GeneratorProfile

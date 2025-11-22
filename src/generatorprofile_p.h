@@ -279,8 +279,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceInitialiseArraysMethodFdmString;
     std::string mImplementationInitialiseArraysMethodFdmString;
 
-    std::string mInterfaceComputeComputedConstantsMethodString;
-    std::string mImplementationComputeComputedConstantsMethodString;
+    std::string mInterfaceComputeComputedConstantsMethodFamString;
+    std::string mImplementationComputeComputedConstantsMethodFamString;
+
+    std::string mInterfaceComputeComputedConstantsMethodFdmString;
+    std::string mImplementationComputeComputedConstantsMethodFdmString;
 
     std::string mInterfaceComputeRatesMethodWoevString;
     std::string mImplementationComputeRatesMethodWoevString;
@@ -302,15 +305,12 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
-    std::string mOpenArrayInitialiserString;
-    std::string mCloseArrayInitialiserString;
+    std::string mVariableDeclarationString;
 
     std::string mOpenArrayString;
     std::string mCloseArrayString;
 
     std::string mArrayElementSeparatorString;
-
-    std::string mStringDelimiterString;
 
     std::string mCommandSeparatorString;
 

@@ -34,15 +34,21 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,
                                                       const VariablePtr &variable,
-                                                      const std::vector<AnalyserEquationPtr> &equations)
+                                                      const AnalyserModelPtr &analyserModel,
+                                                      const std::vector<AnalyserEquationPtr> &analyserEquations)
 {
     mType = type;
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mComponent = owningComponent(mVariable);
+    mAnalyserModel = analyserModel;
 
-    std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
+    std::copy(analyserEquations.begin(), analyserEquations.end(), back_inserter(mAnalyserEquations));
+}
+
+bool AnalyserVariable::AnalyserVariableImpl::constantWithDummyEquation() const
+{
+    return (mType == Type::CONSTANT) && (mAnalyserEquations.front().lock() == nullptr);
 }
 
 AnalyserVariable::AnalyserVariable()
@@ -88,29 +94,46 @@ VariablePtr AnalyserVariable::variable() const
     return mPimpl->mVariable;
 }
 
-size_t AnalyserVariable::equationCount() const
+AnalyserModelPtr AnalyserVariable::analyserModel() const
 {
-    return mPimpl->mEquations.size();
+    return mPimpl->mAnalyserModel.lock();
 }
 
-std::vector<AnalyserEquationPtr> AnalyserVariable::equations() const
+// Note: our equation-related methods must account for the fact that a constant initialised using the `initial_value`
+//       attribute (rather than through an equation; e.g., x = 3) will have a dummy equation associated with it which
+//       we don't want to be accessible, hence the calls to constantWithDummyEquation() in the following methods.
+
+size_t AnalyserVariable::analyserEquationCount() const
 {
+    if (mPimpl->constantWithDummyEquation()) {
+        return 0;
+    }
+
+    return mPimpl->mAnalyserEquations.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserVariable::analyserEquations() const
+{
+    if (mPimpl->constantWithDummyEquation()) {
+        return {};
+    }
+
     std::vector<AnalyserEquationPtr> res;
 
-    for (const auto &equation : mPimpl->mEquations) {
-        res.push_back(equation.lock());
+    for (const auto &analyserEquation : mPimpl->mAnalyserEquations) {
+        res.push_back(analyserEquation.lock());
     }
 
     return res;
 }
 
-AnalyserEquationPtr AnalyserVariable::equation(size_t index) const
+AnalyserEquationPtr AnalyserVariable::analyserEquation(size_t index) const
 {
-    if (index >= mPimpl->mEquations.size()) {
+    if (mPimpl->constantWithDummyEquation() || (index >= mPimpl->mAnalyserEquations.size())) {
         return {};
     }
 
-    return mPimpl->mEquations[index].lock();
+    return mPimpl->mAnalyserEquations[index].lock();
 }
 
 } // namespace libcellml
