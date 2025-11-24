@@ -36,7 +36,6 @@ class LIBCELLML_EXPORT AnalyserModel
 #endif
 {
     friend class Analyser;
-    friend class Generator;
 
 public:
     /**

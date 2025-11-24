@@ -332,7 +332,7 @@ size_t GeneratorContext::GeneratorContextImpl::trackedComputedConstantCount(cons
     return trackedVariableCount(analyserModel, analyserModel->computedConstants(), tracked);
 }
 
-size_t GeneratorContext::GeneratorContextImpl::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel, bool tracked)
+size_t GeneratorContext::GeneratorContextImpl::trackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel, bool tracked)
 {
     if (analyserModel == nullptr) {
         return 0;
@@ -457,14 +457,14 @@ size_t GeneratorContext::untrackedComputedConstantCount(const AnalyserModelPtr &
     return pFunc()->trackedComputedConstantCount(analyserModel, false);
 }
 
-size_t GeneratorContext::trackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
+size_t GeneratorContext::trackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedAlgebraicCount(analyserModel, true);
+    return pFunc()->trackedAlgebraicVariableCount(analyserModel, true);
 }
 
-size_t GeneratorContext::untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel)
+size_t GeneratorContext::untrackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel)
 {
-    return pFunc()->trackedAlgebraicCount(analyserModel, false);
+    return pFunc()->trackedAlgebraicVariableCount(analyserModel, false);
 }
 
 size_t GeneratorContext::trackedVariableCount(const AnalyserModelPtr &analyserModel)

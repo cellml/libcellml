@@ -15,13 +15,23 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { basicModel, hhSquidAxon1952 } = require('./resources')
+const { basicModel } = require('./resources')
 
 let libcellml = null
 
 describe("Generator tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
+    })
+    test('Checking Generator context manipulation.', () => {
+        const g = new libcellml.Generator()
+        const gc = new libcellml.GeneratorContext()
+
+        expect(g.context()).toBeNull()
+
+        g.setContext(gc)
+
+        expect(g.context()).toStrictEqual(gc)
     })
     test('Checking Generator profile manipulation.', () => {
         const g = new libcellml.Generator()
@@ -34,67 +44,16 @@ describe("Generator tests", () => {
 
         expect(g.profile().commentString()).toBe("# [CODE]\n")
     })
-    test('Checking Generator tracking/untracking of variables.', () => {
-        const p = new libcellml.Parser(true)
-        const m = p.parseModel(hhSquidAxon1952)
-        const v = m.componentByName("membrane", true).variableByName("Cm")
-        const a = new libcellml.Analyser()
-
-        a.analyseModel(m)
-
-        const am = a.analyserModel()
-        const av = am.analyserVariable(v)
+    test('Checking Generator profile manipulation.', () => {
         const g = new libcellml.Generator()
+        const gP = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-        g.untrackVariable(av)
+        expect(g.profile().commentString()).toBe("/* [CODE] */\n")
 
-        expect(g.isTrackedVariable(av)).toBe(false)
-        expect(g.isUntrackedVariable(av)).toBe(true)
+        gP.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
+        g.setProfile(gP)
 
-        g.trackVariable(av)
-
-        expect(g.isTrackedVariable(av)).toBe(true)
-        expect(g.isUntrackedVariable(av)).toBe(false)
-
-        g.untrackAllConstants(am)
-
-        expect(g.trackedConstantCount(am)).toBe(0)
-        expect(g.untrackedConstantCount(am)).toBe(5)
-
-        g.trackAllConstants(am)
-
-        expect(g.trackedConstantCount(am)).toBe(5)
-        expect(g.untrackedConstantCount(am)).toBe(0)
-
-        g.untrackAllComputedConstants(am)
-
-        expect(g.trackedComputedConstantCount(am)).toBe(0)
-        expect(g.untrackedComputedConstantCount(am)).toBe(3)
-
-        g.trackAllComputedConstants(am)
-
-        expect(g.trackedComputedConstantCount(am)).toBe(3)
-        expect(g.untrackedComputedConstantCount(am)).toBe(0)
-
-        g.untrackAllAlgebraicVariables(am)
-
-        expect(g.trackedAlgebraicCount(am)).toBe(0)
-        expect(g.untrackedAlgebraicCount(am)).toBe(10)
-
-        g.trackAllAlgebraicVariables(am)
-
-        expect(g.trackedAlgebraicCount(am)).toBe(10)
-        expect(g.untrackedAlgebraicCount(am)).toBe(0)
-
-        g.untrackAllVariables(am)
-
-        expect(g.trackedVariableCount(am)).toBe(0)
-        expect(g.untrackedVariableCount(am)).toBe(18)
-
-        g.trackAllVariables(am)
-
-        expect(g.trackedVariableCount(am)).toBe(18)
-        expect(g.untrackedVariableCount(am)).toBe(0)
+        expect(g.profile().commentString()).toBe("# [CODE]\n")
     })
     test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
