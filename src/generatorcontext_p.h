@@ -64,7 +64,7 @@ struct GeneratorContext::GeneratorContextImpl: public Logger::LoggerImpl
 
     size_t trackedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked);
     size_t trackedComputedConstantCount(const AnalyserModelPtr &analyserModel, bool tracked);
-    size_t trackedAlgebraicCount(const AnalyserModelPtr &analyserModel, bool tracked);
+    size_t trackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel, bool tracked);
     size_t trackedVariableCount(const AnalyserModelPtr &analyserModel, bool tracked);
 };
 

@@ -29,7 +29,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserEquation
 {
     friend class Analyser;
-    friend class Generator; //---GRY--- TO BE DELETED?
+    friend class Generator;
     friend class GeneratorContext;
 
 public:

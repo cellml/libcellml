@@ -222,7 +222,7 @@ public:
      *
      * @return The number of tracked algebraic variables in the analyser model.
      */
-    size_t trackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
+    size_t trackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel);
 
     /**
      * @brief Get the number of untracked algebraic variables in the given @p analyserModel.
@@ -234,7 +234,7 @@ public:
      *
      * @return The number of untracked algebraic variables in the analyser model.
      */
-    size_t untrackedAlgebraicCount(const AnalyserModelPtr &analyserModel);
+    size_t untrackedAlgebraicVariableCount(const AnalyserModelPtr &analyserModel);
 
     /**
      * @brief Get the number of tracked variables in the given @p analyserModel.

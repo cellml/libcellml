@@ -25,66 +25,6 @@
 %feature("docstring") libcellml::Generator::setProfile
 "Sets the profile to use for code generation.";
 
-%feature("docstring") libcellml::Generator::isTrackedVariable //---GRY--- TO BE DELETED.
-"Tests if the given variable is tracked.";
-
-%feature("docstring") libcellml::Generator::isUntrackedVariable //---GRY--- TO BE DELETED.
-"Tests if the given variable is untracked.";
-
-%feature("docstring") libcellml::Generator::trackVariable //---GRY--- TO BE DELETED.
-"Tracks the given variable.";
-
-%feature("docstring") libcellml::Generator::untrackVariable //---GRY--- TO BE DELETED.
-"Untracks the given variable.";
-
-%feature("docstring") libcellml::Generator::trackAllConstants //---GRY--- TO BE DELETED.
-"Tracks all the constants in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackAllConstants //---GRY--- TO BE DELETED.
-"Untracks all the constants in the given model.";
-
-%feature("docstring") libcellml::Generator::trackAllComputedConstants //---GRY--- TO BE DELETED.
-"Tracks all the computed constants in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackAllComputedConstants //---GRY--- TO BE DELETED.
-"Untracks all the computed constants in the given model.";
-
-%feature("docstring") libcellml::Generator::trackAllAlgebraicVariables //---GRY--- TO BE DELETED.
-"Tracks all the algebraic variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackAllAlgebraicVariables //---GRY--- TO BE DELETED.
-"Untracks all the algebraic variables in the given model.";
-
-%feature("docstring") libcellml::Generator::trackAllVariables //---GRY--- TO BE DELETED.
-"Tracks all the variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackAllVariables //---GRY--- TO BE DELETED.
-"Untracks all the variables in the given model.";
-
-%feature("docstring") libcellml::Generator::trackedConstantCount //---GRY--- TO BE DELETED.
-"Returns the number of tracked constants in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackedConstantCount //---GRY--- TO BE DELETED.
-"Returns the number of untracked constants in the given model.";
-
-%feature("docstring") libcellml::Generator::trackedComputedConstantCount //---GRY--- TO BE DELETED.
-"Returns the number of tracked computed constants in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackedComputedConstantCount //---GRY--- TO BE DELETED.
-"Returns the number of untracked computed constants in the given model.";
-
-%feature("docstring") libcellml::Generator::trackedAlgebraicCount //---GRY--- TO BE DELETED.
-"Returns the number of tracked algebraic variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackedAlgebraicCount //---GRY--- TO BE DELETED.
-"Returns the number of untracked algebraic variables in the given model.";
-
-%feature("docstring") libcellml::Generator::trackedVariableCount //---GRY--- TO BE DELETED.
-"Returns the number of tracked variables in the given model.";
-
-%feature("docstring") libcellml::Generator::untrackedVariableCount //---GRY--- TO BE DELETED.
-"Returns the number of untracked variables in the given model.";
-
 %feature("docstring") libcellml::Generator::interfaceCode
 "Returns the interface code.";
 

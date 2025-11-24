@@ -686,10 +686,13 @@ TEST(Coverage, generator)
     }
 
     auto generator = libcellml::Generator::create();
+    auto generatorContext = libcellml::GeneratorContext::create();
 
-    generator->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
+    generator->setContext(generatorContext);
 
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generator);
+    generatorContext->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
+
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generatorContext);
 
     EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
 
@@ -987,8 +990,11 @@ TEST(Coverage, generatorWithNoTracking)
 
     auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
+    auto generatorContext = libcellml::GeneratorContext::create();
 
-    generator->untrackAllVariables(analyserModel);
+    generator->setContext(generatorContext);
+
+    generatorContext->untrackAllVariables(analyserModel);
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel));
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));

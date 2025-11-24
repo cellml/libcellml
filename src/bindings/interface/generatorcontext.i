@@ -56,10 +56,10 @@
 %feature("docstring") libcellml::GeneratorContext::untrackedComputedConstantCount
 "Returns the number of untracked computed constants in the given model.";
 
-%feature("docstring") libcellml::GeneratorContext::trackedAlgebraicCount
+%feature("docstring") libcellml::GeneratorContext::trackedAlgebraicVariableCount
 "Returns the number of tracked algebraic variables in the given model.";
 
-%feature("docstring") libcellml::GeneratorContext::untrackedAlgebraicCount
+%feature("docstring") libcellml::GeneratorContext::untrackedAlgebraicVariableCount
 "Returns the number of untracked algebraic variables in the given model.";
 
 %feature("docstring") libcellml::GeneratorContext::trackedVariableCount
