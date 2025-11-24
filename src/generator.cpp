@@ -1246,17 +1246,36 @@ std::string generateDoubleCode(const std::string &value)
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &analyserModel,
-                                                                               const VariablePtr &variable)
+std::string Generator::GeneratorImpl::generateDoubleOrVariableNameCode(const AnalyserModelPtr &analyserModel, const VariablePtr &variable)
 {
     if (isCellMLReal(variable->initialValue())) {
         return generateDoubleCode(variable->initialValue());
     }
 
     auto initialValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserModel->analyserVariable(initialValueVariable);
+    auto initialValueAnalyserVariable = analyserModel->analyserVariable(initialValueVariable);
+    std::string arrayName;
 
-    return mProfile->constantsArrayString() + mProfile->openArrayString() + analyserVariableIndexString(analyserModel, analyserInitialValueVariable) + mProfile->closeArrayString();
+    switch (initialValueAnalyserVariable->type()) {
+    case AnalyserVariable::Type::STATE:
+        arrayName = mProfile->statesArrayString();
+
+        break;
+    case AnalyserVariable::Type::CONSTANT:
+        arrayName = mProfile->constantsArrayString();
+
+        break;
+    case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        arrayName = mProfile->computedConstantsArrayString();
+
+        break;
+    default: // If it is not one of the above types then it has to be an algebraic variable.
+        arrayName = mProfile->algebraicVariablesArrayString();
+
+        break;
+    }
+
+    return arrayName + mProfile->openArrayString() + analyserVariableIndexString(analyserModel, initialValueAnalyserVariable) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const AnalyserModelPtr &analyserModel,
@@ -2097,7 +2116,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserM
 
     auto code = generateVariableNameCode(analyserModel, analyserVariable->variable())
                 + mProfile->equalityString()
-                + scalingFactorCode + generateDoubleOrConstantVariableNameCode(analyserModel, initialisingVariable)
+                + scalingFactorCode + generateDoubleOrVariableNameCode(analyserModel, initialisingVariable)
                 + mProfile->commandSeparatorString() + "\n";
 
     if (isTrackedVariable(analyserModel, analyserVariable, false)) {
@@ -2209,6 +2228,99 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserModelPt
                                 generatedConstantDependencies, true);
 }
 
+bool Generator::GeneratorImpl::hasComputedConstantDependency(const AnalyserModelPtr &analyserModel,
+                                                             const AnalyserVariablePtr &analyserVariable)
+{
+    // Check if the analyser variable has a direct or indirect dependency on a computed constant.
+
+    if (analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
+        return true;
+    }
+
+    auto initialisingVariable = analyserVariable->initialisingVariable();
+    auto initialValueVariable = owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue());
+
+    if (initialValueVariable == nullptr) {
+        return false;
+    }
+
+    return hasComputedConstantDependency(analyserModel, analyserModel->analyserVariable(initialValueVariable));
+}
+
+std::string Generator::GeneratorImpl::generateInitialiseVariableCode(const AnalyserModelPtr &analyserModel,
+                                                                     const AnalyserVariablePtr &analyserVariable,
+                                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                                     std::vector<AnalyserVariablePtr> &remainingStates,
+                                                                     std::vector<AnalyserVariablePtr> &remainingConstants,
+                                                                     std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                                                     std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables,
+                                                                     std::vector<AnalyserVariablePtr> *generatedConstantDependencies)
+{
+    std::string res;
+
+    // Check if the analyser variable is initialised using a constant value or an initialising variable.
+
+    auto initialisingVariable = analyserVariable->initialisingVariable();
+    auto initialValueVariable = (initialisingVariable != nullptr) ? owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue()) : nullptr;
+    auto initialiseAnalyserVariable = true;
+
+    if (initialValueVariable != nullptr) {
+        // The initial value references a state, a constant, a computed constant, or an algebraic variable, so generate
+        // initialisation code for that variable first, if conditions are met.
+
+        auto initialValueAnalyserVariable = analyserModel->analyserVariable(initialValueVariable);
+        auto &remainingVariables = (initialValueAnalyserVariable->type() == AnalyserVariable::Type::STATE) ?
+                                       remainingStates :
+                                   (initialValueAnalyserVariable->type() == AnalyserVariable::Type::CONSTANT) ?
+                                       remainingConstants :
+                                   (initialValueAnalyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                       remainingComputedConstants :
+                                       remainingAlgebraicVariables;
+
+        if (((generatedConstantDependencies == nullptr) && !hasComputedConstantDependency(analyserModel, initialValueAnalyserVariable))
+            || (generatedConstantDependencies != nullptr)) {
+            auto initialisingAnalyserVariable = std::find_if(remainingVariables.begin(), remainingVariables.end(),
+                                                             [&](const AnalyserVariablePtr &av) {
+                                                                 return areEquivalentVariables(initialValueVariable, av->variable());
+                                                             });
+
+            if (initialisingAnalyserVariable != remainingVariables.end()) {
+                res += generateInitialiseVariableCode(analyserModel, AnalyserVariablePtr(*initialisingAnalyserVariable),
+                                                      remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                      remainingComputedConstants, remainingAlgebraicVariables,
+                                                      generatedConstantDependencies);
+            }
+        } else {
+            initialiseAnalyserVariable = false;
+        }
+    }
+
+    // Now initialise the analyser variable itself, if we can.
+
+    if (initialiseAnalyserVariable) {
+        auto &remainingVariables = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
+                                       remainingStates :
+                                   (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) ?
+                                       remainingConstants :
+                                   (analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                       remainingComputedConstants :
+                                       remainingAlgebraicVariables;
+        auto remainingVariable = std::find(remainingVariables.begin(), remainingVariables.end(), analyserVariable);
+
+        if (remainingVariable != remainingVariables.end()) {
+            if (remainingVariables != remainingComputedConstants) {
+                res += generateInitialisationCode(analyserModel, AnalyserVariablePtr(*remainingVariable));
+            } else {
+                res += generateEquationCode(analyserModel, analyserVariable->analyserEquation(0), remainingAnalyserEquations, *generatedConstantDependencies);
+            }
+
+            remainingVariables.erase(remainingVariable);
+        }
+    }
+
+    return res;
+}
+
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &analyserModel)
 {
     auto interfaceInitialiseArraysMethodString = mProfile->interfaceInitialiseArraysMethodString(modelHasOdes(analyserModel));
@@ -2218,8 +2330,8 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const Analyse
         code += interfaceInitialiseArraysMethodString;
     }
 
-    if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
-        code += mProfile->interfaceComputeComputedConstantsMethodString();
+    if (!mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(analyserModel)).empty()) {
+        code += mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(analyserModel));
     }
 
     auto interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(analyserModel->hasExternalVariables());
@@ -2242,103 +2354,76 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(const Analyse
     }
 }
 
-std::string Generator::GeneratorImpl::generateConstantInitialisationCode(const AnalyserModelPtr &analyserModel,
-                                                                         const std::vector<AnalyserVariablePtr>::iterator constant,
-                                                                         std::vector<AnalyserVariablePtr> &remainingConstants)
+void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(const AnalyserModelPtr &analyserModel,
+                                                                           std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                                           std::vector<AnalyserVariablePtr> &remainingStates,
+                                                                           std::vector<AnalyserVariablePtr> &remainingConstants,
+                                                                           std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                                                           std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables)
 {
-    auto initialisingVariable = (*constant)->initialisingVariable();
-    auto initialValue = initialisingVariable->initialValue();
+    // Note: we must always generate the method body (even if we don't end up generating the method itself) because
+    //       addImplementationComputeComputedConstantsMethodCode() expects our "remaining" parameters to be updated
+    //       correctly.
 
-    if (!isCellMLReal(initialValue)) {
-        auto initialisingComponent = owningComponent(initialisingVariable);
-        auto crtConstant = std::find_if(remainingConstants.begin(), remainingConstants.end(),
-                                        [=](const AnalyserVariablePtr &av) -> bool {
-                                            return initialisingComponent->variable(initialValue) == av->variable();
-                                        });
+    // Initialise our states.
 
-        if (crtConstant != remainingConstants.end()) {
-            return generateConstantInitialisationCode(analyserModel, crtConstant, remainingConstants);
+    std::string methodBody;
+
+    for (const auto &state : analyserModel->states()) {
+        methodBody += generateInitialiseVariableCode(analyserModel, state,
+                                                     remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                     remainingComputedConstants, remainingAlgebraicVariables);
+    }
+
+    // Use an initial guess of zero for rates computed using an NLA system (see the note below).
+
+    for (const auto &state : analyserModel->states()) {
+        if (state->analyserEquation(0)->type() == AnalyserEquation::Type::NLA) {
+            methodBody += generateZeroInitialisationCode(analyserModel, state);
         }
     }
 
-    auto code = generateInitialisationCode(analyserModel, *constant);
+    // Initialise our remaining constants.
 
-    remainingConstants.erase(constant);
+    while (!remainingConstants.empty()) {
+        methodBody += generateInitialiseVariableCode(analyserModel, AnalyserVariablePtr(*remainingConstants.begin()),
+                                                     remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                     remainingComputedConstants, remainingAlgebraicVariables);
+    }
 
-    return code;
-}
+    // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
+    // initial value of 3).
 
-void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(const AnalyserModelPtr &analyserModel,
-                                                                           std::vector<AnalyserEquationPtr> &remainingAnalyserEquations)
-{
+    std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+
+    for (const auto &equation : analyserModel->analyserEquations()) {
+        if (equation->type() == AnalyserEquation::Type::CONSTANT) {
+            methodBody += generateEquationCode(analyserModel, equation, remainingAnalyserEquations, generatedConstantDependencies);
+        }
+    }
+
+    // Initialise our algebraic variables that have an initial value. Also use an initial guess of zero for algebraic
+    // variables computed using an NLA system.
+    // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or RHS
+    //       of that equation (e.g., x = y+z with x and y known and z unknown) is (currently) to be computed using an
+    //       NLA system for which we need an initial guess. We use an initial guess of zero, which is fine since such an
+    //       NLA system has only one solution.
+
+    for (const auto &algebraicVariable : analyserModel->algebraicVariables()) {
+        if (algebraicVariable->initialisingVariable() != nullptr) {
+            methodBody += generateInitialiseVariableCode(analyserModel, algebraicVariable,
+                                                         remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                         remainingComputedConstants, remainingAlgebraicVariables);
+        } else if (algebraicVariable->analyserEquation(0)->type() == AnalyserEquation::Type::NLA) {
+            methodBody += generateZeroInitialisationCode(analyserModel, algebraicVariable);
+        }
+    }
+
+    // Generate the method itself, if needed.
+
     auto implementationInitialiseArraysMethodString = mProfile->implementationInitialiseArraysMethodString(modelHasOdes(analyserModel));
 
     if (!implementationInitialiseArraysMethodString.empty()) {
-        // Initialise our states (after, if needed, initialising the constant on which it depends).
-
-        std::string methodBody;
-        auto constants = analyserModel->constants();
-
-        for (const auto &state : analyserModel->states()) {
-            auto initialisingVariable = state->initialisingVariable();
-            auto initialValue = initialisingVariable->initialValue();
-
-            if (!isCellMLReal(initialValue)) {
-                // The initial value references a constant.
-
-                auto initialisingComponent = owningComponent(initialisingVariable);
-                auto constant = std::find_if(constants.begin(), constants.end(),
-                                             [=](const AnalyserVariablePtr &av) -> bool {
-                                                 return initialisingComponent->variable(initialValue)->hasEquivalentVariable(av->variable());
-                                             });
-
-                methodBody += generateConstantInitialisationCode(analyserModel, constant, constants);
-            }
-
-            methodBody += generateInitialisationCode(analyserModel, state);
-        }
-
-        // Use an initial guess of zero for rates computed using an NLA system
-        // (see the note below).
-
-        for (const auto &state : analyserModel->states()) {
-            if (state->analyserEquation(0)->type() == AnalyserEquation::Type::NLA) {
-                methodBody += generateZeroInitialisationCode(analyserModel, state);
-            }
-        }
-
-        // Initialise our (remaining) constants.
-
-        while (!constants.empty()) {
-            methodBody += generateConstantInitialisationCode(analyserModel, constants.begin(), constants);
-        }
-
-        // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
-        // initial value of 3).
-
-        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
-
-        for (const auto &analyserEquation : analyserModel->analyserEquations()) {
-            if (analyserEquation->type() == AnalyserEquation::Type::CONSTANT) {
-                methodBody += generateEquationCode(analyserModel, analyserEquation, remainingAnalyserEquations, generatedConstantDependencies);
-            }
-        }
-
-        // Initialise our algebraic variables that have an initial value. Also use an initial guess of zero for
-        // algebraic variables computed using an NLA system.
-        // Note: a variable which is the only unknown in an equation, but which is not on its own on either the LHS or
-        //       RHS of that equation (e.g., x = y+z with x and y known and z unknown) is (currently) to be computed
-        //       using an NLA system for which we need an initial guess. We use an initial guess of zero, which is fine
-        //       since such an NLA system has only one solution.
-
-        for (const auto &algebraicVariable : analyserModel->algebraicVariables()) {
-            if (algebraicVariable->initialisingVariable() != nullptr) {
-                methodBody += generateInitialisationCode(analyserModel, algebraicVariable);
-            } else if (algebraicVariable->analyserEquation(0)->type() == AnalyserEquation::Type::NLA) {
-                methodBody += generateZeroInitialisationCode(analyserModel, algebraicVariable);
-            }
-        }
-
         mCode += newLineIfNeeded()
                  + replace(implementationInitialiseArraysMethodString,
                            "[CODE]", generateMethodBodyCode(methodBody));
@@ -2346,21 +2431,50 @@ void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(const
 }
 
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &analyserModel,
-                                                                                   std::vector<AnalyserEquationPtr> &remainingAnalyserEquations)
+                                                                                   std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                                                   std::vector<AnalyserVariablePtr> &remainingStates,
+                                                                                   std::vector<AnalyserVariablePtr> &remainingConstants,
+                                                                                   std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                                                                   std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables)
 {
-    if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
+    if (!mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(analyserModel)).empty()) {
+        // Initialise our remaining states (which are initialised using a computed constant).
+
         std::string methodBody;
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+
+        for (const auto &state : analyserModel->states()) {
+            methodBody += generateInitialiseVariableCode(analyserModel, state,
+                                                         remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                         remainingComputedConstants, remainingAlgebraicVariables,
+                                                         &generatedConstantDependencies);
+        }
+
+        // Initialise our remaining computed constants.
 
         for (const auto &analyserEquation : analyserModel->analyserEquations()) {
             if ((analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                 && isTrackedEquation(analyserEquation, true)) {
-                methodBody += generateEquationCode(analyserModel, analyserEquation, remainingAnalyserEquations, generatedConstantDependencies);
+                methodBody += generateInitialiseVariableCode(analyserModel, analyserEquation->computedConstant(0),
+                                                             remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                             remainingComputedConstants, remainingAlgebraicVariables,
+                                                             &generatedConstantDependencies);
+            }
+        }
+
+        // Initialise our algebraic variables that are initialised using a computed constant.
+
+        for (const auto &algebraicVariable : analyserModel->algebraicVariables()) {
+            if (algebraicVariable->initialisingVariable() != nullptr) {
+                methodBody += generateInitialiseVariableCode(analyserModel, algebraicVariable,
+                                                             remainingAnalyserEquations, remainingStates, remainingConstants,
+                                                             remainingComputedConstants, remainingAlgebraicVariables,
+                                                             &generatedConstantDependencies);
             }
         }
 
         mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationComputeComputedConstantsMethodString(),
+                 + replace(mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(analyserModel)),
                            "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
@@ -2405,7 +2519,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(const
     if (!implementationComputeVariablesMethodString.empty()) {
         std::string methodBody;
         auto analyserEquations = analyserModel->analyserEquations();
-        std::vector<AnalyserEquationPtr> newRemainingAnalyserEquations {std::begin(analyserEquations), std::end(analyserEquations)};
+        auto newRemainingAnalyserEquations = analyserEquations;
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &analyserEquation : analyserEquations) {
@@ -2683,14 +2797,21 @@ std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel)
 
     // Add code for the implementation to initialise our arrays.
 
-    auto equations = analyserModel->analyserEquations();
-    std::vector<AnalyserEquationPtr> remainingAnalyserEquations {std::begin(equations), std::end(equations)};
+    auto remainingAnalyserEquations = analyserModel->analyserEquations();
+    auto remainingStates = analyserModel->states();
+    auto remainingConstants = analyserModel->constants();
+    auto remainingComputedConstants = analyserModel->computedConstants();
+    auto remainingAlgebraicVariables = analyserModel->algebraicVariables();
 
-    pFunc()->addImplementationInitialiseArraysMethodCode(analyserModel, remainingAnalyserEquations);
+    pFunc()->addImplementationInitialiseArraysMethodCode(analyserModel, remainingAnalyserEquations, remainingStates,
+                                                         remainingConstants, remainingComputedConstants,
+                                                         remainingAlgebraicVariables);
 
     // Add code for the implementation to compute our computed constants.
 
-    pFunc()->addImplementationComputeComputedConstantsMethodCode(analyserModel, remainingAnalyserEquations);
+    pFunc()->addImplementationComputeComputedConstantsMethodCode(analyserModel, remainingAnalyserEquations, remainingStates,
+                                                                 remainingConstants, remainingComputedConstants,
+                                                                 remainingAlgebraicVariables);
 
     // Add code for the implementation to compute our rates (and any variables
     // on which they depend).

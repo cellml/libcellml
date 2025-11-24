@@ -918,7 +918,8 @@ TEST(Coverage, generator)
     profile->setHasInterface(true);
     profile->setHasPowerOperator(true);
     profile->setHasXorOperator(true);
-    profile->setImplementationComputeComputedConstantsMethodString("");
+    profile->setImplementationComputeComputedConstantsMethodString(false, "");
+    profile->setImplementationComputeComputedConstantsMethodString(true, "");
     profile->setImplementationComputeRatesMethodString(true, "");
     profile->setImplementationHeaderString("[INTERFACE_FILE_NAME]");
     profile->setInterfaceFileNameString("");

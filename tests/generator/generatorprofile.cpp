@@ -271,7 +271,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.6.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.7.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
@@ -574,13 +574,21 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseArraysMethodString(true));
 
-    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants);\n",
-              generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants)\n"
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n",
+              generatorProfile->interfaceComputeComputedConstantsMethodString(false));
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationComputeComputedConstantsMethodString());
+              generatorProfile->implementationComputeComputedConstantsMethodString(false));
+
+    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
+              generatorProfile->interfaceComputeComputedConstantsMethodString(true));
+    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+              "{\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->implementationComputeComputedConstantsMethodString(true));
 
     EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeRatesMethodString(false));
@@ -1054,8 +1062,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationInitialiseArraysMethodString(false, value);
     generatorProfile->setImplementationInitialiseArraysMethodString(true, value);
 
-    generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
-    generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
+    generatorProfile->setInterfaceComputeComputedConstantsMethodString(false, value);
+    generatorProfile->setInterfaceComputeComputedConstantsMethodString(true, value);
+
+    generatorProfile->setImplementationComputeComputedConstantsMethodString(false, value);
+    generatorProfile->setImplementationComputeComputedConstantsMethodString(true, value);
 
     generatorProfile->setInterfaceComputeRatesMethodString(false, value);
     generatorProfile->setInterfaceComputeRatesMethodString(true, value);
@@ -1206,8 +1217,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceInitialiseArraysMethodString(true));
     EXPECT_EQ(value, generatorProfile->implementationInitialiseArraysMethodString(true));
 
-    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString(false));
+    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString(true));
+
+    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString(false));
+    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString(false));
     EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString(false));
