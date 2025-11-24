@@ -290,11 +290,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAlgebraicVariablesArrayString = "algebraicVariables";
         mExternalVariablesArrayString = "externalVariables";
 
-        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionNonDiffString = "typedef double (* ExternalVariable)(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionDiffString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, size_t index);\n";
 
-        mExternalVariableMethodCallFamString = "externalVariable(constants, computedConstants, algebraicVariables, externalVariables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, [INDEX])";
+        mExternalVariableMethodCallNonDiffString = "externalVariable(constants, computedConstants, algebraicVariables, externalVariables, [INDEX])";
+        mExternalVariableMethodCallDiffString = "externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, [INDEX])";
 
         mRootFindingInfoObjectFamWoevString = "typedef struct {\n"
                                               "    double *constants;\n"
@@ -477,29 +477,29 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseArraysMethodFamString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);\n";
-        mImplementationInitialiseArraysMethodFamString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)\n"
-                                                         "{\n"
-                                                         "[CODE]"
-                                                         "}\n";
+        mInterfaceInitialiseArraysMethodNonDiffString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationInitialiseArraysMethodNonDiffString = "void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)\n"
+                                                             "{\n"
+                                                             "[CODE]"
+                                                             "}\n";
 
-        mInterfaceInitialiseArraysMethodFdmString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
-        mImplementationInitialiseArraysMethodFdmString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
-                                                         "{\n"
-                                                         "[CODE]"
-                                                         "}\n";
+        mInterfaceInitialiseArraysMethodDiffString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationInitialiseArraysMethodDiffString = "void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
+                                                          "{\n"
+                                                          "[CODE]"
+                                                          "}\n";
 
-        mInterfaceComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationComputeComputedConstantsMethodFamString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
-                                                                 "{\n"
-                                                                 "[CODE]"
-                                                                 "}\n";
+        mInterfaceComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+                                                                     "{\n"
+                                                                     "[CODE]"
+                                                                     "}\n";
 
-        mInterfaceComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationComputeComputedConstantsMethodFdmString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
-                                                                 "{\n"
-                                                                 "[CODE]"
-                                                                 "}\n";
+        mInterfaceComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+                                                                  "{\n"
+                                                                  "[CODE]"
+                                                                  "}\n";
 
         mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
         mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n{\n"
@@ -802,11 +802,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAlgebraicVariablesArrayString = "algebraicVariables";
         mExternalVariablesArrayString = "externalVariables";
 
-        mExternalVariableMethodTypeDefinitionFamString = "";
-        mExternalVariableMethodTypeDefinitionFdmString = "";
+        mExternalVariableMethodTypeDefinitionNonDiffString = "";
+        mExternalVariableMethodTypeDefinitionDiffString = "";
 
-        mExternalVariableMethodCallFamString = "external_variable(constants, computed_constants, algebraic_variables, external_variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, [INDEX])";
+        mExternalVariableMethodCallNonDiffString = "external_variable(constants, computed_constants, algebraic_variables, external_variables, [INDEX])";
+        mExternalVariableMethodCallDiffString = "external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, [INDEX])";
 
         mRootFindingInfoObjectFamWoevString = "";
         mRootFindingInfoObjectFamWevString = "";
@@ -916,25 +916,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitialiseArraysMethodFamString = "";
-        mImplementationInitialiseArraysMethodFamString = "\n"
-                                                         "def initialise_arrays(constants, computed_constants, algebraic_variables):\n"
-                                                         "[CODE]";
+        mInterfaceInitialiseArraysMethodNonDiffString = "";
+        mImplementationInitialiseArraysMethodNonDiffString = "\n"
+                                                             "def initialise_arrays(constants, computed_constants, algebraic_variables):\n"
+                                                             "[CODE]";
 
-        mInterfaceInitialiseArraysMethodFdmString = "";
-        mImplementationInitialiseArraysMethodFdmString = "\n"
-                                                         "def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):\n"
-                                                         "[CODE]";
+        mInterfaceInitialiseArraysMethodDiffString = "";
+        mImplementationInitialiseArraysMethodDiffString = "\n"
+                                                          "def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):\n"
+                                                          "[CODE]";
 
-        mInterfaceComputeComputedConstantsMethodFamString = "";
-        mImplementationComputeComputedConstantsMethodFamString = "\n"
-                                                                 "def compute_computed_constants(constants, computed_constants, algebraic):\n"
-                                                                 "[CODE]";
+        mInterfaceComputeComputedConstantsMethodNonDiffString = "";
+        mImplementationComputeComputedConstantsMethodNonDiffString = "\n"
+                                                                     "def compute_computed_constants(constants, computed_constants, algebraic):\n"
+                                                                     "[CODE]";
 
-        mInterfaceComputeComputedConstantsMethodFdmString = "";
-        mImplementationComputeComputedConstantsMethodFdmString = "\n"
-                                                                 "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
-                                                                 "[CODE]";
+        mInterfaceComputeComputedConstantsMethodDiffString = "";
+        mImplementationComputeComputedConstantsMethodDiffString = "\n"
+                                                                  "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
+                                                                  "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
@@ -2399,38 +2399,38 @@ void GeneratorProfile::setExternalVariablesArrayString(const std::string &extern
 std::string GeneratorProfile::externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mExternalVariableMethodTypeDefinitionFdmString;
+        return mPimpl->mExternalVariableMethodTypeDefinitionDiffString;
     }
 
-    return mPimpl->mExternalVariableMethodTypeDefinitionFamString;
+    return mPimpl->mExternalVariableMethodTypeDefinitionNonDiffString;
 }
 
 void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(bool forDifferentialModel,
                                                                      const std::string &externalVariableMethodTypeDefinitionString)
 {
     if (forDifferentialModel) {
-        mPimpl->mExternalVariableMethodTypeDefinitionFdmString = externalVariableMethodTypeDefinitionString;
+        mPimpl->mExternalVariableMethodTypeDefinitionDiffString = externalVariableMethodTypeDefinitionString;
     } else {
-        mPimpl->mExternalVariableMethodTypeDefinitionFamString = externalVariableMethodTypeDefinitionString;
+        mPimpl->mExternalVariableMethodTypeDefinitionNonDiffString = externalVariableMethodTypeDefinitionString;
     }
 }
 
 std::string GeneratorProfile::externalVariableMethodCallString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mExternalVariableMethodCallFdmString;
+        return mPimpl->mExternalVariableMethodCallDiffString;
     }
 
-    return mPimpl->mExternalVariableMethodCallFamString;
+    return mPimpl->mExternalVariableMethodCallNonDiffString;
 }
 
 void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialModel,
                                                            const std::string &externalVariableMethodCallString)
 {
     if (forDifferentialModel) {
-        mPimpl->mExternalVariableMethodCallFdmString = externalVariableMethodCallString;
+        mPimpl->mExternalVariableMethodCallDiffString = externalVariableMethodCallString;
     } else {
-        mPimpl->mExternalVariableMethodCallFamString = externalVariableMethodCallString;
+        mPimpl->mExternalVariableMethodCallNonDiffString = externalVariableMethodCallString;
     }
 }
 
@@ -2772,76 +2772,76 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
 std::string GeneratorProfile::interfaceInitialiseArraysMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mInterfaceInitialiseArraysMethodFdmString;
+        return mPimpl->mInterfaceInitialiseArraysMethodDiffString;
     }
 
-    return mPimpl->mInterfaceInitialiseArraysMethodFamString;
+    return mPimpl->mInterfaceInitialiseArraysMethodNonDiffString;
 }
 
 void GeneratorProfile::setInterfaceInitialiseArraysMethodString(bool forDifferentialModel,
                                                                 const std::string &interfaceInitialiseArraysMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mInterfaceInitialiseArraysMethodFdmString = interfaceInitialiseArraysMethodString;
+        mPimpl->mInterfaceInitialiseArraysMethodDiffString = interfaceInitialiseArraysMethodString;
     } else {
-        mPimpl->mInterfaceInitialiseArraysMethodFamString = interfaceInitialiseArraysMethodString;
+        mPimpl->mInterfaceInitialiseArraysMethodNonDiffString = interfaceInitialiseArraysMethodString;
     }
 }
 
 std::string GeneratorProfile::implementationInitialiseArraysMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mImplementationInitialiseArraysMethodFdmString;
+        return mPimpl->mImplementationInitialiseArraysMethodDiffString;
     }
 
-    return mPimpl->mImplementationInitialiseArraysMethodFamString;
+    return mPimpl->mImplementationInitialiseArraysMethodNonDiffString;
 }
 
 void GeneratorProfile::setImplementationInitialiseArraysMethodString(bool forDifferentialModel,
                                                                      const std::string &implementationInitialiseArraysMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mImplementationInitialiseArraysMethodFdmString = implementationInitialiseArraysMethodString;
+        mPimpl->mImplementationInitialiseArraysMethodDiffString = implementationInitialiseArraysMethodString;
     } else {
-        mPimpl->mImplementationInitialiseArraysMethodFamString = implementationInitialiseArraysMethodString;
+        mPimpl->mImplementationInitialiseArraysMethodNonDiffString = implementationInitialiseArraysMethodString;
     }
 }
 
 std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mInterfaceComputeComputedConstantsMethodFdmString;
+        return mPimpl->mInterfaceComputeComputedConstantsMethodDiffString;
     }
 
-    return mPimpl->mInterfaceComputeComputedConstantsMethodFamString;
+    return mPimpl->mInterfaceComputeComputedConstantsMethodNonDiffString;
 }
 
 void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(bool forDifferentialModel,
                                                                         const std::string &interfaceComputeComputedConstantsMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mInterfaceComputeComputedConstantsMethodFdmString = interfaceComputeComputedConstantsMethodString;
+        mPimpl->mInterfaceComputeComputedConstantsMethodDiffString = interfaceComputeComputedConstantsMethodString;
     } else {
-        mPimpl->mInterfaceComputeComputedConstantsMethodFamString = interfaceComputeComputedConstantsMethodString;
+        mPimpl->mInterfaceComputeComputedConstantsMethodNonDiffString = interfaceComputeComputedConstantsMethodString;
     }
 }
 
 std::string GeneratorProfile::implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const
 {
     if (forDifferentialModel) {
-        return mPimpl->mImplementationComputeComputedConstantsMethodFdmString;
+        return mPimpl->mImplementationComputeComputedConstantsMethodDiffString;
     }
 
-    return mPimpl->mImplementationComputeComputedConstantsMethodFamString;
+    return mPimpl->mImplementationComputeComputedConstantsMethodNonDiffString;
 }
 
 void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(bool forDifferentialModel,
                                                                              const std::string &implementationComputeComputedConstantsMethodString)
 {
     if (forDifferentialModel) {
-        mPimpl->mImplementationComputeComputedConstantsMethodFdmString = implementationComputeComputedConstantsMethodString;
+        mPimpl->mImplementationComputeComputedConstantsMethodDiffString = implementationComputeComputedConstantsMethodString;
     } else {
-        mPimpl->mImplementationComputeComputedConstantsMethodFamString = implementationComputeComputedConstantsMethodString;
+        mPimpl->mImplementationComputeComputedConstantsMethodNonDiffString = implementationComputeComputedConstantsMethodString;
     }
 }
 
