@@ -219,11 +219,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mAlgebraicVariablesArrayString;
     std::string mExternalVariablesArrayString;
 
-    std::string mExternalVariableMethodTypeDefinitionFamString;
-    std::string mExternalVariableMethodTypeDefinitionFdmString;
+    std::string mExternalVariableMethodTypeDefinitionNonDiffString;
+    std::string mExternalVariableMethodTypeDefinitionDiffString;
 
-    std::string mExternalVariableMethodCallFamString;
-    std::string mExternalVariableMethodCallFdmString;
+    std::string mExternalVariableMethodCallNonDiffString;
+    std::string mExternalVariableMethodCallDiffString;
 
     std::string mRootFindingInfoObjectFamWoevString;
     std::string mRootFindingInfoObjectFamWevString;
@@ -273,17 +273,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInterfaceInitialiseArraysMethodFamString;
-    std::string mImplementationInitialiseArraysMethodFamString;
+    std::string mInterfaceInitialiseArraysMethodNonDiffString;
+    std::string mImplementationInitialiseArraysMethodNonDiffString;
 
-    std::string mInterfaceInitialiseArraysMethodFdmString;
-    std::string mImplementationInitialiseArraysMethodFdmString;
+    std::string mInterfaceInitialiseArraysMethodDiffString;
+    std::string mImplementationInitialiseArraysMethodDiffString;
 
-    std::string mInterfaceComputeComputedConstantsMethodFamString;
-    std::string mImplementationComputeComputedConstantsMethodFamString;
+    std::string mInterfaceComputeComputedConstantsMethodNonDiffString;
+    std::string mImplementationComputeComputedConstantsMethodNonDiffString;
 
-    std::string mInterfaceComputeComputedConstantsMethodFdmString;
-    std::string mImplementationComputeComputedConstantsMethodFdmString;
+    std::string mInterfaceComputeComputedConstantsMethodDiffString;
+    std::string mImplementationComputeComputedConstantsMethodDiffString;
 
     std::string mInterfaceComputeRatesMethodWoevString;
     std::string mImplementationComputeRatesMethodWoevString;
