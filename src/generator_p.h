@@ -159,26 +159,26 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
                                                std::vector<AnalyserVariablePtr> &remainingStates,
                                                std::vector<AnalyserVariablePtr> &remainingConstants,
                                                std::vector<AnalyserVariablePtr> &remainingComputedConstants,
-                                               std::vector<AnalyserVariablePtr> &remainingAlgebraic,
+                                               std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables,
                                                std::vector<AnalyserVariablePtr> *generatedConstantDependencies = nullptr);
 
     void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &analyserModel);
     void addImplementationInitialiseArraysMethodCode(const AnalyserModelPtr &analyserModel,
-                                                     std::vector<AnalyserEquationPtr> &remainingEquations,
+                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
                                                      std::vector<AnalyserVariablePtr> &remainingStates,
                                                      std::vector<AnalyserVariablePtr> &remainingConstants,
                                                      std::vector<AnalyserVariablePtr> &remainingComputedConstants,
-                                                     std::vector<AnalyserVariablePtr> &remainingAlgebraic);
+                                                     std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables);
     void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &analyserModel,
-                                                             std::vector<AnalyserEquationPtr> &remainingEquations,
+                                                             std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
                                                              std::vector<AnalyserVariablePtr> &remainingStates,
                                                              std::vector<AnalyserVariablePtr> &remainingConstants,
                                                              std::vector<AnalyserVariablePtr> &remainingComputedConstants,
-                                                             std::vector<AnalyserVariablePtr> &remainingAlgebraic);
+                                                             std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables);
     void addImplementationComputeRatesMethodCode(const AnalyserModelPtr &analyserModel,
-                                                 std::vector<AnalyserEquationPtr> &remainingEquations);
+                                                 std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
     void addImplementationComputeVariablesMethodCode(const AnalyserModelPtr &analyserModel,
-                                                     std::vector<AnalyserEquationPtr> &remainingEquations);
+                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
 };
 
 } // namespace libcellml
