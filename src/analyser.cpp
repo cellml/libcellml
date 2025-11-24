@@ -2620,7 +2620,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
                                               + "' in component '" + owningComponent(internalVariable->mVariable)->name()
                                               + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
-                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a non-linear algebraic variable is allowed.");
+                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
                 issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
 
