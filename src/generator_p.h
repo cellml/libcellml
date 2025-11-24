@@ -147,8 +147,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleOrConstantVariableNameCode(const AnalyserModelPtr &analyserModel,
-                                                         const VariablePtr &variable);
+    std::string generateDoubleOrVariableNameCode(const AnalyserModelPtr &analyserModel, const VariablePtr &variable);
     std::string generateVariableNameCode(const AnalyserModelPtr &analyserModel, const VariablePtr &variable,
                                          bool state = true);
 
@@ -188,15 +187,30 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     std::string generateEquationCode(const AnalyserModelPtr &analyserModel, const AnalyserEquationPtr &analyserEquation,
                                      std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
                                      std::vector<AnalyserVariablePtr> &generatedConstantDependencies);
+    bool hasComputedConstantDependency(const AnalyserModelPtr &analyserModel,
+                                       const AnalyserVariablePtr &analyserVariable);
+    std::string generateInitialiseVariableCode(const AnalyserModelPtr &analyserModel,
+                                               const AnalyserVariablePtr &analyserVariable,
+                                               std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                               std::vector<AnalyserVariablePtr> &remainingStates,
+                                               std::vector<AnalyserVariablePtr> &remainingConstants,
+                                               std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                               std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables,
+                                               std::vector<AnalyserVariablePtr> *generatedConstantDependencies = nullptr);
 
     void addInterfaceComputeModelMethodsCode(const AnalyserModelPtr &analyserModel);
-    std::string generateConstantInitialisationCode(const AnalyserModelPtr &analyserModel,
-                                                   const std::vector<AnalyserVariablePtr>::iterator constant,
-                                                   std::vector<AnalyserVariablePtr> &remainingConstants);
     void addImplementationInitialiseArraysMethodCode(const AnalyserModelPtr &analyserModel,
-                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
+                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                     std::vector<AnalyserVariablePtr> &remainingStates,
+                                                     std::vector<AnalyserVariablePtr> &remainingConstants,
+                                                     std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                                     std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables);
     void addImplementationComputeComputedConstantsMethodCode(const AnalyserModelPtr &analyserModel,
-                                                             std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
+                                                             std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                             std::vector<AnalyserVariablePtr> &remainingStates,
+                                                             std::vector<AnalyserVariablePtr> &remainingConstants,
+                                                             std::vector<AnalyserVariablePtr> &remainingComputedConstants,
+                                                             std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables);
     void addImplementationComputeRatesMethodCode(const AnalyserModelPtr &analyserModel,
                                                  std::vector<AnalyserEquationPtr> &remainingAnalyserEquations);
     void addImplementationComputeVariablesMethodCode(const AnalyserModelPtr &analyserModel,

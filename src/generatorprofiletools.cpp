@@ -539,8 +539,11 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceInitialiseArraysMethodString(true)
                        + generatorProfile->implementationInitialiseArraysMethodString(true);
 
-    profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString()
-                       + generatorProfile->implementationComputeComputedConstantsMethodString();
+    profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString(false)
+                       + generatorProfile->implementationComputeComputedConstantsMethodString(false);
+
+    profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString(true)
+                       + generatorProfile->implementationComputeComputedConstantsMethodString(true);
 
     profileContents += generatorProfile->interfaceComputeRatesMethodString(false)
                        + generatorProfile->implementationComputeRatesMethodString(false);

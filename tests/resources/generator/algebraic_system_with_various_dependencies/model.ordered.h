@@ -28,5 +28,5 @@ double * createAlgebraicVariablesArray();
 void deleteArray(double *array);
 
 void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);
-void computeComputedConstants(double *constants, double *computedConstants);
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);
 void computeVariables(double *constants, double *computedConstants, double *algebraicVariables);
