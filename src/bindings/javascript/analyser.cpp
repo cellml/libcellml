@@ -36,6 +36,6 @@ EMSCRIPTEN_BINDINGS(libcellml_analyser)
         .function("externalVariableByIndex", select_overload<libcellml::AnalyserExternalVariablePtr(size_t) const>(&libcellml::Analyser::externalVariable))
         .function("externalVariableByVariable", select_overload<libcellml::AnalyserExternalVariablePtr(const libcellml::VariablePtr &) const>(&libcellml::Analyser::externalVariable))
         .function("externalVariableCount", &libcellml::Analyser::externalVariableCount)
-        .function("model", &libcellml::Analyser::model)
+        .function("analyserModel", &libcellml::Analyser::analyserModel)
     ;
 }

@@ -29,20 +29,26 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+bool AnalyserEquation::AnalyserEquationImpl::isStagingDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto analyserVariables = libcellml::analyserVariables(dependency.lock());
-
-    if (std::any_of(analyserVariables.begin(), analyserVariables.end(), [](const auto &av) { return av != nullptr; })) {
-        return false;
-    }
-
-    return true;
+    return libcellml::analyserVariables(dependency.lock()).empty();
 }
 
-void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+void AnalyserEquation::AnalyserEquationImpl::removeStagingDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
+    // Keep track of our constant dependencies, so that we can generate some code for them, should they be untracked.
+
+    for (const auto &dependency : mDependencies) {
+        auto constantDependency = dependency.lock()->mPimpl->mConstant;
+
+        if (isStagingDependency(dependency)) {
+            mConstantDependencies.push_back(constantDependency);
+        }
+    }
+
+    // Effectively remove our staging dependencies.
+
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isStagingDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -61,8 +67,8 @@ AnalyserEquation::Type AnalyserEquation::type() const
 }
 
 static const std::map<AnalyserEquation::Type, std::string> typeToString = {
-    {AnalyserEquation::Type::TRUE_CONSTANT, "true_constant"},
-    {AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, "variable_based_constant"},
+    {AnalyserEquation::Type::CONSTANT, "constant"},
+    {AnalyserEquation::Type::COMPUTED_CONSTANT, "computed_constant"},
     {AnalyserEquation::Type::ODE, "ode"},
     {AnalyserEquation::Type::NLA, "nla"},
     {AnalyserEquation::Type::ALGEBRAIC, "algebraic"},

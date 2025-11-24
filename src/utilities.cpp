@@ -28,6 +28,7 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -1317,21 +1318,42 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &model)
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &analyserVariable)
 {
     std::vector<AnalyserVariablePtr> res;
 
-    if (model->voi() != nullptr) {
-        res.push_back(model->voi());
+    switch (analyserVariable->type()) {
+    case AnalyserVariable::Type::CONSTANT:
+        return analyserVariable->analyserModel()->constants();
+    case AnalyserVariable::Type::COMPUTED_CONSTANT:
+        return analyserVariable->analyserModel()->computedConstants();
+
+    case AnalyserVariable::Type::ALGEBRAIC_VARIABLE:
+        return analyserVariable->analyserModel()->algebraicVariables();
+    default:
+        break;
     }
 
-    auto states = model->states();
-    auto constants = model->constants();
-    auto computedConstants = model->computedConstants();
-    auto algebraicVariables = model->algebraicVariables();
-    auto externalVariables = model->externalVariables();
+    return {};
+}
+
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analyserModel)
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    if (analyserModel->voi() != nullptr) {
+        res.push_back(analyserModel->voi());
+    }
+
+    auto states = analyserModel->states();
 
     res.insert(res.end(), states.begin(), states.end());
+
+    auto constants = analyserModel->constants();
+    auto computedConstants = analyserModel->computedConstants();
+    auto algebraicVariables = analyserModel->algebraicVariables();
+    auto externalVariables = analyserModel->externalVariables();
+
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
@@ -1340,12 +1362,12 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &model
     return res;
 }
 
-std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &equation)
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &analyserEquation)
 {
-    auto res = equation->states();
-    auto computedConstants = equation->computedConstants();
-    auto algebraicVariables = equation->algebraicVariables();
-    auto externalVariables = equation->externalVariables();
+    auto res = analyserEquation->states();
+    auto computedConstants = analyserEquation->computedConstants();
+    auto algebraicVariables = analyserEquation->algebraicVariables();
+    auto externalVariables = analyserEquation->externalVariables();
 
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());

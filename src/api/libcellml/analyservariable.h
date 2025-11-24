@@ -42,8 +42,8 @@ public:
     {
         VARIABLE_OF_INTEGRATION, /**< The variable is the variable of integration. */
         STATE, /**< The variable is a state. */
-        CONSTANT, /**< The variable is a constant (e.g. x = 3). */
-        COMPUTED_CONSTANT, /**< The variable is a computed constant (e.g. x = 3+5, x = 3+z, x = y+z where y and z are constants). */
+        CONSTANT, /**< The variable is a (true) constant (e.g., x = 3). */
+        COMPUTED_CONSTANT, /**< The variable is a computed constant (e.g., x = 3+5, x = 3+z, x = y+z where y and z are (true or computed) constants). */
         ALGEBRAIC_VARIABLE, /**< The variable is an algebraic variable. */
         EXTERNAL_VARIABLE /**< The variable is an external variable, i.e. not computed as part of the model. */
     };
@@ -120,33 +120,42 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the number of equations used to compute this @ref AnalyserVariable.
+     * @brief Get the @ref AnalyserModel for this @ref AnalyserVariable.
      *
-     * Return the number of equations used to compute this @ref AnalyserVariable.
+     * Return the @ref AnalyserModel for this @ref AnalyserVariable.
      *
-     * @return The number of equations used to compute this @ref AnalyserVariable.
+     * @return The @ref AnalyserModel.
      */
-    size_t equationCount() const;
+    AnalyserModelPtr analyserModel() const;
 
     /**
-     * @brief Get the equations used to compute this @ref AnalyserVariable.
+     * @brief Get the number of analyser equations used to compute this @ref AnalyserVariable.
      *
-     * Return the equations used to compute this @ref AnalyserVariable.
+     * Return the number of analyser equations used to compute this @ref AnalyserVariable.
      *
-     * @return The equations as a @c std::vector.
+     * @return The number of analyser equations used to compute this @ref AnalyserVariable.
      */
-    std::vector<AnalyserEquationPtr> equations() const;
+    size_t analyserEquationCount() const;
 
     /**
-     * @brief Get the equation, at @p index, used to compute this @ref AnalyserVariable.
+     * @brief Get the analyser equations used to compute this @ref AnalyserVariable.
      *
-     * Return the equation, at @p index, used to compute this @ref AnalyserVariable..
+     * Return the analyser equations used to compute this @ref AnalyserVariable.
      *
-     * @param index The index of the equation to return.
-     *
-     * @return The equation, at @p index, on success, @c nullptr on failure.
+     * @return The analyser equations as a @c std::vector.
      */
-    AnalyserEquationPtr equation(size_t index) const;
+    std::vector<AnalyserEquationPtr> analyserEquations() const;
+
+    /**
+     * @brief Get the analyser equation, at @p index, used to compute this @ref AnalyserVariable.
+     *
+     * Return the analyser equation, at @p index, used to compute this @ref AnalyserVariable..
+     *
+     * @param index The index of the analyser equation to return.
+     *
+     * @return The analyser equation, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr analyserEquation(size_t index) const;
 
 private:
     AnalyserVariable(); /**< Constructor, @private. */

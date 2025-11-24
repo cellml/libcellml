@@ -1072,17 +1072,11 @@ tag, which will be replaced with some code to create the external variables arra
 %feature("docstring") libcellml::GeneratorProfile::setIndentString
 "Sets the string for an indent.";
 
-%feature("docstring") libcellml::GeneratorProfile::openArrayInitialiserString
-"Returns the string for opening an array initialiser.";
+%feature("docstring") libcellml::GeneratorProfile::variableDeclarationString
+"Returns the string for declaring a variable.";
 
-%feature("docstring") libcellml::GeneratorProfile::setOpenArrayInitialiserString
-"Sets the string for opening an array initialiser.";
-
-%feature("docstring") libcellml::GeneratorProfile::closeArrayInitialiserString
-"Returns the string for closing an array initialiser.";
-
-%feature("docstring") libcellml::GeneratorProfile::setCloseArrayInitialiserString
-"Sets the string for closing an array initialiser.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableDeclarationString
+"Sets the string for declaring a variable.";
 
 %feature("docstring") libcellml::GeneratorProfile::openArrayString
 "Returns the string for opening an array.";
@@ -1101,12 +1095,6 @@ tag, which will be replaced with some code to create the external variables arra
 
 %feature("docstring") libcellml::GeneratorProfile::setArrayElementSeparatorString
 "Sets the string for separating elements in an array.";
-
-%feature("docstring") libcellml::GeneratorProfile::stringDelimiterString
-"Returns the string for a string delimiter.";
-
-%feature("docstring") libcellml::GeneratorProfile::setStringDelimiterString
-"Sets the string for a string delimiter.";
 
 %feature("docstring") libcellml::GeneratorProfile::commandSeparatorString
 "Returns the string for a command separator.";

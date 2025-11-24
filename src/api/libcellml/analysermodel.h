@@ -18,6 +18,10 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::AnalyserModel>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -27,8 +31,12 @@ namespace libcellml {
  * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserModel
+#ifndef SWIG
+    : public std::enable_shared_from_this<AnalyserModel>
+#endif
 {
     friend class Analyser;
+    friend class Generator;
 
 public:
     /**
@@ -132,7 +140,7 @@ public:
     /**
      * @brief Get the state at @p index.
      *
-     * Return the state at the index @p index for the @ref AnalyserModel.
+     * Return the state at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the state to return.
      *
@@ -162,7 +170,7 @@ public:
     /**
      * @brief Get the constant at @p index.
      *
-     * Return the constant at the index @p index for the @ref AnalyserModel.
+     * Return the constant at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the constant to return.
      *
@@ -192,7 +200,7 @@ public:
     /**
      * @brief Get the computed constant at @p index.
      *
-     * Return the computed constant at the index @p index for the @ref AnalyserModel.
+     * Return the computed constant at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the computed constant to return.
      *
@@ -222,7 +230,7 @@ public:
     /**
      * @brief Get the algebraic variable at @p index.
      *
-     * Return the algebraic variable at the index @p index for the @ref AnalyserModel.
+     * Return the algebraic variable at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the algebraic variable to return.
      *
@@ -252,7 +260,7 @@ public:
     /**
      * @brief Get the external variable at @p index.
      *
-     * Return the external variable at the index @p index for the @ref AnalyserModel.
+     * Return the external variable at the index @p index in this @ref AnalyserModel.
      *
      * @param index The index of the external variable to return.
      *
@@ -262,34 +270,45 @@ public:
     AnalyserVariablePtr externalVariable(size_t index) const;
 
     /**
-     * @brief Get the number of equations.
+     * @brief Get the analyser variable for the given @p variable.
      *
-     * Return the number of equations in the @ref AnalyserModel.
+     * Return the analyser variable for the given @p variable in this @ref AnalyserModel.
      *
-     * @return The number of equations.
+     * @param variable The variable for which to return the analyser variable.
+     *
+     * @return The analyser variable for the given @p variable on success, @c nullptr on failure.
      */
-    size_t equationCount() const;
+    AnalyserVariablePtr analyserVariable(const VariablePtr &variable);
 
     /**
-     * @brief Get the equations.
+     * @brief Get the number of analyser equations.
      *
-     * Return the equations in the @ref AnalyserModel.
+     * Return the number of analyser equations in the @ref AnalyserModel.
      *
-     * @return The equations as a @c std::vector.
+     * @return The number of analyser equations.
      */
-    std::vector<AnalyserEquationPtr> equations() const;
+    size_t analyserEquationCount() const;
 
     /**
-     * @brief Get the equation at @p index.
+     * @brief Get the analyser equations.
      *
-     * Return the equation at the index @p index for the @ref AnalyserModel.
+     * Return the analyser equations in the @ref AnalyserModel.
      *
-     * @param index The index of the equation to return.
+     * @return The analyser equations as a @c std::vector.
+     */
+    std::vector<AnalyserEquationPtr> analyserEquations() const;
+
+    /**
+     * @brief Get the analyser equation at @p index.
      *
-     * @return The equation at the given @p index on success, @c nullptr on
+     * Return the analyser equation at the index @p index in this @ref AnalyserModel.
+     *
+     * @param index The index of the analyser equation to return.
+     *
+     * @return The analyser equation at the given @p index on success, @c nullptr on
      * failure.
      */
-    AnalyserEquationPtr equation(size_t index) const;
+    AnalyserEquationPtr analyserEquation(size_t index) const;
 
     /**
      * @brief Test to determine if @ref AnalyserModel needs an "equal to"
