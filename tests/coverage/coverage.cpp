@@ -272,11 +272,9 @@ TEST(Coverage, sha1)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
     auto generatorProfile = libcellml::GeneratorProfile::create();
 
-    generator->setModel(analyserModel);
     generator->setProfile(generatorProfile);
 
     std::string xs = {};
@@ -287,7 +285,7 @@ TEST(Coverage, sha1)
 
         generatorProfile->setVoiString(xs);
 
-        generator->implementationCode();
+        generator->implementationCode(analyser->analyserModel());
     }
 }
 
@@ -349,7 +347,7 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatAreEmpty)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(4), validator->errorCount());
-    expectEqualIssues(expectedIssues, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 
     model = importer->flattenModel(model);
 
@@ -420,13 +418,13 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatReferenceEmptyNamedUnits
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(3), validator->errorCount());
-    expectEqualIssues(expectedIssuesModel, validator);
+    EXPECT_EQ_ISSUES(expectedIssuesModel, validator);
 
     model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(2), validator->errorCount());
-    expectEqualIssues(expectedIssuesFLatModel, validator);
+    EXPECT_EQ_ISSUES(expectedIssuesFLatModel, validator);
 }
 
 TEST(Coverage, analyser)
@@ -437,7 +435,7 @@ TEST(Coverage, analyser)
 
     EXPECT_EQ(size_t(1), analyser->issueCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     EXPECT_FALSE(analyserModel->isValid());
 
@@ -468,9 +466,11 @@ TEST(Coverage, analyser)
     EXPECT_EQ(size_t(0), analyserModel->externalVariables().size());
     EXPECT_EQ(nullptr, analyserModel->externalVariable(0));
 
-    EXPECT_EQ(size_t(0), analyserModel->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->equations().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(nullptr));
+
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(0));
 
     EXPECT_FALSE(analyserModel->needEqFunction());
     EXPECT_FALSE(analyserModel->needNeqFunction());
@@ -508,8 +508,36 @@ TEST(Coverage, analyser)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("coverage/analyser.cellml"));
+    auto otherVariable = model->component("my_component")->variable("x");
 
     analyser->analyseModel(model);
+
+    model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    analyserModel = analyser->analyserModel();
+
+    EXPECT_TRUE(analyserModel->isValid());
+
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(nullptr));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("environment")->variable("time")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("sodium_channel_m_gate")->variable("m")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("Cm")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("leakage_current")->variable("E_L")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("i_Stim")));
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("membrane")->variable("V")));
+    EXPECT_EQ(nullptr, analyserModel->analyserVariable(otherVariable));
+
+    model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    analyser->analyseModel(model);
+
+    analyserModel = analyser->analyserModel();
+
+    EXPECT_NE(nullptr, analyserModel->analyserVariable(model->component("my_algebraic_eqn")->variable("x")));
 }
 
 TEST(Coverage, analyserConvertToInt)
@@ -557,9 +585,9 @@ TEST(Coverage, analyserTypes)
 
     analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
-    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->analyserEquation(0)->type()));
     EXPECT_EQ("algebraic_variable", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraicVariable(0)->type()));
 }
 
@@ -590,7 +618,7 @@ TEST(Coverage, generator)
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->analyserModel();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
@@ -600,61 +628,68 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
     EXPECT_EQ(size_t(2), analyserModel->algebraicVariableCount());
     EXPECT_EQ(size_t(1), analyserModel->externalVariableCount());
-    EXPECT_EQ(size_t(203), analyserModel->equationCount());
+    EXPECT_EQ(size_t(203), analyserModel->analyserEquationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->voi()->equations().size());
-    EXPECT_EQ(nullptr, analyserModel->voi()->equation(0));
+    EXPECT_EQ(size_t(0), analyserModel->voi()->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->voi()->analyserEquation(0));
     EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
-    EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0)->state(0));
+    EXPECT_NE(size_t(0), analyserModel->state(0)->analyserEquationCount());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->analyserEquations().size());
+    EXPECT_NE(nullptr, analyserModel->state(0)->analyserEquation(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->analyserEquation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->constant(0));
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->analyserEquationCount());
+    EXPECT_EQ(size_t(0), analyserModel->constant(0)->analyserEquations().size());
+    EXPECT_EQ(nullptr, analyserModel->constant(0)->analyserEquation(0));
     EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
     EXPECT_NE(nullptr, analyserModel->computedConstant(0));
-    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->equation(0)->computedConstant(0));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0)->analyserEquation(0)->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
     EXPECT_NE(nullptr, analyserModel->algebraicVariable(0));
-    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0)->equation(0)->algebraicVariable(0));
+    EXPECT_NE(nullptr, analyserModel->algebraicVariable(0)->analyserEquation(0)->algebraicVariable(0));
     EXPECT_EQ(nullptr, analyserModel->algebraicVariable(analyserModel->algebraicVariableCount()));
     EXPECT_NE(nullptr, analyserModel->externalVariable(0));
-    EXPECT_NE(nullptr, analyserModel->externalVariable(0)->equation(0)->externalVariable(0));
+    EXPECT_NE(nullptr, analyserModel->externalVariable(0)->analyserEquation(0)->externalVariable(0));
     EXPECT_EQ(nullptr, analyserModel->externalVariable(analyserModel->algebraicVariableCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(0)->stateCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(0)->states().size());
-    EXPECT_NE(nullptr, analyserModel->equation(0)->state(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(0)->state(analyserModel->equation(0)->stateCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(199));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstantCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->computedConstants().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->computedConstant(analyserModel->equation(199)->computedConstantCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->algebraicVariables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->algebraicVariable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->algebraicVariable(analyserModel->equation(199)->algebraicVariableCount()));
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariableCount());
-    EXPECT_EQ(size_t(0), analyserModel->equation(199)->externalVariables().size());
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->externalVariable(analyserModel->equation(199)->externalVariableCount()));
-    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->states().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(0)->state(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(0)->state(analyserModel->analyserEquation(0)->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199));
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->dependency(analyserModel->analyserEquation(199)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->nlaSibling(analyserModel->analyserEquation(199)->nlaSiblingCount()));
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->computedConstantCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->computedConstants().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->computedConstant(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->computedConstant(analyserModel->analyserEquation(199)->computedConstantCount()));
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->algebraicVariableCount());
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->algebraicVariables().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->algebraicVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->algebraicVariable(analyserModel->analyserEquation(199)->algebraicVariableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->externalVariableCount());
+    EXPECT_EQ(size_t(0), analyserModel->analyserEquation(199)->externalVariables().size());
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->externalVariable(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->externalVariable(analyserModel->analyserEquation(199)->externalVariableCount()));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(analyserModel->analyserEquationCount()));
 
-    for (const auto &equation : analyserModel->equations()) {
-        checkAstTypeAsString(equation->ast());
+    for (const auto &analyserEquation : analyserModel->analyserEquations()) {
+        checkAstTypeAsString(analyserEquation->ast());
     }
 
     auto generator = libcellml::Generator::create();
+
+    generator->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
+
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generator);
 
     EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
 
@@ -670,15 +705,11 @@ TEST(Coverage, generator)
         EXPECT_NE(nullptr, analyserModel->algebraicVariable(i)->initialisingVariable());
     }
 
-    EXPECT_EQ(nullptr, generator->model());
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(nullptr));
+    EXPECT_EQ(EMPTY_STRING, generator->implementationCode(nullptr));
 
-    generator->setModel(analyserModel);
-
-    EXPECT_EQ(analyserModel, generator->model());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode(analyserModel));
 
     auto profile = generator->profile();
 
@@ -694,8 +725,8 @@ TEST(Coverage, generator)
                                                             "    return res;\n"
                                                             "}\n");
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode(analyserModel));
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -765,8 +796,8 @@ TEST(Coverage, generator)
     profile->setImplementationComputeVariablesMethodString(true, false, "");
     profile->setImplementationComputeVariablesMethodString(true, true, "");
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode());
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode(analyserModel));
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -839,27 +870,27 @@ TEST(Coverage, generator)
 
     profile->setVariableInfoEntryString("");
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode(analyserModel));
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode());
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode(analyserModel));
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
                                                             "    return [nan]*STATE_COUNT\n");
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode());
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode(analyserModel));
 
     // Coverage for the case where mProfile is equal to nullptr in Generator.
 
     generator->setProfile(nullptr);
 
-    generator->interfaceCode();
-    generator->implementationCode();
+    generator->interfaceCode(analyserModel);
+    generator->implementationCode(analyserModel);
 
     // Coverage for various profile settings.
 
@@ -867,7 +898,8 @@ TEST(Coverage, generator)
 
     analyser->analyseModel(model);
 
-    generator->setModel(analyser->model());
+    analyserModel = analyser->analyserModel();
+
     generator->setProfile(profile);
 
     profile->setAcotFunctionString("");
@@ -901,8 +933,8 @@ TEST(Coverage, generator)
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
 
-    generator->interfaceCode();
-    generator->implementationCode();
+    generator->interfaceCode(analyserModel);
+    generator->implementationCode(analyserModel);
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
@@ -917,7 +949,7 @@ TEST(Coverage, generator)
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
-    generator->implementationCode();
+    generator->implementationCode(analyserModel);
 
     profile->setArrayElementSeparatorString("xxx");
     profile->setExternNlaSolveMethodString("");
@@ -934,14 +966,31 @@ TEST(Coverage, generator)
     profile->setNlaSolveCallString(true, false, "");
     profile->setNlaSolveCallString(true, true, "");
 
-    generator->implementationCode();
+    generator->implementationCode(analyserModel);
 
     profile->setHasXorOperator(false);
     profile->setXorFunctionString("");
 
-    generator->implementationCode();
+    generator->implementationCode(analyserModel);
 
-    libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
+    libcellml::Generator::equationCode(analyser->analyserModel()->analyserEquation(0)->ast());
+}
+
+TEST(Coverage, generatorWithNoTracking)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    generator->untrackAllVariables(analyserModel);
+
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)

@@ -94,8 +94,8 @@ private:
 };
 
 void listModelsUnits(const ModelPtr &model);
-void printAnalyserModelEquations(const AnalyserModelPtr &model);
-void printAnalyserModelVariables(const AnalyserModelPtr &model);
+void printAnalyserModelEquations(const AnalyserModelPtr &analyserModel);
+void printAnalyserModelVariables(const AnalyserModelPtr &analyserModel);
 void printAstAsTree(const AnalyserEquationAstPtr &ast);
 void printAstAsCode(const AnalyserEquationAstPtr &ast);
 void printComponentMap(const ComponentMap &map);

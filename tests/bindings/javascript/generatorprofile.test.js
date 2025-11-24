@@ -1131,17 +1131,11 @@ describe("GeneratorProfile tests", () => {
     x.setIndentString("something")
     expect(x.indentString()).toBe("something")
   });
-  test("Checking GeneratorProfile.openArrayInitialiserString.", () => {
+  test("Checking GeneratorProfile.variableDeclarationString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setOpenArrayInitialiserString("something")
-    expect(x.openArrayInitialiserString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.closeArrayInitialiserString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setCloseArrayInitialiserString("something")
-    expect(x.closeArrayInitialiserString()).toBe("something")
+    x.setVariableDeclarationString("something")
+    expect(x.variableDeclarationString()).toBe("something")
   });
   test("Checking GeneratorProfile.openArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -1160,12 +1154,6 @@ describe("GeneratorProfile tests", () => {
 
     x.setArrayElementSeparatorString("something")
     expect(x.arrayElementSeparatorString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.stringDelimiterString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
-
-    x.setStringDelimiterString("something")
-    expect(x.stringDelimiterString()).toBe("something")
   });
   test("Checking GeneratorProfile.commandSeparatorString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

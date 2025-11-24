@@ -34,19 +34,22 @@ struct AnalyserEquation::AnalyserEquationImpl
     size_t mNlaSystemIndex;
     bool mIsStateRateBased = false;
 
+    AnalyserVariablePtr mConstant;
+
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraicVariables;
     std::vector<AnalyserVariablePtr> mExternalVariables;
 
+    std::vector<AnalyserVariablePtr> mConstantDependencies;
     std::vector<AnalyserEquationWeakPtr> mDependencies;
     std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
 
     static AnalyserEquationPtr create();
 
-    static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
+    static bool isStagingDependency(const AnalyserEquationWeakPtr &dependency);
 
-    void cleanUpDependencies();
+    void removeStagingDependencies();
 };
 
 } // namespace libcellml
