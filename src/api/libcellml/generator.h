@@ -62,6 +62,8 @@ public:
     std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
+     * @overload
+     *
      * @brief Get the interface code for the @ref AnalyserModel.
      *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
@@ -75,6 +77,8 @@ public:
     std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
 
     /**
+     * @overload
+     *
      * @brief Get the interface code for the @ref AnalyserModel.
      *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
@@ -88,6 +92,8 @@ public:
     std::string interfaceCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
 
     /**
+     * @overload
+     *
      * @brief Get the interface code for the @ref AnalyserModel.
      *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
@@ -101,6 +107,8 @@ public:
     std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
+     * @overload
+     *
      * @brief Get the interface code for the @ref AnalyserModel.
      *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
@@ -126,6 +134,8 @@ public:
     std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
+     * @overload
+     *
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
      * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
@@ -139,6 +149,8 @@ public:
     std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
 
     /**
+     * @overload
+     *
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
      * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile::Profile.
@@ -152,6 +164,8 @@ public:
     std::string implementationCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
 
     /**
+     * @overload
+     *
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
      * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
@@ -165,6 +179,8 @@ public:
     std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
+     * @overload
+     *
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
      * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
@@ -176,6 +192,8 @@ public:
     std::string implementationCode(const AnalyserModelPtr &analyserModel);
 
     /**
+     * @overload
+     *
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile.
@@ -190,6 +208,8 @@ public:
                                     const GeneratorProfilePtr &generatorProfile);
 
     /**
+     * @overload
+     *
      * @brief Get the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
