@@ -56,9 +56,9 @@ public:
         INVALID, /**< The model is invalid. */
         NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external NLA solver (e.g., KINSOL) to solve. */
         ODE, /**< The model defines a system of ordinary differential equations that require an external ODE solver (e.g., CVODE) to solve. */
-        OVERCONSTRAINED, /**< The model is overconstrained. */
-        UNDERCONSTRAINED, /**< The model is underconstrainted. */
-        UNSUITABLY_CONSTRAINED /**< The model is unsuitably constrained. */
+        OVERCONSTRAINED, /**< The model is determined to be overconstrained as there are more equations than unknown variables. */
+        UNDERCONSTRAINED, /**< The model is determined to be underconstrained as there are insufficient equations to constrain all variables. */
+        UNSUITABLY_CONSTRAINED /**< The model is determined to be unsuitably constrained, i.e. both overconstrained and underconstrained. */
     };
 
     ~AnalyserModel(); /**< Destructor, @private. */
