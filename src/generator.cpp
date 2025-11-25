@@ -2293,6 +2293,11 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel, cons
     return interfaceCode(analyserModel, generatorProfile, nullptr);
 }
 
+std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile)
+{
+    return interfaceCode(analyserModel, GeneratorProfile::create(profile), nullptr);
+}
+
 std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel,
                                      const GeneratorVariableTrackerPtr &generatorVariableTracker)
 {
@@ -2418,6 +2423,11 @@ std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel,
 std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
 {
     return implementationCode(analyserModel, generatorProfile, nullptr);
+}
+
+std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile)
+{
+    return implementationCode(analyserModel, GeneratorProfile::create(profile), nullptr);
 }
 
 std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)

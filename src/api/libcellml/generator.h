@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/generatorvariabletracker.h"
+#include "libcellml/generatorprofile.h"
 #include "libcellml/logger.h"
 
 namespace libcellml {
@@ -77,6 +77,19 @@ public:
     /**
      * @brief Get the interface code for the @ref AnalyserModel.
      *
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     *
+     * @return The interface code as a @c std::string.
+     */
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
+
+    /**
+     * @brief Get the interface code for the @ref AnalyserModel.
+     *
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
      *
      * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
@@ -124,6 +137,19 @@ public:
      */
 
     std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
+
+    /**
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile::Profile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param profile The @ref GeneratorProfile::Profile type to use to generate the implementation code.
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
