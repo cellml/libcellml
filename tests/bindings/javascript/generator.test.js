@@ -23,15 +23,15 @@ describe("Generator tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
     })
-    test('Checking Generator context manipulation.', () => {
+    test('Checking Generator variable tracker manipulation.', () => {
         const g = new libcellml.Generator()
-        const gc = new libcellml.GeneratorContext()
+        const gvt = new libcellml.GeneratorVariableTracker()
 
-        expect(g.context()).toBeNull()
+        expect(g.variableTracker()).toBeNull()
 
-        g.setContext(gc)
+        g.setVariableTracker(gvt)
 
-        expect(g.context()).toStrictEqual(gc)
+        expect(g.variableTracker()).toStrictEqual(gvt)
     })
     test('Checking Generator profile manipulation.', () => {
         const g = new libcellml.Generator()

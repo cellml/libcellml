@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/generatorcontext.h"
+#include "libcellml/generatorvariabletracker.h"
 #include "libcellml/logger.h"
 
 namespace libcellml {
@@ -48,24 +48,6 @@ public:
     static GeneratorPtr create() noexcept;
 
     /**
-     * @brief Get the @ref GeneratorContext.
-     *
-     * Get the @ref GeneratorContext used by this @ref Generator.
-     *
-     * @return The @ref GeneratorContext used.
-     */
-    GeneratorContextPtr context();
-
-    /**
-     * @brief Set the @ref GeneratorContext.
-     *
-     * Set the @ref GeneratorContext to be used by this @ref Generator.
-     *
-     * @param context The @ref GeneratorContext to set.
-     */
-    void setContext(const GeneratorContextPtr &context);
-
-    /**
      * @brief Get the @ref GeneratorProfile.
      *
      * Get the @ref GeneratorProfile used by this @ref Generator.
@@ -82,6 +64,24 @@ public:
      * @param profile The @ref GeneratorProfile to set.
      */
     void setProfile(const GeneratorProfilePtr &profile);
+
+    /**
+     * @brief Get the @ref GeneratorVariableTracker.
+     *
+     * Get the @ref GeneratorVariableTracker used by this @ref Generator.
+     *
+     * @return The @ref GeneratorVariableTracker used.
+     */
+    GeneratorVariableTrackerPtr variableTracker();
+
+    /**
+     * @brief Set the @ref GeneratorVariableTracker.
+     *
+     * Set the @ref GeneratorVariableTracker to be used by this @ref Generator.
+     *
+     * @param context The @ref GeneratorVariableTracker to set.
+     */
+    void setVariableTracker(const GeneratorVariableTrackerPtr &variableTracker);
 
     /**
      * @brief Get the interface code for the @ref AnalyserModel.

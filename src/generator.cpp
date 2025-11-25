@@ -31,9 +31,9 @@ limitations under the License.
 #include "analysermodel_p.h"
 #include "commonutils.h"
 #include "generator_p.h"
-#include "generatorcontext_p.h"
 #include "generatorprofilesha1values.h"
 #include "generatorprofiletools.h"
+#include "generatorvariabletracker_p.h"
 #include "utilities.h"
 
 #include "libcellml/undefines.h"
@@ -94,7 +94,7 @@ bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &anal
 
 bool Generator::GeneratorImpl::isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked)
 {
-    return tracked ? (mContext == nullptr) || mContext->isTrackedVariable(analyserVariable) : (mContext != nullptr) && mContext->isUntrackedVariable(analyserVariable);
+    return tracked ? (mVariableTracker == nullptr) || mVariableTracker->isTrackedVariable(analyserVariable) : (mVariableTracker != nullptr) && mVariableTracker->isUntrackedVariable(analyserVariable);
 }
 
 bool Generator::GeneratorImpl::modelHasOdes(const AnalyserModelPtr &analyserModel) const
@@ -350,7 +350,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceConstantCountString() :
                     replace(mProfile->implementationConstantCountString(),
-                            "[CONSTANT_COUNT]", std::to_string((mContext != nullptr) ? mContext->trackedConstantCount(analyserModel) : analyserModel->constantCount()));
+                            "[CONSTANT_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedConstantCount(analyserModel) : analyserModel->constantCount()));
     }
 
     if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
@@ -358,7 +358,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceComputedConstantCountString() :
                     replace(mProfile->implementationComputedConstantCountString(),
-                            "[COMPUTED_CONSTANT_COUNT]", std::to_string((mContext != nullptr) ? mContext->trackedComputedConstantCount(analyserModel) : analyserModel->computedConstantCount()));
+                            "[COMPUTED_CONSTANT_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedComputedConstantCount(analyserModel) : analyserModel->computedConstantCount()));
     }
 
     if ((interface && !mProfile->interfaceAlgebraicVariableCountString().empty())
@@ -366,7 +366,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(const AnalyserModelP
         code += interface ?
                     mProfile->interfaceAlgebraicVariableCountString() :
                     replace(mProfile->implementationAlgebraicVariableCountString(),
-                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string((mContext != nullptr) ? mContext->trackedAlgebraicVariableCount(analyserModel) : analyserModel->algebraicVariableCount()));
+                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedAlgebraicVariableCount(analyserModel) : analyserModel->algebraicVariableCount()));
     }
 
     if ((analyserModel->externalVariableCount() != 0)
@@ -2246,16 +2246,6 @@ GeneratorPtr Generator::create() noexcept
     return std::shared_ptr<Generator> {new Generator {}};
 }
 
-GeneratorContextPtr Generator::context()
-{
-    return pFunc()->mContext;
-}
-
-void Generator::setContext(const GeneratorContextPtr &context)
-{
-    pFunc()->mContext = context;
-}
-
 GeneratorProfilePtr Generator::profile()
 {
     return pFunc()->mProfile;
@@ -2264,6 +2254,16 @@ GeneratorProfilePtr Generator::profile()
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
     pFunc()->mProfile = profile;
+}
+
+GeneratorVariableTrackerPtr Generator::variableTracker()
+{
+    return pFunc()->mVariableTracker;
+}
+
+void Generator::setVariableTracker(const GeneratorVariableTrackerPtr &variableTracker)
+{
+    pFunc()->mVariableTracker = variableTracker;
 }
 
 std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel)

@@ -37,8 +37,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 {
     std::string mCode;
 
-    GeneratorContextPtr mContext;
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
+    GeneratorVariableTrackerPtr mVariableTracker;
 
     void reset();
 

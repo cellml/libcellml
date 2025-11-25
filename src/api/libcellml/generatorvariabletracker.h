@@ -21,30 +21,30 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The GeneratorContext class.
+ * @brief The GeneratorVariableTracker class.
  *
- * The GeneratorContext class is for representing a CellML GeneratorContext.
+ * The GeneratorVariableTracker class is for representing a CellML GeneratorVariableTracker.
  */
-class LIBCELLML_EXPORT GeneratorContext: public Logger
+class LIBCELLML_EXPORT GeneratorVariableTracker: public Logger
 {
 public:
-    ~GeneratorContext(); /**< Destructor, @private. */
-    GeneratorContext(const GeneratorContext &rhs) = delete; /**< Copy constructor, @private. */
-    GeneratorContext(GeneratorContext &&rhs) noexcept = delete; /**< Move constructor, @private. */
-    GeneratorContext &operator=(GeneratorContext rhs) = delete; /**< Assignment operator, @private. */
+    ~GeneratorVariableTracker(); /**< Destructor, @private. */
+    GeneratorVariableTracker(const GeneratorVariableTracker &rhs) = delete; /**< Copy constructor, @private. */
+    GeneratorVariableTracker(GeneratorVariableTracker &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    GeneratorVariableTracker &operator=(GeneratorVariableTracker rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create a @ref GeneratorContext object.
+     * @brief Create a @ref GeneratorVariableTracker object.
      *
-     * Factory method to create a @ref GeneratorContext. Create a GeneratorContext with::
+     * Factory method to create a @ref GeneratorVariableTracker. Create a GeneratorVariableTracker with::
      *
      * @code
-     *   auto GeneratorContext = libcellml::GeneratorContext::create();
+     *   auto GeneratorVariableTracker = libcellml::GeneratorVariableTracker::create();
      * @endcode
      *
-     * @return A smart pointer to a @ref GeneratorContext object.
+     * @return A smart pointer to a @ref GeneratorVariableTracker object.
      */
-    static GeneratorContextPtr create() noexcept;
+    static GeneratorVariableTrackerPtr create() noexcept;
 
     /**
      * @brief Test if the given @p analyserVariable is tracked.
@@ -259,12 +259,12 @@ public:
     size_t untrackedVariableCount(const AnalyserModelPtr &analyserModel);
 
 private:
-    GeneratorContext(); /**< Constructor, @private. */
+    GeneratorVariableTracker(); /**< Constructor, @private. */
 
-    struct GeneratorContextImpl;
+    struct GeneratorVariableTrackerImpl;
 
-    GeneratorContextImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    const GeneratorContextImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    GeneratorVariableTrackerImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const GeneratorVariableTrackerImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

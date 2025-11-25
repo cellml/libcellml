@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/generatorcontext.h"
+#include "libcellml/generatorvariabletracker.h"
 
 #include "issue_p.h"
 #include "logger_p.h"
@@ -24,11 +24,11 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The GeneratorContext::GeneratorContextImpl struct.
+ * @brief The GeneratorVariableTracker::GeneratorVariableTrackerImpl struct.
  *
- * The private implementation for the GeneratorContext class.
+ * The private implementation for the GeneratorVariableTracker class.
  */
-struct GeneratorContext::GeneratorContextImpl: public Logger::LoggerImpl
+struct GeneratorVariableTracker::GeneratorVariableTrackerImpl: public Logger::LoggerImpl
 {
     std::map<AnalyserModelPtr, std::map<AnalyserVariablePtr, bool>> mTrackedVariables;
 
