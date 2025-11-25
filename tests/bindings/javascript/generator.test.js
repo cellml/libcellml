@@ -51,6 +51,9 @@ describe("Generator tests", () => {
         const interface_lines_profile = g.interfaceCodeByProfile(am, gp).split('\n')
         expect(interface_lines_profile.length).toBe(38)
 
+        const interface_lines_profile = g.interfaceCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
+        expect(interface_lines_profile.length).toBe(38)
+
         const gvt = new libcellml.GeneratorVariableTracker()
 
         const interface_lines_variable_tracker = g.interfaceCodeByVariableTracker(am, gvt).split('\n')
@@ -63,6 +66,9 @@ describe("Generator tests", () => {
         expect(implementation_lines.length).toBe(97)
 
         const implementation_lines_profile = g.implementationCodeByProfile(am, gp).split('\n')
+        expect(implementation_lines_profile.length).toBe(97)
+
+        const implementation_lines_profile = g.implementationCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
         expect(implementation_lines_profile.length).toBe(97)
 
         const implementation_lines_variable_tracker = g.implementationCodeByVariableTracker(am, gvt).split('\n')
