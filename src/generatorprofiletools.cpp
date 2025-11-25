@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "generatorprofiletools.h"
+
 #include <array>
 #include <iomanip>
 #include <sstream>
 
 #include "libcellml/generatorprofile.h"
-
-#include "generatorprofiletools.h"
 
 namespace libcellml {
 

@@ -45,6 +45,7 @@
 
 %{
 #include "libcellml/generator.h"
+#include "libcellml/generatorvariabletracker.h"
 %}
 
 %pythoncode %{

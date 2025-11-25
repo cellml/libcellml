@@ -17,12 +17,6 @@ limitations under the License.
 #include "libcellml/model.h"
 
 #include <algorithm>
-#include <fstream>
-#include <map>
-#include <numeric>
-#include <sstream>
-#include <stack>
-#include <utility>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -32,7 +26,6 @@ limitations under the License.
 
 #include "commonutils.h"
 #include "component_p.h"
-#include "componententity_p.h"
 #include "internaltypes.h"
 #include "model_p.h"
 #include "units_p.h"

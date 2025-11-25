@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/generatorvariabletracker.h"
 #include "libcellml/logger.h"
 
 namespace libcellml {
