@@ -2246,34 +2246,20 @@ GeneratorPtr Generator::create() noexcept
     return std::shared_ptr<Generator> {new Generator {}};
 }
 
-GeneratorProfilePtr Generator::profile()
-{
-    return pFunc()->mProfile;
-}
-
-void Generator::setProfile(const GeneratorProfilePtr &profile)
-{
-    pFunc()->mProfile = profile;
-}
-
-GeneratorVariableTrackerPtr Generator::variableTracker()
-{
-    return pFunc()->mVariableTracker;
-}
-
-void Generator::setVariableTracker(const GeneratorVariableTrackerPtr &variableTracker)
-{
-    pFunc()->mVariableTracker = variableTracker;
-}
-
-std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel)
+std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile,
+                                     const GeneratorVariableTrackerPtr &generatorVariableTracker)
 {
     if ((analyserModel == nullptr)
-        || (pFunc()->mProfile == nullptr)
+        || (generatorProfile == nullptr)
         || !analyserModel->isValid()
-        || !pFunc()->mProfile->hasInterface()) {
+        || !generatorProfile->hasInterface()) {
         return {};
     }
+
+    // Keep track of the profile and variable tracker.
+
+    pFunc()->mProfile = generatorProfile;
+    pFunc()->mVariableTracker = generatorVariableTracker;
 
     // Get ourselves ready.
 
@@ -2319,13 +2305,36 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel)
     return pFunc()->mCode;
 }
 
-std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel)
+std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
+{
+    return interfaceCode(analyserModel, generatorProfile, nullptr);
+}
+
+std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel,
+                                     const GeneratorVariableTrackerPtr &generatorVariableTracker)
+{
+    return interfaceCode(analyserModel, pFunc()->mDefaultProfile, generatorVariableTracker);
+}
+
+std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel)
+{
+    return interfaceCode(analyserModel, pFunc()->mDefaultProfile, nullptr);
+}
+
+std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel,
+                                          const GeneratorProfilePtr &generatorProfile,
+                                          const GeneratorVariableTrackerPtr &generatorVariableTracker)
 {
     if ((analyserModel == nullptr)
-        || (pFunc()->mProfile == nullptr)
+        || (generatorProfile == nullptr)
         || !analyserModel->isValid()) {
         return {};
     }
+
+    // Keep track of the profile and variable tracker.
+
+    pFunc()->mProfile = generatorProfile;
+    pFunc()->mVariableTracker = generatorVariableTracker;
 
     // Get ourselves ready.
 
@@ -2422,14 +2431,27 @@ std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel)
     return pFunc()->mCode;
 }
 
+std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
+{
+    return implementationCode(analyserModel, generatorProfile, nullptr);
+}
+
+std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)
+{
+    return implementationCode(analyserModel, pFunc()->mDefaultProfile, generatorVariableTracker);
+}
+
+std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel)
+{
+    return implementationCode(analyserModel, pFunc()->mDefaultProfile, nullptr);
+}
+
 std::string Generator::equationCode(const AnalyserEquationAstPtr &ast,
                                     const GeneratorProfilePtr &generatorProfile)
 {
     GeneratorPtr generator = Generator::create();
 
-    if (generatorProfile != nullptr) {
-        generator->setProfile(generatorProfile);
-    }
+    generator->pFunc()->mProfile = (generatorProfile != nullptr) ? generatorProfile : generator->pFunc()->mDefaultProfile;
 
     return generator->pFunc()->generateCode(nullptr, ast);
 }

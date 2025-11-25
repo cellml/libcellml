@@ -17,6 +17,7 @@ class GeneratorTestCase(unittest.TestCase):
         from libcellml import Generator
         from libcellml.generator import Generator_equationCode
         from libcellml import GeneratorProfile
+        from libcellml import GeneratorVariableTracker
         from libcellml import Parser
         from test_resources import file_contents
 
@@ -35,15 +36,15 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), g.interfaceCode(am))
         self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), g.implementationCode(am))
 
-        self.assertEqual(GeneratorProfile.Profile.C, g.profile().profile())
-
         profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
-        g.setProfile(profile)
 
-        self.assertEqual("", g.interfaceCode(am))
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode(am))
+        self.assertEqual("", g.interfaceCode(am, profile))
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode(am, profile))
 
-        self.assertEqual(GeneratorProfile.Profile.PYTHON, g.profile().profile())
+        variable_tracker = GeneratorVariableTracker()
+
+        self.assertEqual("", g.interfaceCode(am, profile, variable_tracker))
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode(am, profile, variable_tracker))
 
         self.assertEqual("x = a", Generator.equationCode(am.analyserEquation(0).ast()))
         self.assertEqual("x = a", Generator_equationCode(am.analyserEquation(0).ast()))

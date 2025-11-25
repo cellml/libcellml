@@ -275,8 +275,6 @@ TEST(Coverage, sha1)
     auto generator = libcellml::Generator::create();
     auto generatorProfile = libcellml::GeneratorProfile::create();
 
-    generator->setProfile(generatorProfile);
-
     std::string xs = {};
 
     for (int i = 0; i < 64; ++i) {
@@ -285,7 +283,7 @@ TEST(Coverage, sha1)
 
         generatorProfile->setVoiString(xs);
 
-        generator->implementationCode(analyser->analyserModel());
+        generator->implementationCode(analyser->analyserModel(), generatorProfile);
     }
 }
 
@@ -688,8 +686,6 @@ TEST(Coverage, generator)
     auto generator = libcellml::Generator::create();
     auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    generator->setVariableTracker(generatorVariableTracker);
-
     generatorVariableTracker->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
 
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generatorVariableTracker);
@@ -711,10 +707,10 @@ TEST(Coverage, generator)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(nullptr));
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode(nullptr));
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode(analyserModel));
+    auto profile = libcellml::GeneratorProfile::create();
 
-    auto profile = generator->profile();
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
@@ -728,12 +724,10 @@ TEST(Coverage, generator)
                                                             "    return res;\n"
                                                             "}\n");
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile = libcellml::GeneratorProfile::create();
-
-    generator->setProfile(profile);
 
     profile->setHasInterface(false);
 
@@ -799,12 +793,10 @@ TEST(Coverage, generator)
     profile->setImplementationComputeVariablesMethodString(true, false, "");
     profile->setImplementationComputeVariablesMethodString(true, true, "");
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create();
-
-    generator->setProfile(profile);
 
     profile->setHasInterface(true);
 
@@ -873,27 +865,25 @@ TEST(Coverage, generator)
 
     profile->setVariableInfoEntryString("");
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode(analyserModel, profile));
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode(analyserModel, profile));
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
                                                             "    return [nan]*STATE_COUNT\n");
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode(analyserModel, profile));
 
-    // Coverage for the case where mProfile is equal to nullptr in Generator.
+    // Coverage for the case where we pass a null profile.
 
-    generator->setProfile(nullptr);
-
-    generator->interfaceCode(analyserModel);
-    generator->implementationCode(analyserModel);
+    generator->interfaceCode(analyserModel, libcellml::GeneratorProfilePtr(nullptr));
+    generator->implementationCode(analyserModel, libcellml::GeneratorProfilePtr(nullptr));
 
     // Coverage for various profile settings.
 
@@ -902,8 +892,6 @@ TEST(Coverage, generator)
     analyser->analyseModel(model);
 
     analyserModel = analyser->analyserModel();
-
-    generator->setProfile(profile);
 
     profile->setAcotFunctionString("");
     profile->setAcothFunctionString("");
@@ -937,8 +925,8 @@ TEST(Coverage, generator)
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
 
-    generator->interfaceCode(analyserModel);
-    generator->implementationCode(analyserModel);
+    generator->interfaceCode(analyserModel, profile);
+    generator->implementationCode(analyserModel, profile);
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
@@ -953,7 +941,7 @@ TEST(Coverage, generator)
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
-    generator->implementationCode(analyserModel);
+    generator->implementationCode(analyserModel, profile);
 
     profile->setArrayElementSeparatorString("xxx");
     profile->setExternNlaSolveMethodString("");
@@ -970,12 +958,12 @@ TEST(Coverage, generator)
     profile->setNlaSolveCallString(true, false, "");
     profile->setNlaSolveCallString(true, true, "");
 
-    generator->implementationCode(analyserModel);
+    generator->implementationCode(analyserModel, profile);
 
     profile->setHasXorOperator(false);
     profile->setXorFunctionString("");
 
-    generator->implementationCode(analyserModel);
+    generator->implementationCode(analyserModel, profile);
 
     libcellml::Generator::equationCode(analyser->analyserModel()->analyserEquation(0)->ast());
 }
@@ -992,25 +980,10 @@ TEST(Coverage, generatorWithNoTracking)
     auto generator = libcellml::Generator::create();
     auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    generator->setVariableTracker(generatorVariableTracker);
-
     generatorVariableTracker->untrackAllVariables(analyserModel);
 
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));
-}
-
-TEST(Coverage, generatorVariableTracker)
-{
-    auto generator = libcellml::Generator::create();
-
-    EXPECT_EQ(nullptr, generator->variableTracker());
-
-    auto context = libcellml::GeneratorVariableTracker::create();
-
-    generator->setVariableTracker(context);
-
-    EXPECT_NE(nullptr, generator->variableTracker());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel, generatorVariableTracker));
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)

@@ -505,8 +505,6 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
                                                   "untracked.algebraic.variables" :
                                                   "control")));
 
-    generator->setVariableTracker(generatorVariableTracker);
-
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
@@ -515,18 +513,16 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(issues, levels, referenceRules, generatorVariableTracker);
 
-    auto profile = generator->profile();
+    auto profile = libcellml::GeneratorProfile::create();
 
     profile->setInterfaceFileNameString(modelType + "." + variableType + ".h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     // With an external variable with a dependency on a constant, computed constant, and algebraic variable.
 
@@ -551,18 +547,14 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
 
-    generator->setProfile(profile);
-
     profile->setInterfaceFileNameString(modelType + "." + variableType + ".with.externals.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 }
 
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952Control)

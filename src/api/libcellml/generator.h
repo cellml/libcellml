@@ -48,40 +48,44 @@ public:
     static GeneratorPtr create() noexcept;
 
     /**
-     * @brief Get the @ref GeneratorProfile.
+     * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Get the @ref GeneratorProfile used by this @ref Generator.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile and the @ref GeneratorVariableTracker.
      *
-     * @return The @ref GeneratorProfile used.
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the interface code
+     *
+     * @return The interface code as a @c std::string.
      */
-    GeneratorProfilePtr profile();
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
-     * @brief Set the @ref GeneratorProfile.
+     * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Set the @ref GeneratorProfile to be used by this @ref Generator.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
      *
-     * @param profile The @ref GeneratorProfile to set.
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     *
+     * @return The interface code as a @c std::string.
      */
-    void setProfile(const GeneratorProfilePtr &profile);
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
 
     /**
-     * @brief Get the @ref GeneratorVariableTracker.
+     * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Get the @ref GeneratorVariableTracker used by this @ref Generator.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
      *
-     * @return The @ref GeneratorVariableTracker used.
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the interface code
+     *
+     * @return The interface code as a @c std::string.
      */
-    GeneratorVariableTrackerPtr variableTracker();
 
-    /**
-     * @brief Set the @ref GeneratorVariableTracker.
-     *
-     * Set the @ref GeneratorVariableTracker to be used by this @ref Generator.
-     *
-     * @param context The @ref GeneratorVariableTracker to set.
-     */
-    void setVariableTracker(const GeneratorVariableTrackerPtr &variableTracker);
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
      * @brief Get the interface code for the @ref AnalyserModel.
@@ -93,6 +97,46 @@ public:
      * @return The interface code as a @c std::string.
      */
     std::string interfaceCode(const AnalyserModelPtr &analyserModel);
+
+    /**
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile and the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the implementation code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the implementation code
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
+
+    /**
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the implementation code.
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
+
+    /**
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the implementation code
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
