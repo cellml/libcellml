@@ -27,10 +27,30 @@ limitations under the License.
 
 namespace libcellml {
 
+void GeneratorVariableTracker::GeneratorVariableTrackerImpl::cleanupExpiredEntries()
+{
+    // Remove all expired weak pointers from the map (to prevent memory bloat and ensure that we don't try to access
+    // expired entries).
+    // Note: an analyser variable cannot expire while its analyser model is still alive, so we only need to check the
+    //       analyser model weak pointers here.
+
+    auto analyserModelIt = mTrackedVariables.begin();
+
+    while (analyserModelIt != mTrackedVariables.end()) {
+        if (analyserModelIt->first.expired()) {
+            analyserModelIt = mTrackedVariables.erase(analyserModelIt);
+        } else {
+            ++analyserModelIt;
+        }
+    }
+}
+
 bool GeneratorVariableTracker::GeneratorVariableTrackerImpl::isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable,
                                                                                bool tracked)
 {
     // By default an analyser variable is always tracked.
+
+    cleanupExpiredEntries();
 
     if (mTrackedVariables[analyserModel].find(analyserVariable) == mTrackedVariables[analyserModel].end()) {
         mTrackedVariables[analyserModel][analyserVariable] = true;
@@ -193,6 +213,8 @@ void GeneratorVariableTracker::GeneratorVariableTrackerImpl::trackVariable(const
     for (const auto &analyserModelVariable : analyserVariables(analyserVariable)) {
         if (analyserVariable == analyserModelVariable) {
             if (trackableVariable(analyserVariable, tracked)) {
+                cleanupExpiredEntries();
+
                 mTrackedVariables[analyserModelVariable->analyserModel()][analyserModelVariable] = tracked;
             }
 
