@@ -32,6 +32,8 @@ struct GeneratorVariableTracker::GeneratorVariableTrackerImpl: public Logger::Lo
 {
     std::map<AnalyserModelWeakPtr, std::map<AnalyserVariableWeakPtr, bool, std::owner_less<AnalyserVariableWeakPtr>>, std::owner_less<AnalyserModelWeakPtr>> mTrackedVariables;
 
+    void cleanupExpiredEntries();
+
     bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable, bool tracked);
     bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
 
