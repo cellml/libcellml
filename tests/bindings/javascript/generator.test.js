@@ -51,8 +51,8 @@ describe("Generator tests", () => {
         const interface_lines_profile = g.interfaceCodeByProfile(am, gp).split('\n')
         expect(interface_lines_profile.length).toBe(38)
 
-        const interface_lines_profile = g.interfaceCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
-        expect(interface_lines_profile.length).toBe(38)
+        const interface_lines_profile_enumeration = g.interfaceCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
+        expect(interface_lines_profile_enumeration.length).toBe(38)
 
         const gvt = new libcellml.GeneratorVariableTracker()
 
