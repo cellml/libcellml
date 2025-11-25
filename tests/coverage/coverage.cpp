@@ -686,13 +686,13 @@ TEST(Coverage, generator)
     }
 
     auto generator = libcellml::Generator::create();
-    auto generatorContext = libcellml::GeneratorContext::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    generator->setContext(generatorContext);
+    generator->setVariableTracker(generatorVariableTracker);
 
-    generatorContext->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("eqnNlaVariable1")));
 
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generatorContext);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({"Variable 'eqnNlaVariable1' in component 'my_component' is computed using an NLA system and is therefore always tracked."}, {libcellml::Issue::Level::MESSAGE}, {libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED}, generatorVariableTracker);
 
     EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
 
@@ -990,27 +990,27 @@ TEST(Coverage, generatorWithNoTracking)
 
     auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
-    auto generatorContext = libcellml::GeneratorContext::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    generator->setContext(generatorContext);
+    generator->setVariableTracker(generatorVariableTracker);
 
-    generatorContext->untrackAllVariables(analyserModel);
+    generatorVariableTracker->untrackAllVariables(analyserModel);
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel));
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel));
 }
 
-TEST(Coverage, generatorContext)
+TEST(Coverage, generatorVariableTracker)
 {
     auto generator = libcellml::Generator::create();
 
-    EXPECT_EQ(nullptr, generator->context());
+    EXPECT_EQ(nullptr, generator->variableTracker());
 
-    auto context = libcellml::GeneratorContext::create();
+    auto context = libcellml::GeneratorVariableTracker::create();
 
-    generator->setContext(context);
+    generator->setVariableTracker(context);
 
-    EXPECT_NE(nullptr, generator->context());
+    EXPECT_NE(nullptr, generator->variableTracker());
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)

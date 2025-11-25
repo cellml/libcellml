@@ -36,7 +36,7 @@ class LIBCELLML_EXPORT Issue
 {
     friend class Analyser;
     friend class Annotator;
-    friend class GeneratorContext;
+    friend class GeneratorVariableTracker;
     friend class Importer;
     friend class Parser;
     friend class Printer;

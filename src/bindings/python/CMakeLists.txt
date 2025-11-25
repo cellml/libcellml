@@ -27,7 +27,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/entity.i
     ../interface/enums.i
     ../interface/generator.i
-    ../interface/generatorcontext.i
+    ../interface/generatorvariabletracker.i
     ../interface/generatorprofile.i
     ../interface/importer.i
     ../interface/importsource.i
