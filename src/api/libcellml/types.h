@@ -46,6 +46,8 @@ using AnyCellmlElementPtr = std::shared_ptr<AnyCellmlElement>; /**< Type definit
 
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
+class GeneratorVariableTracker; /**< Forward declaration of GeneratorVariableTracker class. */
+using GeneratorVariableTrackerPtr = std::shared_ptr<GeneratorVariableTracker>; /**< Type definition for shared generator context pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
 class Importer; /**< Forward declaration of Importer class. */

@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(GeneratorTrackedVariables, noModelOrVariable)
+TEST(GeneratorVariableTracker, noModelOrVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -29,62 +29,62 @@ TEST(GeneratorTrackedVariables, noModelOrVariable)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    EXPECT_FALSE(generator->isTrackedVariable(nullptr));
-    EXPECT_FALSE(generator->isUntrackedVariable(nullptr));
+    EXPECT_FALSE(generatorVariableTracker->isTrackedVariable(nullptr));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(nullptr));
 
     const std::vector<std::string> nullVariableIssue = {"The variable is null."};
     const std::vector<libcellml::Issue::Level> errorLevel = {libcellml::Issue::Level::ERROR};
     const std::vector<libcellml::Issue::ReferenceRule> nullVariableReferenceRule = {libcellml::Issue::ReferenceRule::GENERATOR_NULL_VARIABLE};
 
-    generator->trackVariable(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generator);
+    generatorVariableTracker->trackVariable(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generatorVariableTracker);
 
-    generator->untrackVariable(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generator);
+    generatorVariableTracker->untrackVariable(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generatorVariableTracker);
 
     const std::vector<std::string> nullModelIssue = {"The model is null."};
     const std::vector<libcellml::Issue::ReferenceRule> nullModelReferenceRule = {libcellml::Issue::ReferenceRule::GENERATOR_NULL_MODEL};
 
-    generator->trackAllConstants(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->trackAllConstants(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->untrackAllConstants(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->untrackAllConstants(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->trackAllComputedConstants(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->trackAllComputedConstants(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->untrackAllComputedConstants(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->untrackAllComputedConstants(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->trackAllAlgebraicVariables(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->trackAllAlgebraicVariables(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->untrackAllAlgebraicVariables(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->untrackAllAlgebraicVariables(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->trackAllVariables(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->trackAllVariables(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    generator->untrackAllVariables(nullptr);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generator);
+    generatorVariableTracker->untrackAllVariables(nullptr);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullModelIssue, errorLevel, nullModelReferenceRule, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(0), generator->trackedConstantCount(nullptr));
-    EXPECT_EQ(size_t(0), generator->untrackedConstantCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedConstantCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedConstantCount(nullptr));
 
-    EXPECT_EQ(size_t(0), generator->trackedComputedConstantCount(nullptr));
-    EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedComputedConstantCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedComputedConstantCount(nullptr));
 
-    EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(nullptr));
-    EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedAlgebraicVariableCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedAlgebraicVariableCount(nullptr));
 
-    EXPECT_EQ(size_t(0), generator->trackedVariableCount(nullptr));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedVariableCount(nullptr));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(nullptr));
 }
 
-TEST(GeneratorTrackedVariables, tracAndkUntrackVariableOfIntegration)
+TEST(GeneratorVariableTracker, tracAndkUntrackVariableOfIntegration)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -97,33 +97,33 @@ TEST(GeneratorTrackedVariables, tracAndkUntrackVariableOfIntegration)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("environment")->variable("time");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and cannot therefore be untracked."}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and cannot therefore be untracked."}, generatorVariableTracker);
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and is therefore always tracked."}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'time' in component 'environment' is the variable of integration and is therefore always tracked."}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackStateVariable)
+TEST(GeneratorVariableTracker, trackAndUntrackStateVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -132,33 +132,33 @@ TEST(GeneratorTrackedVariables, trackAndUntrackStateVariable)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("membrane")->variable("V");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and cannot therefore be untracked."}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and cannot therefore be untracked."}, generatorVariableTracker);
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and is therefore always tracked."}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is a state variable and is therefore always tracked."}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
+TEST(GeneratorVariableTracker, trackAndUntrackConstant)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -167,33 +167,33 @@ TEST(GeneratorTrackedVariables, trackAndUntrackConstant)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("membrane")->variable("Cm");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_FALSE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(17), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(17), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(1), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
+TEST(GeneratorVariableTracker, trackAndUntrackComputedConstant)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -202,33 +202,33 @@ TEST(GeneratorTrackedVariables, trackAndUntrackComputedConstant)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("leakage_current")->variable("E_L");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_FALSE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(17), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(17), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(1), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
+TEST(GeneratorVariableTracker, trackAndUntrackAlgebraicVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -237,33 +237,33 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAlgebraicVariable)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("membrane")->variable("i_Stim");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_FALSE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_TRUE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(17), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(1), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(17), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(1), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
+TEST(GeneratorVariableTracker, trackAndUntrackExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -274,33 +274,33 @@ TEST(GeneratorTrackedVariables, trackAndUntrackExternalVariable)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto variable = model->component("membrane")->variable("V");
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and cannot therefore be untracked."}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and cannot therefore be untracked."}, generatorVariableTracker);
 
-    EXPECT_TRUE(generator->isTrackedVariable(analyserModel->analyserVariable(variable)));
-    EXPECT_FALSE(generator->isUntrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_TRUE(generatorVariableTracker->isTrackedVariable(analyserModel->analyserVariable(variable)));
+    EXPECT_FALSE(generatorVariableTracker->isUntrackedVariable(analyserModel->analyserVariable(variable)));
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackVariable(analyserModel->analyserVariable(variable));
-    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and is therefore always tracked."}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(variable));
+    EXPECT_EQ_ISSUES({"Variable 'V' in component 'membrane' is an external variable and is therefore always tracked."}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackVariableFromOtherModel)
+TEST(GeneratorVariableTracker, trackAndUntrackVariableFromOtherModel)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -310,18 +310,18 @@ TEST(GeneratorTrackedVariables, trackAndUntrackVariableFromOtherModel)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
     auto otherVariable = otherModel->component("membrane")->variable("Cm");
 
-    generator->trackVariable(analyserModel->analyserVariable(otherVariable));
-    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
+    generatorVariableTracker->trackVariable(analyserModel->analyserVariable(otherVariable));
+    EXPECT_EQ_ISSUES({"The variable is null."}, generatorVariableTracker);
 
-    generator->untrackVariable(analyserModel->analyserVariable(otherVariable));
-    EXPECT_EQ_ISSUES({"The variable is null."}, generator);
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(otherVariable));
+    EXPECT_EQ_ISSUES({"The variable is null."}, generatorVariableTracker);
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
+TEST(GeneratorVariableTracker, trackAndUntrackAllConstants)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -330,31 +330,31 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllConstants)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(5), generatorVariableTracker->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackAllConstants(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackAllConstants(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(0), generator->trackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(5), generator->untrackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(13), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(5), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(5), generatorVariableTracker->untrackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(13), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(5), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackAllConstants(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackAllConstants(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(5), generator->trackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(5), generatorVariableTracker->trackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
+TEST(GeneratorVariableTracker, trackAndUntrackAllComputedConstants)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -363,31 +363,31 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllComputedConstants)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(3), generatorVariableTracker->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackAllComputedConstants(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackAllComputedConstants(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(0), generator->trackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(3), generator->untrackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(15), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(3), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(3), generatorVariableTracker->untrackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(15), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(3), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackAllComputedConstants(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackAllComputedConstants(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(3), generator->trackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedComputedConstantCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(3), generatorVariableTracker->trackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedComputedConstantCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
+TEST(GeneratorVariableTracker, trackAndUntrackAllAlgebraicVariables)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -396,31 +396,31 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllAlgebraicVariables)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(10), generatorVariableTracker->trackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackAllAlgebraicVariables(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackAllAlgebraicVariables(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(0), generator->trackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(10), generator->untrackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(8), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(10), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(10), generatorVariableTracker->untrackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(8), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(10), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackAllAlgebraicVariables(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackAllAlgebraicVariables(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(10), generator->trackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedAlgebraicCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(10), generatorVariableTracker->trackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedAlgebraicVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
-TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
+TEST(GeneratorVariableTracker, trackAndUntrackAllVariables)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -429,22 +429,22 @@ TEST(GeneratorTrackedVariables, trackAndUntrackAllVariables)
     analyser->analyseModel(model);
 
     auto analyserModel = analyser->analyserModel();
-    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->untrackAllVariables(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->untrackAllVariables(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(0), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(18), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->untrackedVariableCount(analyserModel));
 
-    generator->trackAllVariables(analyserModel);
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generator);
+    generatorVariableTracker->trackAllVariables(analyserModel);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES({}, {}, {}, generatorVariableTracker);
 
-    EXPECT_EQ(size_t(18), generator->trackedVariableCount(analyserModel));
-    EXPECT_EQ(size_t(0), generator->untrackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(18), generatorVariableTracker->trackedVariableCount(analyserModel));
+    EXPECT_EQ(size_t(0), generatorVariableTracker->untrackedVariableCount(analyserModel));
 }
 
 enum class TrackingType
@@ -456,24 +456,24 @@ enum class TrackingType
     ALGEBRAIC
 };
 
-void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::GeneratorPtr &generator, TrackingType trackingType)
+void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::GeneratorVariableTrackerPtr &generatorVariableTracker, TrackingType trackingType)
 {
     switch (trackingType) {
     case TrackingType::VARIABLES:
-        generator->trackAllVariables(analyserModel); // For coverage.
-        generator->untrackAllVariables(analyserModel);
+        generatorVariableTracker->trackAllVariables(analyserModel); // For coverage.
+        generatorVariableTracker->untrackAllVariables(analyserModel);
 
         break;
     case TrackingType::CONSTANTS:
-        generator->untrackAllConstants(analyserModel);
+        generatorVariableTracker->untrackAllConstants(analyserModel);
 
         break;
     case TrackingType::COMPUTED_CONSTANTS:
-        generator->untrackAllComputedConstants(analyserModel);
+        generatorVariableTracker->untrackAllComputedConstants(analyserModel);
 
         break;
     case TrackingType::ALGEBRAIC:
-        generator->untrackAllAlgebraicVariables(analyserModel);
+        generatorVariableTracker->untrackAllAlgebraicVariables(analyserModel);
 
         break;
     default: // CONTROL.
@@ -493,6 +493,7 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae.for.tracking") + ".cellml"));
     auto analyser = libcellml::Analyser::create();
     auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
     std::string modelType = ode ? "model" : "model.dae.for.tracking";
     std::string variableType = (trackingType == TrackingType::VARIABLES) ?
                                    "untracked.variables" :
@@ -508,22 +509,20 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     auto analyserModel = analyser->analyserModel();
 
-    untrack(analyserModel, generator, trackingType);
+    untrack(analyserModel, generatorVariableTracker, trackingType);
 
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(issues, levels, referenceRules, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(issues, levels, referenceRules, generatorVariableTracker);
 
-    auto profile = generator->profile();
+    auto profile = libcellml::GeneratorProfile::create();
 
     profile->setInterfaceFileNameString(modelType + "." + variableType + ".h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     // With an external variable with a dependency on a constant, computed constant, and algebraic variable.
 
@@ -542,27 +541,23 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
 
     analyserModel = analyser->analyserModel();
 
-    untrack(analyserModel, generator, trackingType);
+    untrack(analyserModel, generatorVariableTracker, trackingType);
 
-    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(externalIssues, externalLevels, externalReferenceRules, generator);
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(externalIssues, externalLevels, externalReferenceRules, generatorVariableTracker);
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
 
-    generator->setProfile(profile);
-
     profile->setInterfaceFileNameString(modelType + "." + variableType + ".with.externals.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    generator->setProfile(profile);
-
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.py", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952Control)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952Control)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
                                                   {}, {}, {},
@@ -571,7 +566,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952Control)
                                                   {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
                                                   {}, {}, {},
@@ -580,7 +575,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedConstant
                                                   {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS,
                                                   {}, {}, {},
@@ -593,7 +588,7 @@ const std::vector<std::string> algebraicRelatedExternalIssues = {
     "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
 };
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC,
                                                   {}, {}, {},
@@ -602,7 +597,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedAlgebrai
                                                   {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES,
                                                   {}, {}, {},
@@ -615,14 +610,14 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952UntrackedVariable
                                                   expectedReferenceRules(3, libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE));
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeControl)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeControl)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONTROL,
                                                   {}, {}, {},
                                                   {}, {}, {});
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS,
                                                   {}, {}, {},
@@ -631,7 +626,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedConst
                                                   {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
 {
     hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS,
                                                   {}, {}, {},
@@ -656,7 +651,7 @@ const std::vector<std::string> daeIssues = {
 const std::vector<libcellml::Issue::Level> daeLevels = expectedLevels(daeIssues.size(), libcellml::Issue::Level::ERROR);
 const std::vector<libcellml::Issue::ReferenceRule> daeReferenceRules = expectedReferenceRules(daeIssues.size(), libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
 {
     const std::vector<std::string> daeExternalIssues = {
         "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
@@ -690,7 +685,7 @@ TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgeb
                                                   daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
 }
 
-TEST(GeneratorTrackedVariables, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
+TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
 {
     const std::vector<std::string> daeExternalIssues = {
         "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",

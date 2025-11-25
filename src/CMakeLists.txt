@@ -51,6 +51,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorvariabletracker.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -91,6 +92,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enums.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorvariabletracker.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
@@ -137,6 +139,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofilesha1values.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorvariabletracker_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h

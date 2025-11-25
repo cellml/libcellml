@@ -35,6 +35,7 @@ limitations under the License.
 #include "libcellml/enums.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
+#include "libcellml/generatorvariabletracker.h"
 #include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/issue.h"

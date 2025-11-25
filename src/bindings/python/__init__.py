@@ -20,6 +20,7 @@ from libcellml.component import Component
 from libcellml.enums import CellmlElementType, cellmlElementTypeAsString
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
+from libcellml.generatorvariabletracker import GeneratorVariableTracker
 from libcellml.importer import Importer
 from libcellml.importsource import ImportSource
 from libcellml.issue import Issue

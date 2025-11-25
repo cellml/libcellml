@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { basicModel, hhSquidAxon1952 } = require('./resources')
+const { basicModel } = require('./resources')
 
 let libcellml = null
 
@@ -24,77 +24,13 @@ describe("Generator tests", () => {
         libcellml = await loadLibCellML()
     })
     test('Checking Generator profile manipulation.', () => {
-        const g = new libcellml.Generator()
-        const gP = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-        expect(g.profile().commentString()).toBe("/* [CODE] */\n")
+        expect(gp.commentString()).toBe("/* [CODE] */\n")
 
-        gP.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
-        g.setProfile(gP)
+        gp.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
 
-        expect(g.profile().commentString()).toBe("# [CODE]\n")
-    })
-    test('Checking Generator tracking/untracking of variables.', () => {
-        const p = new libcellml.Parser(true)
-        const m = p.parseModel(hhSquidAxon1952)
-        const v = m.componentByName("membrane", true).variableByName("Cm")
-        const a = new libcellml.Analyser()
-
-        a.analyseModel(m)
-
-        const am = a.analyserModel()
-        const av = am.analyserVariable(v)
-        const g = new libcellml.Generator()
-
-        g.untrackVariable(av)
-
-        expect(g.isTrackedVariable(av)).toBe(false)
-        expect(g.isUntrackedVariable(av)).toBe(true)
-
-        g.trackVariable(av)
-
-        expect(g.isTrackedVariable(av)).toBe(true)
-        expect(g.isUntrackedVariable(av)).toBe(false)
-
-        g.untrackAllConstants(am)
-
-        expect(g.trackedConstantCount(am)).toBe(0)
-        expect(g.untrackedConstantCount(am)).toBe(5)
-
-        g.trackAllConstants(am)
-
-        expect(g.trackedConstantCount(am)).toBe(5)
-        expect(g.untrackedConstantCount(am)).toBe(0)
-
-        g.untrackAllComputedConstants(am)
-
-        expect(g.trackedComputedConstantCount(am)).toBe(0)
-        expect(g.untrackedComputedConstantCount(am)).toBe(3)
-
-        g.trackAllComputedConstants(am)
-
-        expect(g.trackedComputedConstantCount(am)).toBe(3)
-        expect(g.untrackedComputedConstantCount(am)).toBe(0)
-
-        g.untrackAllAlgebraicVariables(am)
-
-        expect(g.trackedAlgebraicCount(am)).toBe(0)
-        expect(g.untrackedAlgebraicCount(am)).toBe(10)
-
-        g.trackAllAlgebraicVariables(am)
-
-        expect(g.trackedAlgebraicCount(am)).toBe(10)
-        expect(g.untrackedAlgebraicCount(am)).toBe(0)
-
-        g.untrackAllVariables(am)
-
-        expect(g.trackedVariableCount(am)).toBe(0)
-        expect(g.untrackedVariableCount(am)).toBe(18)
-
-        g.trackAllVariables(am)
-
-        expect(g.trackedVariableCount(am)).toBe(18)
-        expect(g.untrackedVariableCount(am)).toBe(0)
+        expect(gp.commentString()).toBe("# [CODE]\n")
     })
     test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
@@ -110,13 +46,34 @@ describe("Generator tests", () => {
         const interface_lines = g.interfaceCode(am).split('\n')
         expect(interface_lines.length).toBe(38)
 
+        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+        const interface_lines_profile = g.interfaceCodeByProfile(am, gp).split('\n')
+        expect(interface_lines_profile.length).toBe(38)
+
+        const gvt = new libcellml.GeneratorVariableTracker()
+
+        const interface_lines_variable_tracker = g.interfaceCodeByVariableTracker(am, gvt).split('\n')
+        expect(interface_lines_variable_tracker.length).toBe(38)
+
+        const interface_lines_profile_variable_tracker = g.interfaceCodeByProfileAndVariableTracker(am, gp, gvt).split('\n')
+        expect(interface_lines_profile_variable_tracker.length).toBe(38)
+
         const implementation_lines = g.implementationCode(am).split('\n')
         expect(implementation_lines.length).toBe(97)
+
+        const implementation_lines_profile = g.implementationCodeByProfile(am, gp).split('\n')
+        expect(implementation_lines_profile.length).toBe(97)
+
+        const implementation_lines_variable_tracker = g.implementationCodeByVariableTracker(am, gvt).split('\n')
+        expect(implementation_lines_variable_tracker.length).toBe(97)
+
+        const implementation_lines_profile_variable_tracker = g.implementationCodeByProfileAndVariableTracker(am, gp, gvt).split('\n')
+        expect(implementation_lines_profile_variable_tracker.length).toBe(97)
 
         const equation_line_1 = libcellml.Generator.equationCode(a.analyserModel().analyserEquation(0).ast())
         expect(equation_line_1.length).toBe(14)
 
-        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
         const equation_line_2 = libcellml.Generator.equationCodeByProfile(a.analyserModel().analyserEquation(0).ast(), gp)
         expect(equation_line_2.length).toBe(14)
     })
