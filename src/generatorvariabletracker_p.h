@@ -30,7 +30,7 @@ namespace libcellml {
  */
 struct GeneratorVariableTracker::GeneratorVariableTrackerImpl: public Logger::LoggerImpl
 {
-    std::map<AnalyserModelPtr, std::map<AnalyserVariablePtr, bool>> mTrackedVariables;
+    std::map<AnalyserModelWeakPtr, std::map<AnalyserVariableWeakPtr, bool, std::owner_less<AnalyserVariableWeakPtr>>, std::owner_less<AnalyserModelWeakPtr>> mTrackedVariables;
 
     bool isTrackedVariable(const AnalyserModelPtr &analyserModel, const AnalyserVariablePtr &analyserVariable, bool tracked);
     bool isTrackedVariable(const AnalyserVariablePtr &analyserVariable, bool tracked);
