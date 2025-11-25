@@ -30,6 +30,7 @@ class LIBCELLML_EXPORT AnalyserEquation
 {
     friend class Analyser;
     friend class Generator;
+    friend class GeneratorVariableTracker;
 
 public:
     /**
