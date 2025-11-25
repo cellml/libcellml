@@ -68,8 +68,8 @@ describe("Generator tests", () => {
         const implementation_lines_profile = g.implementationCodeByProfile(am, gp).split('\n')
         expect(implementation_lines_profile.length).toBe(97)
 
-        const implementation_lines_profile = g.implementationCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
-        expect(implementation_lines_profile.length).toBe(97)
+        const implementation_lines_profile_enumeration = g.implementationCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
+        expect(implementation_lines_profile_enumeration.length).toBe(97)
 
         const implementation_lines_variable_tracker = g.implementationCodeByVariableTracker(am, gvt).split('\n')
         expect(implementation_lines_variable_tracker.length).toBe(97)
