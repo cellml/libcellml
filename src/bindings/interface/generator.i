@@ -13,26 +13,35 @@
 %feature("docstring") libcellml::Generator
 "Creates a :class:`Generator` object.";
 
-%feature("docstring") libcellml::Generator::profile
-"Returns the profile used for code generation.";
+%feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker)
+"Returns the interface code for the analyser model using the generator profile and generator variable tracker.";
 
-%feature("docstring") libcellml::Generator::setProfile
-"Sets the profile to use for code generation.";
+%feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
+"Returns the interface code for the analyser model using the generator profile.";
 
-%feature("docstring") libcellml::Generator::variableTracker
-"Returns the variable tracker used for code generation.";
+%feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)
+"Returns the interface code for the analyser model using the generator variable tracker.";
 
-%feature("docstring") libcellml::Generator::setVariableTracker
-"Sets the variable tracker to use for code generation.";
+%feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel)
+"Returns the interface code for the analyser model.";
 
-%feature("docstring") libcellml::Generator::interfaceCode
-"Returns the interface code.";
+%feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker)
+"Returns the implementation code for the analyser model using the generator profile and generator variable tracker.";
 
-%feature("docstring") libcellml::Generator::implementationCode
-"Returns the implementation code.";
+%feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
+"Returns the implementation code for the analyser model using the generator profile.";
+
+%feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)
+"Returns the implementation code for the analyser model using the generator variable tracker.";
+
+%feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel)
+"Returns the implementation code for the analyser model.";
 
 %feature("docstring") libcellml::Generator::equationCode
-"Returns the equation code for a given equation AST.";
+"Returns the equation code for the given equation AST using the generator profile.";
+
+%feature("docstring") libcellml::Generator::equationCode(const AnalyserEquationAstPtr &ast)
+"Returns the equation code for the given equation AST using a default generator profile.";
 
 %{
 #include "libcellml/generator.h"
