@@ -22,7 +22,6 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <cstdint>
 #include <cstring>
 #include <map>
 #include <numeric>

@@ -17,7 +17,6 @@ limitations under the License.
 #pragma once
 
 #include <string>
-#include <vector>
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
