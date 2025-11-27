@@ -16,10 +16,7 @@ limitations under the License.
 
 #pragma once
 
-<<<<<<< HEAD
-=======
 #include "libcellml/generatorprofile.h"
->>>>>>> main
 #include "libcellml/logger.h"
 
 namespace libcellml {
