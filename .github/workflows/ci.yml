@@ -201,7 +201,7 @@ jobs:
       - name: Install Doxygen
         run: |
           sudo apt update
-          sudo apt install doxygen
+          sudo apt install doxygen graphviz
       - name: Install Sphinx
         run: |
           pip3 install sphinx
