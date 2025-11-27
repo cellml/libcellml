@@ -21,11 +21,8 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
-#include "libcellml/model.h"
-#include "libcellml/units.h"
 
 #include "component_p.h"
-#include "utilities.h"
 
 namespace libcellml {
 

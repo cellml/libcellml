@@ -16,9 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include <map>
 #include <memory>
-#include <utility>
 
 #include "libcellml/enums.h"
 #include "libcellml/exportdefinitions.h"
