@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/issue.h"
 #include "libcellml/generatorprofile.h"
+#include "libcellml/issue.h"
 
 #include "analysermodel_p.h"
 #include "internaltypes.h"
