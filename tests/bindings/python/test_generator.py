@@ -41,6 +41,9 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual("", g.interfaceCode(am, profile))
         self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode(am, profile))
 
+        self.assertEqual("", g.interfaceCode(am, GeneratorProfile.Profile.PYTHON))
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode(am, GeneratorProfile.Profile.PYTHON))
+
         variable_tracker = GeneratorVariableTracker()
 
         self.assertEqual("", g.interfaceCode(am, profile, variable_tracker))
