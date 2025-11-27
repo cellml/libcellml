@@ -84,7 +84,7 @@ public:
      * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
      *
      * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
-     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     * @param profile The @ref GeneratorProfile to use to generate the interface code.
      *
      * @return The interface code as a @c std::string.
      */
