@@ -17,23 +17,20 @@ limitations under the License.
 #include "libcellml/generator.h"
 
 #include <regex>
-#include <sstream>
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
-#include "libcellml/component.h"
+#include "libcellml/generatorvariabletracker.h"
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
 #include "analyserequation_p.h"
-#include "analysermodel_p.h"
 #include "commonutils.h"
 #include "generator_p.h"
 #include "generatorprofilesha1values.h"
 #include "generatorprofiletools.h"
-#include "generatorvariabletracker_p.h"
 #include "utilities.h"
 
 #include "libcellml/undefines.h"
