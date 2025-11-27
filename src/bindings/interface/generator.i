@@ -19,6 +19,9 @@
 %feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
 "Returns the interface code for the analyser model using the generator profile.";
 
+%feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile)
+"Returns the interface code for the analyser model using the generator profile enumeration type.";
+
 %feature("docstring") libcellml::Generator::interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)
 "Returns the interface code for the analyser model using the generator variable tracker.";
 
@@ -30,6 +33,9 @@
 
 %feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile)
 "Returns the implementation code for the analyser model using the generator profile.";
+
+%feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile)
+"Returns the implementation code for the analyser model using the generator profile enumeration type.";
 
 %feature("docstring") libcellml::Generator::implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker)
 "Returns the implementation code for the analyser model using the generator variable tracker.";
@@ -45,6 +51,7 @@
 
 %{
 #include "libcellml/generator.h"
+#include "libcellml/generatorvariabletracker.h"
 %}
 
 %pythoncode %{
