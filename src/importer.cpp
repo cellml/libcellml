@@ -17,13 +17,10 @@ limitations under the License.
 #include "libcellml/importer.h"
 
 #include <algorithm>
-#include <cmath>
 #include <fstream>
 #include <libxml/uri.h>
 #include <sstream>
-#include <stdexcept>
 
-#include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"

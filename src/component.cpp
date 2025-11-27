@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <algorithm>
 #include <iterator>
-#include <numeric>
 #include <string>
 #include <vector>
 

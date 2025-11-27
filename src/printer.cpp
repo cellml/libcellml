@@ -16,20 +16,13 @@ limitations under the License.
 
 #include "libcellml/printer.h"
 
-#include <list>
-#include <map>
 #include <regex>
-#include <sstream>
-#include <stack>
 #include <utility>
 #include <vector>
 
-#include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/issue.h"
-#include "libcellml/model.h"
 #include "libcellml/reset.h"
-#include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"

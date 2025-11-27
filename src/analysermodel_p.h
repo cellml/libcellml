@@ -16,6 +16,8 @@ limitations under the License.
 
 #pragma once
 
+#include <map>
+
 #include "libcellml/analysermodel.h"
 
 namespace libcellml {
