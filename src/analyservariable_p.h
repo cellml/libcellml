@@ -22,8 +22,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>;
-
 /**
  * @brief The AnalyserVariable::AnalyserVariableImpl struct.
  *
