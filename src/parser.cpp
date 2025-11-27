@@ -298,7 +298,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input)
  * XML identifiers in the CMETA 1.0 namespace.
  *
  * @param attribute The attribute to test.
- * @param transforming @true if transfomring from CellML 1.0 or CellML 1.1, @c false otherwise.
+ * @param transforming @c true if transfomring from CellML 1.0 or CellML 1.1, @c false otherwise.
  *
  * @return @c true if the given attribute is an XML identifier attribute, @c false otherwise.
  */
