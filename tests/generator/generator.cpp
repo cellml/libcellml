@@ -1732,3 +1732,25 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     EXPECT_EQ_FILE_CONTENTS("generator/cellml_slc_example/model.py", generator->implementationCode(analyserModel, profile));
 }
+
+TEST(Generator, generateCodeUsingProfileEnum)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
+}
