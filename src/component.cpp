@@ -107,8 +107,7 @@ ComponentPtr Component::create(const std::string &name) noexcept
 bool Component::ComponentImpl::performTestWithHistory(History &history, const ComponentConstPtr &component, TestType type) const
 {
     if (mComponent->isImport()) {
-        auto importSource = mComponent->importSource();
-        auto model = importSource->model();
+        auto model = mComponent->importSource()->model();
         if (model == nullptr) {
             return false;
         }
@@ -118,7 +117,7 @@ bool Component::ComponentImpl::performTestWithHistory(History &history, const Co
             return false;
         }
 
-        auto h = createHistoryEpoch(component, importeeModelUrl(history, importSource->url()));
+        auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
         if (checkForImportCycles(history, h)) {
             return false;
         }
