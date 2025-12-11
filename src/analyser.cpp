@@ -232,11 +232,14 @@ SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquati
 }
 
 AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression,
+                                                                          const AnalyserEquationAstPtr &parentAst,
                                                                           const SymEngineVariableMap &variableMap)
 {
     auto children = seExpression->get_args();
 
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+
+    ast->setParent(parentAst);
 
     switch (seExpression->get_type_code()) {
     case SymEngine::SYMENGINE_EQUALITY: {
@@ -268,9 +271,9 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
 
     // TODO Update to account for symengine expressions with 3 or more children.
     if (children.size() > 0) {
-        ast->setLeftChild(parseSymEngineExpression(children[0], variableMap));
+        ast->setLeftChild(parseSymEngineExpression(children[0], ast, variableMap));
         if (children.size() > 1) {
-            ast->setRightChild(parseSymEngineExpression(children[1], variableMap));
+            ast->setRightChild(parseSymEngineExpression(children[1], ast, variableMap));
         }
     }
 
@@ -308,7 +311,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
     // Rebuild the AST from the rearranged expression.
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
     AnalyserEquationAstPtr isolatedVariableAst = AnalyserEquationAst::create();
-    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, variableMap);
+    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, nullptr, variableMap);
 
     ast->setType(AnalyserEquationAst::Type::EQUALITY);
     ast->setLeftChild(isolatedVariableAst);
