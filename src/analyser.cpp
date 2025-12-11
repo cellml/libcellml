@@ -199,7 +199,7 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
-SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineRepresentation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap)
+SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap)
 {
     if (ast == nullptr) {
         return SymEngine::null;
@@ -209,8 +209,8 @@ SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineRepres
     AnalyserEquationAstPtr rightAst = ast->rightChild();
 
     // Recursively call getConvertedAst on left and right children.
-    SymEngine::RCP<const SymEngine::Basic> left = symEngineRepresentation(leftAst, symbolMap);
-    SymEngine::RCP<const SymEngine::Basic> right = symEngineRepresentation(rightAst, symbolMap);
+    SymEngine::RCP<const SymEngine::Basic> left = symEngineEquation(leftAst, symbolMap);
+    SymEngine::RCP<const SymEngine::Basic> right = symEngineEquation(rightAst, symbolMap);
 
     // Analyse mAst current type and value.
     switch (ast->type()) {
@@ -287,7 +287,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
 
     SymEngine::RCP<const SymEngine::Basic> equation;
     try {
-        equation = symEngineRepresentation(mAst, symbolMap);
+        equation = symEngineEquation(mAst, symbolMap);
     } catch (const std::runtime_error &e) {
         // Our parser was unable to convert the AST to a SymEngine expression.
         return nullptr;

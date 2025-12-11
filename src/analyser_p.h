@@ -136,7 +136,7 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    SymEngine::RCP<const SymEngine::Basic> symEngineRepresentation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap);
+    SymEngine::RCP<const SymEngine::Basic> symEngineEquation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap);
     AnalyserEquationAstPtr parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression, std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> &astMap);
     AnalyserEquationAstPtr rearrangeFor(const AnalyserInternalVariablePtr &variable);
 
