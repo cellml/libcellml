@@ -47,6 +47,9 @@ using AnalyserEquationPtrs = std::vector<AnalyserEquationPtr>;
 using AnalyserVariablePtrs = std::vector<AnalyserVariablePtr>;
 using AnalyserExternalVariablePtrs = std::vector<AnalyserExternalVariablePtr>;
 
+using SymEngineVariableMap = std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess>;
+using SymEngineSymbolMap = std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>>;
+
 struct AnalyserInternalVariable
 {
     enum struct Type
@@ -136,8 +139,8 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    SymEngine::RCP<const SymEngine::Basic> symEngineEquation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap);
-    AnalyserEquationAstPtr parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression, std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> &astMap);
+    SymEngine::RCP<const SymEngine::Basic> symEngineEquation(AnalyserEquationAstPtr ast, const SymEngineSymbolMap &symbolMap);
+    AnalyserEquationAstPtr parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression, SymEngineVariableMap &variableMap);
     AnalyserEquationAstPtr rearrangeFor(const AnalyserInternalVariablePtr &variable);
 
     bool check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems);

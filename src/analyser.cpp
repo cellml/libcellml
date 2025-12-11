@@ -199,7 +199,7 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
-SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap)
+SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(AnalyserEquationAstPtr ast, const SymEngineSymbolMap &symbolMap)
 {
     if (ast == nullptr) {
         return SymEngine::null;
@@ -232,7 +232,7 @@ SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquati
 }
 
 AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression,
-                                                                          std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> &astMap)
+                                                                          SymEngineVariableMap &variableMap)
 {
     auto children = seExpression->get_args();
 
@@ -254,7 +254,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEng
     case SymEngine::SYMENGINE_SYMBOL: {
         SymEngine::RCP<const SymEngine::Symbol> symbolExpr = SymEngine::rcp_dynamic_cast<const SymEngine::Symbol>(seExpression);
         ast->setType(AnalyserEquationAst::Type::CI);
-        ast->setVariable(astMap.at(symbolExpr)->mVariable);
+        ast->setVariable(variableMap.at(symbolExpr)->mVariable);
         break;
     }
     default:
@@ -263,9 +263,9 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEng
 
     // TODO Update to account for symengine expressions with 3 or more children.
     if (children.size() > 0) {
-        ast->setLeftChild(parseSymEngineExpression(children[0], astMap));
+        ast->setLeftChild(parseSymEngineExpression(children[0], variableMap));
         if (children.size() > 1) {
-            ast->setRightChild(parseSymEngineExpression(children[1], astMap));
+            ast->setRightChild(parseSymEngineExpression(children[1], variableMap));
         }
     }
 
@@ -274,13 +274,13 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEng
 
 AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInternalVariablePtr &variable)
 {
-    std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> symbolMap;
-    std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> astMap;
+    SymEngineSymbolMap symbolMap;
+    SymEngineVariableMap variableMap;
 
     for (const auto &variable : mAllVariables) {
         SymEngine::RCP<const SymEngine::Symbol> symbol = SymEngine::symbol(variable->mVariable->name());
         symbolMap[variable->mVariable->name()] = symbol;
-        astMap[symbol] = variable;
+        variableMap[symbol] = variable;
     }
 
     SymEngine::RCP<const SymEngine::Basic> seEquation;
@@ -303,7 +303,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
     // Rebuild the AST from the rearranged expression.
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
     AnalyserEquationAstPtr isolatedVariableAst = AnalyserEquationAst::create();
-    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, astMap);
+    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, variableMap);
 
     ast->setType(AnalyserEquationAst::Type::EQUALITY);
     ast->setLeftChild(isolatedVariableAst);
