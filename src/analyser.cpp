@@ -199,7 +199,7 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
-SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(AnalyserEquationAstPtr ast, const SymEngineSymbolMap &symbolMap)
+SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(const AnalyserEquationAstPtr &ast, const SymEngineSymbolMap &symbolMap)
 {
     if (ast == nullptr) {
         return SymEngine::null;
@@ -231,8 +231,8 @@ SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquati
     }
 }
 
-AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression,
-                                                                          SymEngineVariableMap &variableMap)
+AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression,
+                                                                          const SymEngineVariableMap &variableMap)
 {
     auto children = seExpression->get_args();
 
