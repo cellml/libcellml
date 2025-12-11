@@ -283,15 +283,15 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
         astMap[symbol] = variable;
     }
 
-    SymEngine::RCP<const SymEngine::Basic> equation;
+    SymEngine::RCP<const SymEngine::Basic> seEquation;
     try {
-        equation = symEngineEquation(mAst, symbolMap);
+        seEquation = symEngineEquation(mAst, symbolMap);
     } catch (const std::runtime_error &e) {
         // Our parser was unable to convert the AST to a SymEngine expression.
         return nullptr;
     }
 
-    SymEngine::RCP<const SymEngine::Set> solutionSet = solve(equation, symbolMap[variable->mVariable->name()]);
+    SymEngine::RCP<const SymEngine::Set> solutionSet = solve(seEquation, symbolMap[variable->mVariable->name()]);
     SymEngine::vec_basic solutions = solutionSet->get_args();
 
     // Our system needs to be able to isolate a single solution.
