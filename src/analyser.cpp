@@ -257,6 +257,11 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         ast->setVariable(variableMap.at(symbolExpr)->mVariable);
         break;
     }
+    case SymEngine::SYMENGINE_INTEGER: {
+        ast->setType(AnalyserEquationAst::Type::CN);
+        ast->setValue(seExpression->__str__());
+        break;
+    }
     default:
         break;
     }
