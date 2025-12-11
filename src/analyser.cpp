@@ -261,9 +261,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEng
         break;
     }
 
-    // Assume two children max.
-    // This is likely wrong since SYMENGINE_ADD could have x + y + z (and thus 3 children),
-    // but it's sufficient for this very early implementation.
+    // TODO Update to account for symengine expressions with 3 or more children.
     if (children.size() > 0) {
         ast->setLeftChild(parseSymEngineExpression(children[0], astMap));
         if (children.size() > 1) {
@@ -404,6 +402,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
     if ((unknownVariableLeft != nullptr) && !variableOnLhsOrRhs(unknownVariableLeft)) {
         auto newAst = rearrangeFor(unknownVariableLeft);
         if (newAst != nullptr) {
+            // TODO Update variables and/or equation type when necessary.
             mAst = newAst;
         }
     }
