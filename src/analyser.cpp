@@ -199,35 +199,38 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
-SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineEquation(const AnalyserEquationAstPtr &ast, const SymEngineSymbolMap &symbolMap)
+SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const AnalyserEquationAstPtr &ast, const SymEngineSymbolMap &symbolMap)
 {
     if (ast == nullptr) {
-        return SymEngine::null;
+        return {true, SymEngine::null};
     }
 
     AnalyserEquationAstPtr leftAst = ast->leftChild();
     AnalyserEquationAstPtr rightAst = ast->rightChild();
 
     // Recursively call getConvertedAst on left and right children.
-    SymEngine::RCP<const SymEngine::Basic> left = symEngineEquation(leftAst, symbolMap);
-    SymEngine::RCP<const SymEngine::Basic> right = symEngineEquation(rightAst, symbolMap);
+    auto [leftSuccess, left] = symEngineEquation(leftAst, symbolMap);
+    auto [rightSuccess, right] = symEngineEquation(rightAst, symbolMap);
+
+    if (!leftSuccess || !rightSuccess) {
+        return {false, SymEngine::null};
+    }
 
     // Analyse mAst current type and value.
     switch (ast->type()) {
     case AnalyserEquationAst::Type::EQUALITY:
-        return Eq(left, right);
+        return {true, Eq(left, right)};
     case AnalyserEquationAst::Type::PLUS:
-        return add(left, right);
+        return {true, add(left, right)};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
-        // For now we'll just throw an error if the symbol is not found.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
-            throw std::runtime_error("Unsupported variable in symEngineRepresentation");
+            return {false, SymEngine::null};
         }
-        return symbolMap.at(ast->variable()->name());
+        return {true, symbolMap.at(ast->variable()->name())};
     default:
-        // Our parser is unable to handle this type, so we need to let the caller know by throwing an error.
-        throw std::runtime_error("Unsupported AST type in symEngineRepresentation");
+        // Rearrangement is not possible with this type.
+        return {false, SymEngine::null};
     }
 }
 
@@ -291,11 +294,8 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
         variableMap[symbol] = variable;
     }
 
-    SymEngine::RCP<const SymEngine::Basic> seEquation;
-    try {
-        seEquation = symEngineEquation(mAst, symbolMap);
-    } catch (const std::runtime_error &e) {
-        // Our parser was unable to convert the AST to a SymEngine expression.
+    auto [success, seEquation] = symEngineEquation(mAst, symbolMap);
+    if (!success) {
         return nullptr;
     }
 
