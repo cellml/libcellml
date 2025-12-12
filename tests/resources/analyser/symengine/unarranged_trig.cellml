@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedTrigEquations">
+  <component name="Component">
+    <!-- Precomputed constants -->
+    <variable name="w" units="radian"/>
+    <variable name="x" units="radian"/>
+    <variable name="y" units="radian"/>
+    <variable name="z" units="radian"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="radian"/>
+    <variable name="b" units="radian"/>
+    <variable name="c" units="radian"/>
+    <variable name="d" units="radian"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Initialize constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="radian">0.5</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="radian">1.0</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="radian">2.0</cn></apply>
+
+      <!-- Equation 1: 2*a + sin(w) = 1 -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>a</ci></apply><apply><sin/><ci>w</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 2: cos(x) - 3*b = 0.2 -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><cos/><ci>x</ci></apply><apply><times/><cn cellml:units="dimensionless">3</cn><ci>b</ci></apply></apply>
+        <cn cellml:units="dimensionless">0.2</cn>
+      </apply>
+
+      <!-- Equation 3: tan(c) + z = 3.5 -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><tan/><ci>c</ci></apply><ci>z</ci></apply>
+        <cn cellml:units="dimensionless">3.5</cn>
+      </apply>
+
+      <!-- Equation 4: 0.5*d - sin(y) = -0.25 -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><times/><cn cellml:units="dimensionless">0.5</cn><ci>d</ci></apply><apply><sin/><ci>y</ci></apply></apply>
+        <cn cellml:units="dimensionless">-0.25</cn>
+      </apply>
+
+    </math>
+  </component>
+</model>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedCombinationEquations">
+  <component name="Component">
+
+    <!-- Precomputed constants -->
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+
+    <!-- Unknowns -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Precomputed constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">5</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">7</cn></apply>
+
+      <!-- Equation 1: a = log(exp(y) + sin(x) * w^2) - sqrt(z) -->
+      <apply>
+        <eq/>
+        <ci>a</ci>
+        <apply>
+          <minus/>
+          <apply><log/>
+            <apply>
+              <plus/>
+              <apply><exp/><ci>y</ci></apply>
+              <apply><times/><apply><sin/><ci>x</ci></apply><apply><power/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply></apply>
+            </apply>
+          </apply>
+          <apply><root/><cn cellml:units="dimensionless">2</cn><ci>z</ci></apply>
+        </apply>
+      </apply>
+
+      <!-- Equation 2: b = exp(cosh(w) + log(x*y) - z/2) -->
+      <apply>
+        <eq/>
+        <ci>b</ci>
+        <apply>
+          <exp/>
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply><cosh/><ci>w</ci></apply>
+              <apply><log/><apply><times/><ci>x</ci><ci>y</ci></apply></apply>
+            </apply>
+            <apply><divide/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply>
+          </apply>
+        </apply>
+      </apply>
+
+      <!-- Equation 3: c = tanh(a + w^2) + root(y^2 + z,3) - log(x) -->
+      <apply>
+        <eq/>
+        <ci>c</ci>
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply><tanh/><apply><plus/><ci>a</ci><apply><power/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply></apply></apply>
+            <apply><root/><cn cellml:units="dimensionless">3</cn><apply><plus/><apply><power/><ci>y</ci><cn cellml:units="dimensionless">2</cn></apply><ci>z</ci></apply></apply>
+          </apply>
+          <apply><log/><ci>x</ci></apply>
+        </apply>
+      </apply>
+
+      <!-- Equation 4: d = sinh(sqrt(z) + y/w) + cos(pi * x / w) - ln(y+1) -->
+      <apply>
+        <eq/>
+        <ci>d</ci>
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply><sinh/>
+              <apply><plus/>
+                <apply><root/><cn cellml:units="dimensionless">2</cn><ci>z</ci></apply>
+                <apply><divide/><ci>y</ci><ci>w</ci></apply>
+              </apply>
+            </apply>
+            <apply><cos/>
+              <apply><divide/>
+                <apply><times/><ci>x</ci><cn cellml:units="dimensionless">3.141592653589793</cn></apply>
+                <ci>w</ci>
+              </apply>
+            </apply>
+          </apply>
+          <apply><ln/><apply><plus/><ci>y</ci><cn cellml:units="dimensionless">1</cn></apply></apply>
+        </apply>
+      </apply>
+
+    </math>
+  </component>
+</model>

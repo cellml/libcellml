@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedHyperbolicTrigEquations">
+  <component name="Component">
+    <!-- Precomputed constants -->
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Initialize constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
+
+      <!-- Equation 1: sinh(a) + b = 5 -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><sinh/><ci>a</ci></apply><ci>b</ci></apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- Equation 2: cosh(b) - c = x -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><cosh/><ci>b</ci></apply><ci>c</ci></apply>
+        <ci>x</ci>
+      </apply>
+
+      <!-- Equation 3: tanh(c) + 2*d = y -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><tanh/><ci>c</ci></apply><apply><times/><cn cellml:units="dimensionless">2</cn><ci>d</ci></apply></apply>
+        <ci>y</ci>
+      </apply>
+
+      <!-- Equation 4: 3*sinh(d) + a = z -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">3</cn><apply><sinh/><ci>d</ci></apply></apply><ci>a</ci></apply>
+        <ci>z</ci>
+      </apply>
+
+    </math>
+  </component>
+</model>

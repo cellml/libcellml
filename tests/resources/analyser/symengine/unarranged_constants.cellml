@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedEquationsWithConstants">
+  <component name="Component">
+    <!-- Precomputed constants -->
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+    <variable name="u" units="dimensionless"/>
+
+    <!-- Unknowns -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+    <variable name="e" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Precomputed constants -->
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
+      <apply><eq/><ci>u</ci><cn cellml:units="dimensionless">2</cn></apply>
+
+      <!-- Equation 1: a + x = 10.0 -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>a</ci><ci>x</ci></apply>
+        <cn cellml:units="dimensionless">10.0</cn>
+      </apply>
+
+      <!-- Equation 2: b * u = 4e5 -->
+      <apply>
+        <eq/>
+        <apply><times/><ci>b</ci><ci>u</ci></apply>
+        <cn cellml:units="dimensionless" type="e-notation">4<sep/>5</cn>
+      </apply>
+
+      <!-- Equation 3: c / y = e -->
+      <apply>
+        <eq/>
+        <apply><divide/><ci>c</ci><ci>y</ci></apply>
+        <exponentiale/>
+      </apply>
+
+      <!-- Equation 4: d - z = pi -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>d</ci><ci>z</ci></apply>
+        <pi/>
+      </apply>
+
+      <!-- Equation 5: e + u = inf -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>e</ci><ci>u</ci></apply>
+        <infinity/>
+      </apply>
+
+    </math>
+  </component>
+</model>

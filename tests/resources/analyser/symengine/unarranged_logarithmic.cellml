@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedLogarithmEquations">
+  <component name="Component">
+    <!-- Precomputed constants -->
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="u" units="dimensionless"/>
+    <variable name="v" units="dimensionless"/>
+
+    <!-- Unknowns -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Precomputed constants -->
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">1000</cn></apply>
+      <apply><eq/><ci>u</ci><cn cellml:units="dimensionless">1.5</cn></apply>
+      <apply><eq/><ci>v</ci><cn cellml:units="dimensionless">100</cn></apply>
+
+      <!-- Equation 1: a + ln(x) = 5 -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>a</ci><apply><ln/><ci>x</ci></apply></apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- Equation 2: log10(y) - b = 3 -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><log/><ci>y</ci></apply><ci>b</ci></apply>
+        <cn cellml:units="dimensionless">3</cn>
+      </apply>
+
+      <!-- Equation 3: ln(c) + u = 2.5 -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><ln/><ci>c</ci></apply><ci>u</ci></apply>
+        <cn cellml:units="dimensionless">2.5</cn>
+      </apply>
+
+      <!-- Equation 4: d - log10(v) = 4 -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>d</ci><apply><log/><ci>v</ci></apply></apply>
+        <cn cellml:units="dimensionless">4</cn>
+      </apply>
+
+    </math>
+  </component>
+</model>
