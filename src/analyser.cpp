@@ -22,6 +22,7 @@ limitations under the License.
 
 #include <cmath>
 #include <iterator>
+#include <symengine/solve.h>
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserexternalvariable.h"
@@ -198,6 +199,127 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
+SymEngine::RCP<const SymEngine::Basic> AnalyserInternalEquation::symEngineRepresentation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap)
+{
+    if (ast == nullptr) {
+        return SymEngine::null;
+    }
+
+    AnalyserEquationAstPtr leftAst = ast->leftChild();
+    AnalyserEquationAstPtr rightAst = ast->rightChild();
+
+    // Recursively call getConvertedAst on left and right children.
+    SymEngine::RCP<const SymEngine::Basic> left = symEngineRepresentation(leftAst, symbolMap);
+    SymEngine::RCP<const SymEngine::Basic> right = symEngineRepresentation(rightAst, symbolMap);
+
+    // Analyse mAst current type and value.
+    switch (ast->type()) {
+    case AnalyserEquationAst::Type::EQUALITY:
+        return Eq(left, right);
+    case AnalyserEquationAst::Type::PLUS:
+        return add(left, right);
+    case AnalyserEquationAst::Type::CI:
+        // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
+        // For now we'll just throw an error if the symbol is not found.
+        if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
+            throw std::runtime_error("Unsupported variable in symEngineRepresentation");
+        }
+        return symbolMap.at(ast->variable()->name());
+    default:
+        // Our parser is unable to handle this type, so we need to let the caller know by throwing an error.
+        throw std::runtime_error("Unsupported AST type in symEngineRepresentation");
+    }
+}
+
+AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression,
+                                                                          std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> &astMap)
+{
+    auto children = seExpression->get_args();
+
+    AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+
+    switch (seExpression->get_type_code()) {
+    case SymEngine::SYMENGINE_EQUALITY: {
+        ast->setType(AnalyserEquationAst::Type::EQUALITY);
+        break;
+    }
+    case SymEngine::SYMENGINE_ADD: {
+        ast->setType(AnalyserEquationAst::Type::PLUS);
+        break;
+    }
+    case SymEngine::SYMENGINE_MUL: {
+        ast->setType(AnalyserEquationAst::Type::TIMES);
+        break;
+    }
+    case SymEngine::SYMENGINE_SYMBOL: {
+        SymEngine::RCP<const SymEngine::Symbol> symbolExpr = SymEngine::rcp_dynamic_cast<const SymEngine::Symbol>(seExpression);
+        ast->setType(AnalyserEquationAst::Type::CI);
+        ast->setVariable(astMap.at(symbolExpr)->mVariable);
+        break;
+    }
+    default:
+        break;
+    }
+
+    // Assume two children max.
+    // This is likely wrong since SYMENGINE_ADD could have x + y + z (and thus 3 children),
+    // but it's sufficient for this very early implementation.
+    if (children.size() > 0) {
+        ast->setLeftChild(parseSymEngineExpression(children[0], astMap));
+        if (children.size() > 1) {
+            ast->setRightChild(parseSymEngineExpression(children[1], astMap));
+        }
+    }
+
+    return ast;
+}
+
+AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInternalVariablePtr &variable)
+{
+    std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> symbolMap;
+    std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> astMap;
+
+    for (const auto &variable : mAllVariables) {
+        SymEngine::RCP<const SymEngine::Symbol> symbol = SymEngine::symbol(variable->mVariable->name());
+        symbolMap[variable->mVariable->name()] = symbol;
+        astMap[symbol] = variable;
+    }
+
+    SymEngine::RCP<const SymEngine::Basic> equation;
+    try {
+        equation = symEngineRepresentation(mAst, symbolMap);
+    } catch (const std::runtime_error &e) {
+        // Our parser was unable to convert the AST to a SymEngine expression.
+        return nullptr;
+    }
+
+    SymEngine::RCP<const SymEngine::Set> solutionSet = solve(equation, symbolMap[variable->mVariable->name()]);
+    SymEngine::vec_basic solutions = solutionSet->get_args();
+
+    // Our system needs to be able to isolate a single solution.
+    if (solutions.size() != 1) {
+        return nullptr;
+    }
+    SymEngine::RCP<const SymEngine::Basic> answer = solutions.front();
+
+    // Rebuild the AST from the rearranged expression.
+    AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+    AnalyserEquationAstPtr isolatedVariableAst = AnalyserEquationAst::create();
+    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, astMap);
+
+    ast->setType(AnalyserEquationAst::Type::EQUALITY);
+    ast->setLeftChild(isolatedVariableAst);
+    ast->setRightChild(rearrangedEquationAst);
+
+    isolatedVariableAst->setType(AnalyserEquationAst::Type::CI);
+    isolatedVariableAst->setVariable(variable->mVariable);
+    isolatedVariableAst->setParent(ast);
+
+    rearrangedEquationAst->setParent(ast);
+
+    return ast;
+}
+
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems)
 {
     // Nothing to check if the equation has a known type.
@@ -277,6 +399,14 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
                                    mStateVariables.front() :
                                    mVariables.front() :
                                    nullptr;
+
+    // If we have one variable left, but it's not isolated, try to rearrange it.
+    if ((unknownVariableLeft != nullptr) && !variableOnLhsOrRhs(unknownVariableLeft)) {
+        auto newAst = rearrangeFor(unknownVariableLeft);
+        if (newAst != nullptr) {
+            mAst = newAst;
+        }
+    }
 
     if (((unknownVariableLeft != nullptr)
          && (checkNlaSystems || variableOnLhsOrRhs(unknownVariableLeft)))

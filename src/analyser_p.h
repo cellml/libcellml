@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <map>
+
 #include "libcellml/generatorprofile.h"
 #include "libcellml/issue.h"
 
@@ -21,6 +23,12 @@ limitations under the License.
 #include "internaltypes.h"
 #include "logger_p.h"
 #include "utilities.h"
+
+namespace SymEngine {
+template<class T> class RCP;
+class Basic;
+class Symbol;
+} // namespace SymEngine
 
 namespace libcellml {
 
@@ -127,6 +135,10 @@ struct AnalyserInternalEquation
                           const AnalyserEquationAstPtr &astChild);
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
+
+    SymEngine::RCP<const SymEngine::Basic> symEngineRepresentation(AnalyserEquationAstPtr ast, const std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>> &symbolMap);
+    AnalyserEquationAstPtr parseSymEngineExpression(SymEngine::RCP<const SymEngine::Basic> &seExpression, std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess> &astMap);
+    AnalyserEquationAstPtr rearrangeFor(const AnalyserInternalVariablePtr &variable);
 
     bool check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems);
 };
