@@ -47,7 +47,7 @@ using AnalyserExternalVariablePtrs = std::vector<AnalyserExternalVariablePtr>;
 
 using SymEngineVariableMap = std::map<SymEngine::RCP<const SymEngine::Symbol>, AnalyserInternalVariablePtr, SymEngine::RCPBasicKeyLess>;
 using SymEngineSymbolMap = std::map<std::string, SymEngine::RCP<const SymEngine::Symbol>>;
-using SymEngineEquationResult = std::pair<bool, SymEngine::RCP<const SymEngine::Basic>>;
+using SymEngineEquationResult = std::tuple<bool, SymEngine::RCP<const SymEngine::Basic>>;
 
 struct AnalyserInternalVariable
 {
