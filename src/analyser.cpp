@@ -22,6 +22,7 @@ limitations under the License.
 
 #include <cmath>
 #include <iterator>
+#include <symengine/solve.h>
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserexternalvariable.h"
@@ -198,6 +199,133 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
            || variableOnRhs(variable);
 }
 
+SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const AnalyserEquationAstPtr &ast, const SymEngineSymbolMap &symbolMap)
+{
+    if (ast == nullptr) {
+        return {true, SymEngine::null};
+    }
+
+    AnalyserEquationAstPtr leftAst = ast->leftChild();
+    AnalyserEquationAstPtr rightAst = ast->rightChild();
+
+    // Recursively call getConvertedAst on left and right children.
+    auto [leftSuccess, left] = symEngineEquation(leftAst, symbolMap);
+    auto [rightSuccess, right] = symEngineEquation(rightAst, symbolMap);
+
+    if (!leftSuccess || !rightSuccess) {
+        return {false, SymEngine::null};
+    }
+
+    // Analyse mAst current type and value.
+    switch (ast->type()) {
+    case AnalyserEquationAst::Type::EQUALITY:
+        return {true, Eq(left, right)};
+    case AnalyserEquationAst::Type::PLUS:
+        return {true, add(left, right)};
+    case AnalyserEquationAst::Type::CI:
+        // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
+        if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
+            return {false, SymEngine::null};
+        }
+        return {true, symbolMap.at(ast->variable()->name())};
+    default:
+        // Rearrangement is not possible with this type.
+        return {false, SymEngine::null};
+    }
+}
+
+AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression,
+                                                                          const AnalyserEquationAstPtr &parentAst,
+                                                                          const SymEngineVariableMap &variableMap)
+{
+    auto children = seExpression->get_args();
+
+    AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+
+    ast->setParent(parentAst);
+
+    switch (seExpression->get_type_code()) {
+    case SymEngine::SYMENGINE_EQUALITY: {
+        ast->setType(AnalyserEquationAst::Type::EQUALITY);
+        break;
+    }
+    case SymEngine::SYMENGINE_ADD: {
+        ast->setType(AnalyserEquationAst::Type::PLUS);
+        break;
+    }
+    case SymEngine::SYMENGINE_MUL: {
+        ast->setType(AnalyserEquationAst::Type::TIMES);
+        break;
+    }
+    case SymEngine::SYMENGINE_SYMBOL: {
+        SymEngine::RCP<const SymEngine::Symbol> symbolExpr = SymEngine::rcp_dynamic_cast<const SymEngine::Symbol>(seExpression);
+        ast->setType(AnalyserEquationAst::Type::CI);
+        ast->setVariable(variableMap.at(symbolExpr)->mVariable);
+        break;
+    }
+    case SymEngine::SYMENGINE_INTEGER: {
+        ast->setType(AnalyserEquationAst::Type::CN);
+        ast->setValue(seExpression->__str__());
+        break;
+    }
+    default:
+        break;
+    }
+
+    // TODO Update to account for symengine expressions with 3 or more children.
+    if (children.size() > 0) {
+        ast->setLeftChild(parseSymEngineExpression(children[0], ast, variableMap));
+        if (children.size() > 1) {
+            ast->setRightChild(parseSymEngineExpression(children[1], ast, variableMap));
+        }
+    }
+
+    return ast;
+}
+
+AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInternalVariablePtr &variable)
+{
+    SymEngineSymbolMap symbolMap;
+    SymEngineVariableMap variableMap;
+
+    for (const auto &variable : mAllVariables) {
+        SymEngine::RCP<const SymEngine::Symbol> symbol = SymEngine::symbol(variable->mVariable->name());
+        symbolMap[variable->mVariable->name()] = symbol;
+        variableMap[symbol] = variable;
+    }
+
+    auto [success, seEquation] = symEngineEquation(mAst, symbolMap);
+    if (!success) {
+        return nullptr;
+    }
+
+    SymEngine::RCP<const SymEngine::Set> solutionSet = solve(seEquation, symbolMap[variable->mVariable->name()]);
+    SymEngine::vec_basic solutions = solutionSet->get_args();
+
+    // Our system needs to be able to isolate a single solution.
+    if (solutions.size() != 1) {
+        return nullptr;
+    }
+    SymEngine::RCP<const SymEngine::Basic> answer = solutions.front();
+
+    // Rebuild the AST from the rearranged expression.
+    AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+    AnalyserEquationAstPtr isolatedVariableAst = AnalyserEquationAst::create();
+    AnalyserEquationAstPtr rearrangedEquationAst = parseSymEngineExpression(answer, nullptr, variableMap);
+
+    ast->setType(AnalyserEquationAst::Type::EQUALITY);
+    ast->setLeftChild(isolatedVariableAst);
+    ast->setRightChild(rearrangedEquationAst);
+
+    isolatedVariableAst->setType(AnalyserEquationAst::Type::CI);
+    isolatedVariableAst->setVariable(variable->mVariable);
+    isolatedVariableAst->setParent(ast);
+
+    rearrangedEquationAst->setParent(ast);
+
+    return ast;
+}
+
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems)
 {
     // Nothing to check if the equation has a known type.
@@ -277,6 +405,15 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
                                    mStateVariables.front() :
                                    mVariables.front() :
                                    nullptr;
+
+    // If we have one variable left, but it's not isolated, try to rearrange it.
+    if ((unknownVariableLeft != nullptr) && !variableOnLhsOrRhs(unknownVariableLeft)) {
+        auto newAst = rearrangeFor(unknownVariableLeft);
+        if (newAst != nullptr) {
+            // TODO Update variables and/or equation type when necessary.
+            mAst = newAst;
+        }
+    }
 
     if (((unknownVariableLeft != nullptr)
          && (checkNlaSystems || variableOnLhsOrRhs(unknownVariableLeft)))

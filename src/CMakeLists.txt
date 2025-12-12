@@ -178,6 +178,18 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
+target_include_directories(cellml
+    PUBLIC
+        "C:/symengine/include"
+        "C:/gmp/include"
+)
+
+target_link_libraries(cellml
+    PUBLIC
+        "C:/symengine/lib/symengine.lib"
+        "C:/gmp/lib/gmp.lib"
+)
+
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp PROPERTIES
   COMPILE_DEFINITIONS XML_ERROR_CALLBACK_ARGUMENT_TYPE=${CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE})
 
