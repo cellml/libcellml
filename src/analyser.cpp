@@ -233,6 +233,10 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
             return {true, SymEngine::mul(SymEngine::integer(-1), operand)};
         }
         return {true, sub(left, right)};
+    case AnalyserEquationAst::Type::TIMES:
+        return {true, mul(left, right)};
+    case AnalyserEquationAst::Type::DIVIDE:
+        return {true, SymEngine::div(left, right)};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
@@ -264,6 +268,10 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
     }
     case SymEngine::SYMENGINE_MUL: {
         ast->setType(AnalyserEquationAst::Type::TIMES);
+        break;
+    }
+    case SymEngine::SYMENGINE_POW: {
+        ast->setType(AnalyserEquationAst::Type::POWER);
         break;
     }
     case SymEngine::SYMENGINE_SYMBOL: {
