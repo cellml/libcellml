@@ -221,13 +221,26 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
     case AnalyserEquationAst::Type::EQUALITY:
         return {true, Eq(left, right)};
     case AnalyserEquationAst::Type::PLUS:
+        // Handle the case where we have a unary plus.
+        if (right == SymEngine::null || left == SymEngine::null) {
+            return {true, right == SymEngine::null ? left : right};
+        }
         return {true, add(left, right)};
+    case AnalyserEquationAst::Type::MINUS:
+        // Handle the case where we have a unary minus.
+        if (right == SymEngine::null || left == SymEngine::null) {
+            auto operand = right == SymEngine::null ? left : right;
+            return {true, SymEngine::mul(SymEngine::integer(-1), operand)};
+        }
+        return {true, sub(left, right)};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
             return {false, SymEngine::null};
         }
         return {true, symbolMap.at(ast->variable()->name())};
+    case AnalyserEquationAst::Type::CN:
+        return {true, SymEngine::integer(std::stoi(ast->value()))};
     default:
         // Rearrangement is not possible with this type.
         return {false, SymEngine::null};
