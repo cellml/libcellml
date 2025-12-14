@@ -238,11 +238,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
                                                                           const AnalyserEquationAstPtr &parentAst,
                                                                           const SymEngineVariableMap &variableMap)
 {
-    auto children = seExpression->get_args();
-
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
-
-    ast->setParent(parentAst);
 
     switch (seExpression->get_type_code()) {
     case SymEngine::SYMENGINE_EQUALITY: {
@@ -272,13 +268,38 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         break;
     }
 
-    // TODO Update to account for symengine expressions with 3 or more children.
-    if (children.size() > 0) {
-        ast->setLeftChild(parseSymEngineExpression(children[0], ast, variableMap));
-        if (children.size() > 1) {
-            ast->setRightChild(parseSymEngineExpression(children[1], ast, variableMap));
+    auto children = seExpression->get_args();
+    auto currentAst = ast;
+
+    // All children except the last are to be assigned as left children in the AST tree.
+    for (int i = 0; i + 1 < children.size(); ++i) {
+        auto childSeExpression = children[i];
+        AnalyserEquationAstPtr childAst = parseSymEngineExpression(childSeExpression, currentAst, variableMap);
+
+        currentAst->setLeftChild(childAst);
+
+        if (i < children.size() - 2) {
+            // Since there are more than two children left, we need to create another copy
+            // of our original AST node.
+            AnalyserEquationAstPtr newAst = AnalyserEquationAst::create();
+            newAst->setType(ast->type());
+            newAst->setValue(ast->value());
+            newAst->setVariable(ast->variable());
+            currentAst->setRightChild(newAst);
+            newAst->setParent(currentAst);
+            currentAst = newAst;
         }
     }
+
+    // Set the final node as the right child.
+    if (children.size() >= 2) {
+        auto childSeExpression = children.back();
+        AnalyserEquationAstPtr childAst = parseSymEngineExpression(childSeExpression, currentAst, variableMap);
+
+        currentAst->setRightChild(childAst);
+    }
+
+    ast->setParent(parentAst);
 
     return ast;
 }
