@@ -36,18 +36,18 @@
         <cn cellml:units="dimensionless">1</cn>
       </apply>
 
-      <!-- Equation 3: c + x - z + 1 = 5 -->
+      <!-- Equation 3: c + x + 1 = -z -->
       <apply>
         <eq/>
-        <apply><plus/><ci>c</ci><ci>x</ci><apply><minus/><cn cellml:units="dimensionless">1</cn><ci>z</ci></apply><cn cellml:units="dimensionless">1</cn></apply>
-        <cn cellml:units="dimensionless">5</cn>
+        <apply><plus/><ci>c</ci><ci>x</ci><cn cellml:units="dimensionless">1</cn></apply>
+        <apply><minus/><ci>z</ci></apply>
       </apply>
 
-      <!-- Equation 4: d + w - y = 0 -->
+      <!-- Equation 4: d + w = +y -->
       <apply>
         <eq/>
-        <apply><plus/><ci>d</ci><ci>w</ci><apply><minus/><cn cellml:units="dimensionless">0</cn><ci>y</ci></apply></apply>
-        <cn cellml:units="dimensionless">0</cn>
+        <apply><plus/><ci>d</ci><ci>w</ci></apply>
+        <apply><plus/><ci>y</ci></apply>
       </apply>
 
     </math>
