@@ -29,25 +29,25 @@
         <cn cellml:units="dimensionless">1</cn>
       </apply>
 
-      <!-- Equation 2: cos(x) - 3*b = 0.2 -->
+      <!-- Equation 2: cos(x + 4) - b = 0 -->
       <apply>
         <eq/>
-        <apply><minus/><apply><cos/><ci>x</ci></apply><apply><times/><cn cellml:units="dimensionless">3</cn><ci>b</ci></apply></apply>
-        <cn cellml:units="dimensionless">0.2</cn>
+        <apply><minus/><apply><cos/><apply><plus/><cn cellml:units="dimensionless">4</cn><ci>x</ci></apply></apply><ci>b</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
       </apply>
 
-      <!-- Equation 3: tan(c) + z = 3.5 -->
+      <!-- Equation 3: tan(c) = z -->
       <apply>
         <eq/>
-        <apply><plus/><apply><tan/><ci>c</ci></apply><ci>z</ci></apply>
-        <cn cellml:units="dimensionless">3.5</cn>
+        <apply><tan/><ci>c</ci></apply>
+        <ci>z</ci>
       </apply>
 
-      <!-- Equation 4: 0.5*d - sin(y) = -0.25 -->
+      <!-- Equation 4: d - sin(y - x) = 2 -->
       <apply>
         <eq/>
-        <apply><minus/><apply><times/><cn cellml:units="dimensionless">0.5</cn><ci>d</ci></apply><apply><sin/><ci>y</ci></apply></apply>
-        <cn cellml:units="dimensionless">-0.25</cn>
+        <apply><minus/><ci>d</ci><apply><sin/><apply><minus/><ci>y</ci><ci>x</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
       </apply>
 
     </math>
