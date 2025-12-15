@@ -22,7 +22,12 @@ limitations under the License.
 
 #include <cmath>
 #include <iterator>
+
+// clang-format off
+#include "symenginebegin.h"
 #include <symengine/solve.h>
+#include "symengineend.h"
+// clang-format on
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserexternalvariable.h"

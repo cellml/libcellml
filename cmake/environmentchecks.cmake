@@ -183,6 +183,15 @@ if(NOT DEFINED _ZLIB_FIND_REPORTED)
   message(STATUS "Found ZLIB: ${ZLIB_LIBRARIES} (found version \"${ZLIB_VERSION_STRING}\").")
 endif()
 
+# Set the minimum policy version to work around SymEngine's outdated CMake requirements.
+if(NOT DEFINED CMAKE_POLICY_VERSION_MINIMUM OR CMAKE_POLICY_VERSION_MINIMUM VERSION_LESS "3.10")
+  set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
+endif()
+
+# Find SymEngine.
+find_package(SymEngine REQUIRED CONFIG)
+message(STATUS "Found SymEngine: ${SYMENGINE_LIBRARIES} (found version \"${SymEngine_VERSION}\").")
+
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
   set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
 endif()
