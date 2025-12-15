@@ -237,6 +237,8 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
         return {true, mul(left, right)};
     case AnalyserEquationAst::Type::DIVIDE:
         return {true, SymEngine::div(left, right)};
+    case AnalyserEquationAst::Type::POWER:
+        return {true, SymEngine::pow(left, right)};
     case AnalyserEquationAst::Type::SIN:
         return {true, SymEngine::sin(left)};
     case AnalyserEquationAst::Type::COS:
@@ -255,12 +257,38 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
             return {false, SymEngine::null};
         }
         return {true, symbolMap.at(ast->variable()->name())};
-    case AnalyserEquationAst::Type::CN:
-        return {true, SymEngine::number(std::stod(ast->value()))};
+    case AnalyserEquationAst::Type::CN: {
+        // Some symengine operations necessitate integers to be properly represented.
+        double astValue = std::stod(ast->value());
+        if (std::floor(astValue) == astValue) {
+            return {true, SymEngine::integer(static_cast<long>(astValue))};
+        } else {
+            return {true, SymEngine::number(astValue)};
+        }
+    }
     default:
         // Rearrangement is not possible with this type.
         return {false, SymEngine::null};
     }
+}
+
+bool AnalyserInternalEquation::isSymEngineExpressionComplex(const SymEngine::RCP<const SymEngine::Basic> &seExpression)
+{
+    if (seExpression == SymEngine::null) {
+        return false;
+    }
+
+    if (SymEngine::is_a_Complex(*seExpression)) {
+        return true;
+    }
+
+    for (const auto &child : seExpression->get_args()) {
+        if (isSymEngineExpressionComplex(child)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression,
@@ -384,7 +412,13 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
     SymEngine::RCP<const SymEngine::Set> solutionSet = solve(seEquation, symbolMap[variable->mVariable->name()]);
     SymEngine::vec_basic solutions = solutionSet->get_args();
 
-    // Our system needs to be able to isolate a single solution.
+    // Attempt to isolate a single real solution.
+    solutions.erase(std::remove_if(solutions.begin(), solutions.end(),
+                                   [this](const SymEngine::RCP<const SymEngine::Basic> &solution) {
+                                       return isSymEngineExpressionComplex(solution);
+                                   }),
+                    solutions.end());
+
     if (solutions.size() != 1) {
         return nullptr;
     }
