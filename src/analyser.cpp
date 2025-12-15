@@ -222,15 +222,14 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
         return {true, Eq(left, right)};
     case AnalyserEquationAst::Type::PLUS:
         // Handle the case where we have a unary plus.
-        if (right == SymEngine::null || left == SymEngine::null) {
-            return {true, right == SymEngine::null ? left : right};
+        if (right == SymEngine::null) {
+            return {true, left};
         }
         return {true, add(left, right)};
     case AnalyserEquationAst::Type::MINUS:
         // Handle the case where we have a unary minus.
-        if (right == SymEngine::null || left == SymEngine::null) {
-            auto operand = right == SymEngine::null ? left : right;
-            return {true, SymEngine::mul(SymEngine::integer(-1), operand)};
+        if (right == SymEngine::null) {
+            return {true, SymEngine::mul(SymEngine::integer(-1), left)};
         }
         return {true, sub(left, right)};
     case AnalyserEquationAst::Type::TIMES:
