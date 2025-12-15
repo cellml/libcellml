@@ -237,6 +237,12 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
         return {true, mul(left, right)};
     case AnalyserEquationAst::Type::DIVIDE:
         return {true, SymEngine::div(left, right)};
+    case AnalyserEquationAst::Type::SIN:
+        return {true, SymEngine::sin(left)};
+    case AnalyserEquationAst::Type::COS:
+        return {true, SymEngine::cos(left)};
+    case AnalyserEquationAst::Type::TAN:
+        return {true, SymEngine::tan(left)};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
@@ -272,6 +278,18 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
     }
     case SymEngine::SYMENGINE_POW: {
         ast->setType(AnalyserEquationAst::Type::POWER);
+        break;
+    }
+    case SymEngine::SYMENGINE_SIN: {
+        ast->setType(AnalyserEquationAst::Type::SIN);
+        break;
+    }
+    case SymEngine::SYMENGINE_COS: {
+        ast->setType(AnalyserEquationAst::Type::COS);
+        break;
+    }
+    case SymEngine::SYMENGINE_TAN: {
+        ast->setType(AnalyserEquationAst::Type::TAN);
         break;
     }
     case SymEngine::SYMENGINE_SYMBOL: {
