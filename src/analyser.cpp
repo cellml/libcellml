@@ -22,7 +22,10 @@ limitations under the License.
 
 #include <cmath>
 #include <iterator>
+
+#include "symenginebegin.h"
 #include <symengine/solve.h>
+#include "symengineend.h"
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserexternalvariable.h"
