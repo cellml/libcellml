@@ -243,6 +243,12 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
         return {true, SymEngine::cos(left)};
     case AnalyserEquationAst::Type::TAN:
         return {true, SymEngine::tan(left)};
+    case AnalyserEquationAst::Type::E:
+        return {true, SymEngine::E};
+    case AnalyserEquationAst::Type::PI:
+        return {true, SymEngine::pi};
+    case AnalyserEquationAst::Type::INF:
+        return {true, SymEngine::Inf};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
@@ -250,7 +256,7 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
         }
         return {true, symbolMap.at(ast->variable()->name())};
     case AnalyserEquationAst::Type::CN:
-        return {true, SymEngine::integer(std::stoi(ast->value()))};
+        return {true, SymEngine::number(std::stod(ast->value()))};
     default:
         // Rearrangement is not possible with this type.
         return {false, SymEngine::null};
@@ -298,9 +304,25 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         ast->setVariable(variableMap.at(symbolExpr)->mVariable);
         break;
     }
-    case SymEngine::SYMENGINE_INTEGER: {
+    case SymEngine::SYMENGINE_INTEGER:
+    case SymEngine::SYMENGINE_RATIONAL:
+    case SymEngine::SYMENGINE_REAL_MPFR:
+    case SymEngine::SYMENGINE_REAL_DOUBLE: {
         ast->setType(AnalyserEquationAst::Type::CN);
         ast->setValue(seExpression->__str__());
+        break;
+    }
+    case SymEngine::SYMENGINE_CONSTANT: {
+        SymEngine::RCP<const SymEngine::Constant> constant = SymEngine::rcp_dynamic_cast<const SymEngine::Constant>(seExpression);
+        if (SymEngine::eq(*constant, *SymEngine::E)) {
+            ast->setType(AnalyserEquationAst::Type::E);
+        } else if (SymEngine::eq(*constant, *SymEngine::pi)) {
+            ast->setType(AnalyserEquationAst::Type::PI);
+        }
+        break;
+    }
+    case SymEngine::SYMENGINE_INFTY: {
+        ast->setType(AnalyserEquationAst::Type::INF);
         break;
     }
     default:
