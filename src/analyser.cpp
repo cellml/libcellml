@@ -361,8 +361,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
 
     // All children (except the last) are guaranteed to be left children in the AST tree.
     for (int i = 0; i + 1 < children.size(); ++i) {
-        auto childSeExpression = children[i];
-        auto childAst = parseSymEngineExpression(childSeExpression, currentAst, variableMap);
+        auto childAst = parseSymEngineExpression(children[i], currentAst, variableMap);
 
         currentAst->setLeftChild(childAst);
         childAst->setParent(currentAst);
@@ -382,8 +381,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
 
     // The final child is created and placed where appropriate.
     if (children.size() != 0) {
-        auto childSeExpression = children.back();
-        auto childAst = parseSymEngineExpression(childSeExpression, currentAst, variableMap);
+        auto childAst = parseSymEngineExpression(children.back(), currentAst, variableMap);
 
         children.size() == 1 ? currentAst->setLeftChild(childAst) :
                                currentAst->setRightChild(childAst);
