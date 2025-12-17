@@ -365,6 +365,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         auto childAst = parseSymEngineExpression(childSeExpression, currentAst, variableMap);
 
         currentAst->setLeftChild(childAst);
+        childAst->setParent(currentAst);
 
         if (i < children.size() - 2) {
             // Since there are more than two children left, we need to create another copy
@@ -386,6 +387,7 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
 
         children.size() == 1 ? currentAst->setLeftChild(childAst) :
                                currentAst->setRightChild(childAst);
+        childAst->setParent(currentAst);
     }
 
     return ast;
