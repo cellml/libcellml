@@ -48,7 +48,7 @@
         <apply><plus/><ci>y</ci></apply>
       </apply>
 
-      <!-- Initialize constants -->
+      <!-- Initialise constants -->
       <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
       <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>

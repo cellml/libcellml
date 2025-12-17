@@ -38,7 +38,7 @@
         <cn cellml:units="dimensionless">2</cn>
       </apply>
 
-      <!-- Initialize constants -->
+      <!-- Initialise constants -->
       <apply><eq/><ci>w</ci><cn cellml:units="radian">0.5</cn></apply>
       <apply><eq/><ci>x</ci><cn cellml:units="radian">1.0</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>

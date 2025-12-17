@@ -66,9 +66,9 @@
         <ci>w</ci>
       </apply>
 
-      <!-- Initialize constants -->
+      <!-- Initialise constants -->
       <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
-      
+
     </math>
   </component>
 </model>
