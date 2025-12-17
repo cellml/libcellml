@@ -5,13 +5,11 @@
     <variable name="w" units="radian"/>
     <variable name="x" units="radian"/>
     <variable name="y" units="radian"/>
-    <variable name="z" units="radian"/>
 
     <!-- Unknowns to solve -->
-    <variable name="a" units="radian"/>
-    <variable name="b" units="radian"/>
-    <variable name="c" units="radian"/>
-    <variable name="d" units="radian"/>
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
 
     <math xmlns="http://www.w3.org/1998/Math/MathML"
           xmlns:cellml="http://www.cellml.org/cellml/2.0#">
@@ -20,7 +18,6 @@
       <apply><eq/><ci>w</ci><cn cellml:units="radian">0.5</cn></apply>
       <apply><eq/><ci>x</ci><cn cellml:units="radian">1.0</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>
-      <apply><eq/><ci>z</ci><cn cellml:units="radian">2.0</cn></apply>
 
       <!-- Equation 1: 2*a + sin(w) = 1 -->
       <apply>
@@ -32,21 +29,14 @@
       <!-- Equation 2: cos(x + 4) - b = 0 -->
       <apply>
         <eq/>
-        <apply><minus/><apply><cos/><apply><plus/><cn cellml:units="dimensionless">4</cn><ci>x</ci></apply></apply><ci>b</ci></apply>
+        <apply><minus/><apply><cos/><apply><plus/><cn cellml:units="radian">4</cn><ci>x</ci></apply></apply><ci>b</ci></apply>
         <cn cellml:units="dimensionless">0</cn>
       </apply>
 
-      <!-- Equation 3: tan(c) = z -->
+      <!-- Equation 4: c - tan(3 - y) = 2 -->
       <apply>
         <eq/>
-        <apply><tan/><ci>c</ci></apply>
-        <ci>z</ci>
-      </apply>
-
-      <!-- Equation 4: d - sin(y - x) = 2 -->
-      <apply>
-        <eq/>
-        <apply><minus/><ci>d</ci><apply><sin/><apply><minus/><ci>y</ci><ci>x</ci></apply></apply></apply>
+        <apply><minus/><ci>c</ci><apply><tan/><apply><minus/><cn cellml:units="radian">3</cn><ci>y</ci></apply></apply></apply>
         <cn cellml:units="dimensionless">2</cn>
       </apply>
 
