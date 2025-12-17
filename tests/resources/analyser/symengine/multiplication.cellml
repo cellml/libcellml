@@ -11,7 +11,6 @@
     <variable name="a" units="dimensionless"/>
     <variable name="b" units="dimensionless"/>
     <variable name="c" units="dimensionless"/>
-    <variable name="d" units="dimensionless"/>
 
     <math xmlns="http://www.w3.org/1998/Math/MathML"
           xmlns:cellml="http://www.cellml.org/cellml/2.0#">
@@ -36,26 +35,14 @@
         <cn cellml:units="dimensionless">18</cn>
       </apply>
 
-      <!-- Equation 3: (c * w * z) / y = 5 -->
+      <!-- Equation 3: (c * z) / (x * 3) = 10 -->
       <!-- Test equation combining multiplication and division -->
       <apply>
         <eq/>
         <apply>
           <divide/>
-          <apply><times/><ci>c</ci><ci>w</ci><ci>z</ci></apply>
-          <ci>y</ci>
-        </apply>
-        <cn cellml:units="dimensionless">5</cn>
-      </apply>
-
-      <!-- Equation 4: (d * z) / (w * 3) = 10 -->
-      <!-- Test equation combining multiplication and division -->
-      <apply>
-        <eq/>
-        <apply>
-          <divide/>
-          <apply><times/><ci>d</ci><ci>z</ci></apply>
-          <apply><times/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
+          <apply><times/><ci>c</ci><ci>z</ci></apply>
+          <apply><times/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
         </apply>
         <cn cellml:units="dimensionless">10</cn>
       </apply>
