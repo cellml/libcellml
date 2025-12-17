@@ -22,17 +22,19 @@ jobs:
           - name: 'Windows static - C++'
             os: windows-latest
             python_bindings: OFF
-            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
+            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DSYMENGINE_DIR="C:\symengine\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
           - name: 'Windows shared - C++/Python'
             os: windows-latest
             python_bindings: ON
-            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
+            additional_cmake_options: -DLibXml2_DIR="C:\libxml2\libxml2-2.9.10\CMake" -DSYMENGINE_DIR="C:\symengine\CMake" -DZLIB_DIR="C:\zlib\lib\cmake\ZLIB-1.2.12"
           - name: 'Linux static - C++'
             os: ubuntu-latest
             python_bindings: OFF
+            additional_cmake_options: -DSYMENGINE_DIR="$HOME/symengine/build/cmake"
           - name: 'Linux shared - C++/Python'
             os: ubuntu-latest
             python_bindings: ON
+            additional_cmake_options: -DSYMENGINE_DIR="$HOME/symengine/build/cmake"
           - name: 'macOS static - C++ (Intel)'
             os: macos-15-intel
             python_bindings: OFF
@@ -68,6 +70,23 @@ jobs:
           cd C:\
           curl -L https://github.com/cellml/gha/releases/download/gha/libxml2-Windows.tar.gz -o libxml2.tar.gz -s
           tar -xzf libxml2.tar.gz
+      - name: Install SymEngine (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          cd C:\
+          curl -L https://github.com/cellml/gha/releases/download/gha/symengine-Windows.tar.gz -o symengine.tar.gz -s
+          tar -xzf symengine.tar.gz
+      - name: Install SymEngine (Linux only)
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd $HOME
+          curl -L https://github.com/cellml/gha/releases/download/gha/symengine-Linux.tar.gz -o symengine.tar.gz -s
+          tar -xzf symengine.tar.gz
+      - name: Install SymEngine (macOS only)
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          brew update
+          brew install symengine
       - name: Install zlib (Windows only)
         if: ${{ runner.os == 'Windows' }}
         run: |
@@ -101,13 +120,17 @@ jobs:
         run: |
           cd $HOME
           wget https://github.com/cellml/gha/releases/download/gha/libxml2-WASM.tar.gz -O - | tar -xz
+      - name: Install SymEngine
+        run: |
+          cd $HOME
+          wget https://github.com/cellml/gha/releases/download/gha/symengine-WASM.tar.gz -O - | tar -xz
       - name: Install zlib
         run: |
           cd $HOME
           wget https://github.com/cellml/gha/releases/download/gha/zlib-WASM.tar.gz -O - | tar -xz
       - name: Configure libCellML
         run: |
-          emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DLIBXML2_INCLUDE_DIR=$HOME/libxml2/include/libxml2 -DLIBXML2_LIBRARY=$HOME/libxml2/lib/libxml2.a -DZLIB_INCLUDE_DIR=$HOME/zlib/include -DZLIB_LIBRARY=$HOME/zlib/lib/libz.a
+          emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DLIBXML2_INCLUDE_DIR=$HOME/libxml2/include/libxml2 -DLIBXML2_LIBRARY=$HOME/libxml2/lib/libxml2.a -DSYMENGINE_INCLUDE_DIR=$HOME/symengine/include -DSYMENGINE_LIBRARY=$HOME/symengine/lib/libsymengine.a -DZLIB_INCLUDE_DIR=$HOME/zlib/include -DZLIB_LIBRARY=$HOME/zlib/lib/libz.a
       - name: Build libCellML
         run: cmake --build build-wasm
       - name: Unit testing
