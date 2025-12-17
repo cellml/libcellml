@@ -23,6 +23,7 @@
       <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
 
       <!-- Equation 1: a + w + x = 10 -->
+      <!-- Test equation for addition -->
       <apply>
         <eq/>
         <apply><plus/><ci>a</ci><ci>w</ci><ci>x</ci></apply>
@@ -30,6 +31,7 @@
       </apply>
 
       <!-- Equation 2: b - y + 2 = 1 -->
+      <!-- Test equation for subtraction -->
       <apply>
         <eq/>
         <apply><plus/><apply><minus/><ci>b</ci><ci>y</ci></apply><cn cellml:units="dimensionless">2</cn></apply>
@@ -37,6 +39,7 @@
       </apply>
 
       <!-- Equation 3: c + x + 1 = -z -->
+      <!-- Test equation for unary minus -->
       <apply>
         <eq/>
         <apply><plus/><ci>c</ci><ci>x</ci><cn cellml:units="dimensionless">1</cn></apply>
@@ -44,6 +47,7 @@
       </apply>
 
       <!-- Equation 4: d + w = +y -->
+      <!-- Test equation for unary plus -->
       <apply>
         <eq/>
         <apply><plus/><ci>d</ci><ci>w</ci></apply>

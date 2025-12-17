@@ -20,6 +20,7 @@
       <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>
 
       <!-- Equation 1: 2*a + sin(w) = 1 -->
+      <!-- Test equation for sine -->
       <apply>
         <eq/>
         <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>a</ci></apply><apply><sin/><ci>w</ci></apply></apply>
@@ -27,13 +28,15 @@
       </apply>
 
       <!-- Equation 2: cos(x + 4) - b = 0 -->
+      <!-- Test equation for cosine -->
       <apply>
         <eq/>
         <apply><minus/><apply><cos/><apply><plus/><cn cellml:units="radian">4</cn><ci>x</ci></apply></apply><ci>b</ci></apply>
         <cn cellml:units="dimensionless">0</cn>
       </apply>
 
-      <!-- Equation 4: c - tan(3 - y) = 2 -->
+      <!-- Equation 3: c - tan(3 - y) = 2 -->
+      <!-- Test equation for tangent -->
       <apply>
         <eq/>
         <apply><minus/><ci>c</ci><apply><tan/><apply><minus/><cn cellml:units="radian">3</cn><ci>y</ci></apply></apply></apply>
