@@ -40,7 +40,7 @@
         <cn cellml:units="dimensionless">12</cn>
       </apply>
 
-      <!-- Equation 3: c^3 + 3*c = 30 -->
+      <!-- Equation 3: c^3 + 3*c = 36 -->
       <!-- Unique solution: c = 3 -->
       <apply>
         <eq/>
@@ -49,7 +49,7 @@
           <apply><power/><ci>c</ci><cn cellml:units="dimensionless">3</cn></apply>
           <apply><times/><cn cellml:units="dimensionless">3</cn><ci>c</ci></apply>
         </apply>
-        <cn cellml:units="dimensionless">30</cn>
+        <cn cellml:units="dimensionless">36</cn>
       </apply>
 
       <!-- Equation 4: d^3 = w -->

@@ -23,7 +23,7 @@ limitations under the License.
 TEST(Analyser, rearrangeAdditiveEquations)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_addition.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/symengine/addition.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -37,7 +37,7 @@ TEST(Analyser, rearrangeAdditiveEquations)
 TEST(Analyser, rearrangeMultiplicativeEquations)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_multiplication.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/symengine/multiplication.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -51,7 +51,7 @@ TEST(Analyser, rearrangeMultiplicativeEquations)
 TEST(Analyser, rearrangeTrigonometricEquations)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_trig.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/symengine/trigonometric.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -65,7 +65,7 @@ TEST(Analyser, rearrangeTrigonometricEquations)
 TEST(Analyser, rearrangeEquationsWithConstants)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_constants.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/symengine/constants.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -79,7 +79,7 @@ TEST(Analyser, rearrangeEquationsWithConstants)
 TEST(Analyser, rearrangePolynomialEquations)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_polynomials.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/symengine/polynomials.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
