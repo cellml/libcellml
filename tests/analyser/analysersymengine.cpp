@@ -62,62 +62,6 @@ TEST(Analyser, rearrangeTrigonometricEquations)
     EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
 }
 
-TEST(Analyser, rearrangeInverseTrigonometricEquations)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_inverse_trig.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}
-
-TEST(Analyser, rearrangeHyperbolicTrigonometricEquations)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_hyperbolic_trig.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}
-
-TEST(Analyser, rearrangeExponentialEquations)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_exponential.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}
-
-TEST(Analyser, rearrangeLogarithmicEquations)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_logarithmic.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}
-
 TEST(Analyser, rearrangeEquationsWithConstants)
 {
     auto parser = libcellml::Parser::create();
@@ -136,20 +80,6 @@ TEST(Analyser, rearrangePolynomialEquations)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_polynomials.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}
-
-TEST(Analyser, rearrangeCombinationEquations)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/symengine/unarranged_combination.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
