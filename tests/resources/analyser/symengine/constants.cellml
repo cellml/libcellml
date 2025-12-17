@@ -19,12 +19,6 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML"
           xmlns:cellml="http://www.cellml.org/cellml/2.0#">
 
-      <!-- Initialize constants -->
-      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
-      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">4</cn></apply>
-      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">5</cn></apply>
-      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply>
-
       <!-- Equation 1: a + x = 8.65 -->
       <!-- Test equation for double -->
       <apply>
@@ -64,6 +58,12 @@
         <apply><plus/><ci>e</ci><ci>w</ci></apply>
         <infinity/>
       </apply>
+
+      <!-- Initialize constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">4</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">5</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply>
 
     </math>
   </component>

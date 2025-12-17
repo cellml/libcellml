@@ -14,11 +14,6 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML"
           xmlns:cellml="http://www.cellml.org/cellml/2.0#">
 
-      <!-- Initialize constants -->
-      <apply><eq/><ci>w</ci><cn cellml:units="radian">0.5</cn></apply>
-      <apply><eq/><ci>x</ci><cn cellml:units="radian">1.0</cn></apply>
-      <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>
-
       <!-- Equation 1: 2*a + sin(w) = 1 -->
       <!-- Test equation for sine -->
       <apply>
@@ -42,6 +37,11 @@
         <apply><minus/><ci>c</ci><apply><tan/><apply><minus/><cn cellml:units="radian">3</cn><ci>y</ci></apply></apply></apply>
         <cn cellml:units="dimensionless">2</cn>
       </apply>
+
+      <!-- Initialize constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="radian">0.5</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="radian">1.0</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="radian">1.5</cn></apply>
 
     </math>
   </component>
