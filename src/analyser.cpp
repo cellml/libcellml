@@ -295,6 +295,8 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
                                                                           const SymEngineVariableMap &variableMap)
 {
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
+    ast->setParent(parentAst);
+    auto children = seExpression->get_args();
 
     switch (seExpression->get_type_code()) {
     case SymEngine::SYMENGINE_EQUALITY: {
@@ -306,7 +308,13 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         break;
     }
     case SymEngine::SYMENGINE_MUL: {
-        ast->setType(AnalyserEquationAst::Type::TIMES);
+        if (SymEngine::eq(*(children[0]), *SymEngine::integer(-1))) {
+            // Convert -1 * x to -x.
+            ast->setType(AnalyserEquationAst::Type::MINUS);
+            children.erase(children.begin());
+        } else {
+            ast->setType(AnalyserEquationAst::Type::TIMES);
+        }
         break;
     }
     case SymEngine::SYMENGINE_POW: {
@@ -356,7 +364,6 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         break;
     }
 
-    auto children = seExpression->get_args();
     auto currentAst = ast;
 
     // All children (except the last) are guaranteed to be left children in the AST tree.
@@ -364,7 +371,6 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         auto childAst = parseSymEngineExpression(children[i], currentAst, variableMap);
 
         currentAst->setLeftChild(childAst);
-        childAst->setParent(currentAst);
 
         if (i < children.size() - 2) {
             // Since there are more than two children left, we need to create another copy
@@ -385,7 +391,16 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
 
         children.size() == 1 ? currentAst->setLeftChild(childAst) :
                                currentAst->setRightChild(childAst);
-        childAst->setParent(currentAst);
+
+        // Check for special case where we want to simplify x + (-y) to x - y.
+        if (children.size() >= 2
+            && currentAst->type() == AnalyserEquationAst::Type::PLUS
+            && childAst->type() == AnalyserEquationAst::Type::MINUS
+            && childAst->rightChild() == nullptr) {
+            currentAst->setType(AnalyserEquationAst::Type::MINUS);
+            currentAst->setRightChild(childAst->leftChild());
+            childAst->leftChild()->setParent(currentAst);
+        }
     }
 
     return ast;
