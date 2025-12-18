@@ -139,6 +139,7 @@ struct AnalyserInternalEquation
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
     SymEngineEquationResult symEngineEquation(const AnalyserEquationAstPtr &ast, const SymEngineSymbolMap &symbolMap);
+    bool isSymEngineExpressionComplex(const SymEngine::RCP<const SymEngine::Basic> &seExpression);
     AnalyserEquationAstPtr parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression, const AnalyserEquationAstPtr &parentAst, const SymEngineVariableMap &variableMap);
     AnalyserEquationAstPtr rearrangeFor(const AnalyserInternalVariablePtr &variable);
 

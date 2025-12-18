@@ -1060,17 +1060,3 @@ TEST(Analyser, unsuitablyConstrainedNlaSystem)
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
 }
-
-TEST(Analyser, rearrangeAlgebraicEquation)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/unarranged_algebraic_equation.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyser->analyserModel()->type());
-}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedEquationsWithConstants">
+  <!-- Test equations for non-integer constants -->
+
+  <component name="Component">
+    <!-- Precomputed constants -->
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+    <variable name="e" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+
+      <!-- Equation 1: a + x = 8.65 -->
+      <!-- Test equation for double -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>a</ci><ci>x</ci></apply>
+        <cn cellml:units="dimensionless">8.65</cn>
+      </apply>
+
+      <!-- Equation 2: b * w = 4e5 -->
+      <!-- Test equation for scientific (e-based) notation -->
+      <apply>
+        <eq/>
+        <apply><times/><ci>b</ci><ci>w</ci></apply>
+        <cn cellml:units="dimensionless" type="e-notation">4<sep/>5</cn>
+      </apply>
+
+      <!-- Equation 3: c / y = e -->
+      <!-- Test equation for exponential constant -->
+      <apply>
+        <eq/>
+        <apply><divide/><ci>c</ci><ci>y</ci></apply>
+        <exponentiale/>
+      </apply>
+
+      <!-- Equation 4: d - z = pi -->
+      <!-- Test equation for pi constant -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>d</ci><ci>z</ci></apply>
+        <pi/>
+      </apply>
+
+      <!-- Equation 5: e + w = inf -->
+      <!-- Test equation for infinity -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>e</ci><ci>w</ci></apply>
+        <infinity/>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">4</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">5</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply>
+
+    </math>
+  </component>
+</model>

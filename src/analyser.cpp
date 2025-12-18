@@ -221,28 +221,82 @@ SymEngineEquationResult AnalyserInternalEquation::symEngineEquation(const Analys
     case AnalyserEquationAst::Type::EQUALITY:
         return {true, Eq(left, right)};
     case AnalyserEquationAst::Type::PLUS:
+        // Handle the case where we have a unary plus.
+        if (right == SymEngine::null) {
+            return {true, left};
+        }
         return {true, add(left, right)};
+    case AnalyserEquationAst::Type::MINUS:
+        // Handle the case where we have a unary minus.
+        if (right == SymEngine::null) {
+            return {true, SymEngine::mul(SymEngine::integer(-1), left)};
+        }
+        return {true, sub(left, right)};
+    case AnalyserEquationAst::Type::TIMES:
+        return {true, mul(left, right)};
+    case AnalyserEquationAst::Type::DIVIDE:
+        return {true, SymEngine::div(left, right)};
+    case AnalyserEquationAst::Type::POWER:
+        return {true, SymEngine::pow(left, right)};
+    case AnalyserEquationAst::Type::SIN:
+        return {true, SymEngine::sin(left)};
+    case AnalyserEquationAst::Type::COS:
+        return {true, SymEngine::cos(left)};
+    case AnalyserEquationAst::Type::TAN:
+        return {true, SymEngine::tan(left)};
+    case AnalyserEquationAst::Type::E:
+        return {true, SymEngine::E};
+    case AnalyserEquationAst::Type::PI:
+        return {true, SymEngine::pi};
+    case AnalyserEquationAst::Type::INF:
+        return {true, SymEngine::Inf};
     case AnalyserEquationAst::Type::CI:
         // Seems like the voi doesn't exist in mAllVariables, so we don't have an easy means of access.
         if (symbolMap.find(ast->variable()->name()) == symbolMap.end()) {
             return {false, SymEngine::null};
         }
         return {true, symbolMap.at(ast->variable()->name())};
+    case AnalyserEquationAst::Type::CN: {
+        // Some symengine operations necessitate integers to be properly represented.
+        double astValue = std::stod(ast->value());
+        if (std::floor(astValue) == astValue) {
+            return {true, SymEngine::integer(static_cast<long>(astValue))};
+        } else {
+            return {true, SymEngine::number(astValue)};
+        }
+    }
     default:
         // Rearrangement is not possible with this type.
         return {false, SymEngine::null};
     }
 }
 
+bool AnalyserInternalEquation::isSymEngineExpressionComplex(const SymEngine::RCP<const SymEngine::Basic> &seExpression)
+{
+    if (seExpression == SymEngine::null) {
+        return false;
+    }
+
+    if (SymEngine::is_a_Complex(*seExpression)) {
+        return true;
+    }
+
+    for (const auto &child : seExpression->get_args()) {
+        if (isSymEngineExpressionComplex(child)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const SymEngine::RCP<const SymEngine::Basic> &seExpression,
                                                                           const AnalyserEquationAstPtr &parentAst,
                                                                           const SymEngineVariableMap &variableMap)
 {
-    auto children = seExpression->get_args();
-
     AnalyserEquationAstPtr ast = AnalyserEquationAst::create();
-
     ast->setParent(parentAst);
+    auto children = seExpression->get_args();
 
     switch (seExpression->get_type_code()) {
     case SymEngine::SYMENGINE_EQUALITY: {
@@ -254,7 +308,29 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         break;
     }
     case SymEngine::SYMENGINE_MUL: {
-        ast->setType(AnalyserEquationAst::Type::TIMES);
+        if (SymEngine::eq(*(children[0]), *SymEngine::integer(-1))) {
+            // Convert -1 * x to -x.
+            ast->setType(AnalyserEquationAst::Type::MINUS);
+            children.erase(children.begin());
+        } else {
+            ast->setType(AnalyserEquationAst::Type::TIMES);
+        }
+        break;
+    }
+    case SymEngine::SYMENGINE_POW: {
+        ast->setType(AnalyserEquationAst::Type::POWER);
+        break;
+    }
+    case SymEngine::SYMENGINE_SIN: {
+        ast->setType(AnalyserEquationAst::Type::SIN);
+        break;
+    }
+    case SymEngine::SYMENGINE_COS: {
+        ast->setType(AnalyserEquationAst::Type::COS);
+        break;
+    }
+    case SymEngine::SYMENGINE_TAN: {
+        ast->setType(AnalyserEquationAst::Type::TAN);
         break;
     }
     case SymEngine::SYMENGINE_SYMBOL: {
@@ -263,20 +339,67 @@ AnalyserEquationAstPtr AnalyserInternalEquation::parseSymEngineExpression(const 
         ast->setVariable(variableMap.at(symbolExpr)->mVariable);
         break;
     }
-    case SymEngine::SYMENGINE_INTEGER: {
+    case SymEngine::SYMENGINE_INTEGER:
+    case SymEngine::SYMENGINE_RATIONAL:
+    case SymEngine::SYMENGINE_REAL_MPFR:
+    case SymEngine::SYMENGINE_REAL_DOUBLE: {
         ast->setType(AnalyserEquationAst::Type::CN);
         ast->setValue(seExpression->__str__());
+        break;
+    }
+    case SymEngine::SYMENGINE_CONSTANT: {
+        SymEngine::RCP<const SymEngine::Constant> constant = SymEngine::rcp_dynamic_cast<const SymEngine::Constant>(seExpression);
+        if (SymEngine::eq(*constant, *SymEngine::E)) {
+            ast->setType(AnalyserEquationAst::Type::E);
+        } else if (SymEngine::eq(*constant, *SymEngine::pi)) {
+            ast->setType(AnalyserEquationAst::Type::PI);
+        }
+        break;
+    }
+    case SymEngine::SYMENGINE_INFTY: {
+        ast->setType(AnalyserEquationAst::Type::INF);
         break;
     }
     default:
         break;
     }
 
-    // TODO Update to account for symengine expressions with 3 or more children.
-    if (children.size() > 0) {
-        ast->setLeftChild(parseSymEngineExpression(children[0], ast, variableMap));
-        if (children.size() > 1) {
-            ast->setRightChild(parseSymEngineExpression(children[1], ast, variableMap));
+    auto currentAst = ast;
+
+    // All children (except the last) are guaranteed to be left children in the AST tree.
+    for (int i = 0; i + 1 < children.size(); ++i) {
+        auto childAst = parseSymEngineExpression(children[i], currentAst, variableMap);
+
+        currentAst->setLeftChild(childAst);
+
+        if (i < children.size() - 2) {
+            // Since there are more than two children left, we need to create another copy
+            // of our original AST node.
+            AnalyserEquationAstPtr newAst = AnalyserEquationAst::create();
+            newAst->setType(ast->type());
+            newAst->setValue(ast->value());
+            newAst->setVariable(ast->variable());
+            currentAst->setRightChild(newAst);
+            newAst->setParent(currentAst);
+            currentAst = newAst;
+        }
+    }
+
+    // The final child is created and placed where appropriate.
+    if (children.size() != 0) {
+        auto childAst = parseSymEngineExpression(children.back(), currentAst, variableMap);
+
+        children.size() == 1 ? currentAst->setLeftChild(childAst) :
+                               currentAst->setRightChild(childAst);
+
+        // Check for special case where we want to simplify x + (-y) to x - y.
+        if (children.size() >= 2
+            && currentAst->type() == AnalyserEquationAst::Type::PLUS
+            && childAst->type() == AnalyserEquationAst::Type::MINUS
+            && childAst->rightChild() == nullptr) {
+            currentAst->setType(AnalyserEquationAst::Type::MINUS);
+            currentAst->setRightChild(childAst->leftChild());
+            childAst->leftChild()->setParent(currentAst);
         }
     }
 
@@ -302,7 +425,13 @@ AnalyserEquationAstPtr AnalyserInternalEquation::rearrangeFor(const AnalyserInte
     SymEngine::RCP<const SymEngine::Set> solutionSet = solve(seEquation, symbolMap[variable->mVariable->name()]);
     SymEngine::vec_basic solutions = solutionSet->get_args();
 
-    // Our system needs to be able to isolate a single solution.
+    // Attempt to isolate a single real solution.
+    solutions.erase(std::remove_if(solutions.begin(), solutions.end(),
+                                   [this](const SymEngine::RCP<const SymEngine::Basic> &solution) {
+                                       return isSymEngineExpressionComplex(solution);
+                                   }),
+                    solutions.end());
+
     if (solutions.size() != 1) {
         return nullptr;
     }
