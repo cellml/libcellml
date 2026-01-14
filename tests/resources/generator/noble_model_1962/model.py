@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 4
@@ -76,39 +76,39 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[4] = 40.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     pass
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[0] = constants[2]*(states[0]-constants[1])
-    algebraicVariables[3] = pow(states[2], 3.0)*states[1]*constants[3]
-    algebraicVariables[2] = (algebraicVariables[3]+0.14)*(states[0]-constants[4])
-    algebraicVariables[8] = 1.2*pow(states[3], 4.0)
-    algebraicVariables[9] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
-    algebraicVariables[1] = (algebraicVariables[9]+algebraicVariables[8])*(states[0]+100.0)
-    rates[0] = -(algebraicVariables[2]+algebraicVariables[1]+algebraicVariables[0])/constants[0]
-    algebraicVariables[5] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
-    algebraicVariables[4] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
-    rates[2] = algebraicVariables[4]*(1.0-states[2])-algebraicVariables[5]*states[2]
-    algebraicVariables[7] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
-    algebraicVariables[6] = 0.17*exp((-states[0]-90.0)/20.0)
-    rates[1] = algebraicVariables[6]*(1.0-states[1])-algebraicVariables[7]*states[1]
-    algebraicVariables[11] = 0.002*exp((-states[0]-90.0)/80.0)
-    algebraicVariables[10] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
-    rates[3] = algebraicVariables[10]*(1.0-states[3])-algebraicVariables[11]*states[3]
+    algebraic_variables[0] = constants[2]*(states[0]-constants[1])
+    algebraic_variables[3] = pow(states[2], 3.0)*states[1]*constants[3]
+    algebraic_variables[2] = (algebraic_variables[3]+0.14)*(states[0]-constants[4])
+    algebraic_variables[8] = 1.2*pow(states[3], 4.0)
+    algebraic_variables[9] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
+    algebraic_variables[1] = (algebraic_variables[9]+algebraic_variables[8])*(states[0]+100.0)
+    rates[0] = -(algebraic_variables[2]+algebraic_variables[1]+algebraic_variables[0])/constants[0]
+    algebraic_variables[5] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
+    algebraic_variables[4] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
+    rates[2] = algebraic_variables[4]*(1.0-states[2])-algebraic_variables[5]*states[2]
+    algebraic_variables[7] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
+    algebraic_variables[6] = 0.17*exp((-states[0]-90.0)/20.0)
+    rates[1] = algebraic_variables[6]*(1.0-states[1])-algebraic_variables[7]*states[1]
+    algebraic_variables[11] = 0.002*exp((-states[0]-90.0)/80.0)
+    algebraic_variables[10] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
+    rates[3] = algebraic_variables[10]*(1.0-states[3])-algebraic_variables[11]*states[3]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[0] = constants[2]*(states[0]-constants[1])
-    algebraicVariables[3] = pow(states[2], 3.0)*states[1]*constants[3]
-    algebraicVariables[2] = (algebraicVariables[3]+0.14)*(states[0]-constants[4])
-    algebraicVariables[4] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
-    algebraicVariables[5] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
-    algebraicVariables[6] = 0.17*exp((-states[0]-90.0)/20.0)
-    algebraicVariables[7] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
-    algebraicVariables[8] = 1.2*pow(states[3], 4.0)
-    algebraicVariables[9] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
-    algebraicVariables[1] = (algebraicVariables[9]+algebraicVariables[8])*(states[0]+100.0)
-    algebraicVariables[10] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
-    algebraicVariables[11] = 0.002*exp((-states[0]-90.0)/80.0)
+    algebraic_variables[0] = constants[2]*(states[0]-constants[1])
+    algebraic_variables[3] = pow(states[2], 3.0)*states[1]*constants[3]
+    algebraic_variables[2] = (algebraic_variables[3]+0.14)*(states[0]-constants[4])
+    algebraic_variables[4] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
+    algebraic_variables[5] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
+    algebraic_variables[6] = 0.17*exp((-states[0]-90.0)/20.0)
+    algebraic_variables[7] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
+    algebraic_variables[8] = 1.2*pow(states[3], 4.0)
+    algebraic_variables[9] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
+    algebraic_variables[1] = (algebraic_variables[9]+algebraic_variables[8])*(states[0]+100.0)
+    algebraic_variables[10] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
+    algebraic_variables[11] = 0.002*exp((-states[0]-90.0)/80.0)

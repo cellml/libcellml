@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 8
@@ -62,10 +62,10 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[7] = 1.1
 
 
-def compute_computed_constants(constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     pass
 
 
 def compute_variables(constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    externalVariables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
-    algebraicVariables[0] = constants[7]*(constants[6]*constants[1]-constants[5]*constants[2])/(constants[4]*constants[2]+externalVariables[0]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])
+    external_variables[0] = external_variable(constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraic_variables[0] = constants[7]*(constants[6]*constants[1]-constants[5]*constants[2])/(constants[4]*constants[2]+external_variables[0]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])

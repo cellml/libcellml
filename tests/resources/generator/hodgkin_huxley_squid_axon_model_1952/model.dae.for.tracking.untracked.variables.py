@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 4
@@ -81,19 +81,19 @@ def objective_function_0(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[0] = u[0]
+    algebraic_variables[0] = u[0]
 
-    f[0] = algebraicVariables[0]-(-20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0)-0.0
+    f[0] = algebraic_variables[0]-(-20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0)-0.0
 
 
 def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[0]
+    u[0] = algebraic_variables[0]
 
     u = nla_solve(objective_function_0, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[0] = u[0]
+    algebraic_variables[0] = u[0]
 
 
 def objective_function_1(u, f, data):
@@ -108,7 +108,7 @@ def objective_function_1(u, f, data):
 
     membrane_Cm = 1.0
 
-    f[0] = rates[0]-(-(-algebraicVariables[0]+algebraicVariables[3]+algebraicVariables[2]+algebraicVariables[1])/membrane_Cm)-0.0
+    f[0] = rates[0]-(-(-algebraic_variables[0]+algebraic_variables[3]+algebraic_variables[2]+algebraic_variables[1])/membrane_Cm)-0.0
 
 
 def find_root_1(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -129,21 +129,21 @@ def objective_function_2(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[4] = u[0]
+    algebraic_variables[4] = u[0]
 
     membrane_E_R = 0.0
 
-    f[0] = algebraicVariables[4]-(membrane_E_R-10.613)-0.0
+    f[0] = algebraic_variables[4]-(membrane_E_R-10.613)-0.0
 
 
 def find_root_2(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[4]
+    u[0] = algebraic_variables[4]
 
     u = nla_solve(objective_function_2, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[4] = u[0]
+    algebraic_variables[4] = u[0]
 
 
 def objective_function_3(u, f, data):
@@ -154,21 +154,21 @@ def objective_function_3(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[1] = u[0]
+    algebraic_variables[1] = u[0]
 
     leakage_current_g_L = 0.3
 
-    f[0] = algebraicVariables[1]-leakage_current_g_L*(states[0]-algebraicVariables[4])-0.0
+    f[0] = algebraic_variables[1]-leakage_current_g_L*(states[0]-algebraic_variables[4])-0.0
 
 
 def find_root_3(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[1]
+    u[0] = algebraic_variables[1]
 
     u = nla_solve(objective_function_3, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[1] = u[0]
+    algebraic_variables[1] = u[0]
 
 
 def objective_function_4(u, f, data):
@@ -179,21 +179,21 @@ def objective_function_4(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[5] = u[0]
+    algebraic_variables[5] = u[0]
 
     membrane_E_R = 0.0
 
-    f[0] = algebraicVariables[5]-(membrane_E_R-115.0)-0.0
+    f[0] = algebraic_variables[5]-(membrane_E_R-115.0)-0.0
 
 
 def find_root_4(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[5]
+    u[0] = algebraic_variables[5]
 
     u = nla_solve(objective_function_4, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[5] = u[0]
+    algebraic_variables[5] = u[0]
 
 
 def objective_function_5(u, f, data):
@@ -204,21 +204,21 @@ def objective_function_5(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[3] = u[0]
+    algebraic_variables[3] = u[0]
 
     sodium_channel_g_Na = 120.0
 
-    f[0] = algebraicVariables[3]-sodium_channel_g_Na*pow(states[2], 3.0)*states[1]*(states[0]-algebraicVariables[5])-0.0
+    f[0] = algebraic_variables[3]-sodium_channel_g_Na*pow(states[2], 3.0)*states[1]*(states[0]-algebraic_variables[5])-0.0
 
 
 def find_root_5(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[3]
+    u[0] = algebraic_variables[3]
 
     u = nla_solve(objective_function_5, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[3] = u[0]
+    algebraic_variables[3] = u[0]
 
 
 def objective_function_6(u, f, data):
@@ -229,19 +229,19 @@ def objective_function_6(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[6] = u[0]
+    algebraic_variables[6] = u[0]
 
-    f[0] = algebraicVariables[6]-4.0*exp(states[0]/18.0)-0.0
+    f[0] = algebraic_variables[6]-4.0*exp(states[0]/18.0)-0.0
 
 
 def find_root_6(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[6]
+    u[0] = algebraic_variables[6]
 
     u = nla_solve(objective_function_6, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[6] = u[0]
+    algebraic_variables[6] = u[0]
 
 
 def objective_function_7(u, f, data):
@@ -256,7 +256,7 @@ def objective_function_7(u, f, data):
 
     sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
 
-    f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-algebraicVariables[6]*states[2])-0.0
+    f[0] = rates[2]-(sodium_channel_m_gate_alpha_m*(1.0-states[2])-algebraic_variables[6]*states[2])-0.0
 
 
 def find_root_7(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -277,19 +277,19 @@ def objective_function_8(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[7] = u[0]
+    algebraic_variables[7] = u[0]
 
-    f[0] = algebraicVariables[7]-0.07*exp(states[0]/20.0)-0.0
+    f[0] = algebraic_variables[7]-0.07*exp(states[0]/20.0)-0.0
 
 
 def find_root_8(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[7]
+    u[0] = algebraic_variables[7]
 
     u = nla_solve(objective_function_8, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[7] = u[0]
+    algebraic_variables[7] = u[0]
 
 
 def objective_function_9(u, f, data):
@@ -300,19 +300,19 @@ def objective_function_9(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[8] = u[0]
+    algebraic_variables[8] = u[0]
 
-    f[0] = algebraicVariables[8]-1.0/(exp((states[0]+30.0)/10.0)+1.0)-0.0
+    f[0] = algebraic_variables[8]-1.0/(exp((states[0]+30.0)/10.0)+1.0)-0.0
 
 
 def find_root_9(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[8]
+    u[0] = algebraic_variables[8]
 
     u = nla_solve(objective_function_9, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[8] = u[0]
+    algebraic_variables[8] = u[0]
 
 
 def objective_function_10(u, f, data):
@@ -325,7 +325,7 @@ def objective_function_10(u, f, data):
 
     rates[1] = u[0]
 
-    f[0] = rates[1]-(algebraicVariables[7]*(1.0-states[1])-algebraicVariables[8]*states[1])-0.0
+    f[0] = rates[1]-(algebraic_variables[7]*(1.0-states[1])-algebraic_variables[8]*states[1])-0.0
 
 
 def find_root_10(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -346,23 +346,23 @@ def objective_function_11(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[2] = u[0]
+    algebraic_variables[2] = u[0]
 
     potassium_channel_g_K = 36.0
     membrane_E_R = 0.0
     potassium_channel_E_K = membrane_E_R+12.0
 
-    f[0] = algebraicVariables[2]-potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-potassium_channel_E_K)-0.0
+    f[0] = algebraic_variables[2]-potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-potassium_channel_E_K)-0.0
 
 
 def find_root_11(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[2]
+    u[0] = algebraic_variables[2]
 
     u = nla_solve(objective_function_11, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[2] = u[0]
+    algebraic_variables[2] = u[0]
 
 
 def objective_function_12(u, f, data):
@@ -373,19 +373,19 @@ def objective_function_12(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[9] = u[0]
+    algebraic_variables[9] = u[0]
 
-    f[0] = algebraicVariables[9]-0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)-0.0
+    f[0] = algebraic_variables[9]-0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)-0.0
 
 
 def find_root_12(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[9]
+    u[0] = algebraic_variables[9]
 
     u = nla_solve(objective_function_12, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[9] = u[0]
+    algebraic_variables[9] = u[0]
 
 
 def objective_function_13(u, f, data):
@@ -396,19 +396,19 @@ def objective_function_13(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[10] = u[0]
+    algebraic_variables[10] = u[0]
 
-    f[0] = algebraicVariables[10]-0.125*exp(states[0]/80.0)-0.0
+    f[0] = algebraic_variables[10]-0.125*exp(states[0]/80.0)-0.0
 
 
 def find_root_13(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*1
 
-    u[0] = algebraicVariables[10]
+    u[0] = algebraic_variables[10]
 
     u = nla_solve(objective_function_13, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[10] = u[0]
+    algebraic_variables[10] = u[0]
 
 
 def objective_function_14(u, f, data):
@@ -421,7 +421,7 @@ def objective_function_14(u, f, data):
 
     rates[3] = u[0]
 
-    f[0] = rates[3]-(algebraicVariables[9]*(1.0-states[3])-algebraicVariables[10]*states[3])-0.0
+    f[0] = rates[3]-(algebraic_variables[9]*(1.0-states[3])-algebraic_variables[10]*states[3])-0.0
 
 
 def find_root_14(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -443,20 +443,20 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     rates[1] = 0.0
     rates[2] = 0.0
     rates[3] = 0.0
-    algebraicVariables[0] = 0.0
-    algebraicVariables[1] = 0.0
-    algebraicVariables[2] = 0.0
-    algebraicVariables[3] = 0.0
-    algebraicVariables[4] = 0.0
-    algebraicVariables[5] = 0.0
-    algebraicVariables[6] = 0.0
-    algebraicVariables[7] = 0.0
-    algebraicVariables[8] = 0.0
-    algebraicVariables[9] = 0.0
-    algebraicVariables[10] = 0.0
+    algebraic_variables[0] = 0.0
+    algebraic_variables[1] = 0.0
+    algebraic_variables[2] = 0.0
+    algebraic_variables[3] = 0.0
+    algebraic_variables[4] = 0.0
+    algebraic_variables[5] = 0.0
+    algebraic_variables[6] = 0.0
+    algebraic_variables[7] = 0.0
+    algebraic_variables[8] = 0.0
+    algebraic_variables[9] = 0.0
+    algebraic_variables[10] = 0.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     pass
 
 

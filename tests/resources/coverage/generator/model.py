@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
@@ -375,23 +375,23 @@ def objective_function_0(u, f, data):
     algebraic_variables = data[5]
     external_variables = data[6]
 
-    algebraicVariables[0] = u[0]
-    algebraicVariables[1] = u[1]
+    algebraic_variables[0] = u[0]
+    algebraic_variables[1] = u[1]
 
-    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0
-    f[1] = algebraicVariables[1]-algebraicVariables[0]-(computed_constants[198]+computed_constants[197])
+    f[0] = algebraic_variables[1]+algebraic_variables[0]+states[0]-0.0
+    f[1] = algebraic_variables[1]-algebraic_variables[0]-(computed_constants[198]+computed_constants[197])
 
 
 def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables):
     u = [nan]*2
 
-    u[0] = algebraicVariables[0]
-    u[1] = algebraicVariables[1]
+    u[0] = algebraic_variables[0]
+    u[1] = algebraic_variables[1]
 
     u = nla_solve(objective_function_0, u, 2, [voi, states, rates, constants, computed_constants, algebraic_variables, external_variables])
 
-    algebraicVariables[0] = u[0]
-    algebraicVariables[1] = u[1]
+    algebraic_variables[0] = u[0]
+    algebraic_variables[1] = u[1]
 
 
 def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
@@ -415,11 +415,11 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     computed_constants[186] = nan
     computed_constants[198] = 1.0
     computed_constants[197] = 3.0
-    algebraicVariables[0] = 2.0
-    algebraicVariables[1] = 1.0
+    algebraic_variables[0] = 2.0
+    algebraic_variables[1] = 1.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     computed_constants[0] = eq_func(constants[1], constants[0])
     computed_constants[1] = constants[1]/eq_func(constants[0], constants[0])
     computed_constants[2] = neq_func(constants[1], constants[0])
@@ -614,5 +614,5 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
     find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)

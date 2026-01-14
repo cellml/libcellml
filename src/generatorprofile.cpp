@@ -225,7 +225,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.7.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.8.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -489,14 +489,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                           "[CODE]"
                                                           "}\n";
 
-        mInterfaceComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+        mInterfaceComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)\n"
                                                                      "{\n"
                                                                      "[CODE]"
                                                                      "}\n";
 
-        mInterfaceComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
-        mImplementationComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+        mInterfaceComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationComputeComputedConstantsMethodDiffString = "void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
                                                                   "{\n"
                                                                   "[CODE]"
                                                                   "}\n";
@@ -741,7 +741,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.6.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.8.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -799,8 +799,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computed_constants";
-        mAlgebraicVariablesArrayString = "algebraicVariables";
-        mExternalVariablesArrayString = "externalVariables";
+        mAlgebraicVariablesArrayString = "algebraic_variables";
+        mExternalVariablesArrayString = "external_variables";
 
         mExternalVariableMethodTypeDefinitionNonDiffString = "";
         mExternalVariableMethodTypeDefinitionDiffString = "";
@@ -928,12 +928,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeComputedConstantsMethodNonDiffString = "";
         mImplementationComputeComputedConstantsMethodNonDiffString = "\n"
-                                                                     "def compute_computed_constants(constants, computed_constants, algebraic):\n"
+                                                                     "def compute_computed_constants(constants, computed_constants, algebraic_variables):\n"
                                                                      "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodDiffString = "";
         mImplementationComputeComputedConstantsMethodDiffString = "\n"
-                                                                  "def compute_computed_constants(states, rates, constants, computed_constants, algebraic):\n"
+                                                                  "def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):\n"
                                                                   "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";

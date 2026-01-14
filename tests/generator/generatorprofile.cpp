@@ -271,7 +271,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.7.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.8.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
@@ -574,17 +574,17 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseArraysMethodString(true));
 
-    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n",
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString(false));
-    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n"
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeComputedConstantsMethodString(false));
 
-    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
+    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString(true));
-    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
+    EXPECT_EQ("void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n"
               "{\n"
               "[CODE]"
               "}\n",
