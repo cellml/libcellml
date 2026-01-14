@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
@@ -50,7 +50,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     states[0] = 0.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     pass
 
 
@@ -59,5 +59,5 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[0] = 2.0*voi
-    algebraicVariables[1] = 3.0*algebraicVariables[0]
+    algebraic_variables[0] = 2.0*voi
+    algebraic_variables[1] = 3.0*algebraic_variables[0]

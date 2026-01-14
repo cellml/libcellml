@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 4
@@ -89,7 +89,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[4] = 36.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     computed_constants[0] = constants[1]-10.613
     computed_constants[1] = constants[1]-115.0
     computed_constants[2] = constants[1]+12.0
@@ -99,11 +99,11 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
     membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_i_L = constants[2]*(states[0]-computed_constants[0])
     potassium_channel_i_K = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
-    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
-    rates[0] = -(-membrane_i_Stim+externalVariables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
+    algebraic_variables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    rates[0] = -(-membrane_i_Stim+external_variables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
     sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
-    rates[2] = algebraicVariables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
+    rates[2] = algebraic_variables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
     sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
     sodium_channel_h_gate_alpha_h = 0.07*exp(states[0]/20.0)
     rates[1] = sodium_channel_h_gate_alpha_h*(1.0-states[1])-sodium_channel_h_gate_beta_h*states[1]
@@ -113,5 +113,5 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraic_variables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)

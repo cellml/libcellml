@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 0
@@ -44,36 +44,36 @@ def objective_function_0(u, f, data):
     computed_constants = data[1]
     algebraic_variables = data[2]
 
-    algebraicVariables[0] = u[0]
-    algebraicVariables[1] = u[1]
-    algebraicVariables[2] = u[2]
+    algebraic_variables[0] = u[0]
+    algebraic_variables[1] = u[1]
+    algebraic_variables[2] = u[2]
 
-    f[0] = 2.0*algebraicVariables[2]+algebraicVariables[1]-2.0*algebraicVariables[0]-(-1.0)
-    f[1] = 3.0*algebraicVariables[2]-3.0*algebraicVariables[1]-algebraicVariables[0]-5.0
-    f[2] = algebraicVariables[2]-2.0*algebraicVariables[1]+3.0*algebraicVariables[0]-6.0
+    f[0] = 2.0*algebraic_variables[2]+algebraic_variables[1]-2.0*algebraic_variables[0]-(-1.0)
+    f[1] = 3.0*algebraic_variables[2]-3.0*algebraic_variables[1]-algebraic_variables[0]-5.0
+    f[2] = algebraic_variables[2]-2.0*algebraic_variables[1]+3.0*algebraic_variables[0]-6.0
 
 
 def find_root_0(constants, computed_constants, algebraic_variables):
     u = [nan]*3
 
-    u[0] = algebraicVariables[0]
-    u[1] = algebraicVariables[1]
-    u[2] = algebraicVariables[2]
+    u[0] = algebraic_variables[0]
+    u[1] = algebraic_variables[1]
+    u[2] = algebraic_variables[2]
 
     u = nla_solve(objective_function_0, u, 3, [constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[0] = u[0]
-    algebraicVariables[1] = u[1]
-    algebraicVariables[2] = u[2]
+    algebraic_variables[0] = u[0]
+    algebraic_variables[1] = u[1]
+    algebraic_variables[2] = u[2]
 
 
 def initialise_arrays(constants, computed_constants, algebraic_variables):
-    algebraicVariables[0] = 1.0
-    algebraicVariables[1] = 1.0
-    algebraicVariables[2] = 1.0
+    algebraic_variables[0] = 1.0
+    algebraic_variables[1] = 1.0
+    algebraic_variables[2] = 1.0
 
 
-def compute_computed_constants(constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     pass
 
 

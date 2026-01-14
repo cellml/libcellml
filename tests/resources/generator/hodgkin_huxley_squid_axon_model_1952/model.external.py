@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 3
@@ -96,29 +96,29 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[4] = 36.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(states, rates, constants, computed_constants, algebraic_variables ):
     computed_constants[0] = constants[1]-10.613
     computed_constants[1] = constants[1]-115.0
     computed_constants[2] = constants[1]+12.0
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    externalVariables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
-    algebraicVariables[4] = 4.0*exp(externalVariables[1]/18.0)
-    algebraicVariables[3] = 0.1*(externalVariables[1]+25.0)/(exp((externalVariables[1]+25.0)/10.0)-1.0)
-    rates[1] = algebraicVariables[3]*(1.0-states[1])-algebraicVariables[4]*states[1]
-    algebraicVariables[6] = 1.0/(exp((externalVariables[1]+30.0)/10.0)+1.0)
-    algebraicVariables[5] = 0.07*exp(externalVariables[1]/20.0)
-    rates[0] = algebraicVariables[5]*(1.0-states[0])-algebraicVariables[6]*states[0]
-    algebraicVariables[7] = 0.125*exp(externalVariables[1]/80.0)
-    externalVariables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
-    rates[2] = externalVariables[2]*(1.0-states[2])-algebraicVariables[7]*states[2]
+    external_variables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
+    algebraic_variables[4] = 4.0*exp(external_variables[1]/18.0)
+    algebraic_variables[3] = 0.1*(external_variables[1]+25.0)/(exp((external_variables[1]+25.0)/10.0)-1.0)
+    rates[1] = algebraic_variables[3]*(1.0-states[1])-algebraic_variables[4]*states[1]
+    algebraic_variables[6] = 1.0/(exp((external_variables[1]+30.0)/10.0)+1.0)
+    algebraic_variables[5] = 0.07*exp(external_variables[1]/20.0)
+    rates[0] = algebraic_variables[5]*(1.0-states[0])-algebraic_variables[6]*states[0]
+    algebraic_variables[7] = 0.125*exp(external_variables[1]/80.0)
+    external_variables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
+    rates[2] = external_variables[2]*(1.0-states[2])-algebraic_variables[7]*states[2]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    algebraicVariables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    externalVariables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
-    algebraicVariables[1] = constants[2]*(externalVariables[1]-computed_constants[0])
-    externalVariables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
-    externalVariables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
-    algebraicVariables[2] = constants[4]*pow(states[2], 4.0)*(externalVariables[1]-computed_constants[2])
+    algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    external_variables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
+    algebraic_variables[1] = constants[2]*(external_variables[1]-computed_constants[0])
+    external_variables[2] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 2)
+    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    algebraic_variables[2] = constants[4]*pow(states[2], 4.0)*(external_variables[1]-computed_constants[2])
