@@ -5,7 +5,7 @@
 .. image:: https://github.com/cellml/libcellml/actions/workflows/deploy-on-release.yml/badge.svg
   :width: 200
   :target: https://github.com/cellml/libcellml/actions/workflows/deploy-on-release.yml
-  
+
 libCellML
 =========
 
@@ -52,4 +52,4 @@ We put a lot of effort into developing this tool. If it helps your research, ple
 
 You can use the "Cite this repository" button in the sidebar to export the citation in your preferred format (BibTeX, APA, etc.).
 
-For specific versioning requirements (e.g., for reproducibility), you can find DOIs for individual releases `on our Zenodo page <https://doi.org/10.5281/zenodo.6975548>`_.
+For specific versioning requirements (e.g., for reproducibility), you can find DOIs for individual releases on `our Zenodo page <https://doi.org/10.5281/zenodo.6975548>`_.
