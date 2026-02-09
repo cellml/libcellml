@@ -8,7 +8,7 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - name: The libCellML contributors.
+  - name: libCellML Contributors
     website: >-
       https://github.com/cellml/libcellml/graphs/contributors
 identifiers:
