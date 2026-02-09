@@ -1,5 +1,6 @@
 .. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.6975548-blue.svg
   :target: https://doi.org/10.5281/zenodo.6975548
+  :alt: DOI
 
 .. image:: https://github.com/cellml/libcellml/actions/workflows/deploy-on-release.yml/badge.svg
   :width: 200
@@ -39,3 +40,16 @@ libCellML is an open-source project, thus, welcoming contributions.
 
 If you are interested we encourage you to fork `libCellML on GitHub <https://github.com/cellml/libcellml>`_ and submit a pull request with your modifications.
 For more information on contributing code see the documentation at https://libcellml.org/.
+
+How to cite
+-----------
+
+We put a lot of effort into developing this tool. If it helps your research, please consider citing the latest version:
+
+.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.6975548-blue.svg
+  :target: https://doi.org/10.5281/zenodo.6975548
+  :alt: DOI
+
+You can use the "Cite this repository" button in the sidebar to export the citation in your preferred format (BibTeX, APA, etc.).
+
+For specific versioning requirements (e.g., for reproducibility), you can find DOIs for individual releases `on our Zenodo page <https://doi.org/10.5281/zenodo.6975548>`_.
