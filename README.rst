@@ -1,7 +1,10 @@
+.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.6975548-blue.svg
+  :target: https://doi.org/10.5281/zenodo.6975548
+
 .. image:: https://github.com/cellml/libcellml/actions/workflows/deploy-on-release.yml/badge.svg
   :width: 200
   :target: https://github.com/cellml/libcellml/actions/workflows/deploy-on-release.yml
-
+  
 libCellML
 =========
 
