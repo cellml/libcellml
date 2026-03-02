@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.7.0";
+const char VERSION[] = "0.8.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t CONSTANT_COUNT = 0;
@@ -19,12 +19,12 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"vcell", "microlitre", "cell_geometry"},
     {"vss", "microlitre", "cell_geometry"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"L", "centimeter", "cell_geometry"},
     {"rad", "centimeter", "cell_geometry"}
 };
@@ -82,7 +82,7 @@ void initialiseArrays(double *constants, double *computedConstants, double *alge
 {
 }
 
-void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 

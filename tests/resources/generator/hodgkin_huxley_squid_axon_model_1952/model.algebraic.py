@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 4
@@ -36,7 +36,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current"},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},
@@ -48,7 +48,7 @@ ALGEBRAIC_INFO = [
     {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate"}
 ]
 
-EXTERNAL_INFO = [
+EXTERNAL_VARIABLE_INFO = [
     {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane"}
 ]
 
@@ -97,7 +97,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[4] = 36.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
     computed_constants[0] = constants[1]-10.613
     computed_constants[1] = constants[1]-115.0
     computed_constants[2] = constants[1]+12.0

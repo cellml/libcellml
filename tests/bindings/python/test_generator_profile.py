@@ -698,12 +698,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)\n{\n[CODE]}\n',
                          g.implementationComputeComputedConstantsMethodString(False))
         g.setImplementationComputeComputedConstantsMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString(False))
 
-        self.assertEqual('void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n[CODE]}\n',
+        self.assertEqual('void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)\n{\n[CODE]}\n',
                          g.implementationComputeComputedConstantsMethodString(True))
         g.setImplementationComputeComputedConstantsMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString(True))
@@ -895,7 +895,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo ALGEBRAIC_INFO[] = {\n[CODE]};\n', g.implementationAlgebraicVariableInfoString())
+        self.assertEqual('const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {\n[CODE]};\n', g.implementationAlgebraicVariableInfoString())
         g.setImplementationAlgebraicVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationAlgebraicVariableInfoString())
 
@@ -904,7 +904,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo EXTERNAL_INFO[] = {\n[CODE]};\n', g.implementationExternalVariableInfoString())
+        self.assertEqual('const VariableInfo EXTERNAL_VARIABLE_INFO[] = {\n[CODE]};\n', g.implementationExternalVariableInfoString())
         g.setImplementationExternalVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationExternalVariableInfoString())
 
@@ -949,7 +949,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char VERSION[] = "0.7.0";\n', g.implementationVersionString())
+        self.assertEqual('const char VERSION[] = "0.8.0";\n', g.implementationVersionString())
         g.setImplementationVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVersionString())
 
@@ -985,12 +985,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);\n',
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);\n',
                          g.interfaceComputeComputedConstantsMethodString(False))
         g.setInterfaceComputeComputedConstantsMethodString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString(False))
 
-        self.assertEqual('void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n',
+        self.assertEqual('void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);\n',
                          g.interfaceComputeComputedConstantsMethodString(True))
         g.setInterfaceComputeComputedConstantsMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString(True))
@@ -1178,7 +1178,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('extern const VariableInfo ALGEBRAIC_INFO[];\n', g.interfaceAlgebraicVariableInfoString())
+        self.assertEqual('extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];\n', g.interfaceAlgebraicVariableInfoString())
         g.setInterfaceAlgebraicVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceAlgebraicVariableInfoString())
 
@@ -1187,7 +1187,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('extern const VariableInfo EXTERNAL_INFO[];\n', g.interfaceExternalVariableInfoString())
+        self.assertEqual('extern const VariableInfo EXTERNAL_VARIABLE_INFO[];\n', g.interfaceExternalVariableInfoString())
         g.setInterfaceExternalVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceExternalVariableInfoString())
 

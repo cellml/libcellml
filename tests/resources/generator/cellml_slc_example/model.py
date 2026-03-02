@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 9
@@ -27,7 +27,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 
@@ -55,7 +55,7 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[8] = 1.1
 
 
-def compute_computed_constants(constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     computed_constants[0] = constants[8]*(constants[7]*constants[1]-constants[6]*constants[2])/(constants[5]*constants[2]+constants[4]*constants[1]+constants[3]*constants[2]*constants[1]+constants[0])
 
 

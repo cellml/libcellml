@@ -19,7 +19,7 @@ typedef struct {
 
 extern const VariableInfo CONSTANT_INFO[];
 extern const VariableInfo COMPUTED_CONSTANT_INFO[];
-extern const VariableInfo ALGEBRAIC_INFO[];
+extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];
 
 double * createConstantsArray();
 double * createComputedConstantsArray();
@@ -28,5 +28,5 @@ double * createAlgebraicVariablesArray();
 void deleteArray(double *array);
 
 void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);
-void computeComputedConstants(double *constants, double *computedConstants, double *algebraic);
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);
 void computeVariables(double *constants, double *computedConstants, double *algebraicVariables);

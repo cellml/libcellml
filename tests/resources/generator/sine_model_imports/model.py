@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
@@ -31,7 +31,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "kPi_32", "units": "dimensionless", "component": "parabolic_approx_sin"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "sin", "units": "dimensionless", "component": "actual_sin"},
     {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin"},
     {"name": "z", "units": "dimensionless", "component": "parabolic_approx_sin"}
@@ -69,7 +69,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     computed_constants[4] = 3.0*3.14159265358979/2.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
     pass
 
 

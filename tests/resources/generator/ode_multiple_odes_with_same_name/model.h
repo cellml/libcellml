@@ -22,7 +22,7 @@ extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
 extern const VariableInfo CONSTANT_INFO[];
 extern const VariableInfo COMPUTED_CONSTANT_INFO[];
-extern const VariableInfo ALGEBRAIC_INFO[];
+extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];
 
 double * createStatesArray();
 double * createConstantsArray();
@@ -32,6 +32,6 @@ double * createAlgebraicVariablesArray();
 void deleteArray(double *array);
 
 void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic);
+void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables);

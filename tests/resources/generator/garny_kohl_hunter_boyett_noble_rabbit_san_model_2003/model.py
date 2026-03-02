@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 15
@@ -171,7 +171,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump"},
     {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger"},
     {"name": "i_b_K", "units": "nanoA", "component": "potassium_background_current"},
@@ -379,7 +379,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[109] = 0.006875
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
     computed_constants[0] = 1.07*(3.0*constants[0]-0.1)/(3.0*(1.0+0.7745*exp(-(3.0*constants[0]-2.05)/0.295))) if eq_func(constants[1], 0.0) else constants[2]*constants[0]/(1.0+0.7745*exp(-(3.0*constants[0]-2.05)/0.295)) if eq_func(constants[1], 1.0) else 1.07*29.0*constants[0]/(30.0*(1.0+0.7745*exp(-(29.0*constants[0]-24.5)/1.95)))
     computed_constants[1] = constants[3]+computed_constants[0]*(constants[4]-constants[3])
     computed_constants[3] = constants[8]+computed_constants[0]*(constants[9]-constants[8]) if eq_func(constants[1], 0.0) else constants[12]+computed_constants[0]*(constants[13]-constants[12]) if eq_func(constants[1], 1.0) else constants[10]+computed_constants[0]*(constants[11]-constants[10])
