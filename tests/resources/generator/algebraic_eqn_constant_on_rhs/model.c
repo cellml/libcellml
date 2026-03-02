@@ -65,7 +65,7 @@ void initialiseArrays(double *constants, double *computedConstants, double *alge
     computedConstants[0] = 1.0;
 }
 
-void computeComputedConstants(double voi, double *constants, double *computedConstants, double *algebraicVariables)
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 

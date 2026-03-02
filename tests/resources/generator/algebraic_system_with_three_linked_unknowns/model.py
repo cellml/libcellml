@@ -73,7 +73,7 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     algebraicVariables[2] = 1.0
 
 
-def compute_computed_constants(voi, constants, computed_constants, algebraic_variables):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     pass
 
 

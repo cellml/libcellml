@@ -42,7 +42,7 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[1] = 0.0011
 
 
-def compute_computed_constants(voi, constants, computed_constants, algebraic_variables):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     computed_constants[0] = 1000.0*3.14*constants[1]*constants[1]*constants[0]
     computed_constants[1] = 0.02*computed_constants[0]
 

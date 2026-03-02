@@ -489,8 +489,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                           "[CODE]"
                                                           "}\n";
 
-        mInterfaceComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double voi, double *constants, double *computedConstants, double *algebraicVariables);\n";
-        mImplementationComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double voi, double *constants, double *computedConstants, double *algebraicVariables)\n"
+        mInterfaceComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);\n";
+        mImplementationComputeComputedConstantsMethodNonDiffString = "void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)\n"
                                                                      "{\n"
                                                                      "[CODE]"
                                                                      "}\n";
@@ -928,7 +928,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeComputedConstantsMethodNonDiffString = "";
         mImplementationComputeComputedConstantsMethodNonDiffString = "\n"
-                                                                     "def compute_computed_constants(voi, constants, computed_constants, algebraic_variables):\n"
+                                                                     "def compute_computed_constants(constants, computed_constants, algebraic_variables):\n"
                                                                      "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodDiffString = "";

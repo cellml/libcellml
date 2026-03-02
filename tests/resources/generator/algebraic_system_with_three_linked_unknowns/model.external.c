@@ -81,7 +81,7 @@ void initialiseArrays(double *constants, double *computedConstants, double *alge
 {
 }
 
-void computeComputedConstants(double voi, double *constants, double *computedConstants, double *algebraicVariables)
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 
