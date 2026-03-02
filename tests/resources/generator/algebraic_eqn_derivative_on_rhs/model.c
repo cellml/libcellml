@@ -26,7 +26,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"a", "per_s", "my_ode"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"x", "per_s", "my_algebraic_eqn"}
 };
 

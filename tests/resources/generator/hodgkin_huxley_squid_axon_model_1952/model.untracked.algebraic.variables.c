@@ -36,7 +36,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"E_K", "millivolt", "potassium_channel"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createStatesArray()

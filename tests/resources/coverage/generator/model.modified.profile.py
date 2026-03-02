@@ -231,12 +231,12 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component"},
     {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component"}
 ]
 
-EXTERNAL_INFO = [
+EXTERNAL_VARIABLE_INFO = [
     {"name": "eqnPlus", "units": "dimensionless", "component": "my_component"}
 ]
 

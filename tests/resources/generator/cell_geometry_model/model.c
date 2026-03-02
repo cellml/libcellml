@@ -22,7 +22,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"vss", "microlitre", "cell_geometry"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createConstantsArray()

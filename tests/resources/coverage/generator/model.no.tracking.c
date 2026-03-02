@@ -25,7 +25,7 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"eqnNlaVariable2", "dimensionless", "my_component"},
     {"eqnNlaVariable1", "dimensionless", "my_component"}
 };

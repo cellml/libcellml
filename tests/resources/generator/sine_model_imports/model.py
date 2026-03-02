@@ -31,7 +31,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "kPi_32", "units": "dimensionless", "component": "parabolic_approx_sin"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "sin", "units": "dimensionless", "component": "actual_sin"},
     {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin"},
     {"name": "z", "units": "dimensionless", "component": "parabolic_approx_sin"}

@@ -27,7 +27,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 

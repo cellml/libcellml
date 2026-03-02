@@ -25,7 +25,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "a", "units": "per_s", "component": "my_ode"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "xx", "units": "dimensionless", "component": "my_algebraic_eqn"}
 ]
 

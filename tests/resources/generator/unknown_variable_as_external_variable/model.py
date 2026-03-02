@@ -26,11 +26,11 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss"}
 ]
 
-EXTERNAL_INFO = [
+EXTERNAL_VARIABLE_INFO = [
     {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss"}
 ]
 

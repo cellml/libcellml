@@ -20,7 +20,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "a", "units": "dimensionless", "component": "my_algebraic_system"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "c", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "b", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "d", "units": "dimensionless", "component": "my_algebraic_system"}

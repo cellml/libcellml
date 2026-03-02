@@ -36,7 +36,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "comp_oc_M_M", "units": "M", "component": "main"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 

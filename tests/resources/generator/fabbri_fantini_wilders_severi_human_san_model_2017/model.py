@@ -172,7 +172,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "alpha_a", "units": "per_second", "component": "i_KACh_a_gate"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "Nai", "units": "millimolar", "component": "Nai_concentration"},
     {"name": "E_Na", "units": "millivolt", "component": "Ionic_values"},
     {"name": "E_Ca", "units": "millivolt", "component": "Ionic_values"},

@@ -37,7 +37,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"comp_oc_M_M", "M", "main"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createConstantsArray()

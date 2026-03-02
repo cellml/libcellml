@@ -319,14 +319,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "};\n",
               generatorProfile->implementationComputedConstantInfoString());
 
-    EXPECT_EQ("extern const VariableInfo ALGEBRAIC_INFO[];\n", generatorProfile->interfaceAlgebraicVariableInfoString());
-    EXPECT_EQ("const VariableInfo ALGEBRAIC_INFO[] = {\n"
+    EXPECT_EQ("extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];\n", generatorProfile->interfaceAlgebraicVariableInfoString());
+    EXPECT_EQ("const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {\n"
               "[CODE]"
               "};\n",
               generatorProfile->implementationAlgebraicVariableInfoString());
 
-    EXPECT_EQ("extern const VariableInfo EXTERNAL_INFO[];\n", generatorProfile->interfaceExternalVariableInfoString());
-    EXPECT_EQ("const VariableInfo EXTERNAL_INFO[] = {\n"
+    EXPECT_EQ("extern const VariableInfo EXTERNAL_VARIABLE_INFO[];\n", generatorProfile->interfaceExternalVariableInfoString());
+    EXPECT_EQ("const VariableInfo EXTERNAL_VARIABLE_INFO[] = {\n"
               "[CODE]"
               "};\n",
               generatorProfile->implementationExternalVariableInfoString());

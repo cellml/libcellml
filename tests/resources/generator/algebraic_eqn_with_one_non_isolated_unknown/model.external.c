@@ -21,11 +21,11 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"d", "dimensionless", "my_algebraic_eqn"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_eqn"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"c", "dimensionless", "my_algebraic_eqn"}
 };
 

@@ -29,7 +29,7 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"y3", "dimensionless", "main"},
     {"y2_scaled", "dimensionless", "main"}
 };

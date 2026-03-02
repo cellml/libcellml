@@ -269,13 +269,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                     "[CODE]"
                                                     "};\n";
 
-        mInterfaceAlgebraicVariableInfoString = "extern const VariableInfo ALGEBRAIC_INFO[];\n";
-        mImplementationAlgebraicVariableInfoString = "const VariableInfo ALGEBRAIC_INFO[] = {\n"
+        mInterfaceAlgebraicVariableInfoString = "extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];\n";
+        mImplementationAlgebraicVariableInfoString = "const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {\n"
                                                      "[CODE]"
                                                      "};\n";
 
-        mInterfaceExternalVariableInfoString = "extern const VariableInfo EXTERNAL_INFO[];\n";
-        mImplementationExternalVariableInfoString = "const VariableInfo EXTERNAL_INFO[] = {\n"
+        mInterfaceExternalVariableInfoString = "extern const VariableInfo EXTERNAL_VARIABLE_INFO[];\n";
+        mImplementationExternalVariableInfoString = "const VariableInfo EXTERNAL_VARIABLE_INFO[] = {\n"
                                                     "[CODE]"
                                                     "};\n";
 
@@ -782,12 +782,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                     "]\n";
 
         mInterfaceAlgebraicVariableInfoString = "";
-        mImplementationAlgebraicVariableInfoString = "ALGEBRAIC_INFO = [\n"
+        mImplementationAlgebraicVariableInfoString = "ALGEBRAIC_VARIABLE_INFO = [\n"
                                                      "[CODE]"
                                                      "]\n";
 
         mInterfaceExternalVariableInfoString = "";
-        mImplementationExternalVariableInfoString = "EXTERNAL_INFO = [\n"
+        mImplementationExternalVariableInfoString = "EXTERNAL_VARIABLE_INFO = [\n"
                                                     "[CODE]"
                                                     "]\n";
 

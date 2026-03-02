@@ -30,7 +30,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane"},
     {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current"},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},

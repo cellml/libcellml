@@ -21,7 +21,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "vss", "units": "microlitre", "component": "cell_geometry"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 

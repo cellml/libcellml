@@ -173,7 +173,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"alpha_a", "per_second", "i_KACh_a_gate"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"Nai", "millimolar", "Nai_concentration"},
     {"E_Na", "millivolt", "Ionic_values"},
     {"E_Ca", "millivolt", "Ionic_values"},

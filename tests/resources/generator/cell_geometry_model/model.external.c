@@ -19,12 +19,12 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"vcell", "microlitre", "cell_geometry"},
     {"vss", "microlitre", "cell_geometry"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"L", "centimeter", "cell_geometry"},
     {"rad", "centimeter", "cell_geometry"}
 };

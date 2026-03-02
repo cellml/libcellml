@@ -232,12 +232,12 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"eqnComputedConstant1", "dimensionless", "my_component"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"eqnNlaVariable2", "dimensionless", "my_component"},
     {"eqnNlaVariable1", "dimensionless", "my_component"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"eqnPlus", "dimensionless", "my_component"}
 };
 

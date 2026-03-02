@@ -171,7 +171,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump"},
     {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger"},
     {"name": "i_b_K", "units": "nanoA", "component": "potassium_background_current"},

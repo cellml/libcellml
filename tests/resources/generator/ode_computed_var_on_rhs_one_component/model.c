@@ -26,7 +26,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"a", "per_s", "my_component"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createStatesArray()

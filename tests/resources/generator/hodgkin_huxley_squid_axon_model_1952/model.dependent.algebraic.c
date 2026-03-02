@@ -37,7 +37,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"E_K", "millivolt", "potassium_channel"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"i_L", "microA_per_cm2", "leakage_current"},
     {"i_K", "microA_per_cm2", "potassium_channel"},
     {"i_Na", "microA_per_cm2", "sodium_channel"},
@@ -48,7 +48,7 @@ const VariableInfo ALGEBRAIC_INFO[] = {
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"i_Stim", "microA_per_cm2", "membrane"},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate"}
 };

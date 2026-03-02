@@ -18,12 +18,12 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "vcell", "units": "microlitre", "component": "cell_geometry"},
     {"name": "vss", "units": "microlitre", "component": "cell_geometry"}
 ]
 
-EXTERNAL_INFO = [
+EXTERNAL_VARIABLE_INFO = [
     {"name": "L", "units": "centimeter", "component": "cell_geometry"},
     {"name": "rad", "units": "centimeter", "component": "cell_geometry"}
 ]

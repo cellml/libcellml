@@ -36,11 +36,11 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate"}
 ]
 
-EXTERNAL_INFO = [
+EXTERNAL_VARIABLE_INFO = [
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"}
 ]
 

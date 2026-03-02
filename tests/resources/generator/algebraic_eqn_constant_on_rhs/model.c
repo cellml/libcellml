@@ -19,7 +19,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"x", "dimensionless", "my_component"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createConstantsArray()

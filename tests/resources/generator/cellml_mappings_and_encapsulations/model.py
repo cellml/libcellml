@@ -25,7 +25,7 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "local_complex_maths", "units": "mM", "component": "circle_sibling"},
     {"name": "two_x", "units": "milli_mole", "component": "circle_x_sibling"}
 ]

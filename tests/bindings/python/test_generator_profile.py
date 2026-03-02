@@ -895,7 +895,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo ALGEBRAIC_INFO[] = {\n[CODE]};\n', g.implementationAlgebraicVariableInfoString())
+        self.assertEqual('const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {\n[CODE]};\n', g.implementationAlgebraicVariableInfoString())
         g.setImplementationAlgebraicVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationAlgebraicVariableInfoString())
 
@@ -904,7 +904,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo EXTERNAL_INFO[] = {\n[CODE]};\n', g.implementationExternalVariableInfoString())
+        self.assertEqual('const VariableInfo EXTERNAL_VARIABLE_INFO[] = {\n[CODE]};\n', g.implementationExternalVariableInfoString())
         g.setImplementationExternalVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationExternalVariableInfoString())
 
@@ -1178,7 +1178,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('extern const VariableInfo ALGEBRAIC_INFO[];\n', g.interfaceAlgebraicVariableInfoString())
+        self.assertEqual('extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];\n', g.interfaceAlgebraicVariableInfoString())
         g.setInterfaceAlgebraicVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceAlgebraicVariableInfoString())
 
@@ -1187,7 +1187,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('extern const VariableInfo EXTERNAL_INFO[];\n', g.interfaceExternalVariableInfoString())
+        self.assertEqual('extern const VariableInfo EXTERNAL_VARIABLE_INFO[];\n', g.interfaceExternalVariableInfoString())
         g.setInterfaceExternalVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceExternalVariableInfoString())
 

@@ -50,7 +50,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"kNlaCompCst", "dimensionless", "main"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"xNlaStateCst", "dimensionless", "main"},
     {"xNlaStateCompCst", "dimensionless", "main"},
     {"xNlaStateState", "dimensionless", "main"},

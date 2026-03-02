@@ -29,7 +29,7 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "y2_scaled", "units": "dimensionless", "component": "main"}
 ]
 

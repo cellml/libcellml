@@ -32,7 +32,7 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "i_Leak", "units": "microA_per_cm2", "component": "leakage_current"},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel"},
     {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel"},

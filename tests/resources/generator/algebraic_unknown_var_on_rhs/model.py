@@ -19,7 +19,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "y", "units": "dimensionless", "component": "my_component"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 

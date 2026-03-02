@@ -21,7 +21,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"a", "dimensionless", "my_algebraic_system"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"c", "dimensionless", "my_algebraic_system"},
     {"b", "dimensionless", "my_algebraic_system"},
     {"d", "dimensionless", "my_algebraic_system"}

@@ -172,7 +172,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"g_f_K", "microS", "hyperpolarisation_activated_current"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"i_p", "nanoA", "sodium_potassium_pump"},
     {"i_NaCa", "nanoA", "sodium_calcium_exchanger"},
     {"i_b_K", "nanoA", "potassium_background_current"},

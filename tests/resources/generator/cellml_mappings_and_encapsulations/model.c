@@ -26,7 +26,7 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"local_complex_maths", "mM", "circle_sibling"},
     {"two_x", "milli_mole", "circle_x_sibling"}
 };

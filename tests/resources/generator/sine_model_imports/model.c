@@ -32,7 +32,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"kPi_32", "dimensionless", "parabolic_approx_sin"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"sin", "dimensionless", "actual_sin"},
     {"sin", "dimensionless", "parabolic_approx_sin"},
     {"z", "dimensionless", "parabolic_approx_sin"}

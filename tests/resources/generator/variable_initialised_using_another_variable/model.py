@@ -49,7 +49,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "kNlaCompCst", "units": "dimensionless", "component": "main"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "xNlaStateCst", "units": "dimensionless", "component": "main"},
     {"name": "xNlaStateCompCst", "units": "dimensionless", "component": "main"},
     {"name": "xNlaStateState", "units": "dimensionless", "component": "main"},

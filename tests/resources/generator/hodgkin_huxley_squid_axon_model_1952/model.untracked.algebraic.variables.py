@@ -35,7 +35,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
 ]
 
 

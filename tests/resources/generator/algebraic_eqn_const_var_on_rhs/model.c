@@ -20,7 +20,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"x", "dimensionless", "my_algebraic_eqn"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
 };
 
 double * createConstantsArray()

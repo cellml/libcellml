@@ -19,7 +19,7 @@ typedef struct {
 
 extern const VariableInfo CONSTANT_INFO[];
 extern const VariableInfo COMPUTED_CONSTANT_INFO[];
-extern const VariableInfo ALGEBRAIC_INFO[];
+extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];
 
 double * createConstantsArray();
 double * createComputedConstantsArray();
