@@ -496,25 +496,20 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // an AnalyserModel object refers to a static version of a model, which
     // means that we can safely cache the result of a call to that utility. In
     // turn, this means that we can speed up any feature (e.g., code generation)
-    // that also relies on that utility. When it comes to the key for the cache,
-    // we use the Cantor pairing function with the address of the two variables
-    // as parameters, thus ensuring the uniqueness of the key (see
-    // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function).
+    // that also relies on that utility.
 
     auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    if (v2 < v1) {
-        v1 += v2;
-        v2 = v1 - v2;
-        v1 = v1 - v2;
+    if (v1 > v2) {
+        std::swap(v1, v2);
     }
 
-    auto key = ((v1 + v2) * (v1 + v2 + 1) >> 1U) + v2;
-    auto cacheKey = mPimpl->mCachedEquivalentVariables.find(key);
+    auto key = AnalyserModel::AnalyserModelImpl::VariableKeyPair {v1, v2};
+    auto it = mPimpl->mCachedEquivalentVariables.find(key);
 
-    if (cacheKey != mPimpl->mCachedEquivalentVariables.end()) {
-        return cacheKey->second;
+    if (it != mPimpl->mCachedEquivalentVariables.end()) {
+        return it->second;
     }
 
     auto res = libcellml::areEquivalentVariables(variable1, variable2);
