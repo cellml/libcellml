@@ -1945,7 +1945,7 @@ std::string Generator::GeneratorImpl::generateInitialiseVariableCode(const Analy
             || (generatedConstantDependencies != nullptr)) {
             auto initialisingAnalyserVariable = std::find_if(remainingVariables.begin(), remainingVariables.end(),
                                                              [&](const AnalyserVariablePtr &av) {
-                                                                 return areEquivalentVariables(initialValueVariable, av->variable());
+                                                                 return mAnalyserModel->areEquivalentVariables(initialValueVariable, av->variable());
                                                              });
 
             if (initialisingAnalyserVariable != remainingVariables.end()) {
