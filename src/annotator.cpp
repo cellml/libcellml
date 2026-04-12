@@ -236,13 +236,16 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                 if (idList.count(id) != 0) {
                     // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
+                    auto compEquiv = owningComponent(equivalentVariable);
+                    auto compVar = owningComponent(variable);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a CONNECTION item.
                         if (it->second->type() == CellmlElementType::CONNECTION) {
                             auto testPair = it->second->variablePair();
-                            if ((owningComponent(testPair->variable1()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable2()) == owningComponent(variable))) {
-                                found = true;
-                            } else if ((owningComponent(testPair->variable2()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable1()) == owningComponent(variable))) {
+                            auto compTest1 = owningComponent(testPair->variable1());
+                            auto compTest2 = owningComponent(testPair->variable2());
+                            if ((compTest1 == compEquiv && compTest2 == compVar)
+                                || (compTest2 == compEquiv && compTest1 == compVar)) {
                                 found = true;
                             }
                         }
@@ -352,7 +355,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
 
     converted->mPimpl->mType = type;
 
-    switch (item->type()) {
+    switch (type) {
     case CellmlElementType::COMPONENT:
     case CellmlElementType::COMPONENT_REF: {
         ComponentWeakPtr weakComponent = item->component();

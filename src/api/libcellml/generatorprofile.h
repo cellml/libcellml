@@ -129,7 +129,7 @@ public:
      *
      * @return The @c std::string representing the MathML "equality" operator.
      */
-    std::string equalityString() const;
+    const std::string &equalityString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "equality"
@@ -152,7 +152,7 @@ public:
      *
      * @return The @c std::string representing the MathML "equal to" operator.
      */
-    std::string eqString() const;
+    const std::string &eqString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "equal to"
@@ -175,7 +175,7 @@ public:
      * @return The @c std::string representing the MathML "not equal to"
      * operator.
      */
-    std::string neqString() const;
+    const std::string &neqString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "not equal to"
@@ -196,7 +196,7 @@ public:
      *
      * @return The @c std::string representing the MathML "less than" operator.
      */
-    std::string ltString() const;
+    const std::string &ltString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "less than"
@@ -219,7 +219,7 @@ public:
      * @return The @c std::string representing the MathML "less than or equal
      * to" operator.
      */
-    std::string leqString() const;
+    const std::string &leqString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "less than or
@@ -243,7 +243,7 @@ public:
      * @return The @c std::string representing the MathML "greater than"
      * operator.
      */
-    std::string gtString() const;
+    const std::string &gtString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "greater than"
@@ -266,7 +266,7 @@ public:
      * @return The @c std::string representing the MathML "greater than or
      * equal to" operator.
      */
-    std::string geqString() const;
+    const std::string &geqString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "greater than or
@@ -287,7 +287,7 @@ public:
      *
      * @return The @c std::string representing the MathML "and" operator.
      */
-    std::string andString() const;
+    const std::string &andString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "and" operator.
@@ -306,7 +306,7 @@ public:
      *
      * @return The @c std::string representing the MathML "or" operator.
      */
-    std::string orString() const;
+    const std::string &orString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "or" operator.
@@ -327,7 +327,7 @@ public:
      * @return The @c std::string representing the MathML "exclusive or"
      * operator.
      */
-    std::string xorString() const;
+    const std::string &xorString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "exclusive or"
@@ -347,7 +347,7 @@ public:
      *
      * @return The @c std::string representing the MathML "not" operator.
      */
-    std::string notString() const;
+    const std::string &notString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "not" operator.
@@ -579,7 +579,7 @@ public:
      *
      * @return The @c std::string representing the MathML "plus" operator.
      */
-    std::string plusString() const;
+    const std::string &plusString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "plus" operator.
@@ -598,7 +598,7 @@ public:
      *
      * @return The @c std::string representing the MathML "minus" operator.
      */
-    std::string minusString() const;
+    const std::string &minusString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "minus" operator.
@@ -617,7 +617,7 @@ public:
      *
      * @return The @c std::string representing the MathML "times" operator.
      */
-    std::string timesString() const;
+    const std::string &timesString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "times" operator.
@@ -636,7 +636,7 @@ public:
      *
      * @return The @c std::string representing the MathML "divide" operator.
      */
-    std::string divideString() const;
+    const std::string &divideString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "divide" operator.
@@ -658,7 +658,7 @@ public:
      * @return The @c std::string representing the MathML "power" operator or
      * function.
      */
-    std::string powerString() const;
+    const std::string &powerString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "power" operator or
@@ -681,7 +681,7 @@ public:
      * @return The @c std::string representing the MathML "square root"
      * function.
      */
-    std::string squareRootString() const;
+    const std::string &squareRootString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "square root"
@@ -701,7 +701,7 @@ public:
      *
      * @return The @c std::string representing the MathML "square" function.
      */
-    std::string squareString() const;
+    const std::string &squareString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "square" function.
@@ -723,7 +723,7 @@ public:
      * @return The @c std::string representing the MathML "absolute value"
      * function.
      */
-    std::string absoluteValueString() const;
+    const std::string &absoluteValueString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "absolute value"
@@ -746,7 +746,7 @@ public:
      * @return The @c std::string representing the MathML "exponential"
      * function.
      */
-    std::string exponentialString() const;
+    const std::string &exponentialString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "exponential"
@@ -769,7 +769,7 @@ public:
      * @return The @c std::string representing the MathML "natural logarithm"
      * function.
      */
-    std::string naturalLogarithmString() const;
+    const std::string &naturalLogarithmString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "natural logarithm"
@@ -793,7 +793,7 @@ public:
      * @return The @c std::string representing the MathML "common logarithm"
      * function.
      */
-    std::string commonLogarithmString() const;
+    const std::string &commonLogarithmString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "common logarithm"
@@ -814,7 +814,7 @@ public:
      *
      * @return The @c std::string representing the MathML "ceiling" function.
      */
-    std::string ceilingString() const;
+    const std::string &ceilingString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "ceiling" function.
@@ -833,7 +833,7 @@ public:
      *
      * @return The @c std::string representing the MathML "floor" function.
      */
-    std::string floorString() const;
+    const std::string &floorString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "floor" function.
@@ -852,7 +852,7 @@ public:
      *
      * @return The @c std::string representing the MathML "minimum" function.
      */
-    std::string minString() const;
+    const std::string &minString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "minimum" function.
@@ -871,7 +871,7 @@ public:
      *
      * @return The @c std::string representing the MathML "maximum" function.
      */
-    std::string maxString() const;
+    const std::string &maxString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "maximum" function.
@@ -891,7 +891,7 @@ public:
      *
      * @return The @c std::string representing the MathML "remainder" function.
      */
-    std::string remString() const;
+    const std::string &remString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "remainder"
@@ -933,7 +933,7 @@ public:
      *
      * @return The @c std::string representing the MathML "sine" function.
      */
-    std::string sinString() const;
+    const std::string &sinString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "sine" function.
@@ -952,7 +952,7 @@ public:
      *
      * @return The @c std::string representing the MathML "cosine" function.
      */
-    std::string cosString() const;
+    const std::string &cosString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "cosine" function.
@@ -971,7 +971,7 @@ public:
      *
      * @return The @c std::string representing the MathML "tangent" function.
      */
-    std::string tanString() const;
+    const std::string &tanString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "tangent" function.
@@ -990,7 +990,7 @@ public:
      *
      * @return The @c std::string representing the MathML "secant" function.
      */
-    std::string secString() const;
+    const std::string &secString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "secant" function.
@@ -1010,7 +1010,7 @@ public:
      *
      * @return The @c std::string representing the MathML "cosecant" function.
      */
-    std::string cscString() const;
+    const std::string &cscString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "cosecant"
@@ -1031,7 +1031,7 @@ public:
      *
      * @return The @c std::string representing the MathML "cotangent" function.
      */
-    std::string cotString() const;
+    const std::string &cotString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "cotangent"
@@ -1054,7 +1054,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic sine"
      * function.
      */
-    std::string sinhString() const;
+    const std::string &sinhString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic sine"
@@ -1078,7 +1078,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic cosine"
      * function.
      */
-    std::string coshString() const;
+    const std::string &coshString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic cosine"
@@ -1102,7 +1102,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic tangent"
      * function.
      */
-    std::string tanhString() const;
+    const std::string &tanhString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic
@@ -1126,7 +1126,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic secant"
      * function.
      */
-    std::string sechString() const;
+    const std::string &sechString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic secant"
@@ -1150,7 +1150,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic cosecant"
      * function.
      */
-    std::string cschString() const;
+    const std::string &cschString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic
@@ -1174,7 +1174,7 @@ public:
      * @return The @c std::string representing the MathML "hyperbolic cotangent"
      * function.
      */
-    std::string cothString() const;
+    const std::string &cothString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "hyperbolic
@@ -1196,7 +1196,7 @@ public:
      *
      * @return The @c std::string representing the MathML "arc sine" function.
      */
-    std::string asinString() const;
+    const std::string &asinString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc sine"
@@ -1217,7 +1217,7 @@ public:
      *
      * @return The @c std::string representing the MathML "arc cosine" function.
      */
-    std::string acosString() const;
+    const std::string &acosString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc cosine"
@@ -1239,7 +1239,7 @@ public:
      * @return The @c std::string representing the MathML "arc tangent"
      * function.
      */
-    std::string atanString() const;
+    const std::string &atanString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc tangent"
@@ -1260,7 +1260,7 @@ public:
      *
      * @return The @c std::string representing the MathML "arc secant" function.
      */
-    std::string asecString() const;
+    const std::string &asecString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc secant"
@@ -1283,7 +1283,7 @@ public:
      * @return The @c std::string representing the MathML "arc cosecant"
      * function.
      */
-    std::string acscString() const;
+    const std::string &acscString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc cosecant"
@@ -1306,7 +1306,7 @@ public:
      * @return The @c std::string representing the MathML "arc cotangent"
      * function.
      */
-    std::string acotString() const;
+    const std::string &acotString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc cotangent"
@@ -1329,7 +1329,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic sine"
      * function.
      */
-    std::string asinhString() const;
+    const std::string &asinhString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1353,7 +1353,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic
      * cosine" function.
      */
-    std::string acoshString() const;
+    const std::string &acoshString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1377,7 +1377,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic
      * tangent" function.
      */
-    std::string atanhString() const;
+    const std::string &atanhString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1401,7 +1401,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic
      * secant" function.
      */
-    std::string asechString() const;
+    const std::string &asechString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1425,7 +1425,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic
      * cosecant" function.
      */
-    std::string acschString() const;
+    const std::string &acschString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1449,7 +1449,7 @@ public:
      * @return The @c std::string representing the MathML "arc hyperbolic
      * cotangent" function.
      */
-    std::string acothString() const;
+    const std::string &acothString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "arc hyperbolic
@@ -1475,7 +1475,7 @@ public:
      * @return The @c std::string representing the MathML "if" part of a
      * "conditional" statement or operator.
      */
-    std::string conditionalOperatorIfString() const;
+    const std::string &conditionalOperatorIfString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "if" part of a
@@ -1499,7 +1499,7 @@ public:
      * @return The @c std::string representing the MathML "else" part of a
      * "conditional" statement or operator.
      */
-    std::string conditionalOperatorElseString() const;
+    const std::string &conditionalOperatorElseString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "else" part of a
@@ -1523,7 +1523,7 @@ public:
      * @return The @c std::string representing the MathML "if" part of a
      * "piecewise" statement.
      */
-    std::string piecewiseIfString() const;
+    const std::string &piecewiseIfString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "if" part of a
@@ -1547,7 +1547,7 @@ public:
      * @return The @c std::string representing the MathML "else" part of a
      * "piecewise" statement.
      */
-    std::string piecewiseElseString() const;
+    const std::string &piecewiseElseString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "else" part of a
@@ -1590,7 +1590,7 @@ public:
      *
      * @return The @c std::string representing the MathML "true" boolean.
      */
-    std::string trueString() const;
+    const std::string &trueString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "true" boolean.
@@ -1609,7 +1609,7 @@ public:
      *
      * @return The @c std::string representing the MathML "false" boolean.
      */
-    std::string falseString() const;
+    const std::string &falseString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "false" boolean.
@@ -1628,7 +1628,7 @@ public:
      *
      * @return The @c std::string representing the MathML "Euler's number".
      */
-    std::string eString() const;
+    const std::string &eString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "Euler's number".
@@ -1647,7 +1647,7 @@ public:
      *
      * @return The @c std::string representing the MathML "π" constant.
      */
-    std::string piString() const;
+    const std::string &piString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "π" constant.
@@ -1665,7 +1665,7 @@ public:
      *
      * @return The @c std::string representing the MathML "infinity" value.
      */
-    std::string infString() const;
+    const std::string &infString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "infinity" value.
@@ -1685,7 +1685,7 @@ public:
      *
      * @return The @c std::string representing the MathML "not-a-number" value.
      */
-    std::string nanString() const;
+    const std::string &nanString() const;
 
     /**
      * @brief Set the @c std::string representing the MathML "not-a-number"
@@ -1707,7 +1707,7 @@ public:
      *
      * @return The @c std::string for the "equal to" function implementation.
      */
-    std::string eqFunctionString() const;
+    const std::string &eqFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "equal to" function implementation.
@@ -1728,7 +1728,7 @@ public:
      * @return The @c std::string for the "not equal to" function
      * implementation.
      */
-    std::string neqFunctionString() const;
+    const std::string &neqFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "not equal to" function
@@ -1749,7 +1749,7 @@ public:
      *
      * @return The @c std::string for the "less than" function implementation.
      */
-    std::string ltFunctionString() const;
+    const std::string &ltFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "less than" function
@@ -1772,7 +1772,7 @@ public:
      * @return The @c std::string for the "less than or equal to" function
      * implementation.
      */
-    std::string leqFunctionString() const;
+    const std::string &leqFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "less than or equal to" function
@@ -1795,7 +1795,7 @@ public:
      * @return The @c std::string for the "greater than" function
      * implementation.
      */
-    std::string gtFunctionString() const;
+    const std::string &gtFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "greater than" function
@@ -1818,7 +1818,7 @@ public:
      * @return The @c std::string for the "greater than or equal to" function
      * implementation.
      */
-    std::string geqFunctionString() const;
+    const std::string &geqFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "greater than or equal to" function
@@ -1839,7 +1839,7 @@ public:
      *
      * @return The @c std::string for the "and" function implementation.
      */
-    std::string andFunctionString() const;
+    const std::string &andFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "and" function implementation.
@@ -1858,7 +1858,7 @@ public:
      *
      * @return The @c std::string for the "or" function implementation.
      */
-    std::string orFunctionString() const;
+    const std::string &orFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "or" function implementation.
@@ -1879,7 +1879,7 @@ public:
      * @return The @c std::string for the "exclusive or" function
      * implementation.
      */
-    std::string xorFunctionString() const;
+    const std::string &xorFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "exclusive or" function
@@ -1899,7 +1899,7 @@ public:
      *
      * @return The @c std::string for the "not" function implementation.
      */
-    std::string notFunctionString() const;
+    const std::string &notFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "not" function implementation.
@@ -1918,7 +1918,7 @@ public:
      *
      * @return The @c std::string for the "minimum" function implementation.
      */
-    std::string minFunctionString() const;
+    const std::string &minFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "minimum" function implementation.
@@ -1937,7 +1937,7 @@ public:
      *
      * @return The @c std::string for the "maximum" function implementation.
      */
-    std::string maxFunctionString() const;
+    const std::string &maxFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "maximum" function implementation.
@@ -1958,7 +1958,7 @@ public:
      *
      * @return The @c std::string for the "secant" function implementation.
      */
-    std::string secFunctionString() const;
+    const std::string &secFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "secant" function implementation.
@@ -1977,7 +1977,7 @@ public:
      *
      * @return The @c std::string for the "cosecant" function implementation.
      */
-    std::string cscFunctionString() const;
+    const std::string &cscFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "cosecant" function implementation.
@@ -1997,7 +1997,7 @@ public:
      *
      * @return The @c std::string for the "cotangent" function implementation.
      */
-    std::string cotFunctionString() const;
+    const std::string &cotFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "cotangent" function
@@ -2020,7 +2020,7 @@ public:
      * @return The @c std::string for the "hyperbolic secant" function
      * implementation.
      */
-    std::string sechFunctionString() const;
+    const std::string &sechFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "hyperbolic secant" function
@@ -2044,7 +2044,7 @@ public:
      * @return The @c std::string for the "hyperbolic cosecant" function
      * implementation.
      */
-    std::string cschFunctionString() const;
+    const std::string &cschFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "hyperbolic cosecant" function
@@ -2068,7 +2068,7 @@ public:
      * @return The @c std::string for the "hyperbolic cotangent" function
      * implementation.
      */
-    std::string cothFunctionString() const;
+    const std::string &cothFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "hyperbolic cotangent" function
@@ -2090,7 +2090,7 @@ public:
      *
      * @return The @c std::string for the "arc secant" function implementation.
      */
-    std::string asecFunctionString() const;
+    const std::string &asecFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc secant" function
@@ -2112,7 +2112,7 @@ public:
      * @return The @c std::string for the "arc cosecant" function
      * implementation.
      */
-    std::string acscFunctionString() const;
+    const std::string &acscFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc cosecant" function
@@ -2135,7 +2135,7 @@ public:
      * @return The @c std::string for the "arc cotangent" function
      * implementation.
      */
-    std::string acotFunctionString() const;
+    const std::string &acotFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc cotangent" function implementation.
@@ -2157,7 +2157,7 @@ public:
      * @return The @c std::string for the "arc hyperbolic secant" function
      * implementation.
      */
-    std::string asechFunctionString() const;
+    const std::string &asechFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc hyperbolic secant" function
@@ -2181,7 +2181,7 @@ public:
      * @return The @c std::string for the "arc hyperbolic cosecant" function
      * implementation.
      */
-    std::string acschFunctionString() const;
+    const std::string &acschFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc hyperbolic cosecant" function
@@ -2205,7 +2205,7 @@ public:
      * @return The @c std::string for the "arc hyperbolic cotangent" function
      * implementation.
      */
-    std::string acothFunctionString() const;
+    const std::string &acothFunctionString() const;
 
     /**
      * @brief Set the @c std::string for the "arc hyperbolic cotangent" function
@@ -2228,7 +2228,7 @@ public:
      *
      * @return The @c std::string for a comment.
      */
-    std::string commentString() const;
+    const std::string &commentString() const;
 
     /**
      * @brief Set the @c std::string for a comment.
@@ -2247,7 +2247,7 @@ public:
      *
      * @return The @c std::string for an origin comment.
      */
-    std::string originCommentString() const;
+    const std::string &originCommentString() const;
 
     /**
      * @brief Set the @c std::string for an origin comment.
@@ -2271,7 +2271,7 @@ public:
      *
      * @return The @c std::string for the interface file name.
      */
-    std::string interfaceFileNameString() const;
+    const std::string &interfaceFileNameString() const;
 
     /**
      * @brief Set the @c std::string for the interface file name.
@@ -2290,7 +2290,7 @@ public:
      *
      * @return The @c std::string for the interface of a header.
      */
-    std::string interfaceHeaderString() const;
+    const std::string &interfaceHeaderString() const;
 
     /**
      * @brief Set the @c std::string for the interface of a header.
@@ -2309,7 +2309,7 @@ public:
      *
      * @return The @c std::string for an implementation header.
      */
-    std::string implementationHeaderString() const;
+    const std::string &implementationHeaderString() const;
 
     /**
      * @brief Set the @c std::string for an implementation header.
@@ -2332,7 +2332,7 @@ public:
      *
      * @return The @c std::string for the interface of the version constant.
      */
-    std::string interfaceVersionString() const;
+    const std::string &interfaceVersionString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the version constant.
@@ -2353,7 +2353,7 @@ public:
      * @return The @c std::string for the implementation of the version
      * constant.
      */
-    std::string implementationVersionString() const;
+    const std::string &implementationVersionString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the version
@@ -2376,7 +2376,7 @@ public:
      * @return The @c std::string for the interface of the libCellML version
      * constant.
      */
-    std::string interfaceLibcellmlVersionString() const;
+    const std::string &interfaceLibcellmlVersionString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the libCellML version
@@ -2400,7 +2400,7 @@ public:
      * @return The @c std::string for the implementation of the libCellML
      * version constant.
      */
-    std::string implementationLibcellmlVersionString() const;
+    const std::string &implementationLibcellmlVersionString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the libCellML
@@ -2423,7 +2423,7 @@ public:
      *
      * @return The @c std::string for the interface of the state count constant.
      */
-    std::string interfaceStateCountString() const;
+    const std::string &interfaceStateCountString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the state count
@@ -2446,7 +2446,7 @@ public:
      * @return The @c std::string for the implementation of the state count
      * constant.
      */
-    std::string implementationStateCountString() const;
+    const std::string &implementationStateCountString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the state count
@@ -2471,7 +2471,7 @@ public:
      * @return The @c std::string for the interface of the constant count
      * constant.
      */
-    std::string interfaceConstantCountString() const;
+    const std::string &interfaceConstantCountString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the constant count
@@ -2494,7 +2494,7 @@ public:
      * @return The @c std::string for the implementation of the constant count
      * constant.
      */
-    std::string implementationConstantCountString() const;
+    const std::string &implementationConstantCountString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the constant
@@ -2519,7 +2519,7 @@ public:
      * @return The @c std::string for the interface of the computed constant count
      * constant.
      */
-    std::string interfaceComputedConstantCountString() const;
+    const std::string &interfaceComputedConstantCountString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the computed constant count
@@ -2542,7 +2542,7 @@ public:
      * @return The @c std::string for the implementation of the computed constant count
      * constant.
      */
-    std::string implementationComputedConstantCountString() const;
+    const std::string &implementationComputedConstantCountString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the computed constant
@@ -2567,7 +2567,7 @@ public:
      * @return The @c std::string for the interface of the algebraic variable count
      * constant.
      */
-    std::string interfaceAlgebraicVariableCountString() const;
+    const std::string &interfaceAlgebraicVariableCountString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the algebraic variable count
@@ -2590,7 +2590,7 @@ public:
      * @return The @c std::string for the implementation of the algebraic variable count
      * constant.
      */
-    std::string implementationAlgebraicVariableCountString() const;
+    const std::string &implementationAlgebraicVariableCountString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the algebraic
@@ -2615,7 +2615,7 @@ public:
      * @return The @c std::string for the interface of the external variable count
      * constant.
      */
-    std::string interfaceExternalVariableCountString() const;
+    const std::string &interfaceExternalVariableCountString() const;
 
     /**
      * @brief Set the @c std::string for the interface of the external variable count
@@ -2638,7 +2638,7 @@ public:
      * @return The @c std::string for the implementation of the external variable count
      * constant.
      */
-    std::string implementationExternalVariableCountString() const;
+    const std::string &implementationExternalVariableCountString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of the external
@@ -2663,7 +2663,7 @@ public:
      * @return The @c std::string for the data structure for the variable
      * information object.
      */
-    std::string variableInfoObjectString() const;
+    const std::string &variableInfoObjectString() const;
 
     /**
      * @brief Set the @c std::string for the data structure for the variable
@@ -2690,7 +2690,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the variable of integration.
      */
-    std::string interfaceVoiInfoString() const;
+    const std::string &interfaceVoiInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2714,7 +2714,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the variable of integration.
      */
-    std::string implementationVoiInfoString() const;
+    const std::string &implementationVoiInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2740,7 +2740,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the different states.
      */
-    std::string interfaceStateInfoString() const;
+    const std::string &interfaceStateInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2764,7 +2764,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the different states.
      */
-    std::string implementationStateInfoString() const;
+    const std::string &implementationStateInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2790,7 +2790,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the different constants.
      */
-    std::string interfaceConstantInfoString() const;
+    const std::string &interfaceConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2814,7 +2814,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the different constants.
      */
-    std::string implementationConstantInfoString() const;
+    const std::string &implementationConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2840,7 +2840,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the different computed constants.
      */
-    std::string interfaceComputedConstantInfoString() const;
+    const std::string &interfaceComputedConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2864,7 +2864,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the different computed constants.
      */
-    std::string implementationComputedConstantInfoString() const;
+    const std::string &implementationComputedConstantInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2890,7 +2890,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the different algebraic variables.
      */
-    std::string interfaceAlgebraicVariableInfoString() const;
+    const std::string &interfaceAlgebraicVariableInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2914,7 +2914,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the different algebraic variables.
      */
-    std::string implementationAlgebraicVariableInfoString() const;
+    const std::string &implementationAlgebraicVariableInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2940,7 +2940,7 @@ public:
      * @return The @c std::string for the interface of some information about
      * the different external variables.
      */
-    std::string interfaceExternalVariableInfoString() const;
+    const std::string &interfaceExternalVariableInfoString() const;
 
     /**
      * @brief Set the @c std::string for the interface of some information about
@@ -2964,7 +2964,7 @@ public:
      * @return The @c std::string for the implementation of some information
      * about the different external variables.
      */
-    std::string implementationExternalVariableInfoString() const;
+    const std::string &implementationExternalVariableInfoString() const;
 
     /**
      * @brief Set the @c std::string for the implementation of some information
@@ -2990,7 +2990,7 @@ public:
      * @return The @c std::string for an entry in an array for some information
      * about a variable.
      */
-    std::string variableInfoEntryString() const;
+    const std::string &variableInfoEntryString() const;
 
     /**
      * @brief Set the @c std::string for an entry in an array for some
@@ -3014,7 +3014,7 @@ public:
      *
      * @return The @c std::string for the name of the variable of integration.
      */
-    std::string voiString() const;
+    const std::string &voiString() const;
 
     /**
      * @brief Set the @c std::string for the name of the variable of
@@ -3034,7 +3034,7 @@ public:
      *
      * @return The @c std::string for the name of the states array.
      */
-    std::string statesArrayString() const;
+    const std::string &statesArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the states array.
@@ -3053,7 +3053,7 @@ public:
      *
      * @return The @c std::string for the name of the rates array.
      */
-    std::string ratesArrayString() const;
+    const std::string &ratesArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the rates array.
@@ -3072,7 +3072,7 @@ public:
      *
      * @return The @c std::string for the name of the constants array.
      */
-    std::string constantsArrayString() const;
+    const std::string &constantsArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the constants array.
@@ -3091,7 +3091,7 @@ public:
      *
      * @return The @c std::string for the name of the computed constants array.
      */
-    std::string computedConstantsArrayString() const;
+    const std::string &computedConstantsArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the computed constants array.
@@ -3110,7 +3110,7 @@ public:
      *
      * @return The @c std::string for the name of the algebraic variables array.
      */
-    std::string algebraicVariablesArrayString() const;
+    const std::string &algebraicVariablesArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the algebraic variables array.
@@ -3129,7 +3129,7 @@ public:
      *
      * @return The @c std::string for the name of the external variables array.
      */
-    std::string externalVariablesArrayString() const;
+    const std::string &externalVariablesArrayString() const;
 
     /**
      * @brief Set the @c std::string for the name of the external variables array.
@@ -3155,7 +3155,7 @@ public:
      * @return The @c std::string for the type definition of an external
      * variable method.
      */
-    std::string externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const;
+    const std::string &externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the type definition of an external
@@ -3184,7 +3184,7 @@ public:
      *
      * @return The @c std::string for the call to the external variable method.
      */
-    std::string externalVariableMethodCallString(bool forDifferentialModel) const;
+    const std::string &externalVariableMethodCallString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the call to the external variable
@@ -3218,8 +3218,8 @@ public:
      * @return The @c std::string for the data structure for the root finding
      * information object.
      */
-    std::string rootFindingInfoObjectString(bool forDifferentialModel,
-                                            bool withExternalVariables) const;
+    const std::string &rootFindingInfoObjectString(bool forDifferentialModel,
+                                                   bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the data structure for the root finding
@@ -3247,7 +3247,7 @@ public:
      *
      * @return The @c std::string for the external NLA solve method.
      */
-    std::string externNlaSolveMethodString() const;
+    const std::string &externNlaSolveMethodString() const;
 
     /**
      * @brief Set the @c std::string for the external NLA solve method.
@@ -3271,8 +3271,8 @@ public:
      *
      * @return The @c std::string for the call to the find root method.
      */
-    std::string findRootCallString(bool forDifferentialModel,
-                                   bool withExternalVariables) const;
+    const std::string &findRootCallString(bool forDifferentialModel,
+                                          bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the find root method.
@@ -3304,8 +3304,8 @@ public:
      *
      * @return The @c std::string for the find root method.
      */
-    std::string findRootMethodString(bool forDifferentialModel,
-                                     bool withExternalVariables) const;
+    const std::string &findRootMethodString(bool forDifferentialModel,
+                                            bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the find root method.
@@ -3341,8 +3341,8 @@ public:
      *
      * @return The @c std::string for the call to the NLA solve method.
      */
-    std::string nlaSolveCallString(bool forDifferentialModel,
-                                   bool withExternalVariables) const;
+    const std::string &nlaSolveCallString(bool forDifferentialModel,
+                                          bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the call to the NLA solve method.
@@ -3377,8 +3377,8 @@ public:
      *
      * @return The @c std::string for the objective function method.
      */
-    std::string objectiveFunctionMethodString(bool forDifferentialModel,
-                                              bool withExternalVariables) const;
+    const std::string &objectiveFunctionMethodString(bool forDifferentialModel,
+                                                     bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the objective function method.
@@ -3410,7 +3410,7 @@ public:
      * @return The @c std::string for the @c u array used in the objective function
      * and find root methods.
      */
-    std::string uArrayString() const;
+    const std::string &uArrayString() const;
 
     /**
      * @brief Set the @c std::string for the @c u array used in the objective
@@ -3436,7 +3436,7 @@ public:
      * @return The @c std::string for the @f array used in the objective function
      * and find root methods.
      */
-    std::string fArrayString() const;
+    const std::string &fArrayString() const;
 
     /**
      * @brief Set the @c std::string for the @f array used in the objective
@@ -3459,7 +3459,7 @@ public:
      *
      * @return The @c std::string for the interface to create the states array.
      */
-    std::string interfaceCreateStatesArrayMethodString() const;
+    const std::string &interfaceCreateStatesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to create the states
@@ -3482,7 +3482,7 @@ public:
      * @return The @c std::string for the implementation to create the states
      * array.
      */
-    std::string implementationCreateStatesArrayMethodString() const;
+    const std::string &implementationCreateStatesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to create the states
@@ -3503,7 +3503,7 @@ public:
      *
      * @return The @c std::string for the interface to create the constants array.
      */
-    std::string interfaceCreateConstantsArrayMethodString() const;
+    const std::string &interfaceCreateConstantsArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to create the constants
@@ -3526,7 +3526,7 @@ public:
      * @return The @c std::string for the implementation to create the constants
      * array.
      */
-    std::string implementationCreateConstantsArrayMethodString() const;
+    const std::string &implementationCreateConstantsArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to create the constants
@@ -3547,7 +3547,7 @@ public:
      *
      * @return The @c std::string for the interface to create the computed constants array.
      */
-    std::string interfaceCreateComputedConstantsArrayMethodString() const;
+    const std::string &interfaceCreateComputedConstantsArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to create the computed constants
@@ -3570,7 +3570,7 @@ public:
      * @return The @c std::string for the implementation to create the computed constants
      * array.
      */
-    std::string implementationCreateComputedConstantsArrayMethodString() const;
+    const std::string &implementationCreateComputedConstantsArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to create the computed constants
@@ -3591,7 +3591,7 @@ public:
      *
      * @return The @c std::string for the interface to create the algebraic variables array.
      */
-    std::string interfaceCreateAlgebraicVariablesArrayMethodString() const;
+    const std::string &interfaceCreateAlgebraicVariablesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to create the algebraic variables
@@ -3614,7 +3614,7 @@ public:
      * @return The @c std::string for the implementation to create the algebraic variables
      * array.
      */
-    std::string implementationCreateAlgebraicVariablesArrayMethodString() const;
+    const std::string &implementationCreateAlgebraicVariablesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to create the algebraic variables
@@ -3635,7 +3635,7 @@ public:
      *
      * @return The @c std::string for the interface to create the external variables array.
      */
-    std::string interfaceCreateExternalVariablesArrayMethodString() const;
+    const std::string &interfaceCreateExternalVariablesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to create the external variables
@@ -3658,7 +3658,7 @@ public:
      * @return The @c std::string for the implementation to create the external variables
      * array.
      */
-    std::string implementationCreateExternalVariablesArrayMethodString() const;
+    const std::string &implementationCreateExternalVariablesArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to create the external variables
@@ -3678,7 +3678,7 @@ public:
      *
      * @return The @c std::string for the interface to delete an array.
      */
-    std::string interfaceDeleteArrayMethodString() const;
+    const std::string &interfaceDeleteArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to delete an array.
@@ -3697,7 +3697,7 @@ public:
      *
      * @return The @c std::string for the implementation to delete an array.
      */
-    std::string implementationDeleteArrayMethodString() const;
+    const std::string &implementationDeleteArrayMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to delete an array.
@@ -3719,7 +3719,7 @@ public:
      *
      * @return The @c std::string for the interface to initialise variables.
      */
-    std::string interfaceInitialiseArraysMethodString(bool forDifferentialModel) const;
+    const std::string &interfaceInitialiseArraysMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to initialise variables.
@@ -3746,7 +3746,7 @@ public:
      * @return The @c std::string for the implementation to initialise
      * variables.
      */
-    std::string implementationInitialiseArraysMethodString(bool forDifferentialModel) const;
+    const std::string &implementationInitialiseArraysMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise
@@ -3777,7 +3777,7 @@ public:
      * @return The @c std::string for the interface to compute computed
      * constants.
      */
-    std::string interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const;
+    const std::string &interfaceComputeComputedConstantsMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute computed
@@ -3806,7 +3806,7 @@ public:
      * @return The @c std::string for the implementation to compute computed
      * constants.
      */
-    std::string implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const;
+    const std::string &implementationComputeComputedConstantsMethodString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute computed
@@ -3835,7 +3835,7 @@ public:
      *
      * @return The @c std::string for the interface to compute rates.
      */
-    std::string interfaceComputeRatesMethodString(bool withExternalVariables) const;
+    const std::string &interfaceComputeRatesMethodString(bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute rates.
@@ -3860,7 +3860,7 @@ public:
      *
      * @return The @c std::string for the implementation to compute rates.
      */
-    std::string implementationComputeRatesMethodString(bool withExternalVariables) const;
+    const std::string &implementationComputeRatesMethodString(bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute rates.
@@ -3889,8 +3889,8 @@ public:
      *
      * @return The @c std::string for the interface to compute variables.
      */
-    std::string interfaceComputeVariablesMethodString(bool forDifferentialModel,
-                                                      bool withExternalVariables) const;
+    const std::string &interfaceComputeVariablesMethodString(bool forDifferentialModel,
+                                                             bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute variables.
@@ -3921,8 +3921,8 @@ public:
      *
      * @return The @c std::string for the implementation to compute variables.
      */
-    std::string implementationComputeVariablesMethodString(bool forDifferentialModel,
-                                                           bool withExternalVariables) const;
+    const std::string &implementationComputeVariablesMethodString(bool forDifferentialModel,
+                                                                  bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute
@@ -3950,7 +3950,7 @@ public:
      *
      * @return The @c std::string for an empty method.
      */
-    std::string emptyMethodString() const;
+    const std::string &emptyMethodString() const;
 
     /**
      * @brief Set the @c std::string for an empty method.
@@ -3968,7 +3968,7 @@ public:
      *
      * @return The @c std::string for an indent.
      */
-    std::string indentString() const;
+    const std::string &indentString() const;
 
     /**
      * @brief Set the @c std::string for an indent.
@@ -3986,7 +3986,7 @@ public:
      *
      * @return The @c std::string for declaring a variable.
      */
-    std::string variableDeclarationString() const;
+    const std::string &variableDeclarationString() const;
 
     /**
      * @brief Set the @c std::string for declaring a variable.
@@ -4005,7 +4005,7 @@ public:
      *
      * @return The @c std::string for opening an array.
      */
-    std::string openArrayString() const;
+    const std::string &openArrayString() const;
 
     /**
      * @brief Set the @c std::string for opening an array.
@@ -4023,7 +4023,7 @@ public:
      *
      * @return The @c std::string for closing an array.
      */
-    std::string closeArrayString() const;
+    const std::string &closeArrayString() const;
 
     /**
      * @brief Set the @c std::string for closing an array.
@@ -4041,7 +4041,7 @@ public:
      *
      * @return The @c std::string for separating elements in an array.
      */
-    std::string arrayElementSeparatorString() const;
+    const std::string &arrayElementSeparatorString() const;
 
     /**
      * @brief Set the @c std::string for separating elements in an array.
@@ -4060,7 +4060,7 @@ public:
      *
      * @return The @c std::string for a command separator.
      */
-    std::string commandSeparatorString() const;
+    const std::string &commandSeparatorString() const;
 
     /**
      * @brief Set the @c std::string for a command separator.

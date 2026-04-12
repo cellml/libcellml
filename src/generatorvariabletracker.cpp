@@ -299,10 +299,14 @@ void GeneratorVariableTracker::GeneratorVariableTrackerImpl::trackAllAlgebraicVa
 
 std::vector<AnalyserVariablePtr> GeneratorVariableTracker::GeneratorVariableTrackerImpl::trackableVariables(const AnalyserModelPtr &analyserModel) const
 {
-    auto res = analyserModel->constants();
-    auto computedConstants = analyserModel->computedConstants();
-    auto algebraic = analyserModel->algebraicVariables();
+    const auto &constants = analyserModel->constants();
+    const auto &computedConstants = analyserModel->computedConstants();
+    const auto &algebraic = analyserModel->algebraicVariables();
 
+    std::vector<AnalyserVariablePtr> res;
+
+    res.reserve(constants.size() + computedConstants.size() + algebraic.size());
+    res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraic.begin(), algebraic.end());
 

@@ -66,6 +66,8 @@ struct AnalyserModel::AnalyserModelImpl
         }
     };
 
+    mutable std::unordered_map<Variable *, AnalyserVariablePtr> mAnalyserVariables;
+
     struct VariableKeyPairHash
     {
         size_t operator()(const VariableKeyPair &pair) const

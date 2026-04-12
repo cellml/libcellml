@@ -16,7 +16,8 @@ limitations under the License.
 
 #include "libcellml/printer.h"
 
-#include <regex>
+#include <set>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -72,22 +73,17 @@ std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idLis
 std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap, IdList &idList, bool autoIds)
 {
     std::string connections;
-    ComponentMap serialisedComponentMap;
+    connections.reserve(128 * componentMap.size());
+    using ComponentPairKey = std::pair<Component *, Component *>;
+    std::set<ComponentPairKey> serialisedComponentPairs;
     size_t componentMapIndex1 = 0;
     for (auto iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
         ComponentPtr currentComponent1 = iterPair->first;
         ComponentPtr currentComponent2 = iterPair->second;
-        ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
+        ComponentPairKey currentKey = std::make_pair(currentComponent1.get(), currentComponent2.get());
         // Check whether this set of connections has already been serialised.
-        bool pairFound = false;
-        for (const auto &serialisedIterPair : serialisedComponentMap) {
-            if (serialisedIterPair == currentComponentPair) {
-                pairFound = true;
-                break;
-            }
-        }
         // Continue to the next component pair if the current pair has already been serialised.
-        if (pairFound) {
+        if (!serialisedComponentPairs.insert(currentKey).second) {
             ++componentMapIndex1;
             continue;
         }
@@ -118,7 +114,6 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             connections += " id=\"" + makeUniqueId(idList) + "\"";
         }
         connections += ">" + mappingVariables + "</connection>";
-        serialisedComponentMap.push_back(currentComponentPair);
         ++componentMapIndex1;
     }
 
@@ -128,14 +123,20 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
     static const std::string wrapElementName = "math_wrap_as_single_root_element";
-    static const std::regex before(">[\\s\n\t]*");
-    static const std::regex after("[\\s\n\t]*<");
-    static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
     // Remove any XML declarations from the string.
-    std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
+    std::string normalisedMath = math;
+    size_t pos = 0;
+    while ((pos = normalisedMath.find("<?xml", pos)) != std::string::npos) {
+        auto end = normalisedMath.find("?>", pos + 5);
+        if (end != std::string::npos) {
+            normalisedMath.erase(pos, end + 2 - pos);
+        } else {
+            break;
+        }
+    }
     xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {
         auto rootNode = xmlDoc->rootNode();
@@ -146,8 +147,29 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
             childNode = childNode->next();
         }
         // Clean whitespace in the math.
-        result = std::regex_replace(result, before, ">");
-        return std::regex_replace(result, after, "<");
+        std::string cleaned;
+        cleaned.reserve(result.size());
+        bool afterGt = false;
+        for (char c : result) {
+            bool isWs = (c == ' ' || c == '\n' || c == '\t' || c == '\r');
+            if (c == '>') {
+                cleaned += c;
+                afterGt = true;
+            } else if (afterGt && isWs) {
+                // Skip whitespace after >.
+            } else if (c == '<') {
+                afterGt = false;
+                // Trim whitespace before <.
+                while (!cleaned.empty() && ((cleaned.back() == ' ') || (cleaned.back() == '\n') || (cleaned.back() == '\t') || (cleaned.back() == '\r'))) {
+                    cleaned.pop_back();
+                }
+                cleaned += c;
+            } else {
+                afterGt = false;
+                cleaned += c;
+            }
+        }
+        return cleaned;
     } else {
         for (size_t i = 0; i < xmlDoc->xmlErrorCount(); ++i) {
             auto issue = Issue::IssueImpl::create();
@@ -160,37 +182,38 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     return "";
 }
 
-void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
+using VariablePairKey = std::pair<Variable *, Variable *>;
+using SeenPairsSet = std::set<VariablePairKey>;
+
+void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap, SeenPairsSet &seenPairs)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr variable = component->variable(i);
         for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
-            VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
-            auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
-                                          [variable, equivalentVariable](const VariablePairPtr &in) {
-                                              return (in->variable1() == equivalentVariable) && (in->variable2() == variable);
-                                          });
-            if (pairFound == variableMap.end()) {
+            // Check for the reverse pair (equivalentVariable, variable) to avoid duplicates.
+            auto reverseKey = std::make_pair(equivalentVariable.get(), variable.get());
+            if (seenPairs.find(reverseKey) == seenPairs.end()) {
                 // Add new unique variable equivalence pair to the VariableMap.
-                variableMap.push_back(variablePair);
+                variableMap.push_back(VariablePair::create(variable, equivalentVariable));
+                // Record the forward pair as seen.
+                seenPairs.insert(std::make_pair(variable.get(), equivalentVariable.get()));
                 // Get parent components.
                 ComponentPtr component1 = owningComponent(variable);
                 ComponentPtr component2 = owningComponent(equivalentVariable);
                 // Also create a component map pair corresponding with the variable map pair.
-                ComponentPair componentPair = std::make_pair(component1, component2);
-                componentMap.push_back(componentPair);
+                componentMap.emplace_back(std::move(component1), std::move(component2));
             }
         }
     }
 }
 
-void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap)
+void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap, SeenPairsSet &seenPairs)
 {
     for (size_t i = 0; i < componentEntity->componentCount(); ++i) {
         ComponentPtr component = componentEntity->component(i);
-        buildMapsForComponentsVariables(component, componentMap, variableMap);
-        buildMaps(component, componentMap, variableMap);
+        buildMapsForComponentsVariables(component, componentMap, variableMap, seenPairs);
+        buildMaps(component, componentMap, variableMap, seenPairs);
     }
 }
 
@@ -204,8 +227,9 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
         if (!unitsName.empty()) {
             repr += " name=\"" + unitsName + "\"";
         }
-        if (!units->id().empty()) {
-            repr += " id=\"" + units->id() + "\"";
+        auto unitsId = units->id();
+        if (!unitsId.empty()) {
+            repr += " id=\"" + unitsId + "\"";
         } else if (autoIds) {
             repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
@@ -257,8 +281,9 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
         if (!componentName.empty()) {
             repr += " name=\"" + componentName + "\"";
         }
-        if (!component->id().empty()) {
-            repr += " id=\"" + component->id() + "\"";
+        auto componentId = component->id();
+        if (!componentId.empty()) {
+            repr += " id=\"" + componentId + "\"";
         } else if (autoIds) {
             repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
@@ -436,17 +461,16 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
     std::string repr;
 
     std::vector<ImportSourcePtr> collatedImportSources;
+    std::unordered_set<ImportSource *> seenImportSources;
     auto importedComponents = getImportedComponents(model);
     for (auto &component : importedComponents) {
-        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), component->importSource());
-        if (result == collatedImportSources.end()) {
+        if (seenImportSources.insert(component->importSource().get()).second) {
             collatedImportSources.push_back(component->importSource());
         }
     }
     auto importedUnits = getImportedUnits(model);
     for (auto &units : importedUnits) {
-        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), units->importSource());
-        if (result == collatedImportSources.end()) {
+        if (seenImportSources.insert(units->importSource().get()).second) {
             collatedImportSources.push_back(units->importSource());
         }
     }
@@ -462,8 +486,9 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         for (const UnitsPtr &units : importedUnits) {
             if (units->importSource() == importSource) {
                 repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
-                if (!units->id().empty()) {
-                    repr += " id=\"" + units->id() + "\"";
+                auto unitsId = units->id();
+                if (!unitsId.empty()) {
+                    repr += " id=\"" + unitsId + "\"";
                 } else if (autoIds) {
                     repr += " id=\"" + makeUniqueId(idList) + "\"";
                 }
@@ -473,8 +498,9 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         for (const ComponentPtr &component : importedComponents) {
             if (component->importSource() == importSource) {
                 repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
-                if (!component->id().empty()) {
-                    repr += " id=\"" + component->id() + "\"";
+                auto componentId = component->id();
+                if (!componentId.empty()) {
+                    repr += " id=\"" + componentId + "\"";
                 } else if (autoIds) {
                     repr += " id=\"" + makeUniqueId(idList) + "\"";
                 }
@@ -521,11 +547,13 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
 
     std::string repr;
     repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\"";
-    if (!model->name().empty()) {
-        repr += " name=\"" + model->name() + "\"";
+    auto modelName = model->name();
+    if (!modelName.empty()) {
+        repr += " name=\"" + modelName + "\"";
     }
-    if (!model->id().empty()) {
-        repr += " id=\"" + model->id() + "\"";
+    auto modelId = model->id();
+    if (!modelId.empty()) {
+        repr += " id=\"" + modelId + "\"";
     } else if (autoIds) {
         repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
@@ -557,8 +585,9 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
 
     VariableMap variableMap;
     ComponentMap componentMap;
+    SeenPairsSet seenPairs;
     // Build unique variable equivalence pairs (ComponentMap, VariableMap) for connections.
-    buildMaps(model, componentMap, variableMap);
+    buildMaps(model, componentMap, variableMap, seenPairs);
     // Serialise connections of the model.
     repr += printConnections(componentMap, variableMap, idList, autoIds);
 

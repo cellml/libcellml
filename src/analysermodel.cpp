@@ -104,10 +104,12 @@ size_t AnalyserModel::stateCount() const
     return mPimpl->mStates.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::states() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::states() const
 {
+    static const std::vector<AnalyserVariablePtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mStates;
@@ -132,10 +134,12 @@ size_t AnalyserModel::constantCount() const
     return mPimpl->mConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::constants() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::constants() const
 {
+    static const std::vector<AnalyserVariablePtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mConstants;
@@ -159,10 +163,12 @@ size_t AnalyserModel::computedConstantCount() const
     return mPimpl->mComputedConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::computedConstants() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::computedConstants() const
 {
+    static const std::vector<AnalyserVariablePtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mComputedConstants;
@@ -186,10 +192,12 @@ size_t AnalyserModel::algebraicVariableCount() const
     return mPimpl->mAlgebraicVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::algebraicVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::algebraicVariables() const
 {
+    static const std::vector<AnalyserVariablePtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mAlgebraicVariables;
@@ -213,10 +221,12 @@ size_t AnalyserModel::externalVariableCount() const
     return mPimpl->mExternalVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::externalVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::externalVariables() const
 {
+    static const std::vector<AnalyserVariablePtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mExternalVariables;
@@ -237,8 +247,20 @@ AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
         return {};
     }
 
+    // Check the cache first.
+
+    auto analyserVariableIt = mPimpl->mAnalyserVariables.find(variable.get());
+
+    if (analyserVariableIt != mPimpl->mAnalyserVariables.end()) {
+        return analyserVariableIt->second;
+    }
+
+    // Not in the cache, so do the equivalence-based search.
+
     for (const auto &analyserVariable : analyserVariables(shared_from_this())) {
         if (areEquivalentVariables(variable, analyserVariable->variable())) {
+            mPimpl->mAnalyserVariables.emplace(variable.get(), analyserVariable);
+
             return analyserVariable;
         }
     }
@@ -255,10 +277,12 @@ size_t AnalyserModel::analyserEquationCount() const
     return mPimpl->mAnalyserEquations.size();
 }
 
-std::vector<AnalyserEquationPtr> AnalyserModel::analyserEquations() const
+const std::vector<AnalyserEquationPtr> &AnalyserModel::analyserEquations() const
 {
+    static const std::vector<AnalyserEquationPtr> empty;
+
     if (!isValid()) {
-        return {};
+        return empty;
     }
 
     return mPimpl->mAnalyserEquations;

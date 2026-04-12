@@ -29,13 +29,13 @@ namespace libcellml {
 std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name) const
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c->name() == name; });
+                        [&](const ComponentPtr &c) -> bool { return c->name() == name; });
 }
 
 std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component) const
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c->equals(component); });
+                        [&](const ComponentPtr &c) -> bool { return c->equals(component); });
 }
 
 ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc()
@@ -260,7 +260,7 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
     pFunc()->mEncapsulationId = id;
 }
 
-std::string ComponentEntity::encapsulationId() const
+const std::string &ComponentEntity::encapsulationId() const
 {
     return pFunc()->mEncapsulationId;
 }

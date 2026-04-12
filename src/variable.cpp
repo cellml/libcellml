@@ -31,13 +31,13 @@ namespace libcellml {
 std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+                        [&](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
 std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+                        [&](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
 Variable::VariableImpl *Variable::pFunc()
@@ -178,7 +178,7 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 
 void Variable::VariableImpl::cleanExpiredVariables()
 {
-    mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+    mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
 }
 
 bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
@@ -342,7 +342,7 @@ void Variable::setInitialValue(const VariablePtr &variable)
     pFunc()->mInitialValue = variable->name();
 }
 
-std::string Variable::initialValue() const
+const std::string &Variable::initialValue() const
 {
     return pFunc()->mInitialValue;
 }
@@ -362,7 +362,7 @@ void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
     setInterfaceType(interfaceTypeToString.at(interfaceType));
 }
 
-std::string Variable::interfaceType() const
+const std::string &Variable::interfaceType() const
 {
     return pFunc()->mInterfaceType;
 }

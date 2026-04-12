@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <map>
 #include <set>
+#include <unordered_map>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -28,7 +29,7 @@ namespace libcellml {
 
 const std::string ORIGIN_MODEL_REF = ":this:";
 
-using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
+using ComponentNameMap = std::unordered_map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
 
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indices. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
@@ -36,7 +37,7 @@ using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type 
 using NamePair = std::pair<std::string, std::string>; /**< Type definition for pair of names. */
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
 using DescriptionList = std::vector<std::pair<VariablePtr, std::string>>; /**< Type definition for list of variables and associated description. */
-using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
+using StringStringMap = std::unordered_map<std::string, std::string>; /**< Type definition for map of string to string. */
 using UniqueNames = std::set<std::string>; /**< Type definition for a set of unique names. */
 using NodeAttributeNamespaceInfo = std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string>>; /**< Type definition for attribute namespace information. */
 
@@ -53,9 +54,9 @@ using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of 
 
 using IdMap = std::map<std::string, std::pair<int, std::vector<std::string>>>; /**< Type definition for map of IDs in Validator. **/
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
-using IdList = std::set<std::string>; /**< Type definition for list of identifiers. */
+using IdList = std::multiset<std::string>; /**< Type definition for list of identifiers that may contain duplicates. */
 
-using ResetOrderMap = std::map<VariablePtr, std::vector<int>>; /** Type definition for map of variable to reset order. **/
+using ResetOrderMap = std::unordered_map<VariablePtr, std::vector<int>>; /** Type definition for map of variable to reset order. **/
 
 using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
 using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
@@ -75,7 +76,7 @@ using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for sha
 using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
 using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for shared units const pointer. */
 
-using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
+using ConnectionMap = std::unordered_map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
 
 /**

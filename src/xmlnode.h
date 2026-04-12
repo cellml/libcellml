@@ -289,6 +289,15 @@ public:
     std::string name() const;
 
     /**
+     * @brief Get the raw name of the XML element.
+     *
+     * Get the raw name of the XML element as a C string pointer.
+     *
+     * @return A @c const @c char pointer to the XML element name.
+     */
+    const char *rawName() const;
+
+    /**
      * @brief Check if this @c XmlNode has the specified attribute.
      *
      * Checks whether this @c XmlNode has an attribute of the type
