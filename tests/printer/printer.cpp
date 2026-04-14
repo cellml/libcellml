@@ -1038,3 +1038,52 @@ TEST(Printer, printComponentWithMultipleFullyQualifiedMathDocuments)
     const std::string e = fileContents("printer/component_with_multiple_math.cellml");
     EXPECT_EQ(e, printer->printModel(model));
 }
+
+TEST(Printer, printComponentWithXmlStylesheetProcessingInstructionInMath)
+{
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("environment");
+    const std::string math =
+        "<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>x</ci>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    model->addComponent(component);
+    component->setMath(math);
+
+    auto output = printer->printModel(model);
+
+    EXPECT_EQ(size_t(0), printer->issueCount());
+    EXPECT_NE(std::string::npos, output.find("<math"));
+    EXPECT_NE(std::string::npos, output.find("<ci>x</ci>"));
+}
+
+TEST(Printer, printComponentWithMalformedXmlDeclarationInMath)
+{
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("environment");
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>x</ci>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    model->addComponent(component);
+    component->setMath(math);
+
+    auto output = printer->printModel(model);
+
+    EXPECT_GT(printer->issueCount(), size_t(0));
+    EXPECT_EQ(std::string::npos, output.find("<math"));
+}

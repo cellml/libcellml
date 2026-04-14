@@ -879,7 +879,7 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
  *
  * @return The analyser variables of the same type as the given analyser variable.
  */
-std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &analyserVariable);
+const std::vector<AnalyserVariablePtr> &analyserVariables(const AnalyserVariablePtr &analyserVariable);
 
 /**
  * @brief Return the analyser variables in the given analyser model.

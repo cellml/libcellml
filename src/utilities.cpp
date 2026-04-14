@@ -19,11 +19,12 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <format>
 #include <iomanip>
 #include <limits>
 #include <numeric>
-#include <set>
 #include <sstream>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/analyserequation.h"
@@ -102,6 +103,9 @@ bool hasNonWhitespaceCharacters(const std::string &input)
 Strings split(const std::string &content, const std::string &delimiter)
 {
     Strings strings;
+
+    strings.reserve(content.length() / (delimiter.length() + 4) + 1);
+
     size_t current;
     size_t previous = 0;
     current = content.find(delimiter);
@@ -166,22 +170,17 @@ int convertPrefixToInt(const std::string &in, bool *ok)
 
 std::string convertToString(size_t value)
 {
-    std::ostringstream strs;
-    strs << value;
-    return strs.str();
+    return std::format("{}", value);
 }
 
 std::string convertToString(int value)
 {
-    std::ostringstream strs;
-    strs << value;
-    return strs.str();
+    return std::format("{}", value);
 }
 
 bool isEuropeanNumericCharacter(char c)
 {
-    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
+    return c >= '0' && c <= '9';
 }
 
 bool isNonNegativeCellMLInteger(const std::string &candidate)
@@ -208,6 +207,9 @@ bool isCellMLExponent(const std::string &candidate)
 std::vector<size_t> findOccurrences(const std::string &candidate, const std::string &sub)
 {
     std::vector<size_t> occurrences;
+
+    occurrences.reserve(candidate.length() / sub.length());
+
     size_t pos = candidate.find(sub, 0);
     while (pos != std::string::npos) {
         occurrences.push_back(pos);
@@ -667,15 +669,15 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
 {
     EquivalenceMap rebasedMap;
     for (const auto &entry : map) {
-        auto key = entry.first;
+        const auto &key = entry.first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
-        auto vector = entry.second;
+        const auto &vector = entry.second;
         std::vector<IndexStack> rebasedVector;
-        for (auto stack : vector) {
+        for (const auto &stack : vector) {
             // Temporarily remove the variable index whilst we rebase the component part of the stack.
             size_t variableIndex = stack.back();
-            stack.pop_back();
-            auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+            IndexStack componentStack(stack.begin(), stack.end() - 1);
+            auto rebasedTarget = rebaseIndexStack(componentStack, originStack, destinationStack);
             if (!rebasedTarget.empty()) {
                 rebasedTarget.push_back(variableIndex);
                 rebasedVector.push_back(rebasedTarget);
@@ -827,9 +829,6 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             }
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = indexStackOf(equivalentVariable);
-            if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
-            }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
         if (variable->equivalentVariableCount() > 0) {
@@ -1035,24 +1034,25 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     return map;
 }
 
-void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables)
+void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables, std::unordered_set<Variable *> &seenVariables)
 {
     for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
         VariablePtr equivalentVariable = variable->equivalentVariable(i);
 
-        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+        if (seenVariables.insert(equivalentVariable.get()).second) {
             equivalentVariables.push_back(equivalentVariable);
 
-            recursiveEquivalentVariables(equivalentVariable, equivalentVariables);
+            recursiveEquivalentVariables(equivalentVariable, equivalentVariables, seenVariables);
         }
     }
 }
 
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
 {
-    std::vector<VariablePtr> res = {variable};
+    VariablePtrs res = {variable};
+    std::unordered_set<Variable *> seenVariables = {variable.get()};
 
-    recursiveEquivalentVariables(variable, res);
+    recursiveEquivalentVariables(variable, res, seenVariables);
 
     return res;
 }
@@ -1075,11 +1075,11 @@ bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &
                 if (model->hasUnits(u->name())) {
                     v->setUnits(model->units(u->name()));
                 } else {
-                    descriptionList.push_back(std::make_pair(v, "Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'."));
+                    descriptionList.emplace_back(v, "Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     status = false;
                 }
             } else if (model != nullptr) {
-                descriptionList.push_back(std::make_pair(v, "The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'."));
+                descriptionList.emplace_back(v, "The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 status = false;
             }
         }
@@ -1234,6 +1234,7 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     HistoryEpochPtr h;
     size_t i = 0;
     std::string msgHistory;
+    msgHistory.reserve(history.size() * 160);
     while (i < history.size()) {
         h = history[i];
         msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
@@ -1317,10 +1318,8 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
     return res;
 }
 
-std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &analyserVariable)
+const std::vector<AnalyserVariablePtr> &analyserVariables(const AnalyserVariablePtr &analyserVariable)
 {
-    std::vector<AnalyserVariablePtr> res;
-
     switch (analyserVariable->type()) {
     case AnalyserVariable::Type::CONSTANT:
         return analyserVariable->analyserModel()->constants();
@@ -1333,26 +1332,27 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &an
         break;
     }
 
-    return {};
+    static const std::vector<AnalyserVariablePtr> empty;
+
+    return empty;
 }
 
 std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analyserModel)
 {
     std::vector<AnalyserVariablePtr> res;
+    const auto &states = analyserModel->states();
+    const auto &constants = analyserModel->constants();
+    const auto &computedConstants = analyserModel->computedConstants();
+    const auto &algebraicVariables = analyserModel->algebraicVariables();
+    const auto &externalVariables = analyserModel->externalVariables();
+
+    res.reserve((analyserModel->voi() != nullptr ? 1 : 0) + states.size() + constants.size() + computedConstants.size() + algebraicVariables.size() + externalVariables.size());
 
     if (analyserModel->voi() != nullptr) {
         res.push_back(analyserModel->voi());
     }
 
-    auto states = analyserModel->states();
-
     res.insert(res.end(), states.begin(), states.end());
-
-    auto constants = analyserModel->constants();
-    auto computedConstants = analyserModel->computedConstants();
-    auto algebraicVariables = analyserModel->algebraicVariables();
-    auto externalVariables = analyserModel->externalVariables();
-
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
@@ -1363,11 +1363,16 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analy
 
 std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &analyserEquation)
 {
-    auto res = analyserEquation->states();
-    auto computedConstants = analyserEquation->computedConstants();
-    auto algebraicVariables = analyserEquation->algebraicVariables();
-    auto externalVariables = analyserEquation->externalVariables();
+    const auto &states = analyserEquation->states();
+    const auto &computedConstants = analyserEquation->computedConstants();
+    const auto &algebraicVariables = analyserEquation->algebraicVariables();
+    const auto &externalVariables = analyserEquation->externalVariables();
 
+    std::vector<AnalyserVariablePtr> res;
+
+    res.reserve(states.size() + computedConstants.size() + algebraicVariables.size() + externalVariables.size());
+
+    res.insert(res.end(), states.begin(), states.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraicVariables.begin(), algebraicVariables.end());
     res.insert(res.end(), externalVariables.begin(), externalVariables.end());

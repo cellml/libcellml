@@ -104,7 +104,7 @@ void Reset::appendTestValue(const std::string &math)
     pFunc()->mTestValue.append(math);
 }
 
-std::string Reset::testValue() const
+const std::string &Reset::testValue() const
 {
     return pFunc()->mTestValue;
 }
@@ -119,7 +119,7 @@ void Reset::removeTestValueId()
     pFunc()->mTestValueId = "";
 }
 
-std::string Reset::testValueId() const
+const std::string &Reset::testValueId() const
 {
     return pFunc()->mTestValueId;
 }
@@ -139,7 +139,7 @@ void Reset::appendResetValue(const std::string &math)
     pFunc()->mResetValue.append(math);
 }
 
-std::string Reset::resetValue() const
+const std::string &Reset::resetValue() const
 {
     return pFunc()->mResetValue;
 }
@@ -164,7 +164,7 @@ void Reset::removeResetValueId()
     pFunc()->mResetValueId = "";
 }
 
-std::string Reset::resetValueId() const
+const std::string &Reset::resetValueId() const
 {
     return pFunc()->mResetValueId;
 }

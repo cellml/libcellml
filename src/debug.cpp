@@ -648,6 +648,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     }
 
     std::string res;
+    res.reserve(512);
     std::string prevStr = SPACES;
     AnalyserEquationAstTrunk trunk(prevTrunk, prevStr);
     auto astLeftChild = ast->leftChild();

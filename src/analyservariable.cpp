@@ -120,6 +120,8 @@ std::vector<AnalyserEquationPtr> AnalyserVariable::analyserEquations() const
 
     std::vector<AnalyserEquationPtr> res;
 
+    res.reserve(mPimpl->mAnalyserEquations.size());
+
     for (const auto &analyserEquation : mPimpl->mAnalyserEquations) {
         res.push_back(analyserEquation.lock());
     }
