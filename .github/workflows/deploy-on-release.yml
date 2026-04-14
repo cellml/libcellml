@@ -322,11 +322,11 @@ jobs:
             if [[ "${{ matrix.py }}" == "3.8" ]]; then
               echo "Setting macos_archs as: macos_archs='x86_64'"
               echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
-              echo "macos_deployment_target=10.15" >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=14" >> $GITHUB_OUTPUT
             else
               echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
               echo 'macos_archs=x86_64 arm64' >> $GITHUB_OUTPUT
-              echo "macos_deployment_target=11.0" >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=14" >> $GITHUB_OUTPUT
             fi
           else
             echo "Setting macos_archs as: macos_archs='x86_64'"
