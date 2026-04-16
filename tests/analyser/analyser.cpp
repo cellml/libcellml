@@ -1049,7 +1049,6 @@ TEST(Analyser, unsuitablyConstrainedNlaSystem)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
                                                                    expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
