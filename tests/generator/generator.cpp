@@ -1755,6 +1755,28 @@ TEST(Generator, generateCodeUsingProfileEnum)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
 }
 
+TEST(Generator, generateCodeForModelsWithGlobalNlaSystems)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("generator/rrc_modified/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+
+    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
+}
+
 /*
 TEST(Generator, veryBigModelMultipleTimes)
 {

@@ -2316,6 +2316,135 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &analyse
     return false;
 }
 
+void Analyser::AnalyserImpl::resolveUnknownVariablesUsingGlobalNlaSystems()
+{
+    struct UnresolvedInternalEquationData
+    {
+        AnalyserInternalEquationPtr internalEquation;
+        AnalyserInternalVariablePtrs unresolvedInternalVariables;
+    };
+
+    std::vector<UnresolvedInternalEquationData> unresolvedInternalEquations;
+    std::unordered_map<AnalyserInternalVariable *, std::vector<size_t>> internalVariableToInternalEquationIndices;
+
+    // Build the unresolved equation/variable graph.
+    // Note: global NLA systems are only for remaining unknown algebraic variables. If an unresolved equation still
+    //       references a state, then that equation should be revisited once its algebraic dependencies have been
+    //       resolved rather than have the state rate folded into the global NLA system.
+
+    for (const auto &internalEquation : mInternalEquations) {
+        if ((internalEquation->mType != AnalyserInternalEquation::Type::UNKNOWN) || (!internalEquation->mStateVariables.empty())) {
+            continue;
+        }
+
+        AnalyserInternalVariablePtrs unresolvedInternalVariables;
+
+        for (const auto &variable : internalEquation->mVariables) {
+            unresolvedInternalVariables.push_back(variable);
+        }
+
+        if (unresolvedInternalVariables.empty()) {
+            continue;
+        }
+
+        auto internalEquationIndex = unresolvedInternalEquations.size();
+
+        unresolvedInternalEquations.push_back({internalEquation, unresolvedInternalVariables});
+
+        for (const auto &unresolvedVariable : unresolvedInternalVariables) {
+            internalVariableToInternalEquationIndices[unresolvedVariable.get()].push_back(internalEquationIndex);
+        }
+    }
+
+    // If there are no unresolved equations, then we are done.
+
+    if (unresolvedInternalEquations.empty()) {
+        return;
+    }
+
+    // Find connected systems in the unresolved internal equation/variable graph, which correspond to structurally
+    // square coupled systems, and resolve the unknown internal variables in those systems using global NLA systems.
+
+    std::vector<bool> visitedUnresolvedInternalEquations(unresolvedInternalEquations.size(), false);
+
+    for (size_t unresolvedInternalEquationIndex = 0; unresolvedInternalEquationIndex < unresolvedInternalEquations.size(); ++unresolvedInternalEquationIndex) {
+        if (visitedUnresolvedInternalEquations[unresolvedInternalEquationIndex]) {
+            continue;
+        }
+
+        // We have an unresolved internal equation which is part of a coupled system that we haven't yet visited, so we
+        // need to find all the internal equations and internal variables in that coupled system. We do this by
+        // traversing the unresolved internal equation/variable graph starting from this unresolved internal equation.
+
+        std::vector<size_t> unresolvedInternalEquationStack = {unresolvedInternalEquationIndex};
+        std::vector<size_t> unresolvedInternalEquationIndices;
+        std::unordered_set<AnalyserInternalVariable *> unresolvedInternalVariablesSet;
+        AnalyserInternalVariablePtrs unresolvedInternalVariables;
+
+        while (!unresolvedInternalEquationStack.empty()) {
+            // Get the next unresolved internal equation to visit.
+
+            auto currentUnresolvedEquationIndex = unresolvedInternalEquationStack.back();
+
+            unresolvedInternalEquationStack.pop_back();
+
+            if (visitedUnresolvedInternalEquations[currentUnresolvedEquationIndex]) {
+                continue;
+            }
+
+            visitedUnresolvedInternalEquations[currentUnresolvedEquationIndex] = true;
+
+            // We are visiting an unresolved internal equation which is part of the coupled system, so we add it to the
+            // list of unresolved internal equations and we add its unresolved internal variables to the list of
+            // unresolved internal variables, making sure to avoid duplicates, and we add the linked unresolved internal
+            // equations to the stack of unresolved internal equations to visit.
+
+            unresolvedInternalEquationIndices.push_back(currentUnresolvedEquationIndex);
+
+            for (const auto &unresolvedInternalVariable : unresolvedInternalEquations[currentUnresolvedEquationIndex].unresolvedInternalVariables) {
+                if (unresolvedInternalVariablesSet.insert(unresolvedInternalVariable.get()).second) {
+                    unresolvedInternalVariables.push_back(unresolvedInternalVariable);
+                }
+
+                for (const auto &internalVariableToInternalEquationIndex : internalVariableToInternalEquationIndices[unresolvedInternalVariable.get()]) {
+                    if (!visitedUnresolvedInternalEquations[internalVariableToInternalEquationIndex]) {
+                        unresolvedInternalEquationStack.push_back(internalVariableToInternalEquationIndex);
+                    }
+                }
+            }
+        }
+
+        // Only a structurally square coupled system can be solved as one global NLA system.
+
+        if (unresolvedInternalEquationIndices.size() != unresolvedInternalVariables.size()) {
+            continue;
+        }
+
+        // Mark the unknown internal variables as algebraic variables.
+
+        for (const auto &unresolvedInternalVariable : unresolvedInternalVariables) {
+            unresolvedInternalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE;
+        }
+
+        // Mark the unresolved internal equations in this coupled system as NLA equations and set their unknown internal
+        // variables to be the unresolved internal variables in this coupled system.
+
+        std::unordered_set<AnalyserInternalVariable *> unknownInternalVariablesSet;
+
+        for (const auto &unresolvedInternalVariable : unresolvedInternalVariables) {
+            unknownInternalVariablesSet.insert(unresolvedInternalVariable.get());
+        }
+
+        for (const auto &systemEquationIndex : unresolvedInternalEquationIndices) {
+            const auto &unresolvedInternalEquation = unresolvedInternalEquations[systemEquationIndex].internalEquation;
+
+            unresolvedInternalEquation->mType = AnalyserInternalEquation::Type::NLA;
+            unresolvedInternalEquation->mUnknownVariables = unresolvedInternalVariables;
+            unresolvedInternalEquation->mUnknownVariablesSet = unknownInternalVariablesSet;
+        }
+    }
+}
+
 void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
                                                      Issue::ReferenceRule referenceRule)
 {
@@ -2600,6 +2729,24 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         }
     } while (relevantCheck);
+
+    // At this stage, there may be some unknown variables that part of a coupled system of equations that we couldn't
+    // resolve in isolation, so we need to try to resolve them using some global NLA systems.
+
+    resolveUnknownVariablesUsingGlobalNlaSystems();
+
+    // Revisit any still-unknown equations now that the global NLA systems have made some algebraic variables known.
+
+    bool resolvedRemainingUnknownEquations;
+
+    do {
+        resolvedRemainingUnknownEquations = false;
+
+        for (const auto &internalEquation : mInternalEquations) {
+            resolvedRemainingUnknownEquations = internalEquation->check(mAnalyserModel, false)
+                                                || resolvedRemainingUnknownEquations;
+        }
+    } while (resolvedRemainingUnknownEquations);
 
     // Make sure that our variables are valid.
 
@@ -3151,16 +3298,30 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         } else {
             variableDependencies = internalEquation->mDependencies;
+
+            if (equationType == AnalyserEquation::Type::NLA) {
+                for (const auto &nlaSibling : internalEquation->mNlaSiblings) {
+                    auto sibling = nlaSibling.lock();
+
+                    std::copy(sibling->mDependencies.begin(), sibling->mDependencies.end(), back_inserter(variableDependencies));
+                }
+            }
         }
 
         AnalyserEquationPtrs equationDependencies;
         std::unordered_set<AnalyserEquation *> seenAnalyserEquations;
+        std::unordered_set<size_t> seenNlaSystemIndices;
 
         for (const auto &variableDependency : variableDependencies) {
             auto analyserVariable = v2avMappings[variableDependency];
 
             if (analyserVariable != nullptr) {
                 for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
+                    if ((analyserEquation->type() == AnalyserEquation::Type::NLA)
+                        && !seenNlaSystemIndices.insert(analyserEquation->nlaSystemIndex()).second) {
+                        continue;
+                    }
+
                     if (seenAnalyserEquations.insert(analyserEquation.get()).second) {
                         if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
                             // This is a constant, so keep track of it in case it is untracked and in case we need to

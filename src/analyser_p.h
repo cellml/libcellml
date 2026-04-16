@@ -259,6 +259,8 @@ public:
     bool isStateRateBased(const AnalyserEquationPtr &analyserEquation,
                           std::unordered_set<AnalyserEquation *> &checkedEquations);
 
+    void resolveUnknownVariablesUsingGlobalNlaSystems();
+
     void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
                                  Issue::ReferenceRule referenceRule);
 
