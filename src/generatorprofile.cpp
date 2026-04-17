@@ -741,7 +741,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.7.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.8.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -799,8 +799,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mConstantsArrayString = "constants";
         mComputedConstantsArrayString = "computed_constants";
-        mAlgebraicVariablesArrayString = "algebraicVariables";
-        mExternalVariablesArrayString = "externalVariables";
+        mAlgebraicVariablesArrayString = "algebraic_variables";
+        mExternalVariablesArrayString = "external_variables";
 
         mExternalVariableMethodTypeDefinitionNonDiffString = "";
         mExternalVariableMethodTypeDefinitionDiffString = "";
