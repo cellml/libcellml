@@ -983,30 +983,6 @@ void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &compo
     }
 }
 
-void Analyser::AnalyserImpl::equivalentVariables(const VariablePtr &variable, VariablePtrs &equivVariables,
-                                                 std::unordered_set<Variable *> &seen) const
-{
-    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        auto equivVariable = variable->equivalentVariable(i);
-
-        if (seen.insert(equivVariable.get()).second) {
-            equivVariables.push_back(equivVariable);
-
-            equivalentVariables(equivVariable, equivVariables, seen);
-        }
-    }
-}
-
-VariablePtrs Analyser::AnalyserImpl::equivalentVariables(const VariablePtr &variable) const
-{
-    VariablePtrs res = {variable};
-    std::unordered_set<Variable *> seen = {variable.get()};
-
-    equivalentVariables(variable, res, seen);
-
-    return res;
-}
-
 void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &ast)
 {
     // Make sure that we have an AST to analyse.

@@ -130,16 +130,19 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
-    // Remove any XML declarations from the string.
+    // Remove a leading XML declaration from the string, but preserve other processing instructions such as
+    // <?xml-stylesheet ...?>.
     std::string normalisedMath = math;
     size_t pos = 0;
     while ((pos = normalisedMath.find("<?xml", pos)) != std::string::npos) {
-        auto end = normalisedMath.find("?>", pos + 5);
-        if (end != std::string::npos) {
-            normalisedMath.erase(pos, end + 2 - pos);
-        } else {
-            break;
+        if ((pos + 5 < normalisedMath.size()) && std::isspace(static_cast<unsigned char>(normalisedMath[pos + 5]))) {
+            auto end = normalisedMath.find("?>", pos + 5);
+            if (end != std::string::npos) {
+                normalisedMath.erase(pos, end + 2 - pos);
+                continue;
+            }
         }
+        pos += 5;
     }
     xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {

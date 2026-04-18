@@ -1034,25 +1034,25 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     return map;
 }
 
-void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables, std::unordered_set<Variable *> &seen)
+void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables, std::unordered_set<Variable *> &seenVariables)
 {
     for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
         VariablePtr equivalentVariable = variable->equivalentVariable(i);
 
-        if (seen.insert(equivalentVariable.get()).second) {
+        if (seenVariables.insert(equivalentVariable.get()).second) {
             equivalentVariables.push_back(equivalentVariable);
 
-            recursiveEquivalentVariables(equivalentVariable, equivalentVariables, seen);
+            recursiveEquivalentVariables(equivalentVariable, equivalentVariables, seenVariables);
         }
     }
 }
 
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
 {
-    std::vector<VariablePtr> res = {variable};
-    std::unordered_set<Variable *> seen = {variable.get()};
+    VariablePtrs res = {variable};
+    std::unordered_set<Variable *> seenVariables = {variable.get()};
 
-    recursiveEquivalentVariables(variable, res, seen);
+    recursiveEquivalentVariables(variable, res, seenVariables);
 
     return res;
 }
