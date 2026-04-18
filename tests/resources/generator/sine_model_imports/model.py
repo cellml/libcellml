@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
@@ -78,6 +78,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[0] = sin(voi)
-    algebraicVariables[2] = voi*computed_constants[0]-0.5 if lt_func(voi, computed_constants[2]) else (3.14159265358979-voi)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[3]) else (voi-3.14159265358979)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[4]) else (computed_constants[1]-voi)*computed_constants[0]-0.5
-    algebraicVariables[1] = -algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2] if lt_func(voi, computed_constants[2]) else -algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2] if lt_func(voi, computed_constants[3]) else algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2] if lt_func(voi, computed_constants[4]) else algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2]
+    algebraic_variables[0] = sin(voi)
+    algebraic_variables[2] = voi*computed_constants[0]-0.5 if lt_func(voi, computed_constants[2]) else (3.14159265358979-voi)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[3]) else (voi-3.14159265358979)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[4]) else (computed_constants[1]-voi)*computed_constants[0]-0.5
+    algebraic_variables[1] = -algebraic_variables[2]*algebraic_variables[2]+constants[1]+algebraic_variables[2] if lt_func(voi, computed_constants[2]) else -algebraic_variables[2]*algebraic_variables[2]+constants[1]+algebraic_variables[2] if lt_func(voi, computed_constants[3]) else algebraic_variables[2]*algebraic_variables[2]-constants[1]-algebraic_variables[2] if lt_func(voi, computed_constants[4]) else algebraic_variables[2]*algebraic_variables[2]-constants[1]-algebraic_variables[2]
