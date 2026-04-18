@@ -49,6 +49,8 @@
     <variable name="v_q_2" units="coulomb_per_second"/>
     <variable name="time" units="second"/>
     <variable name="x" units="dimensionless" initial_value="0.0"/>
+    <variable name="z_0" units="dimensionless"/>
+    <variable name="z_1" units="dimensionless"/>
     <!-- Element ODEs-->
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
@@ -220,6 +222,28 @@
         <eq/>
         <ci>time</ci>
         <ci>t</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>z_0</ci>
+        <apply>
+          <power/>
+          <ci>z_1</ci>
+          <cn cellml:units="dimensionless">2</cn>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>z_1</ci>
+        <apply>
+          <minus/>
+          <ci>z_0</ci>
+          <cn cellml:units="dimensionless">1</cn>
+        </apply>
       </apply>
     </math>
   </component>
