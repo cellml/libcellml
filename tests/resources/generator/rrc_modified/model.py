@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 2
@@ -75,59 +75,59 @@ def objective_function_0(u, f, data):
     computed_constants = data[4]
     algebraic_variables = data[5]
 
-    algebraicVariables[2] = u[0]
-    algebraicVariables[3] = u[1]
-    algebraicVariables[10] = u[2]
-    algebraicVariables[13] = u[3]
-    algebraicVariables[5] = u[4]
-    algebraicVariables[12] = u[5]
-    algebraicVariables[0] = u[6]
-    algebraicVariables[4] = u[7]
-    algebraicVariables[8] = u[8]
-    algebraicVariables[6] = u[9]
-    algebraicVariables[7] = u[10]
+    algebraic_variables[2] = u[0]
+    algebraic_variables[3] = u[1]
+    algebraic_variables[10] = u[2]
+    algebraic_variables[13] = u[3]
+    algebraic_variables[5] = u[4]
+    algebraic_variables[12] = u[5]
+    algebraic_variables[0] = u[6]
+    algebraic_variables[4] = u[7]
+    algebraic_variables[8] = u[8]
+    algebraic_variables[6] = u[9]
+    algebraic_variables[7] = u[10]
 
-    f[0] = algebraicVariables[3]-algebraicVariables[2]/constants[1]
-    f[1] = algebraicVariables[5]-algebraicVariables[4]/constants[2]
-    f[2] = algebraicVariables[7]-(-algebraicVariables[6])
-    f[3] = algebraicVariables[2]-(computed_constants[0]-algebraicVariables[8])
-    f[4] = algebraicVariables[4]-(algebraicVariables[8]-algebraicVariables[9])
-    f[5] = algebraicVariables[10]-algebraicVariables[3]/states[1]
-    f[6] = algebraicVariables[10]-algebraicVariables[6]
-    f[7] = algebraicVariables[12]-algebraicVariables[0]*voi/algebraicVariables[11]
-    f[8] = algebraicVariables[12]-algebraicVariables[13]
-    f[9] = algebraicVariables[13]-algebraicVariables[5]
-    f[10] = algebraicVariables[13]-algebraicVariables[10]
+    f[0] = algebraic_variables[3]-algebraic_variables[2]/constants[1]
+    f[1] = algebraic_variables[5]-algebraic_variables[4]/constants[2]
+    f[2] = algebraic_variables[7]-(-algebraic_variables[6])
+    f[3] = algebraic_variables[2]-(computed_constants[0]-algebraic_variables[8])
+    f[4] = algebraic_variables[4]-(algebraic_variables[8]-algebraic_variables[9])
+    f[5] = algebraic_variables[10]-algebraic_variables[3]/states[1]
+    f[6] = algebraic_variables[10]-algebraic_variables[6]
+    f[7] = algebraic_variables[12]-algebraic_variables[0]*voi/algebraic_variables[11]
+    f[8] = algebraic_variables[12]-algebraic_variables[13]
+    f[9] = algebraic_variables[13]-algebraic_variables[5]
+    f[10] = algebraic_variables[13]-algebraic_variables[10]
 
 
 def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables):
     u = [nan]*11
 
-    u[0] = algebraicVariables[2]
-    u[1] = algebraicVariables[3]
-    u[2] = algebraicVariables[10]
-    u[3] = algebraicVariables[13]
-    u[4] = algebraicVariables[5]
-    u[5] = algebraicVariables[12]
-    u[6] = algebraicVariables[0]
-    u[7] = algebraicVariables[4]
-    u[8] = algebraicVariables[8]
-    u[9] = algebraicVariables[6]
-    u[10] = algebraicVariables[7]
+    u[0] = algebraic_variables[2]
+    u[1] = algebraic_variables[3]
+    u[2] = algebraic_variables[10]
+    u[3] = algebraic_variables[13]
+    u[4] = algebraic_variables[5]
+    u[5] = algebraic_variables[12]
+    u[6] = algebraic_variables[0]
+    u[7] = algebraic_variables[4]
+    u[8] = algebraic_variables[8]
+    u[9] = algebraic_variables[6]
+    u[10] = algebraic_variables[7]
 
     u = nla_solve(objective_function_0, u, 11, [voi, states, rates, constants, computed_constants, algebraic_variables])
 
-    algebraicVariables[2] = u[0]
-    algebraicVariables[3] = u[1]
-    algebraicVariables[10] = u[2]
-    algebraicVariables[13] = u[3]
-    algebraicVariables[5] = u[4]
-    algebraicVariables[12] = u[5]
-    algebraicVariables[0] = u[6]
-    algebraicVariables[4] = u[7]
-    algebraicVariables[8] = u[8]
-    algebraicVariables[6] = u[9]
-    algebraicVariables[7] = u[10]
+    algebraic_variables[2] = u[0]
+    algebraic_variables[3] = u[1]
+    algebraic_variables[10] = u[2]
+    algebraic_variables[13] = u[3]
+    algebraic_variables[5] = u[4]
+    algebraic_variables[12] = u[5]
+    algebraic_variables[0] = u[6]
+    algebraic_variables[4] = u[7]
+    algebraic_variables[8] = u[8]
+    algebraic_variables[6] = u[9]
+    algebraic_variables[7] = u[10]
 
 
 def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
@@ -137,17 +137,17 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[1] = 4.0
     constants[2] = 4.0
     constants[3] = 12.0
-    algebraicVariables[0] = 0.0
-    algebraicVariables[2] = 0.0
-    algebraicVariables[3] = 0.0
-    algebraicVariables[4] = 0.0
-    algebraicVariables[5] = 0.0
-    algebraicVariables[6] = 0.0
-    algebraicVariables[7] = 0.0
-    algebraicVariables[8] = 0.0
-    algebraicVariables[10] = 0.0
-    algebraicVariables[12] = 0.0
-    algebraicVariables[13] = 0.0
+    algebraic_variables[0] = 0.0
+    algebraic_variables[2] = 0.0
+    algebraic_variables[3] = 0.0
+    algebraic_variables[4] = 0.0
+    algebraic_variables[5] = 0.0
+    algebraic_variables[6] = 0.0
+    algebraic_variables[7] = 0.0
+    algebraic_variables[8] = 0.0
+    algebraic_variables[10] = 0.0
+    algebraic_variables[12] = 0.0
+    algebraic_variables[13] = 0.0
 
 
 def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -155,16 +155,16 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[1] = states[0]/constants[0]
-    algebraicVariables[9] = algebraicVariables[1]
-    algebraicVariables[11] = voi
+    algebraic_variables[1] = states[0]/constants[0]
+    algebraic_variables[9] = algebraic_variables[1]
+    algebraic_variables[11] = voi
     find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
-    rates[0] = algebraicVariables[0]
+    rates[0] = algebraic_variables[0]
     rates[1] = 1.0/1.0
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraicVariables[1] = states[0]/constants[0]
-    algebraicVariables[9] = algebraicVariables[1]
-    algebraicVariables[11] = voi
+    algebraic_variables[1] = states[0]/constants[0]
+    algebraic_variables[9] = algebraic_variables[1]
+    algebraic_variables[11] = voi
     find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
