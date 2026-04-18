@@ -1758,7 +1758,7 @@ TEST(Generator, generateCodeUsingProfileEnum)
 TEST(Generator, generateCodeForModelsWithGlobalNlaSystems)
 {
     auto parser = libcellml::Parser::create(false);
-    auto model = parser->parseModel(fileContents("generator/rrc_modified/model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/global_nla_systems/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 
@@ -1771,10 +1771,10 @@ TEST(Generator, generateCodeForModelsWithGlobalNlaSystems)
     auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
-    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
-    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
 
-    EXPECT_EQ_FILE_CONTENTS("generator/rrc_modified/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
 }
 
 /*
