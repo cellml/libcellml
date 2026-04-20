@@ -462,20 +462,20 @@ bool Model::doEquals(const EntityPtr &other) const
 std::vector<std::string> Model::importRequirements() const
 {
     std::vector<std::string> requirements;
-    std::unordered_set<std::string> seen;
+    std::unordered_set<std::string> seenUrls;
 
     auto importedComponents = getImportedComponents(shared_from_this());
     auto importedUnits = getImportedUnits(shared_from_this());
 
     for (auto &component : importedComponents) {
         auto url = component->importSource()->url();
-        if (seen.insert(url).second) {
+        if (seenUrls.insert(url).second) {
             requirements.push_back(url);
         }
     }
     for (auto &units : importedUnits) {
         auto url = units->importSource()->url();
-        if (seen.insert(url).second) {
+        if (seenUrls.insert(url).second) {
             requirements.push_back(url);
         }
     }

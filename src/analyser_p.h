@@ -187,10 +187,6 @@ public:
     void analyseComponent(const ComponentPtr &component);
     void analyseComponentVariables(const ComponentPtr &component);
 
-    void equivalentVariables(const VariablePtr &variable, VariablePtrs &equivalentVariables,
-                             std::unordered_set<Variable *> &seen) const;
-    VariablePtrs equivalentVariables(const VariablePtr &variable) const;
-
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
     void updateUnitsMapWithStandardUnit(const std::string &unitsName,
