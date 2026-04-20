@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 CONSTANT_COUNT = 0
@@ -17,7 +17,7 @@ CONSTANT_INFO = [
 COMPUTED_CONSTANT_INFO = [
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "z", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system"},
     {"name": "x", "units": "dimensionless", "component": "my_algebraic_system"}
@@ -73,7 +73,7 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     algebraicVariables[2] = 1.0
 
 
-def compute_computed_constants(constants, computed_constants, algebraic):
+def compute_computed_constants(constants, computed_constants, algebraic_variables):
     pass
 
 

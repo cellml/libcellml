@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.7.0";
+const char VERSION[] = "0.8.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 2;
@@ -31,7 +31,7 @@ const VariableInfo CONSTANT_INFO[] = {
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"v_1", "C_per_s", "main"},
     {"v_2", "C_per_s", "main"},
     {"u_3", "J_per_C", "main"},
@@ -165,7 +165,7 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     algebraicVariables[2] = 0.0;
 }
 
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 

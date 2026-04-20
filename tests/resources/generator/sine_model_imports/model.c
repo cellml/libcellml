@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.7.0";
+const char VERSION[] = "0.8.0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 1;
@@ -32,7 +32,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"kPi_32", "dimensionless", "parabolic_approx_sin"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"sin", "dimensionless", "actual_sin"},
     {"sin", "dimensionless", "parabolic_approx_sin"},
     {"z", "dimensionless", "parabolic_approx_sin"}
@@ -99,7 +99,7 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     computedConstants[4] = 3.0*3.14159265358979/2.0;
 }
 
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
 }
 

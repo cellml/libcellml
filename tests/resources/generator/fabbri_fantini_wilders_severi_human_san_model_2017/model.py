@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 33
@@ -172,7 +172,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "alpha_a", "units": "per_second", "component": "i_KACh_a_gate"}
 ]
 
-ALGEBRAIC_INFO = [
+ALGEBRAIC_VARIABLE_INFO = [
     {"name": "Nai", "units": "millimolar", "component": "Nai_concentration"},
     {"name": "E_Na", "units": "millivolt", "component": "Ionic_values"},
     {"name": "E_Ca", "units": "millivolt", "component": "Ionic_values"},
@@ -440,7 +440,7 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     constants[90] = 1.0
 
 
-def compute_computed_constants(states, rates, constants, computed_constants, algebraic):
+def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
     computed_constants[0] = constants[62]*constants[61]/constants[6]
     computed_constants[1] = computed_constants[0]*log(constants[4]/constants[3])
     computed_constants[4] = 1.2 if gt_func(constants[1], 0.0) else 1.0

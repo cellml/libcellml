@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.7.0.post0";
+const char VERSION[] = "0.8.0.post0";
 const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 1;
@@ -232,12 +232,12 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"eqnComputedConstant1", "dimensionless", "my_component"}
 };
 
-const VariableInfo ALGEBRAIC_INFO[] = {
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
     {"eqnNlaVariable2", "dimensionless", "my_component"},
     {"eqnNlaVariable1", "dimensionless", "my_component"}
 };
 
-const VariableInfo EXTERNAL_INFO[] = {
+const VariableInfo EXTERNAL_VARIABLE_INFO[] = {
     {"eqnPlus", "dimensionless", "my_component"}
 };
 
@@ -452,7 +452,7 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     algebraicVariables[1] = 1.0;
 }
 
-void computeComputedConstants(double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
+void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     computedConstants[0] = constants[1] == constants[0];
     computedConstants[1] = constants[1]/(constants[0] == constants[0]);
