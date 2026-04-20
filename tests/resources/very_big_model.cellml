@@ -2253,8 +2253,7 @@
           <ci>T</ci>
         </apply>
       </apply>
-      <!-- Elastance Functions
- TODO FIGURE OUT A REALISTIC WAY TO CONTROL t_astart and t_vstart so that it changes with changes in period-->
+      <!-- Elastance Functions-->
       <apply>
         <eq/>
         <ci>t_astart_norm</ci>
@@ -2264,8 +2263,6 @@
           <ci>T</ci>
         </apply>
       </apply>
-      <!-- T_ac_norm = T_ac/T;
- T_ar_norm = T_ar/T;-->
       <apply>
         <eq/>
         <ci>t_vstart_norm</ci>
@@ -2275,8 +2272,6 @@
           <ci>T</ci>
         </apply>
       </apply>
-      <!-- T_vc_norm = T_vc/T;
- T_vr_norm = T_vr/T;-->
       <apply>
         <eq/>
         <ci>e_a</ci>
@@ -28986,7 +28981,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29143,7 +29137,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29300,7 +29293,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29457,7 +29449,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29614,7 +29605,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29771,7 +29761,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -29928,7 +29917,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30085,7 +30073,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30242,7 +30229,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30399,7 +30385,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30556,7 +30541,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30713,7 +30697,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -30870,7 +30853,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31027,7 +31009,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31184,7 +31165,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31341,7 +31321,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31498,7 +31477,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31655,7 +31633,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31812,7 +31789,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -31969,7 +31945,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32126,7 +32101,6 @@
         </apply>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32285,7 +32259,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32314,7 +32287,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -32429,7 +32401,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32458,7 +32429,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -32573,7 +32543,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32602,7 +32571,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -32717,7 +32685,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32746,7 +32713,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -32861,7 +32827,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -32890,7 +32855,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33005,7 +32969,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33034,7 +32997,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33149,7 +33111,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33178,7 +33139,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33293,7 +33253,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33322,7 +33281,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33437,7 +33395,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33466,7 +33423,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33581,7 +33537,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33610,7 +33565,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33725,7 +33679,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33754,7 +33707,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -33869,7 +33821,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -33898,7 +33849,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -34013,7 +33963,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -34042,7 +33991,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -34157,7 +34105,6 @@
         <cn type="e-notation" cellml:units="Js2_per_m6">1<sep/>-6</cn>
       </apply>
       <!-- Conservation Laws-->
-      <!-- For now terminals don't have a gravity effect, change this for leg terminals-->
       <apply>
         <eq/>
         <apply>
@@ -34186,7 +34133,6 @@
           <ci>C_T</ci>
         </apply>
       </apply>
-      <!-- + u_ext;-->
       <apply>
         <eq/>
         <ci>u</ci>
@@ -34343,7 +34289,6 @@
           <ci>v</ci>
         </apply>
       </apply>
-      <!-- TODO CHECK THAT CHANGING US VOLUME LIKE THIS CONSERVES VOLUME!!!!-->
       <apply>
         <eq/>
         <ci>q_C</ci>
@@ -34498,7 +34443,6 @@
           <ci>v</ci>
         </apply>
       </apply>
-      <!-- TODO CHECK THAT CHANGING US VOLUME LIKE THIS CONSERVES VOLUME!!!!-->
       <apply>
         <eq/>
         <ci>q_C</ci>
@@ -34653,7 +34597,6 @@
           <ci>v</ci>
         </apply>
       </apply>
-      <!-- TODO CHECK THAT CHANGING US VOLUME LIKE THIS CONSERVES VOLUME!!!!-->
       <apply>
         <eq/>
         <ci>q_C</ci>
@@ -34808,7 +34751,6 @@
           <ci>v</ci>
         </apply>
       </apply>
-      <!-- TODO CHECK THAT CHANGING US VOLUME LIKE THIS CONSERVES VOLUME!!!!-->
       <apply>
         <eq/>
         <ci>q_C</ci>
@@ -35093,7 +35035,6 @@
           </apply>
         </apply>
       </apply>
-      <!--IGNORING CNS and LUNG STRETCH-->
       <apply>
         <eq/>
         <ci>f_s</ci>
@@ -35471,7 +35412,6 @@
           <ci>f_v</ci>
         </apply>
       </apply>
-      <!--DELAY IGNORED-->
       <apply>
         <eq/>
         <apply>
