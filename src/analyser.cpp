@@ -1525,13 +1525,11 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         return std::log(lhs);
     case AnalyserEquationAst::Type::LOG:
         if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::LOGBASE) {
-            auto logBase = lhs;
-
-            if (areNearlyEqual(logBase, 10.0)) {
+            if (areNearlyEqual(lhs, 10.0)) {
                 return std::log10(rhs);
             }
 
-            return std::log(rhs) / std::log(logBase);
+            return std::log(rhs) / std::log(lhs);
         }
 
         return std::log10(lhs);
