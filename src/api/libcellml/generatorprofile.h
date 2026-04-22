@@ -3426,27 +3426,27 @@ public:
     void setUArrayString(const std::string &uArrayString);
 
     /**
-     * @brief Get the @c std::string for the @f array used in the objective
+     * @brief Get the @c std::string for the @c f array used in the objective
      * function and find root methods.
      *
-     * Return the @c std::string for the @f array used in the objective function
+     * Return the @c std::string for the @c f array used in the objective function
      * and find root methods. The @c f array is used to keep track of the value of
      * the different objective functions in a system of non-linear algebraic equations.
      *
-     * @return The @c std::string for the @f array used in the objective function
+     * @return The @c std::string for the @c f array used in the objective function
      * and find root methods.
      */
     std::string fArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the @f array used in the objective
+     * @brief Set the @c std::string for the @c f array used in the objective
      * function and find root methods.
      *
-     * Set the @c std::string for the @f array used in the objective function and
+     * Set the @c std::string for the @c f array used in the objective function and
      * find root methods. The @c f array is used to keep track of the value of the
      * different objective functions in a system of non-linear algebraic equations.
      *
-     * @param fArrayString The @c std::string to use for the @f array used in the
+     * @param fArrayString The @c std::string to use for the @c f array used in the
      * objective function and find root methods.
      */
     void setFArrayString(const std::string &fArrayString);

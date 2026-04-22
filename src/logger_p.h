@@ -47,14 +47,9 @@ public:
     /**
      * @brief Remove issue of level ERROR at the specified @p index.
      *
-     * Removes an error at @p index.  If @c true is returned
-     * then the error at @p index was successfully removed.
-     * If @p index is within the range [0, \#errors)
-     * then @c true is returned, otherwise @c false is returned.
+     * Removes an error at @p index.
      *
      * @param index The index of the error to remove.
-     *
-     * @return @c true if the error is removed, @c false otherwise.
      */
     void removeError(size_t index);
 
