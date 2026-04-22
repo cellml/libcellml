@@ -303,10 +303,6 @@ if(LIBCELLML_LLVM_COVERAGE)
   append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
 endif()
 
-if(LIBCELLML_COVERAGE OR LIBCELLML_LLVM_COVERAGE)
-  target_compile_definitions(cellml PRIVATE CODE_COVERAGE_ENABLED)
-endif()
-
 install(TARGETS cellml EXPORT libcellml-targets
   COMPONENT runtime
   RUNTIME DESTINATION bin

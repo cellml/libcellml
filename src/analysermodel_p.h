@@ -53,16 +53,7 @@ struct AnalyserModel::AnalyserModelImpl
 
         bool operator==(const VariableKeyPair &other) const
         {
-#ifdef CODE_COVERAGE_ENABLED
-            // Use a branchless form so coverage does not depend on short-circuit behaviour.
-
-            const auto firstEqual = static_cast<uintptr_t>(first == other.first);
-            const auto secondEqual = static_cast<uintptr_t>(second == other.second);
-
-            return firstEqual * secondEqual != 0;
-#else
-            return first == other.first && second == other.second;
-#endif
+            return (first == other.first) & (second == other.second);
         }
     };
 
