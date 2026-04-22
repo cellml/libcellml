@@ -7,7 +7,7 @@ include(ExternalProject)
 
 ExternalProject_Add(zlib_library
   GIT_REPOSITORY "https://github.com/CMLibs-Dependencies/zlib"
-  GIT_TAG "9b4d129"
+  GIT_TAG "e4594ed"
   CMAKE_GENERATOR Ninja
   CMAKE_ARGS -DBUILD_SHARED_LIBS=FALSE -DCMAKE_BUILD_TYPE=Release
 )
