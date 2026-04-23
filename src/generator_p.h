@@ -53,8 +53,6 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     double scalingFactor(const AnalyserModelPtr &analyserModel, const VariablePtr &variable) const;
 
-    bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
-
     bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
     bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
     bool isOrOperator(const AnalyserEquationAstPtr &ast) const;

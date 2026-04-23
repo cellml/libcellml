@@ -9,7 +9,7 @@ LIBCELLML_VERSION = "0.6.3"
 
 STATE_COUNT = 1
 CONSTANT_COUNT = 7
-COMPUTED_CONSTANT_COUNT = 199
+COMPUTED_CONSTANT_COUNT = 200
 ALGEBRAIC_VARIABLE_COUNT = 2
 EXTERNAL_VARIABLE_COUNT = 1
 
@@ -227,6 +227,7 @@ COMPUTED_CONSTANT_INFO = [
     {"name": "eqnCoverageForPowerOperator", "units": "dimensionless", "component": "my_component"},
     {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component"},
     {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component"},
+    {"name": "eqnComputedConstant3", "units": "dimensionless", "component": "my_component"},
     {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component"},
     {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component"}
 ]
@@ -378,8 +379,8 @@ def objective_function_0(u, f, data):
     algebraic_variables[0] = u[0]
     algebraic_variables[1] = u[1]
 
-    f[0] = algebraic_variables[1]+algebraic_variables[0]+states[0]-0.0
-    f[1] = algebraic_variables[1]-algebraic_variables[0]-(computed_constants[198]+computed_constants[197])
+    f[0] = sin(algebraic_variables[1])+sin(algebraic_variables[0])+states[0]+computed_constants[197]+constants[1]-1.0
+    f[1] = -computed_constants[197]-sin(algebraic_variables[0])-computed_constants[198]-computed_constants[199]+sin(algebraic_variables[1])-0.5
 
 
 def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables):
@@ -413,10 +414,10 @@ def initialise_arrays(states, rates, constants, computed_constants, algebraic_va
     computed_constants[184] = 3.14159265358979
     computed_constants[185] = inf
     computed_constants[186] = nan
-    computed_constants[198] = 1.0
-    computed_constants[197] = 3.0
-    algebraic_variables[0] = 2.0
-    algebraic_variables[1] = 1.0
+    computed_constants[199] = 1.0
+    computed_constants[198] = 3.0
+    algebraic_variables[0] = 0.0
+    algebraic_variables[1] = 0.0
 
 
 def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -606,7 +607,8 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
     computed_constants[193] = xor_func(and_func(constants[1], constants[0]), xor_func(or_func(constants[1], constants[0]), xor_func(constants[0] if gt_func(constants[2], constants[3]) else nan, xor_func(xor_func(xor_func(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), or_func(constants[1], constants[0])), and_func(constants[1], constants[0])))))
     computed_constants[194] = pow(and_func(constants[1], constants[0]), pow(constants[0] if gt_func(constants[2], constants[3]) else nan, pow(pow(constants[4], constants[0] if gt_func(constants[2], constants[3]) else nan), and_func(constants[1], constants[0]))))
     computed_constants[195] = pow(pow(pow(and_func(constants[1], constants[0]), 1.0/pow(constants[0] if gt_func(constants[2], constants[3]) else nan, 1.0/constants[4])), 1.0/(constants[0] if gt_func(constants[2], constants[3]) else nan)), 1.0/and_func(constants[1], constants[0]))
-    computed_constants[196] = -and_func(constants[1], constants[0])+-(constants[0] if gt_func(constants[2], constants[3]) else nan)
+    computed_constants[196] = -and_func(constants[1], constants[0])-(constants[0] if gt_func(constants[2], constants[3]) else nan)
+    computed_constants[197] = computed_constants[199]+computed_constants[198]
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):

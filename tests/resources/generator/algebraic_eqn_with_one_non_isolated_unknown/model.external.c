@@ -78,45 +78,10 @@ void deleteArray(double *array)
     free(array);
 }
 
-typedef struct {
-    double *constants;
-    double *computedConstants;
-    double *algebraicVariables;
-    double *externalVariables;
-} RootFindingInfo;
-
-extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
-                     double *u, size_t n, void *data);
-
-void objectiveFunction0(double *u, double *f, void *data)
-{
-    double *constants = ((RootFindingInfo *) data)->constants;
-    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
-    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;
-    double *externalVariables = ((RootFindingInfo *) data)->externalVariables;
-
-    algebraicVariables[0] = u[0];
-
-    f[0] = algebraicVariables[0]+computedConstants[0]-(externalVariables[0]+computedConstants[1]);
-}
-
-void findRoot0(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
-{
-    RootFindingInfo rfi = { constants, computedConstants, algebraicVariables, externalVariables };
-    double u[1];
-
-    u[0] = algebraicVariables[0];
-
-    nlaSolve(objectiveFunction0, u, 1, &rfi);
-
-    algebraicVariables[0] = u[0];
-}
-
 void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables)
 {
     computedConstants[0] = 3.0;
     computedConstants[1] = 7.0;
-    algebraicVariables[0] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables)
@@ -126,5 +91,5 @@ void computeComputedConstants(double *constants, double *computedConstants, doub
 void computeVariables(double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     externalVariables[0] = externalVariable(constants, computedConstants, algebraicVariables, externalVariables, 0);
-    findRoot0(constants, computedConstants, algebraicVariables, externalVariables);
+    algebraicVariables[0] = externalVariables[0]+computedConstants[1]-computedConstants[0];
 }

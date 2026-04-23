@@ -322,7 +322,7 @@ function(apply_dependency_settings _TARGET)
     target_link_libraries(${_TARGET} PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
     target_compile_definitions(${_TARGET} PUBLIC ${LIBXML2_DEFINITIONS})
   endif()
-  target_include_directories(${_TARGET} PUBLIC ${SYMENGINE_INCLUDE_DIRS}
+  target_include_directories(${_TARGET} SYSTEM PUBLIC ${SYMENGINE_INCLUDE_DIRS}
                                         PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/symengine>)
   target_link_libraries(${_TARGET} PUBLIC ${SYMENGINE_LIBRARIES})
 endfunction()

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="SimpleCapillary">
-  <component name="Capillary">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <variable name="t" units="dimensionless"/>
     <variable name="v_y" units="dimensionless"/>
     <variable name="v_z" units="dimensionless"/>
@@ -14,7 +14,7 @@
     <variable name="R" units="dimensionless"/>
     <variable name="R_v" units="dimensionless"/>
     <variable name="C" units="dimensionless"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Conservation Equations -->
       <apply>
         <eq/>

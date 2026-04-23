@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedUncommonArithmeticEquations">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
   <!-- Test equations for arithmetic operators that aren't covered in other test cases -->
 
-  <component name="Component">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="w" units="dimensionless"/>
     <variable name="x" units="dimensionless"/>
@@ -19,9 +19,7 @@
     <variable name="g" units="dimensionless"/>
     <variable name="h" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: a + sqrt(w) = 2 -->
       <!-- Test equation for square root -->
       <apply>
@@ -92,13 +90,12 @@
         <apply><plus/><ci>h</ci><apply><rem/><ci>z</ci><ci>w</ci></apply></apply>
         <cn cellml:units="dimensionless">0</cn>
       </apply>
-      
+
       <!-- Initialise constants -->
       <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
       <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>
       <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
-
     </math>
   </component>
 </model>

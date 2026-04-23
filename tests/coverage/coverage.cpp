@@ -512,7 +512,7 @@ TEST(Coverage, analyser)
 
     model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"))));
 
     analyser->analyseModel(model);
 
@@ -589,6 +589,121 @@ TEST(Coverage, analyserTypes)
     EXPECT_EQ("algebraic_variable", libcellml::AnalyserVariable::typeAsString(analyserModel->algebraicVariable(0)->type()));
 }
 
+TEST(Coverage, analyserEquationAstClone)
+{
+    auto ast = libcellml::AnalyserEquationAst::create();
+
+    ast->setType(libcellml::AnalyserEquationAst::Type::PLUS);
+
+    auto leftChild = libcellml::AnalyserEquationAst::create();
+
+    leftChild->setType(libcellml::AnalyserEquationAst::Type::CN);
+    leftChild->setValue("1.0");
+
+    auto rightChild = libcellml::AnalyserEquationAst::create();
+
+    rightChild->setType(libcellml::AnalyserEquationAst::Type::CN);
+    rightChild->setValue("2.0");
+
+    ast->setLeftChild(leftChild);
+    ast->setRightChild(rightChild);
+
+    auto cloned = ast->clone();
+
+    EXPECT_EQ(libcellml::AnalyserEquationAst::Type::PLUS, cloned->type());
+
+    auto clonedLeftChild = cloned->leftChild();
+
+    EXPECT_NE(nullptr, clonedLeftChild);
+    EXPECT_EQ(libcellml::AnalyserEquationAst::Type::CN, clonedLeftChild->type());
+    EXPECT_EQ("1.0", clonedLeftChild->value());
+
+    auto clonedRightChild = cloned->rightChild();
+
+    EXPECT_NE(nullptr, clonedRightChild);
+    EXPECT_EQ(libcellml::AnalyserEquationAst::Type::CN, clonedRightChild->type());
+    EXPECT_EQ("2.0", clonedRightChild->value());
+}
+
+TEST(Coverage, analyserWithNlaExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto externalNlaVariable = libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnNlaVariable1"));
+
+    externalNlaVariable->addDependency(model->component("my_component")->variable("x"));
+
+    EXPECT_TRUE(analyser->addExternalVariable(externalNlaVariable));
+    EXPECT_TRUE(analyser->addExternalVariable(model->component("my_component")->variable("eqnNlaVariable2")));
+    EXPECT_TRUE(analyser->addExternalVariable(model->component("my_component")->variable("x")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_NE(nullptr, analyser->analyserModel());
+}
+
+TEST(Coverage, analyserWithOverconstrainedNlaBasedModel)
+{
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model name=\"nla_coverage\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <units name=\"per_second\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"main\">\n"
+        "    <variable name=\"t\" units=\"second\"/>\n"
+        "    <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\"/>\n"
+        "    <variable name=\"a\" units=\"dimensionless\" initial_value=\"1\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <diff/>\n"
+        "          <bvar><ci>t</ci></bvar>\n"
+        "          <ci>x</ci>\n"
+        "        </apply>\n"
+        "        <cn cellml:units=\"per_second\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">1</cn>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <apply><sin/><ci>x</ci></apply>\n"
+        "          <apply><sin/><ci>a</ci></apply>\n"
+        "        </apply>\n"
+        "        <cn cellml:units=\"dimensionless\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">1</cn>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <minus/>\n"
+        "          <apply><sin/><ci>x</ci></apply>\n"
+        "          <apply><sin/><ci>a</ci></apply>\n"
+        "        </apply>\n"
+        "        <cn cellml:units=\"dimensionless\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">0.5</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyserModel->type());
+}
+
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
 {
     if (ast != nullptr) {
@@ -610,7 +725,7 @@ TEST(Coverage, generator)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnPlus")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnPlus"))));
 
     analyser->analyseModel(model);
 
@@ -623,10 +738,10 @@ TEST(Coverage, generator)
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(7), analyserModel->constantCount());
-    EXPECT_EQ(size_t(199), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(200), analyserModel->computedConstantCount());
     EXPECT_EQ(size_t(2), analyserModel->algebraicVariableCount());
     EXPECT_EQ(size_t(1), analyserModel->externalVariableCount());
-    EXPECT_EQ(size_t(203), analyserModel->analyserEquationCount());
+    EXPECT_EQ(size_t(204), analyserModel->analyserEquationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->analyserEquationCount());
@@ -651,7 +766,7 @@ TEST(Coverage, generator)
     EXPECT_EQ(nullptr, analyserModel->algebraicVariable(analyserModel->algebraicVariableCount()));
     EXPECT_NE(nullptr, analyserModel->externalVariable(0));
     EXPECT_NE(nullptr, analyserModel->externalVariable(0)->analyserEquation(0)->externalVariable(0));
-    EXPECT_EQ(nullptr, analyserModel->externalVariable(analyserModel->algebraicVariableCount()));
+    EXPECT_EQ(nullptr, analyserModel->externalVariable(analyserModel->externalVariableCount()));
     EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->stateCount());
     EXPECT_EQ(size_t(1), analyserModel->analyserEquation(0)->states().size());
     EXPECT_NE(nullptr, analyserModel->analyserEquation(0)->state(0));
@@ -701,7 +816,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->algebraicVariableCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->algebraicVariable(i)->initialisingVariable());
+        EXPECT_EQ(nullptr, analyserModel->algebraicVariable(i)->initialisingVariable());
     }
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(nullptr));
@@ -887,7 +1002,7 @@ TEST(Coverage, generator)
 
     // Coverage for various profile settings.
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnEq")));
+    EXPECT_TRUE(analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnEq"))));
 
     analyser->analyseModel(model);
 

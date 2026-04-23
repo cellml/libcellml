@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedLogarithmEquations">
-  <component name="Component">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="x" units="dimensionless"/>
     <variable name="y" units="dimensionless"/>
@@ -11,9 +11,7 @@
     <variable name="b" units="dimensionless"/>
     <variable name="c" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: a + ln(x) = 5 -->
       <!-- Test equation for natural logarithm -->
       <apply>
@@ -42,7 +40,6 @@
       <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">1000</cn></apply>
       <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">1.5</cn></apply>
-
     </math>
   </component>
 </model>

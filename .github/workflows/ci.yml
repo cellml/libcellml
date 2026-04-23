@@ -2,8 +2,7 @@ name: CI
 
 on:
   pull_request:
-    # TODO: remove the 'staging' branch once it's merged into 'main'.
-    branches: [ main, staging ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
@@ -106,33 +105,32 @@ jobs:
         run: cmake --build build
       - name: Unit testing
         run: cmake --build build --target test
-  # TODO: uncomment the 'javascript' job once SymEngine integration is complete.
-  # javascript:
-  #   name: JavaScript
-  #   runs-on: macos-latest
-  #   strategy:
-  #     fail-fast: false
-  #   steps:
-  #     - name: Check out libCellML
-  #       uses: actions/checkout@v4
-  #     - name: Install CMake and Ninja
-  #       uses: lukka/get-cmake@latest
-  #     - name: Install buildcache
-  #       uses: cscouto/buildcache-action@v1
-  #     - name: Install Emscripten
-  #       run: brew install --overwrite emscripten
-  #     - name: Install dependencies
-  #       run: |
-  #         cd $HOME
-  #         wget https://github.com/cellml/gha/releases/download/gha/libxml2-WASM.tar.gz -O - | tar -xz
-  #         wget https://github.com/cellml/gha/releases/download/gha/symengine-WASM.tar.gz -O - | tar -xz
-  #         wget https://github.com/cellml/gha/releases/download/gha/zlib-WASM.tar.gz -O - | tar -xz
-  #     - name: Configure libCellML
-  #       run: emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$HOME
-  #     - name: Build libCellML
-  #       run: cmake --build build-wasm
-  #     - name: Unit testing
-  #       run: cmake --build build-wasm --target jest_test
+  javascript:
+    name: JavaScript
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v4
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install buildcache
+        uses: cscouto/buildcache-action@v1
+      - name: Install Emscripten
+        run: brew install --overwrite emscripten
+      - name: Install dependencies
+        run: |
+          cd $HOME
+          wget https://github.com/cellml/gha/releases/download/gha/libxml2-WASM.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/symengine-WASM.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/zlib-WASM.tar.gz -O - | tar -xz
+      - name: Configure libCellML
+        run: emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$HOME
+      - name: Build libCellML
+        run: cmake --build build-wasm
+      - name: Unit testing
+        run: cmake --build build-wasm --target jest_test
   code_formatting:
     name: Code formatting
     runs-on: ubuntu-latest

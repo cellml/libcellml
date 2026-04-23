@@ -230,6 +230,26 @@ void AnalyserEquationAst::setRightChild(const AnalyserEquationAstPtr &rightChild
     mPimpl->mRightChild = rightChild;
 }
 
+AnalyserEquationAstPtr AnalyserEquationAst::clone(const AnalyserEquationAstPtr &parentAst) const
+{
+    auto res = AnalyserEquationAst::create();
+
+    res->setType(type());
+    res->setValue(value());
+    res->setVariable(variable());
+    res->setParent(parentAst);
+
+    if (leftChild() != nullptr) {
+        res->setLeftChild(leftChild()->clone(res));
+    }
+
+    if (rightChild() != nullptr) {
+        res->setRightChild(rightChild()->clone(res));
+    }
+
+    return res;
+}
+
 void AnalyserEquationAst::swapLeftAndRightChildren()
 {
     auto oldOwnedLeftChild = mPimpl->mOwnedLeftChild;

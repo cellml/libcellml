@@ -1,27 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model name="linear_system_4D" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-  <component name="algebraic_component">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <variable name="a" units="dimensionless"/>
     <variable name="b" units="dimensionless"/>
     <variable name="c" units="dimensionless"/>
     <variable name="d" units="dimensionless"/>
 
     <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- 2a + 3b - c + d = 8 -->
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <apply><times/><cn cellml:units="dimensionless">2</cn><ci>a</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">3</cn><ci>b</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">-1</cn><ci>c</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">1</cn><ci>d</ci></apply>
+        </apply>
+        <cn cellml:units="dimensionless">8</cn>
+      </apply>
 
-      <!-- a + 2b + 3c + 4d = 0 -->
+      <!-- a - 4b + 5c - 2d = 5 -->
       <apply>
         <eq/>
         <apply>
           <plus/>
           <ci>a</ci>
-          <apply><times/><cn cellml:units="dimensionless">2</cn><ci>b</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">3</cn><ci>c</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">4</cn><ci>d</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">-4</cn><ci>b</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">5</cn><ci>c</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">-2</cn><ci>d</ci></apply>
         </apply>
-        <cn cellml:units="dimensionless">0</cn>
+        <cn cellml:units="dimensionless">5</cn>
       </apply>
 
-      <!-- a + b + c + d = 0 -->
+      <!-- 3a + b - 2c + d = 5 -->
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <apply><times/><cn cellml:units="dimensionless">3</cn><ci>a</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">1</cn><ci>b</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">-2</cn><ci>c</ci></apply>
+          <apply><times/><cn cellml:units="dimensionless">1</cn><ci>d</ci></apply>
+        </apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- a + b + c + d = 10 -->
       <apply>
         <eq/>
         <apply>
@@ -31,35 +56,8 @@
           <ci>c</ci>
           <ci>d</ci>
         </apply>
-        <cn cellml:units="dimensionless">0</cn>
+        <cn cellml:units="dimensionless">10</cn>
       </apply>
-
-      <!-- 4a - 3b + 2c - d = 0 -->
-      <apply>
-        <eq/>
-        <apply>
-          <plus/>
-          <apply><times/><cn cellml:units="dimensionless">4</cn><ci>a</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">-3</cn><ci>b</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">2</cn><ci>c</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">-1</cn><ci>d</ci></apply>
-        </apply>
-        <cn cellml:units="dimensionless">0</cn>
-      </apply>
-
-      <!-- a + 4b - 2c + 3d = 0 -->
-      <apply>
-        <eq/>
-        <apply>
-          <plus/>
-          <ci>a</ci>
-          <apply><times/><cn cellml:units="dimensionless">4</cn><ci>b</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">-2</cn><ci>c</ci></apply>
-          <apply><times/><cn cellml:units="dimensionless">3</cn><ci>d</ci></apply>
-        </apply>
-        <cn cellml:units="dimensionless">0</cn>
-      </apply>
-
     </math>
   </component>
 </model>

@@ -453,7 +453,7 @@ enum class TrackingType
     VARIABLES,
     CONSTANTS,
     COMPUTED_CONSTANTS,
-    ALGEBRAIC
+    ALGEBRAIC_VARIABLES
 };
 
 void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::GeneratorVariableTrackerPtr &generatorVariableTracker, TrackingType trackingType)
@@ -472,7 +472,7 @@ void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::
         generatorVariableTracker->untrackAllComputedConstants(analyserModel);
 
         break;
-    case TrackingType::ALGEBRAIC:
+    case TrackingType::ALGEBRAIC_VARIABLES:
         generatorVariableTracker->untrackAllAlgebraicVariables(analyserModel);
 
         break;
@@ -481,7 +481,7 @@ void untrack(const libcellml::AnalyserModelPtr &analyserModel, const libcellml::
     }
 }
 
-void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType trackingType,
+void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool original, TrackingType trackingType,
                                                    const std::vector<std::string> &issues,
                                                    const std::vector<libcellml::Issue::Level> &levels,
                                                    const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
@@ -490,20 +490,20 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
                                                    const std::vector<libcellml::Issue::ReferenceRule> &externalReferenceRules)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (ode ? "" : ".dae.for.tracking") + ".cellml"));
+    auto model = parser->parseModel(fileContents(std::string("generator/hodgkin_huxley_squid_axon_model_1952/model") + (original ? "" : ".variant") + ".cellml"));
     auto analyser = libcellml::Analyser::create();
     auto generator = libcellml::Generator::create();
     auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
-    std::string modelType = ode ? "model" : "model.dae.for.tracking";
+    std::string modelType = "model" + std::string(original ? "" : ".variant");
     std::string variableType = (trackingType == TrackingType::VARIABLES) ?
                                    "untracked.variables" :
                                    ((trackingType == TrackingType::CONSTANTS) ?
                                         "untracked.constants" :
                                         ((trackingType == TrackingType::COMPUTED_CONSTANTS) ?
                                              "untracked.computed.constants" :
-                                             ((trackingType == TrackingType::ALGEBRAIC) ?
+                                             ((trackingType == TrackingType::ALGEBRAIC_VARIABLES) ?
                                                   "untracked.algebraic.variables" :
-                                                  "control")));
+                                                  "untracked.control")));
 
     analyser->analyseModel(model);
 
@@ -557,183 +557,61 @@ void hodgkinHuxleySquidAxonModel1952CodeGeneration(bool ode, TrackingType tracki
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/" + modelType + "." + variableType + ".with.externals.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 }
 
+void hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType trackingType,
+                                                        const std::vector<std::string> &issues,
+                                                        const std::vector<libcellml::Issue::Level> &levels,
+                                                        const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                        const std::vector<std::string> &externalIssues,
+                                                        const std::vector<libcellml::Issue::Level> &externalLevels,
+                                                        const std::vector<libcellml::Issue::ReferenceRule> &externalReferenceRules)
+{
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, trackingType, issues, levels, referenceRules, externalIssues, externalLevels, externalReferenceRules);
+    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, trackingType, issues, levels, referenceRules, externalIssues, externalLevels, externalReferenceRules);
+}
+
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952Control)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
-                                                  {}, {}, {},
-                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
+    hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType::CONTROL,
+                                                       {}, {}, {},
+                                                       {}, {}, {});
 }
 
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::CONSTANTS,
-                                                  {}, {}, {},
-                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
+    hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType::CONSTANTS,
+                                                       {}, {}, {},
+                                                       {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
+                                                       {libcellml::Issue::Level::ERROR},
+                                                       {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedComputedConstants)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::COMPUTED_CONSTANTS,
-                                                  {}, {}, {},
-                                                  {"Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
+    hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType::COMPUTED_CONSTANTS,
+                                                       {}, {}, {},
+                                                       {"Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked."},
+                                                       {libcellml::Issue::Level::ERROR},
+                                                       {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
-
-const std::vector<std::string> algebraicRelatedExternalIssues = {
-    "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
-};
 
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedAlgebraicVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::ALGEBRAIC,
-                                                  {}, {}, {},
-                                                  {"Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
+    hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType::ALGEBRAIC_VARIABLES,
+                                                       {}, {}, {},
+                                                       {"Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked."},
+                                                       {libcellml::Issue::Level::ERROR},
+                                                       {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
 }
 
 TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952UntrackedVariables)
 {
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(true, TrackingType::VARIABLES,
-                                                  {}, {}, {},
-                                                  {
-                                                      "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
-                                                      "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
-                                                      "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
-                                                  },
-                                                  expectedLevels(3, libcellml::Issue::Level::ERROR),
-                                                  expectedReferenceRules(3, libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE));
+    hodgkinHuxleySquidAxonModel1952CodeGenerationTests(TrackingType::VARIABLES,
+                                                       {}, {}, {},
+                                                       {
+                                                           "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
+                                                           "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
+                                                           "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
+                                                       },
+                                                       expectedLevels(3, libcellml::Issue::Level::ERROR),
+                                                       expectedReferenceRules(3, libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE));
 }
-
-// TODO: Rayen to check.
-/*
-TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeControl)
-{
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONTROL,
-                                                  {}, {}, {},
-                                                  {}, {}, {});
-}
-*/
-
-// TODO: Rayen to check.
-/*
-TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedConstants)
-{
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::CONSTANTS,
-                                                  {}, {}, {},
-                                                  {"Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
-}
-*/
-
-// TODO: Rayen to check.
-/*
-TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedComputedConstants)
-{
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::COMPUTED_CONSTANTS,
-                                                  {}, {}, {},
-                                                  {"Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked."},
-                                                  {libcellml::Issue::Level::ERROR},
-                                                  {libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE});
-}
-*/
-
-const std::vector<std::string> daeIssues = {
-    "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'i_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-    "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-};
-const std::vector<libcellml::Issue::Level> daeLevels = expectedLevels(daeIssues.size(), libcellml::Issue::Level::ERROR);
-const std::vector<libcellml::Issue::ReferenceRule> daeReferenceRules = expectedReferenceRules(daeIssues.size(), libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE);
-
-// TODO: Rayen to check.
-/*
-TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedAlgebraicVariables)
-{
-    const std::vector<std::string> daeExternalIssues = {
-        "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> daeExternalReferenceRules = {
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-    };
-
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::ALGEBRAIC,
-                                                  daeIssues, daeLevels, daeReferenceRules,
-                                                  daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
-}
-*/
-
-// TODO: Rayen to check.
-/*
-TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariables)
-{
-    const std::vector<std::string> daeExternalIssues = {
-        "Variable 'Cm' in component 'membrane' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'E_K' in component 'potassium_channel' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'i_Stim' in component 'membrane' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'i_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'i_K' in component 'potassium_channel' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'E_L' in component 'leakage_current' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'E_Na' in component 'sodium_channel' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_m' in component 'sodium_channel_m_gate' is needed to compute an external variable and cannot therefore be untracked.",
-        "Variable 'beta_m' in component 'sodium_channel_m_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'beta_h' in component 'sodium_channel_h_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'alpha_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-        "Variable 'beta_n' in component 'potassium_channel_n_gate' is computed using an NLA system and cannot therefore be untracked.",
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> daeExternalReferenceRules = {
-        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-        libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE,
-    };
-
-    hodgkinHuxleySquidAxonModel1952CodeGeneration(false, TrackingType::VARIABLES,
-                                                  daeIssues, daeLevels, daeReferenceRules,
-                                                  daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
-}
-*/

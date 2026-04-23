@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnrearrangeableEquations">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
   <!-- Contains all equations we don't want or expect SymEngine to rearrange -->
 
-  <component name="Component">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="x1" units="dimensionless"/>
     <variable name="x2" units="dimensionless"/>
@@ -12,7 +12,7 @@
     <variable name="a" units="radian"/>
     <variable name="b" units="radian"/>
     <variable name="c" units="radian"/>
-    <!-- <variable name="d" units="radian"/> -->
+    <variable name="d" units="radian"/>
     <variable name="e" units="radian"/>
     <variable name="f" units="radian"/>
     <variable name="g" units="radian"/>
@@ -32,9 +32,7 @@
     <variable name="u" units="dimensionless"/>
     <variable name="v" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: 2*x1 + sin(a) = 1 -->
       <!-- Cannot inverse sine -->
       <apply>
@@ -61,13 +59,11 @@
 
       <!-- Equation 4: sech(d) + x2 = 1 -->
       <!-- Cannot inverse hyperbolic secant -->
-      <!-- TODO Test does not pass in debug mode since SymEngine will attempt to rearrange,
-      but creates an error that it handles by immediately aborting the program. -->
-      <!-- <apply>
+      <apply>
         <eq/>
         <apply><plus/><apply><sech/><ci>d</ci></apply><ci>x2</ci></apply>
         <cn cellml:units="dimensionless">1</cn>
-      </apply> -->
+      </apply>
 
       <!-- Equation 5: arccos(e) - x1 = 0.5 -->
       <!-- Cannot inverse arccosine -->
@@ -220,12 +216,11 @@
         <apply><rem/><ci>v</ci><cn cellml:units="dimensionless">3</cn></apply>
         <ci>x2</ci>
       </apply>
-      
+
       <!-- Initialise constants -->
       <apply><eq/><ci>x1</ci><cn cellml:units="dimensionless">0.5</cn></apply>
       <apply><eq/><ci>x2</ci><cn cellml:units="dimensionless">1.0</cn></apply>
       <apply><eq/><ci>x3</ci><cn cellml:units="dimensionless">1.5</cn></apply>
-
     </math>
   </component>
 </model>

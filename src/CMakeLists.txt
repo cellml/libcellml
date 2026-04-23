@@ -41,6 +41,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysersymengine.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.cpp

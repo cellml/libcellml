@@ -9,8 +9,7 @@ permissions:
 
 jobs:
   codespell:
-    # TODO: uncomment the test below once we are done with our SymEngine work.
-    # if: github.repository == 'cellml/libcellml'
+    if: github.repository == 'cellml/libcellml'
     name: Check for spelling errors
     runs-on: ubuntu-latest
     steps:

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedEquationsWithConstants">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
   <!-- Test equations for non-integer constants -->
 
-  <component name="Component">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="w" units="dimensionless"/>
     <variable name="x" units="dimensionless"/>
@@ -16,9 +16,7 @@
     <variable name="d" units="dimensionless"/>
     <variable name="e" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: a + x = 8.65 -->
       <!-- Test equation for double -->
       <apply>
@@ -64,7 +62,6 @@
       <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">4</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">5</cn></apply>
       <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply>
-
     </math>
   </component>
 </model>

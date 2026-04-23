@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="not_greater_than_rearrangement">
+    <variable name="a" units="dimensionless" initial_value="1" />
+    <variable name="b" units="dimensionless" initial_value="3" />
+    <variable name="x" units="dimensionless" />
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq />
+        <apply><plus/><ci>x</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply><not/><apply><gt/><ci>a</ci><ci>b</ci></apply></apply>
+      </apply>
+    </math>
+  </component>
+  <component name="opaque_logical_equation">
+    <variable name="a" units="dimensionless" initial_value="0"/>
+    <variable name="b" units="dimensionless" initial_value="1"/>
+    <variable name="y" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><and/><ci>a</ci><ci>b</ci></apply>
+        <apply><plus/><ci>y</ci><cn cellml:units="dimensionless">1</cn></apply>
+      </apply>
+    </math>
+  </component>
+  <component name="non_integer_power_rearrangement">
+    <variable name="a" units="dimensionless" initial_value="4"/>
+    <variable name="x" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><plus/><ci>x</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply><power/><ci>a</ci><cn cellml:units="dimensionless">2.5</cn></apply>
+      </apply>
+    </math>
+  </component>
+  <component name="piecewise_substitution">
+    <variable name="x" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><plus/><ci>x</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <piecewise>
+          <piece>
+            <cn cellml:units="dimensionless">2</cn>
+            <apply><gt/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">0.5</cn></apply>
+          </piece>
+          <otherwise><cn cellml:units="dimensionless">0</cn></otherwise>
+        </piecewise>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><minus/><ci>b</ci><ci>x</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+    </math>
+  </component>
+  <component name="boolean_rearrangement">
+    <variable name="a" units="dimensionless" initial_value="1"/>
+    <variable name="b" units="dimensionless" initial_value="2"/>
+    <variable name="y1" units="dimensionless"/>
+    <variable name="y2" units="dimensionless"/>
+    <variable name="y3" units="dimensionless"/>
+    <variable name="y4" units="dimensionless"/>
+    <variable name="y5" units="dimensionless"/>
+    <variable name="y6" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y1</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply><neq/><ci>a</ci><ci>b</ci></apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y2</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply><lt/><ci>a</ci><ci>b</ci></apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y3</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply><leq/><ci>a</ci><ci>b</ci></apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y4</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply>
+          <and/>
+          <apply><gt/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply>
+          <apply><gt/><ci>b</ci><cn cellml:units="dimensionless">0</cn></apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y5</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply>
+          <or/>
+          <apply><gt/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply>
+          <apply><gt/><ci>b</ci><cn cellml:units="dimensionless">0</cn></apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y6</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply>
+          <xor/>
+          <apply><gt/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply>
+          <apply><gt/><ci>b</ci><cn cellml:units="dimensionless">0</cn></apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="nan_rearrangement">
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless" initial_value="1"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <times/>
+          <notanumber/>
+          <ci>x</ci>
+        </apply>
+        <apply>
+          <plus/>
+          <ci>x</ci>
+          <ci>y</ci>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="not_xor_rearrangement">
+    <variable name="a" units="dimensionless" initial_value="1"/>
+    <variable name="b" units="dimensionless" initial_value="2"/>
+    <variable name="c" units="dimensionless" initial_value="3"/>
+    <variable name="x" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><plus/><ci>x</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply>
+          <not/>
+          <apply>
+            <xor/>
+            <apply><gt/><ci>a</ci><ci>b</ci></apply>
+            <apply><lt/><ci>b</ci><ci>c</ci></apply>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="nested_equality_convert_to_eq_type">
+    <variable name="a" units="dimensionless" initial_value="1"/>
+    <variable name="b" units="dimensionless" initial_value="1"/>
+    <variable name="y" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><plus/><ci>y</ci><cn cellml:units="dimensionless">0</cn></apply>
+        <apply>
+          <and/>
+          <apply><eq/><ci>a</ci><ci>b</ci></apply>
+          <apply><gt/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="invert_simple_odd_power_edge_cases">
+    <variable name="w" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="e" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+    <variable name="g" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><power/><cn cellml:units="dimensionless">2</cn><ci>w</ci></apply>
+        <apply><plus/><ci>e</ci><cn cellml:units="dimensionless">5</cn></apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><power/><ci>y</ci><cn cellml:units="dimensionless">3</cn></apply>
+        <apply><plus/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><divide/><cn cellml:units="dimensionless">1</cn><ci>g</ci></apply>
+        <ci>w</ci>
+      </apply>
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">2</cn></apply>
+    </math>
+  </component>
+  <component name="scientific_notation">
+    <variable name="a" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>a</ci>
+          <cn cellml:units="dimensionless">1000000000000000000</cn>
+        </apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+    </math>
+  </component>
+  <component name="power_with_pi_base">
+    <variable name="a" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>a</ci>
+          <apply><power/><pi/><ci>x</ci></apply>
+        </apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x</ci>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+    </math>
+  </component>
+  <component name="swap_rhs_variable_piecewise">
+    <variable name="x" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <piecewise>
+          <piece>
+            <cn cellml:units="dimensionless">2</cn>
+            <apply><gt/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">0</cn></apply>
+          </piece>
+          <otherwise><cn cellml:units="dimensionless">0</cn></otherwise>
+        </piecewise>
+        <ci>x</ci>
+      </apply>
+    </math>
+  </component>
+  <component name="nla_with_variable_of_integration">
+    <variable name="t" units="dimensionless"/>
+    <variable name="x" units="dimensionless" initial_value="0"/>
+    <variable name="y" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply><diff/><bvar><ci>t</ci></bvar><ci>x</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <apply><plus/><apply><sin/><ci>y</ci></apply><ci>y</ci><ci>t</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+    </math>
+  </component>
+  <component name="tearing_variable_tiebreaker_uses_match_making">
+    <variable name="u" units="dimensionless" initial_value="1"/>
+    <variable name="v" units="dimensionless" initial_value="2"/>
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>x</ci>
+          <ci>z</ci>
+          <ci>w</ci>
+        </apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>x</ci>
+          <ci>z</ci>
+          <ci>w</ci>
+        </apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>x</ci>
+          <ci>v</ci>
+          <ci>u</ci>
+        </apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>v</ci>
+          <ci>y</ci>
+        </apply>
+        <cn cellml:units="dimensionless">3</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>y</ci>
+          <ci>w</ci>
+          <ci>u</ci>
+        </apply>
+        <cn cellml:units="dimensionless">4</cn>
+      </apply>
+    </math>
+  </component>
+</model>

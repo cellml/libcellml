@@ -1,21 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedPolynomialEquationsOneSolution">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
   <!-- Test equations for polynomials with one solution -->
 
-  <component name="Component">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="w" units="dimensionless"/>
-    
+
     <!-- Unknowns to solve -->
     <variable name="a" units="dimensionless"/>
     <variable name="b" units="dimensionless"/>
     <variable name="c" units="dimensionless"/>
     <variable name="d" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
-      <!-- Equation 1: (a + 2)^3 = 125  --> 
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: (a + 2)^3 = 125  -->
       <!-- Unique solution: a = 3 -->
       <!-- Test equation for cubed number -->
       <apply>
@@ -60,15 +58,12 @@
       <!-- Test equation for cubic with non-constant answer -->
       <apply>
         <eq/>
-        <apply>
-          <apply><power/><ci>d</ci><cn cellml:units="dimensionless">3</cn></apply>
-        </apply>
+        <apply><power/><ci>d</ci><cn cellml:units="dimensionless">3</cn></apply>
         <ci>w</ci>
       </apply>
 
       <!-- Initialise constants -->
       <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">3</cn></apply>
-
     </math>
   </component>
 </model>

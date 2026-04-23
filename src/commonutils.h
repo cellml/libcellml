@@ -45,6 +45,13 @@ libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::ParentedEntityConst
  */
 libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::ParentedEntityConstPtr &entity);
 
+/**
+ * @brief Get the epsilon value for double precision comparisons.
+ *
+ * @return The epsilon value for double precision comparisons.
+ */
+double TEST_EXPORT epsilon();
+
 #ifndef TEST_UTILS
 } // namespace libcellml
 

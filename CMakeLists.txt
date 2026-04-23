@@ -118,11 +118,6 @@ elseif(BINDINGS_PYTHON)
   message(WARNING "Python bindings requested but development files for Python or SWIG were not found!")
 endif()
 unset(BINDINGS_PYTHON CACHE)
-# TODO: remove the resetting below once SymEngine integration is complete.
-if(LIBCELLML_BINDINGS_PYTHON)
-  set(LIBCELLML_BINDINGS_PYTHON OFF)
-  message(WARNING "Python bindings would normally be enabled as part of this configuration but they are temporarily disabled while we are working on SymEngine integration.")
-endif()
 
 if(NOT DEFINED EMSCRIPTEN)
   # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS

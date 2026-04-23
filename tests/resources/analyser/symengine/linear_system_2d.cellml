@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model name="linear_system_2D" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-  <component name="algebraic_component">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <variable name="x" units="dimensionless"/>
     <variable name="y" units="dimensionless"/>
 
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-
       <!-- x + y = 3 -->
       <apply>
         <eq/>
@@ -35,7 +34,6 @@
         </apply>
         <cn cellml:units="dimensionless">0</cn>
       </apply>
-
     </math>
   </component>
 </model>

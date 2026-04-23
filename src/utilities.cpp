@@ -128,6 +128,10 @@ std::string convertToString(double value, bool fullPrecision)
     }
     std::ostringstream strs;
     if (fullPrecision) {
+        auto roundedValue = static_cast<double>(std::llround(value));
+        if (areNearlyEqual(value, roundedValue)) {
+            value = roundedValue;
+        }
         strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
     } else {
         strs << value;
@@ -304,7 +308,7 @@ uint64_t ulpsDistance(double a, double b)
 
 bool areNearlyEqual(double a, double b)
 {
-    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    static const double fixedEpsilon = epsilon();
     static const ptrdiff_t ulpsEpsilon = 1;
 
     if (fabs(a - b) <= fixedEpsilon) {

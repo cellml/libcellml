@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedMultiplicativeEquations">
-  <component name="Component">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="w" units="dimensionless"/>
     <variable name="x" units="dimensionless"/>
@@ -12,9 +12,7 @@
     <variable name="b" units="dimensionless"/>
     <variable name="c" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: a * w = 4 -->
       <!-- Test equation for multiplication -->
       <apply>
@@ -52,7 +50,6 @@
       <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
       <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>
       <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
-
     </math>
   </component>
 </model>

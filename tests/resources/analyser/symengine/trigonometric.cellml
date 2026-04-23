@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="UnarrangedTrigEquations">
-  <component name="Component">
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
     <!-- Precomputed constants -->
     <variable name="z1" units="radian"/>
     <variable name="z2" units="radian"/>
@@ -32,9 +32,7 @@
     <variable name="w" units="dimensionless"/>
     <variable name="x" units="dimensionless"/>
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Equation 1: 2*a + sin(z1) = 1 -->
       <!-- Test equation for sine -->
       <apply>
@@ -231,7 +229,6 @@
       <apply><eq/><ci>z1</ci><cn cellml:units="radian">0.5</cn></apply>
       <apply><eq/><ci>z2</ci><cn cellml:units="radian">1.0</cn></apply>
       <apply><eq/><ci>z3</ci><cn cellml:units="radian">1.5</cn></apply>
-
     </math>
   </component>
 </model>
