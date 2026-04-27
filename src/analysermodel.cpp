@@ -43,6 +43,33 @@ AnalyserModel::~AnalyserModel()
     delete mPimpl;
 }
 
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
+{
+    mEquivalentVariableCache.clear();
+    for (size_t i = 0; i < mModel->componentCount(); ++i) {
+        buildEquivalentVariablesCache(mModel->component(i));
+    }
+}
+
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component)
+{
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto variable = component->variable(i);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            auto equivalentVariable = variable->equivalentVariable(j);
+            auto v1 = reinterpret_cast<uintptr_t>(variable.get());
+            auto v2 = reinterpret_cast<uintptr_t>(equivalentVariable.get());
+            if (v2 < v1) {
+                std::swap(v1, v2);
+            }
+            unite(v1, v2);
+        }
+    }
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        buildEquivalentVariablesCache(component->component(i));
+    }
+}
+
 bool AnalyserModel::isValid() const
 {
     switch (mPimpl->mType) {
@@ -497,26 +524,10 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // means that we can safely cache the result of a call to that utility. In
     // turn, this means that we can speed up any feature (e.g., code generation)
     // that also relies on that utility.
-
     auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    if (v1 > v2) {
-        std::swap(v1, v2);
-    }
-
-    auto key = AnalyserModel::AnalyserModelImpl::VariableKeyPair {v1, v2};
-    auto it = mPimpl->mCachedEquivalentVariables.find(key);
-
-    if (it != mPimpl->mCachedEquivalentVariables.end()) {
-        return it->second;
-    }
-
-    auto res = libcellml::areEquivalentVariables(variable1, variable2);
-
-    mPimpl->mCachedEquivalentVariables.emplace(key, res);
-
-    return res;
+    return mPimpl->find(v1) == mPimpl->find(v2);
 }
 
 } // namespace libcellml

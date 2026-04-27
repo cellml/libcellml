@@ -600,14 +600,14 @@ public:
      * Returns @c true if @p variable1 is equivalent to @p variable2 and
      * @c false otherwise.
      *
-     * To test for equivalence is time consuming, so caching is used to speed
-     * things up. During the analysis of a model, various tests are performed
-     * and their result cached. So, if you test two variables that were tested
-     * during the analysis then the cached result will be returned otherwise the
-     * two variables will be properly tested and their result cached. This works
-     * because an @ref AnalyserModel always refers to a static version of a
-     * @ref Model. However, this might break if a @ref Model is modified after it
-     * has been analysed.
+     * This test is a cached version of the internal areEquivalentVariables() utility.
+     * The cache is built when the model is analysed.
+     * If the model has changed since it was analysed, then the cache might not be valid
+     * and the result of this test may be incorrect.
+     *
+     * This function is intended to be used by the @ref Analyser whilst it is analysing the model.
+     * It is not intended to be used by external code.
+     * Although, we do not restrict the use of this function in case it does have other applications.
      *
      * @param variable1 The @ref Variable to test if it is equivalent to
      * @p variable2.

@@ -43,35 +43,30 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraicVariables;
     std::vector<AnalyserVariablePtr> mExternalVariables;
-
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
-    struct VariableKeyPair
-    {
-        uintptr_t first;
-        uintptr_t second;
+    std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
 
-        bool operator==(const VariableKeyPair &other) const
-        {
-            return (first == other.first) & (second == other.second);
+    uintptr_t find(uintptr_t x) {
+        auto it = mEquivalentVariableCache.find(x);
+        if (it == mEquivalentVariableCache.end()) {
+            mEquivalentVariableCache[x] = x;
+            return x;
         }
-    };
-
-    struct VariableKeyPairHash
-    {
-        size_t operator()(const VariableKeyPair &pair) const
-        {
-            // A simple and portable hash function for a pair of pointers.
-
-            size_t hash = pair.first;
-
-            hash ^= pair.second + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-
-            return hash;
+        if (it->second != x) {
+            it->second = find(it->second);
         }
-    };
+        return it->second;
+    }
 
-    std::unordered_map<VariableKeyPair, bool, VariableKeyPairHash> mCachedEquivalentVariables;
+
+    void unite(uintptr_t x, uintptr_t y) {
+        const uintptr_t &rootX = find(x);
+        const uintptr_t &rootY = find(y);
+        if (rootX != rootY) {
+            mEquivalentVariableCache[rootY] = rootX;
+        }
+    }
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -101,6 +96,9 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAcothFunction = false;
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
+
+    void buildEquivalentVariablesCache();
+    void buildEquivalentVariablesCache(const ComponentPtr &component);
 
     AnalyserModelImpl(const ModelPtr &model);
 };
