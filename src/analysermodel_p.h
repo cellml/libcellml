@@ -59,7 +59,6 @@ struct AnalyserModel::AnalyserModelImpl
         return it->second;
     }
 
-
     void unite(uintptr_t x, uintptr_t y) {
         const uintptr_t &rootX = find(x);
         const uintptr_t &rootY = find(y);
