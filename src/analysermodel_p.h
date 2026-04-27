@@ -47,7 +47,8 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
 
-    uintptr_t find(uintptr_t x) {
+    uintptr_t find(uintptr_t x)
+    {
         auto it = mEquivalentVariableCache.find(x);
         if (it == mEquivalentVariableCache.end()) {
             mEquivalentVariableCache[x] = x;
@@ -59,7 +60,8 @@ struct AnalyserModel::AnalyserModelImpl
         return it->second;
     }
 
-    void unite(uintptr_t x, uintptr_t y) {
+    void unite(uintptr_t x, uintptr_t y)
+    {
         const uintptr_t &rootX = find(x);
         const uintptr_t &rootY = find(y);
         if (rootX != rootY) {
