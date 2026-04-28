@@ -25,7 +25,11 @@ jobs:
 
       - name: Update version numbers
         run: |
-          python3 ./scripts/set_version.py  ${{ inputs.version }}
+          version=${{ inputs.version }}
+          core=$(sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/' <<< "$version")
+          dev="${version#"$core"}"
+          echo "Core version: $core, Dev suffix: $dev"
+          python3 .github/scripts/set_version.py . $core $dev
 
       - name: Commit version bump
         run: |
