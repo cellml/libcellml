@@ -5,6 +5,7 @@ on:
     inputs:
       source_branch:
         description: "Base branch (main or tag)"
+        default: 'main'
         required: true
       version:
         description: "Release version (e.g. 0.7.1)"
