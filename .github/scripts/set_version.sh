@@ -6,6 +6,10 @@ developer_version=$2
 echo "Setting version to ${version} and developer version to ${developer_version}."
 pwd
 
+ls tests/version/version.cpp
+
+echo 's@    EXPECT_EQ(\"[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\", versionString);@    EXPECT_EQ(\"'${version}'\", versionString);@'
+
 IFS='.' read -ra version_array <<< "$version"
 numeric_version=`printf %02d "${version_array[@]}"`
 sed -i '' 's@    EXPECT_EQ(\"[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\", versionString);@    EXPECT_EQ(\"'${version}'\", versionString);@' tests/version/version.cpp
