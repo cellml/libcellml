@@ -6,8 +6,9 @@ developer_version=$2
 IFS='.' read -ra version_array <<< "$version"
 numeric_version=`printf %02d "${version_array[@]}"`
 
-sed -i 's@    EXPECT_EQ(\"[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\", versionString);@    EXPECT_EQ(\"'${version}'\", versionString);@' tests/version/version.cpp
+sed -i 's@    EXPECT_EQ(\"[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\", versionString);@    EXPECT_EQ(\"'${version}'\", versionString);@' tests/version/version.cpp
 echo "1"
+ls
 git status
 sed -i 's@    EXPECT_EQ(0x[[:digit:]]+U, version);@    EXPECT_EQ(0x'${numeric_version}'U, version);@' tests/version/version.cpp
 echo "2"
@@ -15,6 +16,7 @@ git status
 
 sed -i 's/^set(_PROJECT_VERSION[^)]*)$/set(_PROJECT_VERSION '${version}')/' CMakeLists.txt
 sed -i 's/^set(PROJECT_DEVELOPER_VERSION[^)]*)$/set(PROJECT_DEVELOPER_VERSION '${developer_version}')/' CMakeLists.txt
+git status
 
 files=`grep -rl "^LIBCELLML_VERSION = \"\d*\.\d*\.\d*\"" *`
 echo "files 0: $files"
@@ -34,5 +36,7 @@ files=`grep -rl --exclude=simple-sed.sh "    expect(libcellml\.versionString()).
 sed -i "s@    expect(libcellml\.versionString()).toBe('[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+');@    expect(libcellml\.versionString()).toBe('"${version}"');@" $files
 
 git status
-
+echo "==================="
+git diff
+echo "==================="
 exit 0
