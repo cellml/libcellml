@@ -58,7 +58,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "Prepare release v${{ inputs.version }}"
+          git commit -am "Changes to update the codebase to release v${{ inputs.version }}."
 
       - name: Push branch
         run: |
