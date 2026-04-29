@@ -36,14 +36,24 @@ jobs:
           echo "Core version: $core, Dev suffix: $dev"
           python3 .github/scripts/set_version.py . $core $dev
 
+      - uses: actions/checkout@v6
+        with:
+          ref: release
+          path: release-repo
+
       - name: Commit version bump
         run: |
+          rm -rf .git/
+          mv release-repo/.git/ ./
+          rm -rf release-repo
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "Prepare release v${{ inputs.version }}"
 
       - name: Push branch
-        run: git push origin release-staging-v${{ inputs.version }}
+        run: |
+          git push origin release:release-staging-v${{ inputs.version }}
 
       - name: Open PR
         uses: peter-evans/create-pull-request@v8
