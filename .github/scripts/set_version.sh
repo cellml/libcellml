@@ -13,7 +13,6 @@ sed -i 's@    EXPECT_EQ(0x[[:digit:]]+U, version);@    EXPECT_EQ(0x'${numeric_ve
 sed -i 's/^set(_PROJECT_VERSION[^)]*)$/set(_PROJECT_VERSION '${version}')/' CMakeLists.txt
 sed -i 's/^set(PROJECT_DEVELOPER_VERSION[^)]*)$/set(PROJECT_DEVELOPER_VERSION '${developer_version}')/' CMakeLists.txt
 
-
 files=$(grep -rl "^LIBCELLML_VERSION = \"${version_regex}\"" .)
 sed -i "s@LIBCELLML_VERSION = \"${version_regex}\"@LIBCELLML_VERSION = \"${version}\"@" $files
 
