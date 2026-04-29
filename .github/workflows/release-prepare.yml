@@ -34,19 +34,20 @@ jobs:
 
       - name: Commit version bump
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "Prepare release v${{ inputs.version }}"
 
       - name: Push branch
         run: git push origin release-staging-v${{ inputs.version }}
 
-#      - name: Open PR
-#        uses: peter-evans/create-pull-request@v8
-#        with:
-#          base: release
-#          branch: release-staging-v${{ inputs.version }}
-#          title: "Proposed release v${{ inputs.version }}"
-#          draft: true
-#          body: |
-#            Automated release PR for v${{ inputs.version }}
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+          base: release
+          branch: release-staging-v${{ inputs.version }}
+          title: "Proposed release changes for v${{ inputs.version }}"
+          draft: true
+          body: |
+            Automated release PR for v${{ inputs.version }}
+            **Do not** merge this PR, it is only for review and testing. The release process will deal with it when the release is finalised.
