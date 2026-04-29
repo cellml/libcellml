@@ -68,6 +68,7 @@ jobs:
       - name: Open PR
         uses: peter-evans/create-pull-request@v8
         with:
+          path: release-repo
           base: release
           branch: ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
           title: "Proposed release changes for v${{ inputs.version }}"
