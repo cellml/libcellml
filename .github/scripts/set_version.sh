@@ -18,7 +18,7 @@ sed -i 's/^set(_PROJECT_VERSION[^)]*)$/set(_PROJECT_VERSION '${version}')/' CMak
 sed -i 's/^set(PROJECT_DEVELOPER_VERSION[^)]*)$/set(PROJECT_DEVELOPER_VERSION '${developer_version}')/' CMakeLists.txt
 git status
 
-files=`grep -rl "^LIBCELLML_VERSION = \"\d*\.\d*\.\d*\"" *`
+files=$(grep -rl '^LIBCELLML_VERSION = "[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"' .)
 echo "files 0: $files"
 sed -i 's@LIBCELLML_VERSION = \"[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\"@LIBCELLML_VERSION = \"'${version}'\"@' $files
 
@@ -37,6 +37,6 @@ sed -i "s@    expect(libcellml\.versionString()).toBe('[[:digit:]]+\.[[:digit:]]
 
 git status
 echo "==================="
-git diff
+git diff | cat
 echo "==================="
 exit 0
