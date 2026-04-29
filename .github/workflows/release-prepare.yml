@@ -41,12 +41,12 @@ jobs:
       - name: Push branch
         run: git push origin release-staging-v${{ inputs.version }}
 
-      - name: Open PR
-        uses: peter-evans/create-pull-request@v8
-        with:
-          base: release
-          branch: release-staging-v${{ inputs.version }}
-          title: "Proposed release v${{ inputs.version }}"
-          draft: true
-          body: |
-            Automated release PR for v${{ inputs.version }}
+#      - name: Open PR
+#        uses: peter-evans/create-pull-request@v8
+#        with:
+#          base: release
+#          branch: release-staging-v${{ inputs.version }}
+#          title: "Proposed release v${{ inputs.version }}"
+#          draft: true
+#          body: |
+#            Automated release PR for v${{ inputs.version }}
