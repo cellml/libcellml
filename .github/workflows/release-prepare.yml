@@ -48,9 +48,13 @@ jobs:
           echo "Core version: $core, Dev suffix: $dev"
           python3 .github/scripts/set_version.py . $core $dev
 
+      - name: Copy changes to release repo
+        run: |
+          rsync -av --exclude='.git' source-repo/ release-repo/
+
       - name: Commit version bump
         run: |
-          cd source-repo
+          cd release-repo
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -58,10 +62,7 @@ jobs:
 
       - name: Push branch
         run: |
-          rm -rf source-repo/.git/
-          mv release-repo/.git/ source-repo/
-
-          cd source-repo
+          cd release-repo
           git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
 
       - name: Open PR
