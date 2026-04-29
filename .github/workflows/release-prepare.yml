@@ -19,33 +19,38 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
 
+    env:
+      BRANCH_PREFIX: release-staging-v
+
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: release
+          path: release-repo
+
+      - uses: actions/checkout@v6
+        with:
           ref: ${{ inputs.source_branch }}
+          path: source-repo
 
       - name: Create staging branch
         run: |
-          git checkout -b release-staging-v${{ inputs.version }}
+          cd release-repo
+          git checkout -b $BRANCH_PREFIX${{ inputs.version }}
 
       - name: Update version numbers
         run: |
+          cd source-repo
+
           version=${{ inputs.version }}
           core=$(sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/' <<< "$version")
           dev="${version#"$core"}"
           echo "Core version: $core, Dev suffix: $dev"
           python3 .github/scripts/set_version.py . $core $dev
 
-      - uses: actions/checkout@v6
-        with:
-          ref: release
-          path: release-repo
-
       - name: Commit version bump
         run: |
-          rm -rf .git/
-          mv release-repo/.git/ ./
-          rm -rf release-repo
+          cd source-repo
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -53,13 +58,17 @@ jobs:
 
       - name: Push branch
         run: |
-          git push origin release:release-staging-v${{ inputs.version }}
+          rm -rf source-repo/.git/
+          mv release-repo/.git/ source-repo/
+
+          cd source-repo
+          git push origin $BRANCH_PREFIX${{ inputs.version }}
 
       - name: Open PR
         uses: peter-evans/create-pull-request@v8
         with:
           base: release
-          branch: release-staging-v${{ inputs.version }}
+          branch: ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
           title: "Proposed release changes for v${{ inputs.version }}"
           draft: true
           body: |
