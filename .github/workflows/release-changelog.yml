@@ -48,7 +48,7 @@ jobs:
           git checkout "$RELEASE_BRANCH"
 
       - uses: actions/setup-python@v5
-        if: !env.ACT
+        if: ${{ env.ACT != 'true' }}
         with:
           python-version: "3.12"
 
