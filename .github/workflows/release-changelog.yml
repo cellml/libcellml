@@ -1,0 +1,69 @@
+name: Generate and Commit Changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: "Working branch (usually main)"
+        default: "main"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Determine latest release staging branch
+        id: determine_release
+        run: |
+          branch=$(git branch -r \
+            | grep 'origin/release-staging-v' \
+            | sed 's|origin/||' \
+            | sort -V \
+            | tail -1)
+
+          if [ -z "$branch" ]; then
+            echo "::error::No release staging branch found"
+            exit 1
+          fi
+
+          echo "Using release branch: $branch"
+          echo "RELEASE_BRANCH=$branch" >> "$GITHUB_ENV"
+
+          # Extract release tag by removing prefix
+          tag="${branch#release-staging-v}"
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+
+      - name: Checkout release staging branch
+        run: |
+          git checkout "$RELEASE_BRANCH"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          python .github/scripts/generate_changelog.py -p hsorby/libcellml
+
+      - name: Commit changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add changelog_*.rst
+          git commit -m "Add changelog for v${RELEASE_TAG}" || echo "No changes to commit"
+          git push
