@@ -66,13 +66,10 @@ jobs:
           git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
 
       - name: Open PR
-        uses: peter-evans/create-pull-request@v8
-        with:
-          path: release-repo
-          base: release
-          branch: ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
-          title: "Proposed release changes for v${{ inputs.version }}"
-          draft: true
-          body: |
-            Automated release PR for v${{ inputs.version }}
-            **Do not** merge this PR, it is only for review and testing. The release process will deal with it when the release is finalised.
+        run: |
+          gh pr create \
+            --base release \
+            --head ${{ env.BRANCH_PREFIX }}${{ inputs.version }} \
+            --title "Proposed release changes for v${{ inputs.version }}" \
+            --body "Automated release PR for v${{ inputs.version }}\n**Do not** merge this PR, it is only for review and testing. The release process will deal with it when the release is finalised." \
+            --draft
