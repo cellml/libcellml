@@ -28,6 +28,14 @@ jobs:
           ref: release
           path: release-repo
 
+
+      - name: Set GitHub Actions bot identity
+        run: |
+          cd release-repo
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.source_branch }}
@@ -37,6 +45,17 @@ jobs:
         run: |
           cd release-repo
           git checkout -b ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
+
+      - name: Copy release changes to release repo
+        run: |
+          rsync -avW --delete --exclude='.git' source-repo/ release-repo/
+
+      - name: Commit changes
+        run: |
+          cd release-repo
+
+          git add -A
+          git commit -m "Changes to update the codebase to release v${{ inputs.version }}."
 
       - name: Update version numbers
         run: |
@@ -48,18 +67,16 @@ jobs:
           echo "Core version: $core, Dev suffix: $dev"
           python3 .github/scripts/set_version.py . $core $dev
 
-      - name: Copy changes to release repo
+      - name: Copy version number changes to release repo
         run: |
           rsync -avW --delete --exclude='.git' source-repo/ release-repo/
 
-      - name: Commit version bump
+      - name: Commit version change
         run: |
           cd release-repo
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Changes to update the codebase to release v${{ inputs.version }}."
+          git commit -m "Set the version number throughout the codebase to ${{ inputs.version }}."
 
       - name: Push branch
         run: |
