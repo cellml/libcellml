@@ -77,10 +77,10 @@ jobs:
             --title "Proposed release changes for v${{ inputs.version }}" \
             --draft
             --body "$(cat <<'EOF'
-Automated release PR for v${{ inputs.version }}
+          Automated release PR for v${{ inputs.version }}
 
-**Do not** merge this PR, it is only for review and testing.The release process will deal with it when the release is finalised.
-EOF)"
+          **Do not** merge this PR, it is only for review and testing.The release process will deal with it when the release is finalised.
+          EOF)"
 
       - name: Delete remote branch if PR creation failed
         if: failure() && steps.open_pr.outcome == 'failure'
