@@ -47,7 +47,7 @@ jobs:
         run: |
           git checkout "$RELEASE_BRANCH"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         if: ${{ env.ACT != 'true' }}
         with:
           python-version: "3.12"
@@ -57,6 +57,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SOURCE_BRANCH: ${{ inputs.source_branch }}
         run: |
+          pip install requests
           python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}
           mv changelog_*.rst docs/changelogs/
           python .github/scripts/clean_and_reindex_changelogs.py .
