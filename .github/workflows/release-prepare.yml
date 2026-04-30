@@ -8,7 +8,7 @@ on:
         default: 'main'
         required: true
       version:
-        description: "Release version (e.g. 0.7.1, 0.7.0-post.1)"
+        description: "Release version (e.g. 0.7.1, 0.7.0-rc.1)"
         required: true
 
 permissions:
@@ -79,7 +79,7 @@ jobs:
           gh pr create \
             --base release \
             --head ${{ env.BRANCH_PREFIX }}${{ inputs.version }} \
-            --title "Proposed release changes for v${{ inputs.version }}" \
+            --title "Proposed changes to create release v${{ inputs.version }} of libCellML" \
             --body-file ../pr_body.txt \
             --draft
 
