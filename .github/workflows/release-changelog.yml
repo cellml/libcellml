@@ -25,9 +25,10 @@ jobs:
       - name: Determine latest release staging branch
         id: determine_release
         run: |
+          git branch -r
           branch=$(git branch -r \
             | grep 'origin/release-staging-v' \
-            | sed 's|origin/||' \
+            | sed 's|[ \t]*origin/||' \
             | sort -V \
             | tail -1)
 
