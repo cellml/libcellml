@@ -57,7 +57,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SOURCE_BRANCH: ${{ inputs.source_branch }}
         run: |
-          pip install requests
+          pip install requests packaging
           python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}
           mv changelog_*.rst docs/changelogs/
           python .github/scripts/clean_and_reindex_changelogs.py .
