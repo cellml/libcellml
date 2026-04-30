@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import re
@@ -96,12 +97,12 @@ def choose_primary_label(labels):
 
 
 def extract_summary(pr):
-    label = choose_primary_label(pr["labels"])
-    secondary = [l["name"] for l in pr["labels"] if l["name"] != primary]
+    primary_label = choose_primary_label(pr["labels"])
+    secondary_labels = [l["name"] for l in pr["labels"] if l["name"] != primary_label]
     return {
         "title": pr["title"],
-        "label": label,
-        "secondary_labels": secondary,
+        "label": primary_label,
+        "secondary_labels": secondary_labels,
         "number": pr["number"],
         "url": pr["html_url"],
         "user": pr["user"]["login"],
@@ -170,11 +171,10 @@ if __name__ == "__main__":
     args = process_arguments()
     previous_source_tag = find_previous_source_tag() if args.tag_start == "PREV" else args.tag_start
     messages = get_merge_commits(previous_source_tag)
-    prs = extract_pr_numbers(messages)
-    pr_numbers = extract_pr_numbers(get_merge_commits())
+    pr_numbers = extract_pr_numbers(messages)
 
     summaries = []
-    for pr_number in prs:
+    for pr_number in pr_numbers:
         pr = fetch_pr(args.project, pr_number)
 
         if pr["user"]["login"] in IGNORED_CONTRIBUTORS:
@@ -185,6 +185,6 @@ if __name__ == "__main__":
 
     sorted_summaries = sorted(summaries, key=lambda x: x["label"])
 
-    tag_end_label = 'latest' if args.tag_end == "HEAD" else args.tag_end
-    tag_end_label = tag_end_label if tag_end_display_name is None else tag_end_display_name
-    write_out_to_changelog_file(sorted_summaries, tag_end="latest")
+    tag_end_label = "latest" if args.tag_end == "HEAD" else f"v{args.tag_end}"
+    tag_end_label = tag_end_label if args.tag_end_display_name is None else args.tag_end_display_name
+    write_out_to_changelog_file(sorted_summaries, tag_end=tag_end_label)

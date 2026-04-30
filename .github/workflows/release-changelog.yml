@@ -56,15 +56,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_BRANCH: ${{ inputs.source_branch }}
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
         run: |
-          python .github/scripts/generate_changelog.py -p hsorby/libcellml
+          python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}
 
       - name: Commit changelog
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add changelog_*.rst
+          mv changelog_*.rst docs/changelogs/
+          git add docs/changelogs/changelog_*.rst
           git commit -m "Add changelog for v${RELEASE_TAG}" || echo "No changes to commit"
           git push
