@@ -50,17 +50,16 @@ jobs:
 
       - name: Copy changes to release repo
         run: |
-          rsync -avW --exclude='.git' source-repo/ release-repo/
+          rsync -avW --delete --exclude='.git' source-repo/ release-repo/
 
       - name: Commit version bump
         run: |
           cd release-repo
 
-          git status
-
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "Changes to update the codebase to release v${{ inputs.version }}."
+          git add -A
+          git commit -m "Changes to update the codebase to release v${{ inputs.version }}."
 
       - name: Push branch
         run: |
