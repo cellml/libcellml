@@ -66,6 +66,7 @@ jobs:
           git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
 
       - name: Open PR
+        id: open_pr
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -74,5 +75,15 @@ jobs:
             --base release \
             --head ${{ env.BRANCH_PREFIX }}${{ inputs.version }} \
             --title "Proposed release changes for v${{ inputs.version }}" \
-            --body "Automated release PR for v${{ inputs.version }}\n**Do not** merge this PR, it is only for review and testing. The release process will deal with it when the release is finalised." \
             --draft
+            --body "$(cat <<'EOF'
+Automated release PR for v${{ inputs.version }}
+
+**Do not** merge this PR, it is only for review and testing.The release process will deal with it when the release is finalised.
+EOF)"
+
+      - name: Delete remote branch if PR creation failed
+        if: failure() && steps.open_pr.outcome == 'failure'
+        run: |
+          cd release-repo
+          git push origin --delete ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
