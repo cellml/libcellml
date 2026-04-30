@@ -66,6 +66,8 @@ jobs:
           git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
 
       - name: Open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create \
             --base release \
