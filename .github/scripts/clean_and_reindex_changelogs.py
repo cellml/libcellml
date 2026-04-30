@@ -4,7 +4,7 @@ import sys
 
 from packaging.version import Version
 
-from .utilities import unwanted_versions
+from utilities import unwanted_versions
 
 CHANGELOG_PREFIX = "changelog_v"
 CHANGELOG_TOC_START_MARKER = "  # CHANGELOG_TOC_START_MARKER\n"
