@@ -25,7 +25,6 @@ jobs:
       - name: Determine latest release staging branch
         id: determine_release
         run: |
-          git branch -r
           branch=$(git branch -r \
             | grep 'origin/release-staging-v' \
             | sed 's|[ \t]*origin/||' \
@@ -49,6 +48,7 @@ jobs:
           git checkout "$RELEASE_BRANCH"
 
       - uses: actions/setup-python@v5
+        if: !env.ACT
         with:
           python-version: "3.12"
 
