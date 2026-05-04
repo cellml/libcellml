@@ -1,11 +1,14 @@
 name: Generate and Commit Changelog
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       changelog_branch:
         description: "The target branch for adding the changelog to, a release staging branch"
         required: true
+      secrets:
+        GH_TOKEN:
+          required: true
 
 permissions:
   contents: write
@@ -41,7 +44,7 @@ jobs:
 
       - name: Generate changelog
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pip install requests packaging
           python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}

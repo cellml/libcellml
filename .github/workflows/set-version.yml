@@ -11,6 +11,16 @@ on:
         description: "Version to set (e.g. 0.7.1, 0.7.0-rc.1)"
         required: true
 
+  workflow_call:
+    inputs:
+      target_branch:
+        description: "Target branch (main or release staging branch)"
+        default: 'main'
+        required: true
+      version:
+        description: "Version to set (e.g. 0.7.1, 0.7.0-rc.1)"
+        required: true
+
 permissions:
   contents: write
   pull-requests: write
