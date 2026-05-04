@@ -45,6 +45,8 @@ jobs:
           python-version: "3.12"
 
       - name: Generate changelog
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pip install requests packaging
           python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}
