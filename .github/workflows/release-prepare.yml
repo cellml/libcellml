@@ -62,12 +62,12 @@ jobs:
           git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Generate and commit changelog
-        uses: ./.github/workflows/release-changelog.yml
+        uses: ./release-repo/.github/workflows/release-changelog.yml
         with:
           changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Set version
-        uses: ./.github/workflows/set-version.yml
+        uses: ./release-repo/.github/workflows/set-version.yml
         with:
           target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
           version: ${{ inputs.version }}
