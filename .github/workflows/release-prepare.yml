@@ -63,8 +63,6 @@ jobs:
     uses: ./.github/workflows/release-changelog.yml
     with:
       changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-    secrets:
-      GH_TOKEN: ${{ github.token }}
 
   set_version:
     needs: generate_changelog
