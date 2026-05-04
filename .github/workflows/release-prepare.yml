@@ -65,16 +65,12 @@ jobs:
         uses: ./.github/workflows/release-changelog.yml
         with:
           changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-        secrets:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Set version
         uses: ./.github/workflows/set-version.yml
         with:
           target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
           version: ${{ inputs.version }}
-        secrets:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Open PR
         id: open_pr
