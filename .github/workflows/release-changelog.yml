@@ -3,9 +3,8 @@ name: Generate and Commit Changelog
 on:
   workflow_dispatch:
     inputs:
-      source_branch:
-        description: "Working branch (usually main)"
-        default: "main"
+      changelog_branch:
+        description: "The target branch for adding the changelog to, a release staging branch"
         required: true
 
 permissions:
@@ -22,30 +21,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Determine latest release staging branch
+      - name: Extract release tag from release staging branch
         id: determine_release
         run: |
-          branch=$(git branch -r \
-            | grep 'origin/release-staging-v' \
-            | sed 's|[ \t]*origin/||' \
-            | sort -V \
-            | tail -1)
-
-          if [ -z "$branch" ]; then
-            echo "::error::No release staging branch found"
-            exit 1
-          fi
-
-          echo "Using release branch: $branch"
-          echo "RELEASE_BRANCH=$branch" >> "$GITHUB_ENV"
+          branch=${{ inputs.changelog_branch }}
 
           # Extract release tag by removing prefix
-          tag="${branch#release-staging-v}"
+          tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
           echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
 
       - name: Checkout release staging branch
         run: |
-          git checkout "$RELEASE_BRANCH"
+          git checkout "${{ inputs.changelog_branch }}"
 
       - uses: actions/setup-python@v6
         if: ${{ env.ACT != 'true' }}
@@ -55,7 +42,6 @@ jobs:
       - name: Generate changelog
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: ${{ inputs.source_branch }}
         run: |
           pip install requests packaging
           python .github/scripts/generate_changelog.py -p cellml/libcellml PREV ${{ env.RELEASE_TAG }}

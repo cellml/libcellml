@@ -45,14 +45,23 @@ def run(cmd):
     return subprocess.check_output(cmd, text=True).strip()
 
 
-def find_previous_source_tag():
+def find_previous_source_tag(end_tag):
     tags = run(["git", "tag"]).splitlines()
     valid = []
 
+    m = None if end_tag == "HEAD" else TAG_PATTERN.match(end_tag)
+    end_version = semver.parse(m.group(1)) if m else None
+
     for t in tags:
         m = TAG_PATTERN.match(t)
-        if m:
-            valid.append((semver.parse(m.group(1)), t))
+        if not m:
+            continue
+
+        v = semver.parse(m.group(1))
+        if end_version and v >= semver.parse(end_version):
+            continue
+
+        valid.append((v, t))
 
     if not valid:
         raise RuntimeError("No valid source-vX.Y.Z tags found")
@@ -169,7 +178,7 @@ def process_arguments():
 
 if __name__ == "__main__":
     args = process_arguments()
-    previous_source_tag = find_previous_source_tag() if args.tag_start == "PREV" else args.tag_start
+    previous_source_tag = find_previous_source_tag(args.tag_end) if args.tag_start == "PREV" else args.tag_start
     messages = get_merge_commits(previous_source_tag)
     pr_numbers = extract_pr_numbers(messages)
 

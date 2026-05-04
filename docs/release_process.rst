@@ -5,26 +5,54 @@ Release process for *libCellML*
 ===============================
 
 The target audience of this document are the developers of *libCellML*, who have write authority to the `cellml/libcellml <https://github.com/cellml/libcellml>`__ repository.
-Releases are made using builders from the Buildbot Continuous Integration (CI).
+Releases are made using GitHub Actions Continuous Integration (CI).
 There are four steps in making a release.
 
-1. `Step 1 - Setting the version number`_
-2. `Step 2 - Preparing the release`_
+1. `Step 1 - Preparing the release`_
+2. `Step 2 - Checking the release`_
 3. `Step 3 - Creating the release`_
 4. `Step 4 - Finalising the Release`_
 
 Each section has further details on what actions are required for a particular step.
 Each step must be done in order from step 1 through to step 4.
 
-For all the steps in creating a release, you must be logged in to the Buildbot CI and be in the *admin* group.
+For all the steps in creating a release, you must be a maintainer of the *cellml/libcellml* GitHub repository.
 
 .. note::
 
   Merging in pull requests when a release is under way is not recommended and more importantly has not been tested.
-  To determine if a release is under way check the repository for the presence of a branch named *version_change* or *release_staging_<version number>*.
+  To determine if a release is under way check the repository for the presence of a branch named *version_change* or *release-staging-v<version number>*.
 
-Step 1 - Setting the version number
-===================================
+Step 1 - Preparing the release
+==============================
+
+The *Prepare Release* GitHub workflow prepares a release using information submitted to the workflow.
+Two workflows are required to prepare a release, the *Prepare Release* workflow and the *Generate and Commit Changelog* workflow.
+
+The *Prepare Release* workflow must be run first.
+This workflow will create a staging branch in the repository, which contains all the changes from the source branch.
+The source branch is typically the *main* branch (which is the default) but it can be any branch or tag in the repository.
+Next the workflow will update the version number of the codebase to the version number that is set in the workflow interface, and then commit the changes to the staging branch.
+The staging branch is named *release_staging_v<version number>* where <version number> is the version number that is set in the workflow interface.
+
+This workflow is manually triggered and requires a version number to be set for the release that is being prepared.
+This is done using the interface provided through GitHub Actions.
+Version numbers should be set following semantic versioning rules, see `Semantic versioning <https://semver.org/>`_ for further information on semantic versioning.
+Examples are:
+
+- 1.0.0
+- 1.0.0-alpha
+- 1.0.0-alpha.1
+- 1.0.0-beta
+- 1.0.0-beta.2
+- 1.0.0-rc.1
+- 1.0.0-rc.1+build.1
+- 1.0.0-rc.1+post.1
+
+The *Generate and Commit Changelog* workflow must be run after the *Prepare Release* workflow.
+This workflow will generate a changelog for the release and commit the changes to the staging branch.
+It looks for a release staging branch and when it finds one it generates a changelog for the release.
+The changelog is generated from the merged pull requests between the current release under preparation and the previous release.
 
 The version number for the project can be set using the *Set Version Builder* (:numref:`libcellml_release_process_set_version_builder`).
 The *Set Version Builder* sets the version that is entered into the interface, it does not increment the version.
@@ -40,8 +68,9 @@ The version that you set in the interface will be applied as is to the codebase.
 libCellML uses semantic versioning as a versioning system, see `Semantic versioning <https://semver.org/>`_ for further information.
 As such, each part of the version number carries a specific meaning and when setting a version number you need to make sure you are following semantic versioning rules.
 There are no checks to determine if semantic versioning is being followed.
-The version number is split into two parts: the core version, made up of the major, minor, and patch version identifiers; and the developer version.
-An official release is created by leaving the developer version input empty.
+But the workflow will not run successfully if the version number is not in a format that can be parsed as a semantic version number.
+The version number is split into two parts: the core part of the version, made up of the major, minor, and patch version identifiers, and these are whole numbers; and the developer part.
+An official release is created by leaving the developer part empty.
 The main difference between an official release and a developer release is the assets built by the developer release process are not uploaded or published to public registries or attached to an associated GitHub release.
 
 .. figure:: ./images/release_process/set_version_builder_interface.png
