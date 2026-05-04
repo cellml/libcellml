@@ -69,12 +69,12 @@ jobs:
           git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Generate and commit changelog
-        uses: ./release-repo/.github/workflows/release-changelog.yml
+        uses: hsorby/libcellml/.github/workflows/release-changelog.yml@main
         with:
           changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Set version
-        uses: ./release-repo/.github/workflows/set-version.yml
+        uses: hsorby/libcellml/release-repo/.github/workflows/set-version.yml@main
         with:
           target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
           version: ${{ inputs.version }}
