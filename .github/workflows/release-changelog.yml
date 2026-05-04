@@ -6,9 +6,11 @@ on:
       changelog_branch:
         description: "The target branch for adding the changelog to, a release staging branch"
         required: true
+        type: string
       secrets:
         GH_TOKEN:
           required: true
+          type: string
 
 permissions:
   contents: write
