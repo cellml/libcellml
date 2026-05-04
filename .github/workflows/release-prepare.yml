@@ -19,9 +19,6 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
 
-    env:
-      BRANCH_PREFIX: release-staging-v
-
     steps:
       - uses: actions/checkout@v6
         with:
@@ -61,17 +58,23 @@ jobs:
           cd release-repo
           git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
-      - name: Generate and commit changelog
-        uses: hsorby/libcellml/.github/workflows/release-changelog.yml@main
-        with:
-          changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+  generate_changelog:
+    needs: prepare
+    uses: ./.github/workflows/release-changelog.yml
+    with:
+      changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
-      - name: Set version
-        uses: hsorby/libcellml/release-repo/.github/workflows/set-version.yml@main
-        with:
-          target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-          version: ${{ inputs.version }}
+  set_version:
+    needs: generate_changelog
+    uses: ./.github/workflows/set-version.yml
+    with:
+      target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+      version: ${{ inputs.version }}
 
+  open_pr:
+    runs-on: ubuntu-latest
+    needs: set_version
+    steps:
       - name: Open PR
         id: open_pr
         env:
@@ -82,7 +85,6 @@ jobs:
           echo "**Do not** merge this PR, it is only for review and testing." >> pr_body.txt
           echo "The release process will deal with it when the release is finalised." >> pr_body.txt
 
-          cd release-repo
           gh pr create \
             --base release \
             --head ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }} \
