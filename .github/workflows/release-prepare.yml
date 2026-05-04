@@ -19,12 +19,14 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
 
+    env:
+      BRANCH_PREFIX: release-staging-v
+
     steps:
       - uses: actions/checkout@v6
         with:
           ref: release
           path: release-repo
-
 
       - name: Set GitHub Actions bot identity
         run: |
@@ -57,22 +59,7 @@ jobs:
       - name: Push branch
         run: |
           cd release-repo
-          git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-
-      - name: Set version numbers
-        uses: ./.github/workflows/set-version.yml
-        with:
-          target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-          version: ${{ inputs.version }}
-        secrets:
-          GH_TOKEN: ${{ github.token }}
-
-      - name: Generate Changelog
-        uses: ./.github/workflows/release-changelog.yml
-        with:
-          changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
-        secrets:
-          GH_TOKEN: ${{ github.token }}
+          git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
 
       - name: Open PR
         id: open_pr
