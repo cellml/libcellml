@@ -58,6 +58,13 @@ jobs:
 
       - name: Push branch
         run: |
+          echo "_------------_"
+          ls -l release-repo
+          echo "_------------_"
+          ls -l release-repo/.github
+          echo "_------------_"
+          ls -l release-repo/.github/workflows
+          echo "_------------_"
           cd release-repo
           git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
