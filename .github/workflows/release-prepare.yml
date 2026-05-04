@@ -59,7 +59,22 @@ jobs:
       - name: Push branch
         run: |
           cd release-repo
-          git push origin ${{ env.BRANCH_PREFIX }}${{ inputs.version }}
+          git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+
+      - name: Generate and commit changelog
+        uses: ./.github/workflows/release-changelog.yml
+        with:
+          changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+        secrets:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Set version
+        uses: ./.github/workflows/set-version.yml
+        with:
+          target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+          version: ${{ inputs.version }}
+        secrets:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Open PR
         id: open_pr
@@ -77,7 +92,7 @@ jobs:
             --head ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }} \
             --title "Proposed changes to create release v${{ inputs.version }} of libCellML" \
             --body-file ../pr_body.txt \
-            --draft
+            --draft        
 
       - name: Delete remote branch if PR creation failed
         if: failure() && steps.open_pr.outcome == 'failure'
