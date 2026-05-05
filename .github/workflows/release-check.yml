@@ -21,8 +21,6 @@ jobs:
           git remote set-branches origin '*'
           git fetch -v --depth=1
 
-          git branch -r
-
           branch=$(git branch -r \
             | grep 'origin/${{ vars.RELEASE_STAGING_BRANCH_STEM }}' \
             | sed 's|[ \t]*origin/||' \
