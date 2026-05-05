@@ -69,7 +69,11 @@ jobs:
     needs: run_ci
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
+
       - name: Post CI results comment
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           pr_number=${{ needs.determine_release.outputs.pr_number }}
           echo "$GITHUB_STEP_SUMMARY"
