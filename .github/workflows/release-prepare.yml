@@ -92,7 +92,7 @@ jobs:
             --base release \
             --head ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }} \
             --title "Proposed changes to create release v${{ inputs.version }} of libCellML" \
-            --body-file ../pr_body.txt \
+            --body-file pr_body.txt \
             --draft        
 
   delete_release_branch:
@@ -105,15 +105,14 @@ jobs:
     if: failure()
 
     steps:
+      - uses: actions/checkout@v6
+
       - name: Delete remote release staging branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           branch="${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}"
           echo "Cleaning up failed release branch: $branch"
-
-          git clone https://github.com/${{ github.repository }}.git repo
-          cd repo
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
