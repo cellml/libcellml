@@ -128,7 +128,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install ClangFormat
         run: |
           sudo apt update
@@ -151,7 +151,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
@@ -178,7 +178,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
@@ -203,7 +203,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install buildcache
