@@ -27,16 +27,27 @@ Step 1 - Preparing the release
 ==============================
 
 The *Prepare Release* GitHub workflow prepares a release using information submitted to the workflow.
-Two workflows are required to prepare a release, the *Prepare Release* workflow and the *Generate and Commit Changelog* workflow.
 
-The *Prepare Release* workflow must be run first.
+The *Prepare Release* workflow will collect all the changes that the release is made up of, add a changelog of merged pull requests, and update the version number throughout the codebase.
+These changes are separated into separate commits to make reviewing the changes easier.
+
 This workflow will create a staging branch in the repository, which contains all the changes from the source branch.
 The source branch is typically the *main* branch (which is the default) but it can be any branch or tag in the repository.
-Next the workflow will update the version number of the codebase to the version number that is set in the workflow interface, and then commit the changes to the staging branch.
 The staging branch is named *release_staging_v<version number>* where <version number> is the version number that is set in the workflow interface.
+
+The workflow can be triggered from the *Actions* tab of the `cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__ repository.
 
 This workflow is manually triggered and requires a version number to be set for the release that is being prepared.
 This is done using the interface provided through GitHub Actions.
+
+.. figure:: ./images/release_process/prepare_release_interface.png
+   :align: center
+   :alt: GitHub actions prepare release workflow interface.
+   :name: libcellml_release_process_prepare_release_interface
+
+   *Prepare Release* interface on GitHub.
+
+
 Version numbers should be set following semantic versioning rules, see `Semantic versioning <https://semver.org/>`_ for further information on semantic versioning.
 Examples are:
 
@@ -49,24 +60,6 @@ Examples are:
 - 1.0.0-rc.1+build.1
 - 1.0.0-rc.1+post.1
 
-The *Generate and Commit Changelog* workflow must be run after the *Prepare Release* workflow.
-This workflow will generate a changelog for the release and commit the changes to the staging branch.
-It looks for a release staging branch and when it finds one it generates a changelog for the release.
-The changelog is generated from the merged pull requests between the current release under preparation and the previous release.
-
-The version number for the project can be set using the *Set Version Builder* (:numref:`libcellml_release_process_set_version_builder`).
-The *Set Version Builder* sets the version that is entered into the interface, it does not increment the version.
-The version that you set in the interface will be applied as is to the codebase.
-
-.. figure:: ./images/release_process/set_version_builder.png
-   :align: center
-   :alt: Buildbot set version builder.
-   :name: libcellml_release_process_set_version_builder
-
-   *Set Version Builder* on Buildbot.
-
-libCellML uses semantic versioning as a versioning system, see `Semantic versioning <https://semver.org/>`_ for further information.
-As such, each part of the version number carries a specific meaning and when setting a version number you need to make sure you are following semantic versioning rules.
 There are no checks to determine if semantic versioning is being followed.
 But the workflow will not run successfully if the version number is not in a format that can be parsed as a semantic version number.
 The version number is split into two parts: the core part of the version, made up of the major, minor, and patch version identifiers, and these are whole numbers; and the developer part.
@@ -94,8 +87,8 @@ When merging the pull request the *version_change* branch will be automatically 
 
 When the version number has been set in the *main* branch the preparation of the release can start.
 
-Step 2 - Preparing the release
-==============================
+Step 2 - Checking the release
+=============================
 
 A release is prepared using the *Prepare Release Builder* (:numref:`libcellml_release_process_prepare_release`).
 The *Prepare Release Builder* will create a new branch named *release_staging_<version number>* (where <version number> is an actual semantic version number set in the first step) and generate a changelog.
