@@ -64,6 +64,7 @@ jobs:
       contents: read
 
   ci_comment:
+    needs: run_ci
     runs-on: ubuntu-latest
     steps:
       - name: Post CI results comment
@@ -81,7 +82,7 @@ jobs:
           gh pr comment "$pr_number" --body "$comment"
 
   documentation_checks:
-    needs: run_ci
+    needs: ci_comment
     runs-on: ubuntu-latest
     steps:
       - run: echo "Run additional release validation here"
