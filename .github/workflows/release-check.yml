@@ -16,6 +16,8 @@ jobs:
       - name: Determine release staging branch
         id: find_branch
         run: |
+          git branch -r
+
           branch=$(git branch -r \
             | grep 'origin/${{ vars.RELEASE_STAGING_BRANCH_STEM }}' \
             | sed 's|[ \t]*origin/||' \
@@ -30,6 +32,7 @@ jobs:
           echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
 
   run_ci:
+    needs: determine_release
     uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ needs.determine_release.outputs.release_branch }}
