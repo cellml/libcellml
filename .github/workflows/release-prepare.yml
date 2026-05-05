@@ -107,7 +107,7 @@ jobs:
     steps:
       - name: Delete remote release staging branch
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           branch="${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}"
           echo "Cleaning up failed release branch: $branch"
