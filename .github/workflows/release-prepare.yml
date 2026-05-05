@@ -64,7 +64,7 @@ jobs:
     with:
       changelog_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
     secrets:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   set_version:
     needs: generate_changelog
@@ -72,6 +72,8 @@ jobs:
     with:
       target_branch: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
       version: ${{ inputs.version }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   open_pr:
     runs-on: ubuntu-latest
@@ -79,7 +81,7 @@ jobs:
     steps:
       - name: Open PR
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Automated release PR for v${{ inputs.version }}." > pr_body.txt
           echo "" >> pr_body.txt
@@ -112,5 +114,8 @@ jobs:
 
           git clone https://github.com/${{ github.repository }}.git repo
           cd repo
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git push origin --delete "$branch" || echo "Branch already deleted"
