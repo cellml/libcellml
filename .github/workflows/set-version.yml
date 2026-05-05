@@ -21,10 +21,10 @@ on:
         description: "Version to set (e.g. 0.7.1, 0.7.0-rc.1)"
         type: string
         required: true
-      secrets:
-        GH_TOKEN:
-          description: "GitHub token with permissions to push to the repository"
-          required: true
+    secrets:
+      GH_TOKEN:
+        description: "GitHub token with permissions to push to the repository"
+        required: true
 
 permissions:
   contents: write
@@ -43,6 +43,8 @@ jobs:
 
       - name: Set GitHub Actions bot identity
         run: |
+          echo "GH_TOKEN set? ${GH_TOKEN:+yes}"
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
