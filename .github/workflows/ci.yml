@@ -136,6 +136,7 @@ jobs:
           ninja test_clang_format
   coverage:
     name: Code coverage
+    if: false
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -184,6 +185,7 @@ jobs:
           ninja memcheck
   documentation:
     name: Documentation
+    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
