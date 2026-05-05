@@ -79,6 +79,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: set_version
     steps:
+      - uses: actions/checkout@v6
+
       - name: Open PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
