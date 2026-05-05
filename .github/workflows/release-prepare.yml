@@ -78,7 +78,6 @@ jobs:
     needs: set_version
     steps:
       - name: Open PR
-        id: open_pr
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -94,8 +93,24 @@ jobs:
             --body-file ../pr_body.txt \
             --draft        
 
-      - name: Delete remote branch if PR creation failed
-        if: failure() && steps.open_pr.outcome == 'failure'
+  delete_release_branch:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - generate_changelog
+      - set_version
+      - open_pr
+    if: failure()
+
+    steps:
+      - name: Delete remote release staging branch
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          cd release-repo
-          git push origin --delete ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+          branch="${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}"
+          echo "Cleaning up failed release branch: $branch"
+
+          git clone https://github.com/${{ github.repository }}.git repo
+          cd repo
+
+          git push origin --delete "$branch" || echo "Branch already deleted"
