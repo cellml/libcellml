@@ -1,0 +1,43 @@
+name: Check Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  determine_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_branch: ${{ steps.find_branch.outputs.release_branch }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Determine release staging branch
+        id: find_branch
+        run: |
+          branch=$(git branch -r \
+            | grep 'origin/${{ vars.RELEASE_STAGING_BRANCH_STEM }}' \
+            | sed 's|[ \t]*origin/||' \
+            | sort -V \
+            | tail -1)
+
+          if [ -z "$branch" ]; then
+            echo "::error::No release staging branch found"
+            exit 1
+          fi
+
+          echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
+
+  run_ci:
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.determine_release.outputs.release_branch }}
+    permissions:
+      contents: read
+
+  documentation_checks:
+    needs: run_ci
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Run additional release validation here"
