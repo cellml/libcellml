@@ -10,12 +10,6 @@ on:
         required: true
         type: string
 
-env:
-  BUILDCACHE_ACCURACY: STRICT
-  BUILDCACHE_COMPRESS_FORMAT: ZSTD
-  BUILDCACHE_DEBUG: -1
-  BUILDCACHE_LOG_FILE: ""
-
 jobs:
   cpp_python:
     name: ${{ matrix.name }}
@@ -62,10 +56,6 @@ jobs:
           python-version: '3.13'
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
-        with:
-          cache_key: ${{ matrix.os }}-${{ matrix.python_bindings }}
       - name: Configure MSVC (Windows only)
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
@@ -102,8 +92,6 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Emscripten
         run: brew install --overwrite emscripten
       - name: Install libxml2
@@ -154,8 +142,6 @@ jobs:
         uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install LLVM
         run: |
           brew install --overwrite llvm
@@ -181,8 +167,6 @@ jobs:
         uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Valgrind
         run: |
           sudo apt update
@@ -206,8 +190,6 @@ jobs:
         uses: actions/checkout@v6
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Doxygen
         run: |
           sudo apt update
