@@ -18,6 +18,9 @@ jobs:
       - name: Determine release staging branch
         id: find_branch
         run: |
+          git remote set-branches origin '*'
+          git fetch -v --depth=1
+
           git branch -r
 
           branch=$(git branch -r \
