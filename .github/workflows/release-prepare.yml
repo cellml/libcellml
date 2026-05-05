@@ -51,7 +51,7 @@ jobs:
           cd release-repo
 
           git add -A
-          git commit -m "Changes to update the codebase to release v${{ inputs.version }}."
+          git commit -m "Changes to update the release branch to ${{ inputs.version }}."
 
       - name: Push branch
         run: |

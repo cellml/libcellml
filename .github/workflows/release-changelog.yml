@@ -35,9 +35,6 @@ jobs:
           tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
           echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
 
-          echo "GH_TOKEN set? ${GH_TOKEN:+yes}"
-          curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/rate_limit
-
       - name: Checkout release staging branch
         run: |
           git checkout "${{ inputs.changelog_branch }}"
@@ -62,5 +59,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add docs/changelogs/changelog_*.rst docs/changelogs/index.rst docs/index.rst
-          git commit -m "Add changelog for v${RELEASE_TAG}" || echo "No changes to commit"
+          git commit -m "Add changelog for release ${RELEASE_TAG}" || echo "No changes to commit"
           git push

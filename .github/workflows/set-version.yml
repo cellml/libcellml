@@ -43,8 +43,6 @@ jobs:
 
       - name: Set GitHub Actions bot identity
         run: |
-          echo "GH_TOKEN set? ${GH_TOKEN:+yes}"
-
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
