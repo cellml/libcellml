@@ -25,6 +25,46 @@ jobs:
           ref: release
           path: release-repo
 
+      - name: Detect active release staging branches (PR-backed)
+        id: detect_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd release-repo
+
+          branches=$(git branch -r \
+            | sed 's|^[[:space:]]*origin/||' \
+            | grep '^${{ vars.RELEASE_STAGING_BRANCH_STEM }}' || true)
+
+          active=()
+
+          for branch in $branches; do
+            pr_count=$(gh pr list \
+              --head "$branch" \
+              --base release \
+              --state open \
+              --json number \
+              --jq 'length')
+
+            if [ "$pr_count" -gt 0 ]; then
+              active+=("$branch")
+            fi
+          done
+
+          if [ "${#active[@]}" -eq 1 ]; then
+            echo "::error::Active release staging branch with an open PR found"
+            exit 1
+          fi
+
+          if [ "${#active[@]}" -gt 1 ]; then
+            echo "::error::Multiple active release staging branches detected:"
+            printf '%s\n' "${active[@]}"
+            exit 1
+          fi
+
+          #branch="${active[0]}"
+          #echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
+
       - name: Set GitHub Actions bot identity
         run: |
           cd release-repo
