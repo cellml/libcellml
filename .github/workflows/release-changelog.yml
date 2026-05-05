@@ -35,6 +35,9 @@ jobs:
           tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
           echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
 
+          echo "GH_TOKEN set? ${GH_TOKEN:+yes}"
+          curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/rate_limit
+
       - name: Checkout release staging branch
         run: |
           git checkout "${{ inputs.changelog_branch }}"
