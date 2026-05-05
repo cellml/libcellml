@@ -4,52 +4,71 @@
 Release process for *libCellML*
 ===============================
 
-The target audience of this document are the developers of *libCellML*, who have write authority to the `cellml/libcellml <https://github.com/cellml/libcellml>`__ repository.
-Releases are made using GitHub Actions Continuous Integration (CI).
-There are four steps in making a release.
+The purpose of this document is to describe the process for preparing, reviewing, creating, and finalising releases of *libCellML* using GitHub Actions Continuous Integration (CI).
+
+The target audience of this document are the developers of *libCellML* who have write authority to the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+
+Releases are made using GitHub Actions CI and consist of four steps:
 
 1. `Step 1 - Preparing the release`_
 2. `Step 2 - Checking the release`_
 3. `Step 3 - Creating the release`_
 4. `Step 4 - Finalising the Release`_
 
-Each section has further details on what actions are required for a particular step.
-Each step must be done in order from step 1 through to step 4.
+Each step must be performed in order. Later steps assume that all previous steps have completed successfully.
 
-For all the steps in creating a release, you must be a maintainer of the *cellml/libcellml* GitHub repository.
+Prerequisites
+=============
+
+For all steps in the release process, you must:
+
+- Be a maintainer (have write access) of the *cellml/libcellml* GitHub repository.
+- Be familiar with semantic versioning.
+- Ensure that no other release is currently in progress.
 
 .. note::
 
-  Merging in pull requests when a release is under way is not recommended and more importantly has not been tested.
-  To determine if a release is under way check the repository for the presence of a branch named *version_change* or *release-staging-v<version number>*.
+  Merging pull requests while a release is under way is not recommended and has not been tested.
+  Before starting a new release, check the repository for the presence of a branch named *release-staging-v<version number>*.
+  The presence of such a branch indicates that a release is already in progress.
+
+Branch model overview
+=====================
+
+The *main* branch is the primary development branch where normal feature development occurs.
+The *release* branch represents the base for all released versions of *libCellML*.
+Release staging branches, named *release-staging-v<version number>*, are temporary branches used to assemble, review, and validate a candidate release before it is finalised.
 
 Step 1 - Preparing the release
 ==============================
 
-The *Prepare Release* GitHub workflow prepares a release using information submitted to the workflow.
+The *Prepare Release* GitHub Actions workflow prepares a release candidate using information supplied when the workflow is triggered.
 
-The *Prepare Release* workflow will collect all the changes that the release is made up of, add a changelog of merged pull requests, and update the version number throughout the codebase.
-These changes are separated into separate commits to make reviewing the changes easier.
+This workflow performs the following tasks:
 
-This workflow will create a staging branch in the repository, which contains all the changes from the source branch.
-The source branch is typically the *main* branch (which is the default) but it can be any branch or tag in the repository.
-The staging branch is named *release_staging_v<version number>* where <version number> is the version number that is set in the workflow interface.
+- Collects all changes that will make up the release from a specified source branch.
+- Generates a changelog summarising the merged pull requests included in the release.
+- Updates version numbers throughout the codebase.
+
+These changes are separated into multiple commits (for example, content changes, changelog generation, and version updates) to make reviewing the release easier.
+
+The workflow creates a staging branch in the repository that contains all proposed release changes.
+The source branch is typically the *main* branch (which is the default), but it may be any branch or tag in the repository.
+The staging branch is named *release-staging-v<version number>*, where <version number> is the version number specified when triggering the workflow.
 
 The workflow can be triggered from the *Actions* tab of the `cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__ repository.
 
-This workflow is manually triggered and requires a version number to be set for the release that is being prepared.
-This is done using the interface provided through GitHub Actions.
+This workflow is manually triggered and requires a version number to be provided using the GitHub Actions user interface.
 
 .. figure:: ./images/release_process/prepare_release_interface.png
    :align: center
-   :alt: GitHub actions prepare release workflow interface.
+   :alt: GitHub Actions prepare release workflow interface.
    :name: libcellml_release_process_prepare_release_interface
 
    *Prepare Release* interface on GitHub.
 
-
-Version numbers should be set following semantic versioning rules, see `Semantic versioning <https://semver.org/>`_ for further information on semantic versioning.
-Examples are:
+Version numbers must follow semantic versioning rules. See `Semantic Versioning <https://semver.org/>`_ for further information.
+Examples of valid version numbers include:
 
 - 1.0.0
 - 1.0.0-alpha
@@ -58,34 +77,19 @@ Examples are:
 - 1.0.0-beta.2
 - 1.0.0-rc.1
 - 1.0.0-rc.1+build.1
-- 1.0.0-rc.1+post.1
+- 1.0.0-post.1
 
-There are no checks to determine if semantic versioning is being followed.
-But the workflow will not run successfully if the version number is not in a format that can be parsed as a semantic version number.
-The version number is split into two parts: the core part of the version, made up of the major, minor, and patch version identifiers, and these are whole numbers; and the developer part.
-An official release is created by leaving the developer part empty.
-The main difference between an official release and a developer release is the assets built by the developer release process are not uploaded or published to public registries or attached to an associated GitHub release.
+There are no explicit checks to ensure that version numbers strictly follow semantic versioning conventions; however, the workflow will fail if the supplied version number cannot be parsed as a semantic version.
 
-.. figure:: ./images/release_process/set_version_builder_interface.png
-   :align: center
-   :alt: Buildbot set version builder interface.
-   :name: libcellml_release_process_set_version_builder_interface
+The version number is split into two components: a core version (major, minor, and patch numbers) and an optional developer suffix.
+An official release is created by omitting the developer suffix.
+Developer releases include a suffix and differ from official releases in that the resulting assets are not published to public registries or attached to a GitHub release.
 
-   *Set Version Builder* interface.
+On successful completion, this workflow creates a pull request on the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository with *release* as the base branch and the newly created staging branch as the head branch.
 
-When the *Start Build* button is pressed (:numref:`libcellml_release_process_set_version_builder_interface`) Buildbot will create an internal pull request on the `cellml/libcellml <https://github.com/cellml/libcellml>`__ GitHub repository.
-The pull request will be made from the *version_change* branch to the *main* branch.
-The creation of the pull request will trigger a CI build, wait for the CI to finish its checks before merging the pull request.
-If, for some reason, the CI checks fail changes may be required.
-Changes can be made directly to the *vesion_change* branch but quite likely any such changes will need to be propagated to the CI for a permanent fix.
-How changes are propagated to the CI is outside the scope of this document.
-When merging the pull request the *version_change* branch will be automatically deleted.
+If the workflow fails, the pull request will not be created. Depending on how far the workflow progressed before failure, the staging branch may still exist and may need to be cleaned up manually or reused after resolving the issue.
 
-.. note::
-
-  The merging of a *version_change* pull request created by the CI system is exempt from the 'two reviews' required rule.
-
-When the version number has been set in the *main* branch the preparation of the release can start.
+Once the pull request has been created, the checking of the release can begin (see `Step 2 - Checking the release`_).
 
 Step 2 - Checking the release
 =============================
