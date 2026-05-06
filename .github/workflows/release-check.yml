@@ -77,8 +77,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          echo "CI results summary:"
+          echo "${{ needs.determine_release.outputs.release_branch }} (PR #${{ needs.determine_release.outputs.pr_number }})"
+          echo "$GITHUB_STEP_SUMMARY"
+          cat $GITHUB_STEP_SUMMARY
+
           pr_number=${{ needs.determine_release.outputs.pr_number }}
-          cat "$GITHUB_STEP_SUMMARY"
           ci_status=$(jq -r '.jobs[] | select(.name == "Code formatting") | .conclusion' < $GITHUB_STEP_SUMMARY)
 
           if [ "$ci_status" == "success" ]; then
