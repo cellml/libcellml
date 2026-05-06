@@ -66,7 +66,9 @@ jobs:
       contents: read
 
   ci_comment:
-    needs: run_ci
+    needs:
+      - run_ci
+      - determine_release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -79,13 +81,10 @@ jobs:
         run: |
           echo "CI results summary:"
           echo "${{ needs.determine_release.outputs.release_branch }} (PR #${{ needs.determine_release.outputs.pr_number }})"
-          echo "$GITHUB_STEP_SUMMARY"
-          cat $GITHUB_STEP_SUMMARY
 
           pr_number=${{ needs.determine_release.outputs.pr_number }}
-          ci_status=$(jq -r '.jobs[] | select(.name == "Code formatting") | .conclusion' < $GITHUB_STEP_SUMMARY)
 
-          if [ "$ci_status" == "success" ]; then
+          if [ "${{ needs.run_ci.result }}" == "success" ]; then
             comment="✅ CI checks passed successfully."
           else
             comment="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
