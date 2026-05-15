@@ -135,6 +135,7 @@ jobs:
             status_text="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
           fi
 
+          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id' | head -n 1)
           a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests"))')
           echo "a:"
           echo "$a"
@@ -144,11 +145,12 @@ jobs:
           b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .databaseId')
           echo "b:"
           echo "$b"
-          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .url')
-          echo "b:"
-          echo "$b"
+          URL=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .url')
+          echo "URL:"
+          echo "$URL"
+          comment_id=$(echo "${URL##*-}")
+          echo "Extracted comment ID: $comment_id"
 
-          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id' | head -n 1)
 
           full_comment=$(cat <<EOF
           ## Unit Tests
