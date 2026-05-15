@@ -190,6 +190,12 @@ jobs:
             status_text="❌ Documentation checks failed. The tested documentation tests do not work with this version of libCellML."
           fi
 
+          a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests"))')
+          echo "a:"
+          echo "$a"
+          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id')
+          echo "b:"
+          echo "$b"
           comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id' | head -n 1)
 
           # metadata="{\"end_to_end_test_repo\":\"$TEST_REPO\",\"end_to_end_test_tag\":\"$TEST_TAG\",\"database_repo\":\"$DB_REPO\",\"database_tag\":\"$DB_TAG\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
