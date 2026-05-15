@@ -4,13 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       title:
-        description: "All inputs for this workflow run have defaults set through the vars context, so this input is just for display purposes to make it easier to identify the workflow run in the GitHub Actions UI."
+        description: "All inputs for this workflow run have defaults set through the vars context. (This input is for your information only.)"
         default: "Check repository vars.DEFAULT_* for current values."
         type: string
       end_to_end_test_repo:
         description: "Repository containing end-to-end tests (e.g. user/repo)"
-        default: 'libcellml/end-to-end-test-framework'
-        required: true
         type: string
       end_to_end_test_tag:
         description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
@@ -20,8 +18,6 @@ on:
         type: string
       database_tag:
         description: "Tag of the database repository to use (e.g. v1.0.0)"
-        default: 'v0.3.4'
-        required: true
         type: string
 
 jobs:
