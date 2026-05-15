@@ -130,12 +130,28 @@ jobs:
           pr_number=${{ needs.determine_release.outputs.pr_number }}
 
           if [ "${{ needs.run_ci.result }}" == "success" ]; then
-            comment="##Unit Tests\n\n✅ CI checks passed successfully."
+            status_text="✅ CI checks passed successfully."
           else
-            comment="##Unit Tests\n\n❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
+            status_text="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
           fi
 
-          gh pr comment "$pr_number" --body "$comment"
+          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id' | head -n 1)
+
+          full_comment=$(cat <<EOF
+          ## Unit Tests
+
+          $status_text
+
+          EOF
+          )
+
+          if [ -n "$comment_id" ]; then
+            echo "Updating existing comment with ID: $comment_id (${{ github.repo }})"
+            gh api "repos/${{ github.repo }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
+          else
+            echo "Creating new comment for PR #$pr_number"
+            gh pr comment "$pr_number" --body "$comment"
+          fi
 
   documentation_checks:
     needs:
@@ -174,15 +190,29 @@ jobs:
             status_text="❌ Documentation checks failed. The tested documentation tests do not work with this version of libCellML."
           fi
 
-          metadata="{\"end_to_end_test_repo\":\"$TEST_REPO\",\"end_to_end_test_tag\":\"$TEST_TAG\",\"database_repo\":\"$DB_REPO\",\"database_tag\":\"$DB_TAG\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
+          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id' | head -n 1)
+
+          # metadata="{\"end_to_end_test_repo\":\"$TEST_REPO\",\"end_to_end_test_tag\":\"$TEST_TAG\",\"database_repo\":\"$DB_REPO\",\"database_tag\":\"$DB_TAG\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
 
           full_comment=$(cat <<EOF
           ## Documentation Tests
 
           $status_text
 
-          $metadata
+          metadata={
+            "end_to_end_test_repo": "$TEST_REPO",
+            "end_to_end_test_tag": "$TEST_TAG",
+            "database_repo": "$DB_REPO",
+            "database_tag": "$DB_TAG",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
           EOF
           )
 
-          gh pr comment "$pr_number" --body "$full_comment"
+          if [ -n "$comment_id" ]; then
+            echo "Updating existing comment with ID: $comment_id (${{ github.repo }})"
+            gh api "repos/${{ github.repo }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
+          else
+            echo "Creating new comment for PR #$pr_number"
+            gh pr comment "$pr_number" --body "$comment"
+          fi
