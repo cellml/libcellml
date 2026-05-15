@@ -168,8 +168,9 @@ jobs:
       database_tag: ${{ needs.set_inputs.outputs.database_tag }}
   documentation_comment:
     needs:
-      - documentation_checks
       - determine_release
+      - documentation_checks
+      - set_inputs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -202,10 +203,10 @@ jobs:
           $status_text
 
           metadata={
-            "end_to_end_test_repo": "${{ env.TEST_REPO }}",
-            "end_to_end_test_tag": "${{ env.TEST_TAG }}",
-            "database_repo": "${{ env.DB_REPO }}",
-            "database_tag": "${{ env.DB_TAG }}",
+            "end_to_end_test_repo": "$TEST_REPO",
+            "end_to_end_test_tag": "$TEST_TAG",
+            "database_repo": "$DB_REPO",
+            "database_tag": "$DB_TAG",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           }
           EOF
