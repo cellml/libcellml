@@ -146,8 +146,8 @@ jobs:
           )
 
           if [ -n "$comment_id" ]; then
-            echo "Updating existing comment with ID: $comment_id (${{ github.repo }})"
-            gh api "repos/${{ github.repo }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
+            echo "Updating existing comment with ID: $comment_id (${{ github.repository }})"
+            gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
           else
             echo "Creating new comment for PR #$pr_number"
             gh pr comment "$pr_number" --body "$full_comment"
@@ -210,8 +210,8 @@ jobs:
           )
 
           if [ -n "$comment_id" ]; then
-            echo "Updating existing comment with ID: $comment_id (${{ github.repo }})"
-            gh api "repos/${{ github.repo }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
+            echo "Updating existing comment with ID: $comment_id (${{ github.repository }})"
+            gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
           else
             echo "Creating new comment for PR #$pr_number"
             gh pr comment "$pr_number" --body "$comment"
