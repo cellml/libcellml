@@ -64,7 +64,7 @@ jobs:
           echo "database_repo=$database_repo" >> "$GITHUB_OUTPUT"
           echo "database_tag=$database_tag" >> "$GITHUB_OUTPUT"
 
-          echo "Inputs set for downstream jobs:""
+          echo "Inputs set for downstream jobs:"
           echo "End-to-end test repository: $end_to_end_test_repo, tag: $end_to_end_test_tag"
           echo "Database repository: $database_repo, tag: $database_tag"
 
