@@ -149,8 +149,6 @@ jobs:
       end_to_end_test_tag: ${{ needs.set_inputs.outputs.end_to_end_test_tag }}
       database_repo: ${{ needs.set_inputs.outputs.database_repo }}
       database_tag: ${{ needs.set_inputs.outputs.database_tag }}
-    secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   documentation_comment:
     needs:
       - documentation_checks
