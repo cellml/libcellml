@@ -135,10 +135,16 @@ jobs:
             status_text="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
           fi
 
-          a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests"))')
+          a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests"))')
           echo "a:"
           echo "$a"
-          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id')
+          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id')
+          echo "b:"
+          echo "$b"
+          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .databaseId')
+          echo "b:"
+          echo "$b"
+          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .url')
           echo "b:"
           echo "$b"
 
