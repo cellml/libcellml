@@ -2,6 +2,27 @@ name: Check Release
 
 on:
   workflow_dispatch:
+    inputs:
+      end_to_end_test_repo:
+        description: "Repository containing end-to-end tests (e.g. user/repo)"
+        default: 'libcellml/end-to-end-test-framework'
+        required: true
+        type: string
+      end_to_end_test_tag:
+        description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
+        default: ${{ vars.DEFAULT_END_TO_END_TEST_TAG }}
+        required: true
+        type: string
+      database_repo:
+        description: "Database to use for end-to-end tests (e.g. user/database)"
+        default: 'libcellml/libcellml.org-documentation-test-database'
+        required: true
+        type: string
+      database_tag:
+        description: "Tag of the database repository to use (e.g. v1.0.0)"
+        default: 'v0.3.4'
+        required: true
+        type: string
 
 jobs:
   determine_release:
