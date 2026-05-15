@@ -216,5 +216,5 @@ jobs:
             gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X PATCH -f body="$full_comment"
           else
             echo "Creating new comment for PR #$pr_number"
-            gh pr comment "$pr_number" --body "$comment"
+            gh pr comment "$pr_number" --body "$full_comment"
           fi
