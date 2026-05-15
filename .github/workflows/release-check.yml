@@ -135,22 +135,8 @@ jobs:
             status_text="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
           fi
 
-          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id' | head -n 1)
-          a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests"))')
-          echo "a:"
-          echo "$a"
-          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .id')
-          echo "b:"
-          echo "$b"
-          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .databaseId')
-          echo "b:"
-          echo "$b"
           URL=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Unit Tests")) | .url')
-          echo "URL:"
-          echo "$URL"
           comment_id=$(echo "${URL##*-}")
-          echo "Extracted comment ID: $comment_id"
-
 
           full_comment=$(cat <<EOF
           ## Unit Tests
@@ -205,13 +191,8 @@ jobs:
             status_text="❌ Documentation checks failed. The tested documentation tests do not work with this version of libCellML."
           fi
 
-          a=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests"))')
-          echo "a:"
-          echo "$a"
-          b=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id')
-          echo "b:"
-          echo "$b"
-          comment_id=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .id' | head -n 1)
+          URL=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .url')
+          comment_id=$(echo "${URL##*-}")
 
           # metadata="{\"end_to_end_test_repo\":\"$TEST_REPO\",\"end_to_end_test_tag\":\"$TEST_TAG\",\"database_repo\":\"$DB_REPO\",\"database_tag\":\"$DB_TAG\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
 
