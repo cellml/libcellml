@@ -1,0 +1,115 @@
+name: End 2 End Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git reference to test (branch, tag, or commit)"
+        default: 'main'
+        required: true
+        type: string
+      end_to_end_test_repo:
+        description: "Repository containing end-to-end tests (e.g. user/repo)"
+        default: 'libcellml/end-to-end-test-framework'
+        required: true
+        type: string
+      end_to_end_test_tag:
+        description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
+        default: 'v0.4.0'
+        required: true
+        type: string
+      database_repo:
+        description: "Database to use for end-to-end tests (e.g. user/database)"
+        default: 'libcellml/libcellml.org-documentation-test-database'
+        required: true
+        type: string
+      database_tag:
+        description: "Tag of the database repository to use (e.g. v1.0.0)"
+        default: 'v0.3.4'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      ref:
+        description: "Git reference to test (branch, tag, or commit)"
+        required: true
+        type: string
+      end_to_end_test_repo:
+        description: "Repository containing end-to-end tests (e.g. user/repo)"
+        default: 'libcellml/end-to-end-test-framework'
+        required: true
+        type: string
+      end_to_end_test_tag:
+        description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
+        default: 'v0.4.0'
+        required: true
+        type: string
+      database_repo:
+        description: "Database to use for end-to-end tests (e.g. user/database)"
+        default: 'libcellml/libcellml.org-documentation-test-database'
+        required: true
+        type: string
+      database_tag:
+        description: "Tag of the database repository to use (e.g. v1.0.0)"
+        default: 'v0.3.4'
+        required: true
+        type: string
+
+jobs:
+  end2end:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout libCellML repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+          path: libcellml
+
+      - name: Checkout end 2 end test repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.end_to_end_test_repo }}
+          ref: ${{ inputs.end_to_end_test_tag }}
+          path: end-to-end-framework
+
+      - name: Checkout database repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.database_repo }}
+          ref: ${{ inputs.database_tag }}
+          path: database
+
+      - name: Install Python
+        if: ${{ env.ACT != 'true' }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Configure libCellML
+        run: cmake -G Ninja -S libcellml -B build -DBUILD_TYPE=Release -DBINDINGS_PYTHON=ON -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
+
+      - name: Build libCellML
+        run: cmake --build build
+
+      - name: Install libCellML
+        run: sudo cmake --build build --target install
+
+      - name: Install libCellML for Python
+        run: pip install build/src/bindings/python
+
+      - name: Configure end-to-end framework
+        run: |
+          cmake -G Ninja -S end-to-end-framework -B end-to-end-framework-build -DTEST_DB=${GITHUB_WORKSPACE}/database
+
+      - name: Build end-to-end tests
+        run: |
+          cmake --build end-to-end-framework-build
+
+      - name: Run end-to-end tests
+        run: |
+          cd end-to-end-framework-build
+          ctest --output-on-failure

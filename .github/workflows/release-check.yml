@@ -34,6 +34,8 @@ jobs:
           fi
 
           echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
+          tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
+          echo "release_version=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Determine PR number
         id: find_pr
@@ -85,15 +87,42 @@ jobs:
           pr_number=${{ needs.determine_release.outputs.pr_number }}
 
           if [ "${{ needs.run_ci.result }}" == "success" ]; then
-            comment="✅ CI checks passed successfully."
+            comment="##Unit Tests\n\n✅ CI checks passed successfully."
           else
-            comment="❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
+            comment="##Unit Tests\n\n❌ CI checks failed. This release requires changes, delete this PR and branch, fix the problems and try again."
           fi
 
           gh pr comment "$pr_number" --body "$comment"
 
   documentation_checks:
-    needs: ci_comment
+    needs:
+      - ci_comment
+      - determine_release
+    uses: ./.github/workflows/end-2-end.yml
+    with:
+      ref: ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  documentation_comment:
+    needs:
+      - documentation_checks
+      - determine_release
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Run additional release validation here"
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.determine_release.outputs.release_branch }}
+
+      - name: Post documentation checks comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number=${{ needs.determine_release.outputs.pr_number }}
+
+          if [ "${{ needs.documentation_checks.result }}" == "success" ]; then
+            comment="##Documentation Tests\n\n✅ Documentation checks passed successfully."
+          else
+            comment="##Documentation Tests\n\n❌ Documentation checks failed. The tested documentation tests do not work with this version of libCellML."
+          fi
+
+          gh pr comment "$pr_number" --body "$comment"
