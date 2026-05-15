@@ -5,28 +5,18 @@ on:
     inputs:
       ref:
         description: "Git reference to test (branch, tag, or commit)"
-        default: 'main'
-        required: true
         type: string
       end_to_end_test_repo:
         description: "Repository containing end-to-end tests (e.g. user/repo)"
-        default: 'libcellml/end-to-end-test-framework'
-        required: true
         type: string
       end_to_end_test_tag:
         description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
-        default: 'v0.4.0'
-        required: true
         type: string
       database_repo:
         description: "Database to use for end-to-end tests (e.g. user/database)"
-        default: 'libcellml/libcellml.org-documentation-test-database'
-        required: true
         type: string
       database_tag:
         description: "Tag of the database repository to use (e.g. v1.0.0)"
-        default: 'v0.3.4'
-        required: true
         type: string
   workflow_call:
     inputs:
@@ -36,29 +26,51 @@ on:
         type: string
       end_to_end_test_repo:
         description: "Repository containing end-to-end tests (e.g. user/repo)"
-        default: 'libcellml/end-to-end-test-framework'
         required: true
         type: string
       end_to_end_test_tag:
         description: "Tag of the end-to-end test repository to use (e.g. v1.0.0)"
-        default: 'v0.4.0'
         required: true
         type: string
       database_repo:
         description: "Database to use for end-to-end tests (e.g. user/database)"
-        default: 'libcellml/libcellml.org-documentation-test-database'
         required: true
         type: string
       database_tag:
         description: "Tag of the database repository to use (e.g. v1.0.0)"
-        default: 'v0.3.4'
         required: true
         type: string
 
 jobs:
+  set_inputs:
+    runs-on: ubuntu-latest
+    outputs:
+      end_to_end_test_repo: ${{ steps.set_inputs.outputs.end_to_end_test_repo }}
+      end_to_end_test_tag: ${{ steps.set_inputs.outputs.end_to_end_test_tag }}
+      database_repo: ${{ steps.set_inputs.outputs.database_repo }}
+      database_tag: ${{ steps.set_inputs.outputs.database_tag }}
+    steps:
+      - name: Set inputs for downstream jobs
+        id: set_inputs
+        run: |
+          # Because we can't use the vars context in the workflow_dispatch inputs, we need to set the default values here.
+          end_to_end_test_repo=${{ inputs.end_to_end_test_repo || vars.DEFAULT_END_TO_END_TEST_REPO }}
+          end_to_end_test_tag=${{ inputs.end_to_end_test_tag || vars.DEFAULT_END_TO_END_TEST_TAG }}
+          database_repo=${{ inputs.database_repo || vars.DEFAULT_DATABASE_REPO }}
+          database_tag=${{ inputs.database_tag || vars.DEFAULT_DATABASE_TAG }}
+
+          echo "end_to_end_test_repo=$end_to_end_test_repo" >> "$GITHUB_OUTPUT"
+          echo "end_to_end_test_tag=$end_to_end_test_tag" >> "$GITHUB_OUTPUT"
+          echo "database_repo=$database_repo" >> "$GITHUB_OUTPUT"
+          echo "database_tag=$database_tag" >> "$GITHUB_OUTPUT"
+
+          echo "Inputs set for downstream jobs:""
+          echo "End-to-end test repository: $end_to_end_test_repo, tag: $end_to_end_test_tag"
+          echo "Database repository: $database_repo, tag: $database_tag"
+
   end2end:
     runs-on: ubuntu-latest
-
+    needs: set_inputs
     steps:
       - name: Checkout libCellML repository
         uses: actions/checkout@v6
