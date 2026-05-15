@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       title:
-        description: "All inputs for this workflow run have defaults set through the vars context, so this input is just for display purposes to make it easier to identify the workflow run in the GitHub Actions UI.""
+        description: "All inputs for this workflow run have defaults set through the vars context, so this input is just for display purposes to make it easier to identify the workflow run in the GitHub Actions UI."
         default: "Check repository vars.DEFAULT_* for current values."
         type: string
       end_to_end_test_repo:
