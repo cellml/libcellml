@@ -35,6 +35,7 @@ limitations under the License.
 #include "issue_p.h"
 #include "logger_p.h"
 #include "namespaces.h"
+#include "unionfind.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
@@ -639,8 +640,9 @@ public:
      * @param component The component to check.
      * @param idMap The IdMap object to construct.
      * @param reportedConnections A set of connection identifiers to prevent duplicate reporting.
+     * @param connectionIds A map of connection identifiers to prevent duplicate reporting of connections.
      */
-    void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections);
+    void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections, const ConnectionIdMap &connectionIds);
 
     /** @brief Utility function to add an item to the idMap.
      *
@@ -2692,11 +2694,102 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
     }
 }
 
+void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &allComponents)
+{
+    allComponents.push_back(component);
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        gatherComponents(component->component(c), allComponents);
+    }
+}
+
 IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
 {
+    UnionFind<VariablePtr> uf;
+
+    // Traverse all components and variables
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            auto v = component->variable(i);
+
+            for (size_t e = 0; e < v->equivalentVariableCount(); ++e) {
+                auto equiv = v->equivalentVariable(e);
+
+                if (equiv != nullptr) {
+                    uf.unite(v, equiv);
+                }
+            }
+        }
+    }
+
+    std::unordered_map<VariablePtr, std::vector<VariablePtr>> groups;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            auto v = component->variable(i);
+            auto root = uf.find(v);
+
+            groups[root].push_back(v);
+        }
+    }
+
+    std::unordered_map<ComponentPair, std::vector<VariablePair>, ComponentPairHash> connectionMap;
+    // using VarPair>, ComponentPairHash> connectionMap;
+
+    // for (auto& [root, vars] : groups) {
+    //     for (size_t i = 0; i < vars.size(); ++i) {
+    //         for (size_t j = i + 1; j < vars.size(); ++j) {
+    //             auto v1 = vars[i];
+    //             auto v2 = vars[j];
+
+    //             auto c1 = owningComponent(v1);
+    //             auto c2 = owningComponent(v2);
+
+    //             if (!c1 || !c2 || c1 == c2) continue;
+
+    //             // Normalize ordering
+    //             ComponentPair key = (c1 < c2)
+    //                                     ? ComponentPair{c1, c2}
+    //                                     : ComponentPair{c2, c1};
+
+    //             connectionMap[key].emplace_back(v1, v2);
+    //         }
+    //     }
+    // }
+
     IdMap idMap;
     std::string info;
     std::set<std::string> reportedConnections;
+
+    std::vector<ComponentPtr> allComponents;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        gatherComponents(model->component(c), allComponents);
+    }
+
+    ConnectionIdMap connectionIds;
+    for (const auto &comp : allComponents) {
+        for (size_t i = 0; i < comp->variableCount(); ++i) {
+            auto item = comp->variable(i);
+            for (size_t e = 0; e < item->equivalentVariableCount(); ++e) {
+                auto equiv = item->equivalentVariable(e);
+                auto equivParent = owningComponent(equiv);
+                if (equivParent != nullptr) {
+                    // Normalize the key order (min pointer first, max pointer second)
+                    auto key = comp.get() < equivParent.get()
+                                   ? std::make_pair(comp.get(), equivParent.get())
+                                   : std::make_pair(equivParent.get(), comp.get());
+
+                           // If we haven't processed this component connection yet, do it once
+                    if (connectionIds.find(key) == connectionIds.end()) {
+                        connectionIds[key] = ""; //Variable::equivalenceConnectionId(item, equiv);
+                    }
+                }
+            }
+        }
+    }
+
     // Model.
     if (!model->id().empty()) {
         info = " - model '" + model->name() + "'";
@@ -2748,12 +2841,12 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
 
     // Start recursion through encapsulation hierarchy.
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        buildComponentIdMap(model->component(c), idMap, reportedConnections);
+        buildComponentIdMap(model->component(c), idMap, reportedConnections, connectionIds);
     }
     return idMap;
 }
 
-void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections)
+void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections, const ConnectionIdMap &connectionIds)
 {
     std::string info;
 
@@ -2807,7 +2900,12 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
-                auto connectionId = Variable::equivalenceConnectionId(item, equiv);
+                auto key = component.get() < equivParent.get()
+                               ? std::make_pair(component.get(), equivParent.get())
+                               : std::make_pair(equivParent.get(), component.get());
+
+                auto connectionId = connectionIds.at(key);
+                // auto connectionId = Variable::equivalenceConnectionId(item, equiv);
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
                     std::string connectionDescription =
@@ -2879,7 +2977,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
 
     // Child components.
     for (size_t c = 0; c < component->componentCount(); ++c) {
-        buildComponentIdMap(component->component(c), idMap, reportedConnections);
+        buildComponentIdMap(component->component(c), idMap, reportedConnections, connectionIds);
     }
 }
 

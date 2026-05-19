@@ -42,13 +42,14 @@ using UniqueNames = std::set<std::string>; /**< Type definition for a set of uni
 using NodeAttributeNamespaceInfo = std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string>>; /**< Type definition for attribute namespace information. */
 
 // VariableMap
+using VariableStdPair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for Variable pointer pair using standard libary. */
 using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 
 // ComponentMap
-using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
-using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
-using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
+using ComponentStdPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair using standard library.*/
+using ComponentMap = std::vector<ComponentStdPair>; /**< Type definition for vector of ComponentStdPair.*/
+using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentStdPair.*/
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
@@ -78,6 +79,25 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
+
+using ComponentRawPtrPair = std::pair<const libcellml::Component*, const libcellml::Component*>;
+using ConnectionIdMap = std::map<ComponentRawPtrPair, std::string>;
+
+struct ComponentPair {
+
+    bool operator==(const ComponentPair& other) const {
+        return c1 == other.c1 && c2 == other.c2;
+    }
+
+    ComponentPtr c1;
+    ComponentPtr c2;
+};
+
+struct ComponentPairHash {
+    size_t operator()(const ComponentPair& p) const {
+        return std::hash<ComponentPtr>()(p.c1) ^ std::hash<ComponentPtr>()(p.c2);
+    }
+};
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
