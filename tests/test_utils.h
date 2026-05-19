@@ -82,7 +82,7 @@ std::chrono::steady_clock::time_point TEST_EXPORT timeNow();
 int TEST_EXPORT elapsedTime(const std::chrono::steady_clock::time_point &startTime);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
-std::string TEST_EXPORT fileContents(const std::string &fileName);
+std::string TEST_EXPORT fileContents(const std::string &fileName, bool absoulte=false);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool cellmlElementTypes = false, bool rule = false);
 
 void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);

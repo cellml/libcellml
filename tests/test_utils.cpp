@@ -35,12 +35,18 @@ std::string resourcePath(const std::string &resourceRelativePath)
     return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
 }
 
-std::string fileContents(const std::string &fileName)
+std::string fileContents(const std::string &fileName, bool absoulte)
 {
-    std::ifstream file(resourcePath(fileName));
+    std::ifstream file;
+    if (absoulte) {
+        file.open(fileName);
+    } else {
+        file.open(resourcePath(fileName));
+    }
     std::stringstream buffer;
 
     buffer << file.rdbuf();
+    file.close();
 
     return buffer.str();
 }

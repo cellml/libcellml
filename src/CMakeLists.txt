@@ -149,6 +149,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/reset_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/unionfind.h
   ${CMAKE_CURRENT_SOURCE_DIR}/units_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/variable_p.h
