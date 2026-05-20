@@ -43,27 +43,32 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraicVariables;
     std::vector<AnalyserVariablePtr> mExternalVariables;
+
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
     std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
 
-    uintptr_t find(uintptr_t x)
+    uintptr_t findRootAddress(uintptr_t x)
     {
         auto it = mEquivalentVariableCache.find(x);
+
         if (it == mEquivalentVariableCache.end()) {
             mEquivalentVariableCache[x] = x;
             return x;
         }
+
         if (it->second != x) {
-            it->second = find(it->second);
+            it->second = findRootAddress(it->second);
         }
+
         return it->second;
     }
 
-    void unite(uintptr_t x, uintptr_t y)
+    void uniteEquivalentAddresses(uintptr_t x, uintptr_t y)
     {
-        const uintptr_t &rootX = find(x);
-        const uintptr_t &rootY = find(y);
+        const uintptr_t &rootX = findRootAddress(x);
+        const uintptr_t &rootY = findRootAddress(y);
+
         if (rootX != rootY) {
             mEquivalentVariableCache[rootY] = rootX;
         }
@@ -98,8 +103,8 @@ struct AnalyserModel::AnalyserModelImpl
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 
-    void buildEquivalentVariablesCache();
     void buildEquivalentVariablesCache(const ComponentPtr &component);
+    void buildEquivalentVariablesCache();
 
     AnalyserModelImpl(const ModelPtr &model);
 };
