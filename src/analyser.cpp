@@ -401,9 +401,14 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
 {
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
+    auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
+    if (mInternalVariableMap.count(rawPtr) > 0) {
+        return mInternalVariableMap[rawPtr];
+    }
 
     for (const auto &internalVariable : mInternalVariables) {
         if (mAnalyserModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
+            mInternalVariableMap[rawPtr] = internalVariable;
             return internalVariable;
         }
     }
@@ -414,6 +419,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     auto res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
+    mInternalVariableMap[rawPtr] = res;
 
     return res;
 }
@@ -2320,11 +2326,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     mAnalyserModel = AnalyserModel::AnalyserModelImpl::create(model);
 
     mInternalVariables.clear();
+    mInternalVariableMap.clear();
     mInternalEquations.clear();
 
     mCiCnUnits.clear();
 
-    mAnalyserModel->mPimpl->buildEquivalentVariablesCache();
+    // mAnalyserModel->mPimpl->buildEquivalentVariablesCache();
+    mAnalyserModel->mPimpl->buildEquivalentVariablesCache2();
 
     // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.

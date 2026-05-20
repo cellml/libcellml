@@ -23,7 +23,7 @@ limitations under the License.
 
 const char* BENCHMARKING_MODEL_ROOT = std::getenv("BENCHMARKING_MODEL_ROOT");
 
-TEST(Investigations, exponentialTimeConsumption11)
+TEST(Investigations, DISABLED_exponentialTimeConsumption11)
 {
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/";
@@ -106,7 +106,7 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption380)
     printIssues(analyser);
 }
 
-TEST(Investigations, DISABLED_exponentialTimeConsumption524)
+TEST(Investigations, exponentialTimeConsumption524)
 {
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/";

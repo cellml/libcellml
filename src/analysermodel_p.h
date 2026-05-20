@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <cstdint>
 #include <unordered_map>
+#include <set>
 
 #include "libcellml/analysermodel.h"
 
@@ -46,6 +47,7 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
     std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
+    std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache2;
 
     uintptr_t find(uintptr_t x)
     {
@@ -100,6 +102,9 @@ struct AnalyserModel::AnalyserModelImpl
 
     void buildEquivalentVariablesCache();
     void buildEquivalentVariablesCache(const ComponentPtr &component);
+
+    void buildEquivalentVariablesCache2();
+    void buildEquivalentVariablesCache2(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups);
 
     AnalyserModelImpl(const ModelPtr &model);
 };

@@ -223,7 +223,8 @@ bool haveEquivalentVariables(const Variable *variable1,
 
     testedVariables.push_back(variable2);
 
-    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
+    const size_t variable2EquivalentVariableCount = variable2->equivalentVariableCount();
+    for (size_t i = 0; i < variable2EquivalentVariableCount; ++i) {
         Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
 
         if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())

@@ -2781,7 +2781,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                                    ? std::make_pair(comp.get(), equivParent.get())
                                    : std::make_pair(equivParent.get(), comp.get());
 
-                           // If we haven't processed this component connection yet, do it once
+                    // If we haven't processed this component connection yet, do it once
                     if (connectionIds.find(key) == connectionIds.end()) {
                         connectionIds[key] = ""; //Variable::equivalenceConnectionId(item, equiv);
                     }
