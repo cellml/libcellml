@@ -12,7 +12,7 @@ Releases are made using GitHub Actions CI and consist of four steps:
 
 1. `Step 1 - Preparing the release`_
 2. `Step 2 - Checking the release`_
-3. `Step 3 - Creating the release`_
+3. `Step 3 - Make the release`_
 4. `Step 4 - Finalising the Release`_
 
 Each step must be performed in order. Later steps assume that all previous steps have completed successfully.
@@ -89,46 +89,100 @@ On successful completion, this workflow creates a pull request on the `cellml/li
 
 If the workflow fails, the pull request will not be created. Depending on how far the workflow progressed before failure, the staging branch may still exist and may need to be cleaned up manually or reused after resolving the issue.
 
+Next Step
+---------
+
 Once the pull request has been created, the checking of the release can begin (see `Step 2 - Checking the release`_).
 
 Step 2 - Checking the release
 =============================
 
-A release is prepared using the *Prepare Release Builder* (:numref:`libcellml_release_process_prepare_release`).
-The *Prepare Release Builder* will create a new branch named *release_staging_<version number>* (where <version number> is an actual semantic version number set in the first step) and generate a changelog.
+The *Check Release* GitHub Actions workflow validates the staged release candidate created in `Step 1 - Preparing the release`_.
+It ensures that the code builds correctly and that automated tests have been executed before proceeding with the release.
 
-.. figure:: ./images/release_process/prepare_release_builder.png
+Procedure
+---------
+
+1. Navigate to the *Check Release* workflow in the GitHub Actions tab of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Optionally adjust the configuration parameters for the end-to-end tests using the GitHub Actions interface.
+3. Manually trigger the workflow.
+4. Review the results published as comments on the staging pull request.
+
+.. figure:: ./images/release_process/check_release_interface.png
    :align: center
-   :alt: Buildbot prepare release builder interface.
-   :name: libcellml_release_process_prepare_release
+   :width: 25%
+   :alt: GitHub Action check release manual trigger interface.
+   :name: libcellml_release_process_check_release_interface
 
-   *Prepare Release Builder* on Buildbot.
+   *Check Release Builder* interface from GitHub Action.
 
-The changelog for a release is generated from information found in merged pull requests between the current release under preparation and the previous release.
+Tasks performed
+---------------
 
-.. note::
+The workflow performs the following tasks on the staged release code:
 
-  The changelog creation is unlikely to be accurate when creating a bug fix/hot fix release on a previously released official version.
-  At this time, that means some manual editing of the changelog will need to happen when creating a bug fix/hot fix release.
+- Builds the codebase.
+- Runs all unit tests.
+- Reports on status of unit tests.
+- Runs end-to-end tests.
+- Reports on status of end-to-end tests along with the metadata used for running the tests.
 
-.. figure:: ./images/release_process/prepare_release_builder_interface.png
+Results
+-------
+
+Results from the workflow are published as comments on the staging pull request:
+
+- **Unit test results**: A summary indicating whether all tests passed.
+- **End-to-end test results**: A summary of the outcome along with the metadata used during test execution.
+
+.. figure:: ./images/release_process/check_release_unit_test_comment.png
    :align: center
-   :alt: Buildbot prepare release interface.
-   :name: libcellml_release_process_prepare_release_builder_interface
+   :alt: GitHub Action check release unit test passing comment.
+   :name: libcellml_release_process_check_release_unit_test_comment
 
-   *Prepare Release Builder* interface.
+   Example of the comment left by the *Check Release Builder* showing the unit tests have passed.
 
-There are no options for the *Prepare Release Builder*, there is only one place you can prepare a release from, there is only one place a release is going to be created.
-The only thing you can do is start a build, (:numref:`libcellml_release_process_prepare_release_builder_interface`).
+.. figure:: ./images/release_process/check_release_end_to_end_comment.png
+   :align: center
+   :alt: GitHub Action check release end-to-end passing comment.
+   :name: libcellml_release_process_check_release_end_to_end_comment
 
-The *Prepare Release Builder* will kick off a round of unit tests as part of the preparation process.
+   Example of the comment left by the *Check Release Builder* showing the unit tests have passed.
 
-When the release has been prepared the *release_staging_<version number>* branch will have been created and a changelog and table of contents entries for the changelog will have been created.
-Manual changes to the generated changelog can be made at this point in the release process.
-The changes made for the new changelog should be the only changes from the current *main* branch.
+These comments must be reviewed before proceeding to the next step.
 
-Step 3 - Creating the release
-=============================
+Success criteria
+----------------
+
+A release candidate is considered valid when:
+
+- ✅ All unit tests pass (**required**).
+- ⚠️ End-to-end tests may fail, but this has consequences.
+
+If end-to-end tests fail:
+
+- The release **may still proceed**, however:
+  - The user documentation will **not** be updated as part of the release process.
+  - The metadata recorded in the workflow comment will be used bu subsequent workflows to finalise documentation updates on the libcellml.org website.
+
+Failure handling
+----------------
+
+- If **unit tests fail**:
+  - The release **must not proceed**.
+  - The staged release should be removed and fixes applied to the source branch before starting the release process again.
+
+- If **end-to-end tests fail**, either:
+  - Continue with the release, understanding that the user documentation will not be updated.
+  - Or, fix the issues stemming from the end-to-end testing and re-run the workflow.
+
+Next step
+---------
+
+Once all required checks have passed and the results have been reviewed, the release process can continue with `Step 3 - Make the release`_.
+
+Step 3 - Make the release
+=========================
 
 A release is created using the *Create Release Builder* (:numref:`libcellml_release_process_create_release`).
 
