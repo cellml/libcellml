@@ -15,16 +15,22 @@ limitations under the License.
 */
 
 #include "libcellml/analysermodel.h"
-#include "libcellml/analyservariable.h"
 
 #include "analysermodel_p.h"
+#include "analyservariable_p.h"
 #include "utilities.h"
 
 namespace libcellml {
 
 AnalyserModelPtr AnalyserModel::AnalyserModelImpl::create(const ModelPtr &model)
 {
-    return std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+    auto res = std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+
+    if (model) {
+        res->mPimpl->buildEquivalentVariablesCache();
+    }
+
+    return res;
 }
 
 AnalyserModel::AnalyserModelImpl::AnalyserModelImpl(const ModelPtr &model)
