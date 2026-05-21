@@ -529,7 +529,6 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // turn, this means that we can speed up any feature (e.g., code generation)
     // that also relies on that utility.
 
-
     if ((variable1 == nullptr) || (variable2 == nullptr)) {
         return false;
     }
