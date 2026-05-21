@@ -48,15 +48,6 @@ AnalyserModel::~AnalyserModel()
     delete mPimpl;
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
-{
-    mEquivalentVariableCache.clear();
-
-    for (size_t i = 0; i < mModel->componentCount(); ++i) {
-        buildEquivalentVariablesCache(mModel->component(i));
-    }
-}
-
 void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
@@ -71,12 +62,21 @@ void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const Compo
                 std::swap(v1, v2);
             }
 
-            uniteEquivalentAddresses(v1, v2);
+            uniteEquivalentVariableAddresses(v1, v2);
         }
     }
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         buildEquivalentVariablesCache(component->component(i));
+    }
+}
+
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
+{
+    mEquivalentVariableCache.clear();
+
+    for (size_t i = 0; i < mModel->componentCount(); ++i) {
+        buildEquivalentVariablesCache(mModel->component(i));
     }
 }
 
@@ -546,7 +546,7 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     const auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     const auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    return mPimpl->findRootAddress(v1) == mPimpl->findRootAddress(v2);
+    return mPimpl->findVariableAddress(v1) == mPimpl->findVariableAddress(v2);
 }
 
 } // namespace libcellml

@@ -600,9 +600,9 @@ public:
      * Returns @c true if @p variable1 is equivalent to @p variable2 and
      * @c false otherwise.
      *
-     * The function utilizes caching which is constructed during the model
+     * The function utilises caching which is constructed during the model
      * analysis phase (@ref Analyser::analyseModel). The cache may become
-     * out-of-date if the model is changed after the model has been analysed.
+     * out of date if the model is changed after the model has been analysed.
      *
      * @note This function is primarily designed for use during model analysis
      *       by the @ref Analyser. While external usage is not programmatically

@@ -48,26 +48,27 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
 
-    uintptr_t findRootAddress(uintptr_t x)
+    uintptr_t findVariableAddress(uintptr_t x)
     {
         auto it = mEquivalentVariableCache.find(x);
 
         if (it == mEquivalentVariableCache.end()) {
             mEquivalentVariableCache[x] = x;
+
             return x;
         }
 
         if (it->second != x) {
-            it->second = findRootAddress(it->second);
+            it->second = findVariableAddress(it->second);
         }
 
         return it->second;
     }
 
-    void uniteEquivalentAddresses(uintptr_t x, uintptr_t y)
+    void uniteEquivalentVariableAddresses(uintptr_t x, uintptr_t y)
     {
-        const uintptr_t &rootX = findRootAddress(x);
-        const uintptr_t &rootY = findRootAddress(y);
+        const uintptr_t &rootX = findVariableAddress(x);
+        const uintptr_t &rootY = findVariableAddress(y);
 
         if (rootX != rootY) {
             mEquivalentVariableCache[rootY] = rootX;
