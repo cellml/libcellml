@@ -271,7 +271,7 @@ jobs:
 
     - name: Upload libraries as artifacts
       if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         path: ./build/dist/*
         name: ${{ matrix.config.os }}
@@ -362,7 +362,7 @@ jobs:
           package-dir: src/bindings/python/
 
       - name: Upload Python wheels as artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: ./wheelhouse/*.whl
           name: ${{ matrix.name }}-${{ matrix.py }}-wheel
@@ -378,7 +378,7 @@ jobs:
     name: Publish Wheels
     steps:
       - name: Download Python wheel artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: wheelhouse/
           pattern: '*-wheel'
@@ -407,14 +407,14 @@ jobs:
       - name: Checkout zlib
         uses: actions/checkout@v6
         with:
-          repository: OpenCMISS-Dependencies/zlib
+          repository: CMLibs-Dependencies/zlib
           path: zlib
-          ref: v1.2.3
+          ref: v1.2.12
 
       - name: Checkout LibXml2
         uses: actions/checkout@v6
         with:
-          repository: OpenCMISS-Dependencies/libxml2
+          repository: CMLibs-Dependencies/libxml2
           path: libxml2
           ref: v2.9.10
 
@@ -458,7 +458,7 @@ jobs:
 
       - name: Upload libcellml.js as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: ${{ steps.package-javascript.outputs.files }}
           name: libcellml.js
