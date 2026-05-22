@@ -425,7 +425,7 @@ jobs:
         run: |
           brew install emscripten
 
-      - name: Build and instal zlib
+      - name: Build and install zlib
         shell: bash
         run: |
           mkdir build-zlib-release
@@ -433,7 +433,7 @@ jobs:
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local ../zlib/
           make -j3 install
 
-      - name: Build and instal libXml2
+      - name: Build and install libXml2
         shell: bash
         run: |
           mkdir build-libxml2-release
@@ -479,6 +479,20 @@ jobs:
     name: Julia
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout libCellML
+        uses: actions/checkout@v6
+        with:
+          path: libcellml
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Determine release commit SHA
+        run: |
+          cd libcellml
+
+          tag="${{ github.event.release.tag_name }}"
+          sha=$(git rev-list -n 1 "$tag")
+
+          echo "release_sha=$sha" >> $GITHUB_ENV
 
       - name: Generate GitHub App token
         id: app_token
@@ -508,9 +522,8 @@ jobs:
 
           full_version=${{ github.event.release.tag_name }}
           version="${full_version#v}"
-          sha="${{ needs.make_release.outputs.release_sha }}"
+          sha="$release_sha"
 
-          echo "${{ github.event.release }}"
           echo "---------"
           echo "$version"
           echo "$sha"
