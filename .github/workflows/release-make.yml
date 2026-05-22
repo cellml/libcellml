@@ -87,6 +87,26 @@ jobs:
           git push origin release
           git push origin "v${{ needs.determine_release.outputs.release_version }}"
 
+      - name: Create GitHub Release
+          run: |
+            cd repo-release
+            version="${{ needs.determine_release.outputs.release_version }}"
+            core="${version%%+*}"
+
+            if [[ "$core" == *"-"* ]]; then
+              prerelease_flag="--prerelease"
+              note="This is a pre-release of libCellML v${{ needs.determine_release.outputs.release_version }}."
+            else
+              prerelease_flag=""
+              note="This is an official release of libCellML v${{ needs.determine_release.outputs.release_version }}."
+            fi
+
+            gh release create "v${{ needs.determine_release.outputs.release_version }}" \
+              --title "libCellML v${{ needs.determine_release.outputs.release_version }}" \
+              --notes "$note" ${prerelease_flag}
+          env:
+            GH_TOKEN: ${{ github.token }}
+
       - name: tmate
         uses: mxschmitt/action-tmate@v3
         if: failure()
