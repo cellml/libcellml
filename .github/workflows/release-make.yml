@@ -3,8 +3,10 @@ name: Make Release
 on:
   workflow_dispatch:
 
-jobs:
+permissions:
+  contents: write
 
+jobs:
   determine_release:
     runs-on: ubuntu-latest
     outputs:
@@ -41,6 +43,7 @@ jobs:
   make_release:
     needs: determine_release
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -55,6 +58,13 @@ jobs:
           ref: release
           fetch-depth: 0
           path: repo-release
+
+      - name: Set GitHub Actions bot identity
+        run: |
+          cd repo-release
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update release branch
         run: |
