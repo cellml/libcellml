@@ -78,6 +78,6 @@ jobs:
           git tag -a "v${{ needs.determine_release.outputs.release_version }}" -m "Release v${{ needs.determine_release.outputs.release_version }}."
           git push origin release "v${{ needs.determine_release.outputs.release_version }}"
 
-      -name: tmate
+      - name: tmate
         uses: mxschmitt/action-tmate@v3
         if: failure()
