@@ -500,6 +500,8 @@ jobs:
         with:
           client-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: Yggdrasil
 
       - name: Checkout Yggdrasil
         uses: actions/checkout@v6
@@ -528,7 +530,7 @@ jobs:
           sed -i.bak -E "s/^version = v\"[^\"]+\"/version = v\"$version\"/" build_tarballs.jl
 
           # Update GitSource hash
-          sed -i.bak -E "s#(\"https://github.com/cellml/libcellml\",\s*\")[^\"]+(\"\))#\1$sha\2#" build_tarballs.jl
+          sed -i.bak -E ":a;N;$!ba;s#(\"https://github.com/cellml/libcellml\",\s*\")[^\"]+(\"\))#\1$sha\2#" build_tarballs.jl
 
           rm build_tarballs.jl.bak
 
