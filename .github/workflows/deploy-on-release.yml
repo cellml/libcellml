@@ -504,7 +504,7 @@ jobs:
       - name: Checkout Yggdrasil
         uses: actions/checkout@v6
         with:
-          repository: cellml/Yggdrasil
+          repository: hsorby/Yggdrasil
           token: ${{ steps.app_token.outputs.token }}
           path: yggdrasil
 
@@ -523,11 +523,6 @@ jobs:
           full_version=${{ github.event.release.tag_name }}
           version="${full_version#v}"
           sha="$release_sha"
-
-          echo "---------"
-          echo "$version"
-          echo "$sha"
-          sha="XXXXYYYYZZZZ"
 
           # Update version line
           sed -i.bak -E "s/^version = v\"[^\"]+\"/version = v\"$version\"/" build_tarballs.jl
