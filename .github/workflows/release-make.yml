@@ -61,7 +61,7 @@ jobs:
 
       - name: Set GitHub Actions bot identity
         run: |
-          cd repo-release
+          cd repo-staging
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
