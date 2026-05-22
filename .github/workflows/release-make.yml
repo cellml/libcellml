@@ -1,0 +1,67 @@
+name: Make Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  determine_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_branch: ${{ steps.find_branch.outputs.release_branch }}
+      release_version: ${{ steps.find_branch.outputs.release_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Determine release staging branch
+        id: find_branch
+        run: |
+          git remote set-branches origin '*'
+          git fetch -v --depth=1
+
+          branch=$(git branch -r \
+            | grep 'origin/${{ vars.RELEASE_STAGING_BRANCH_STEM }}' \
+            | sed 's|[ \t]*origin/||' \
+            | sort -V \
+            | tail -1)
+
+          if [ -z "$branch" ]; then
+            echo "::error::No release staging branch found"
+            exit 1
+          fi
+
+          echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
+          tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
+          echo "release_version=$tag" >> "$GITHUB_OUTPUT"
+
+  make_release:
+    needs: determine_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.determine_release.outputs.release_branch }}
+          fetch-depth: 0
+          path: repo-staging
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: release
+          fetch-depth: 0
+          path: repo-release
+
+      - name: Update release branch
+        run: |
+          rm -rf repo-staging/.git
+          mv repo-release/.git repo-staging/.git
+          cd repo-staging
+          git add -A
+          git commit -m "Release ${{ needs.determine_release.outputs.release_version }}."
+          git tag -a "v${{ needs.determine_release.outputs.release_version }}" -m "Release v${{ needs.determine_release.outputs.release_version }}."
+          git push origin release "v${{ needs.determine_release.outputs.release_version }}"
