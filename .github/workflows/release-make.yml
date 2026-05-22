@@ -61,23 +61,31 @@ jobs:
 
       - name: Set GitHub Actions bot identity
         run: |
-          cd repo-staging
+          cd repo-release
 
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Configure git authentication
+        run: |
+          cd repo-release
+          git remote set-url origin \
+            https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
 
       - name: Update release branch
         run: |
-          rm -rf repo-staging/.git
-          mv repo-release/.git repo-staging/.git
-          cd repo-staging
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          rsync -av --delete --exclude='.git' repo-staging/ repo-release/
+          cd repo-release
           git add -A
-          git commit -m "Release ${{ needs.determine_release.outputs.release_version }}."
+          git commit -m "Release v${{ needs.determine_release.outputs.release_version }}."
           git tag -a "v${{ needs.determine_release.outputs.release_version }}" -m "Release v${{ needs.determine_release.outputs.release_version }}."
-          echo "Did indeed get this far."
-          #git push origin release "v${{ needs.determine_release.outputs.release_version }}"
+
+      - name: Push changes
+        run: |
+          cd repo-release
+
+          git push origin release
+          git push origin "v${{ needs.determine_release.outputs.release_version }}"
 
       - name: tmate
         uses: mxschmitt/action-tmate@v3
