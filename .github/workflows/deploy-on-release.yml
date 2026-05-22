@@ -438,7 +438,7 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.12/ -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
       - name: Build libcellml.js
@@ -446,7 +446,7 @@ jobs:
         run: |
           mkdir build-libcellml-release
           cd build-libcellml-release
-          emcmake cmake -DLibXml2_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_TYPE=Release ../libcellml/
+          emcmake cmake -DLibXml2_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.12/ -DBUILD_TYPE=Release ../libcellml/
           make VERBOSE=1 -j3
 
       - name: Pack libcellml.js
@@ -506,13 +506,15 @@ jobs:
         run: |
           cd yggdrasil/L/libcellml
 
-          version="${${{ github.event.release.tag_name }}#v}"
+          full_version=${{ github.event.release.tag_name }}
+          version="${full_version#v}"
           sha="${{ needs.make_release.outputs.release_sha }}"
 
           echo "${{ github.event.release }}"
           echo "---------"
           echo "$version"
           echo "$sha"
+          sha="XXXXYYYYZZZZ"
 
           # Update version line
           sed -i.bak -E "s/^version = v\"[^\"]+\"/version = v\"$version\"/" build_tarballs.jl
