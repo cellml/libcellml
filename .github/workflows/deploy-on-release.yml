@@ -520,19 +520,34 @@ jobs:
 
       - name: Update build_tarballs.jl
         run: |
-          cd yggdrasil/L/libcellml
+          python3 - <<EOF
+          import re
 
-          full_version=${{ github.event.release.tag_name }}
-          version="${full_version#v}"
-          sha="$release_sha"
+          path = "yggdrasil/L/libcellml/build_tarballs.jl"
+          with open(path) as f:
+              content = f.read()
 
-          # Update version line
-          sed -i.bak -E "s/^version = v\"[^\"]+\"/version = v\"$version\"/" build_tarballs.jl
+          version = "${{ needs.determine_release.outputs.release_version }}"
+          sha = "${{ needs.make_release.outputs.release_sha }}"
 
-          # Update GitSource hash
-          sed -i.bak -E ":a;N;$!ba;s#(\"https://github.com/cellml/libcellml\",\s*\")[^\"]+(\"\))#\1$sha\2#" build_tarballs.jl
+          # Update version
+          content = re.sub(
+              r'version = v"[^"]+"',
+              f'version = v"{version}"',
+              content
+          )
 
-          rm build_tarballs.jl.bak
+          # Update GitSource SHA
+          content = re.sub(
+              r'(GitSource\(\s*"https://github.com/cellml/libcellml",\s*")[^"]+(")',
+              rf'\1{sha}\2',
+              content,
+              flags=re.DOTALL
+          )
+
+          with open(path, "w") as f:
+              f.write(content)
+          EOF
 
           git diff
 
@@ -558,11 +573,9 @@ jobs:
         run: |
           cd yggdrasil
 
-          kjdfljdifj
-
           gh pr create \
-            --repo cellml/Yggdrasil \
-            --head "$branch" \
+            --repo JuliaPackaging/Yggdrasil \
+            --head "${{ github.repository_owner }}:$branch" \
             --base master \
             --title "libcellml ${{ github.event.release.tag_name }}" \
             --body "Automated update for libCellML release ${{ github.event.release.tag_name }}."
