@@ -1,4 +1,4 @@
-name: libcellml-deploy-on-release
+name: Deploy libCellML on Release
 
 on:
   release:
@@ -97,12 +97,12 @@ jobs:
 
     steps:
     - name: Checkout libCellML
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       if: runner.os == 'Windows'
       with:
         repository: CMLibs-Dependencies/zlib
@@ -110,7 +110,7 @@ jobs:
         ref: v1.2.12
 
     - name: Checkout LibXml2
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       if: runner.os == 'Windows'
       with:
         repository: CMLibs-Dependencies/libxml2
@@ -118,7 +118,7 @@ jobs:
         ref: v2.9.10
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@v3
       if: runner.os == 'Windows'
 
     - name: Prepare Windows environment
@@ -302,7 +302,7 @@ jobs:
 
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -399,20 +399,20 @@ jobs:
     runs-on: macos-15-intel
     steps:
       - name: Checkout libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: libcellml
           ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: OpenCMISS-Dependencies/zlib
           path: zlib
           ref: v1.2.3
 
       - name: Checkout LibXml2
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: OpenCMISS-Dependencies/libxml2
           path: libxml2
