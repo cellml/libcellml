@@ -66,16 +66,25 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Generate GitHub App token
+        id: app_token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.RELEASE_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
       - name: Configure git authentication
         run: |
           cd repo-release
+
           git remote set-url origin \
-            https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+            https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/${{ github.repository }}.git
 
       - name: Update release branch
         run: |
           rsync -av --delete --exclude='.git' repo-staging/ repo-release/
           cd repo-release
+
           git add -A
           git commit -m "Release v${{ needs.determine_release.outputs.release_version }}."
           git tag -a "v${{ needs.determine_release.outputs.release_version }}" -m "Release v${{ needs.determine_release.outputs.release_version }}."
@@ -84,14 +93,14 @@ jobs:
         run: |
           cd repo-release
 
-          git push origin release
-          git push origin "v${{ needs.determine_release.outputs.release_version }}"
+          git push origin release "v${{ needs.determine_release.outputs.release_version }}"
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd repo-release
+
           version="${{ needs.determine_release.outputs.release_version }}"
           core="${version%%+*}"
 
@@ -106,7 +115,3 @@ jobs:
           gh release create "v${{ needs.determine_release.outputs.release_version }}" \
             --title "libCellML v${{ needs.determine_release.outputs.release_version }}" \
             --notes "$note" ${prerelease_flag}
-
-      - name: tmate
-        uses: mxschmitt/action-tmate@v3
-        if: failure()
