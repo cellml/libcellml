@@ -63,8 +63,8 @@ jobs:
         run: |
           cd repo-release
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "libcellml-release[bot]"
+          git config user.email "libcellml-release[bot]@users.noreply.github.com"
 
       - name: Generate GitHub App token
         id: app_token
