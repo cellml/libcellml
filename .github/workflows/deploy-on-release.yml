@@ -506,7 +506,7 @@ jobs:
       - name: Checkout Yggdrasil
         uses: actions/checkout@v6
         with:
-          repository: hsorby/Yggdrasil
+          repository: ${{ github.repository_owner }}/Yggdrasil
           token: ${{ steps.app_token.outputs.token }}
           path: yggdrasil
 
@@ -520,6 +520,10 @@ jobs:
 
       - name: Update build_tarballs.jl
         run: |
+          full_version=${{ github.event.release.tag_name }}
+          version="${full_version#v}"
+          sha="$release_sha"
+
           python3 - <<EOF
           import re
 
@@ -527,8 +531,8 @@ jobs:
           with open(path) as f:
               content = f.read()
 
-          version = "${{ needs.determine_release.outputs.release_version }}"
-          sha = "${{ needs.make_release.outputs.release_sha }}"
+          version = "${version}"
+          sha = "${release_sha}"
 
           # Update version
           content = re.sub(
@@ -549,6 +553,7 @@ jobs:
               f.write(content)
           EOF
 
+          cd yggdrasil
           git diff
 
       - name: Commit changes
