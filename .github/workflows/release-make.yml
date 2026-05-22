@@ -86,7 +86,7 @@ jobs:
           cd repo-release
 
           git add -A
-          git commit -m "Release v${{ needs.determine_release.outputs.release_version }}."
+          #git commit -m "Release v${{ needs.determine_release.outputs.release_version }}."
           git tag -a "v${{ needs.determine_release.outputs.release_version }}" -m "Release v${{ needs.determine_release.outputs.release_version }}."
 
       - name: Push changes
