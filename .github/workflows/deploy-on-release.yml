@@ -287,8 +287,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15-intel, ubuntu-20.04, windows-2019]
-        py: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        os: [macos-15-intel, ubuntu-24.04, windows-2025]
+        py: ['3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - name: 'Windows'
             os: windows-2019
@@ -296,11 +296,6 @@ jobs:
             os: ubuntu-20.04
           - name: 'macOS'
             os: macos-15-intel
-        exclude:
-          - os: macos-15-intel
-            py: '3.7'
-          - os: ubuntu-20.04
-            py: '3.7'
 
     steps:
       - name: Check out libCellML
@@ -576,6 +571,7 @@ jobs:
           git push origin "$branch"
 
       - name: Create PR
+        if: ${{ !github.event.release.prerelease }}
         env:
           GH_TOKEN: ${{ secrets.YGGDRASIL_PR_PAT }}
         run: |
@@ -587,7 +583,3 @@ jobs:
             --base master \
             --title "libcellml ${{ github.event.release.tag_name }}" \
             --body "Automated update for libCellML release ${{ github.event.release.tag_name }}."
-
-      - name: Debug with tmate
-        uses: mxschmitt/action-tmate@v3
-        if: always()
