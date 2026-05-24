@@ -81,14 +81,14 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Server 2019 MSVC",
-            os: windows-2019,
+            name: "Windows Server 2025 MSVC",
+            os: windows-2025,
             cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
-            name: "Ubuntu 20.04 GCC",
-            os: ubuntu-20.04,
+            name: "Ubuntu 24.04 GCC",
+            os: ubuntu-24.04,
             build_type: "Release", cc: "gcc", cxx: "g++"
           }
         - {
@@ -539,10 +539,13 @@ jobs:
               content
           )
 
+          def replace_git_source(match):
+              return match.group(1) + sha + match.group(2)
+
           # Update GitSource SHA
           content = re.sub(
               r'(GitSource\(\s*"https://github.com/cellml/libcellml",\s*")[^"]+(")',
-              rf'\1{sha}\2',
+              replace_git_source,
               content,
               flags=re.DOTALL
           )
