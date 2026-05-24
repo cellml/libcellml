@@ -574,7 +574,7 @@ jobs:
 
       - name: Create PR
         env:
-          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+          GH_TOKEN: ${{ secrets.YGGDRASIL_PR_PAT }}
         run: |
           cd yggdrasil
 
@@ -584,3 +584,7 @@ jobs:
             --base master \
             --title "libcellml ${{ github.event.release.tag_name }}" \
             --body "Automated update for libCellML release ${{ github.event.release.tag_name }}."
+
+      - name: Debug with tmate
+        uses: mxschmitt/action-tmate@v3
+        if: always()
