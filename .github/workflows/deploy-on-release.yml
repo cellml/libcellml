@@ -84,7 +84,7 @@ jobs:
             name: "Windows Server 2025 MSVC",
             os: windows-2025,
             cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2025/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
             name: "Ubuntu 24.04 GCC",
@@ -291,9 +291,9 @@ jobs:
         py: ['3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - name: 'Windows'
-            os: windows-2019
+            os: windows-2025
           - name: 'Linux'
-            os: ubuntu-20.04
+            os: ubuntu-24.04
           - name: 'macOS'
             os: macos-15-intel
 
