@@ -524,6 +524,9 @@ jobs:
           version="${full_version#v}"
           sha="$release_sha"
 
+          echo "version: $version"
+          echo "sha: $sha"
+
           python3 - <<EOF
           import re
 
