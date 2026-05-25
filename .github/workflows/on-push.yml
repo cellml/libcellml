@@ -141,7 +141,7 @@ jobs:
         math(EXPR JOBS "${N} + 1")
 
         execute_process(
-          COMMAND cmake --build . --config $ENV{BUILD_TYPE} --parallel ${JOBS}
+          COMMAND cmake --build build --config $ENV{BUILD_TYPE} --parallel ${JOBS}
           WORKING_DIRECTORY "${ACTION_DIR}/build"
           RESULT_VARIABLE _RESULT
           OUTPUT_VARIABLE _OUTPUT
