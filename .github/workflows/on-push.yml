@@ -35,8 +35,8 @@ jobs:
           cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
           mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
           v=${{ matrix.py }}
-          echo "Setting tag as: tag=${GITHUB_REF#refs/tags/}"
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "Setting tag as: tag=v0.7.0-rc.1"
+          echo "tag=v0.7.0-rc.1" >> $GITHUB_OUTPUT
           echo "Setting build as: build=cp${v/./}-*"
           echo "build=cp${v/./}-*" >> $GITHUB_OUTPUT
           if [[ "macOS" == "${{ matrix.name }}" ]]; then
