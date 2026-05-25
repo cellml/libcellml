@@ -1,0 +1,86 @@
+name: Push
+
+on:
+  push:
+
+env:
+  BUILD_TYPE: Release
+  ARTIFACT_RETENTION_DAYS: 7
+
+jobs:
+
+  wheels:
+    needs: setup-jobs
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
+    name: ${{ matrix.name }} ${{ matrix.py }} wheel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        py: ['3.11', '3.12']
+        include:
+          - name: 'Linux'
+            os: ubuntu-24.04
+
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v6
+        with:
+          ref: libcellml-v0.7.0-rc.1
+
+      - name: Setup for cibuildwheel
+        id: setup
+        shell: bash
+        run: |
+          mkdir src/bindings/python/libcellml
+          cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
+          mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
+          v=${{ matrix.py }}
+          echo "Setting tag as: tag=${GITHUB_REF#refs/tags/}"
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "Setting build as: build=cp${v/./}-*"
+          echo "build=cp${v/./}-*" >> $GITHUB_OUTPUT
+          if [[ "macOS" == "${{ matrix.name }}" ]]; then
+            if [[ "${{ matrix.py }}" == "3.8" ]]; then
+              echo "Setting macos_archs as: macos_archs='x86_64'"
+              echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=10.15" >> $GITHUB_OUTPUT
+            else
+              echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
+              echo 'macos_archs=x86_64 arm64' >> $GITHUB_OUTPUT
+              echo "macos_deployment_target=11.0" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Setting macos_archs as: macos_archs='x86_64'"
+            echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install SWIG (macOS)
+        if: runner.os == 'macOS'
+        run: brew install swig
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.4
+        env:
+          #CIBW_BUILD_VERBOSITY: 1
+          CIBW_ARCHS: auto64
+          CIBW_ARCHS_MACOS: ${{ steps.setup.outputs.macos_archs }}
+          CIBW_BUILD: ${{ steps.setup.outputs.build }}
+          CIBW_TEST_SKIP: "*_arm64"
+          CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
+          CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
+          CIBW_ENVIRONMENT: >
+            LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
+            MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
+          CIBW_BEFORE_BUILD_LINUX: pip install renamewheel && cmake --version
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
+        with:
+          output-dir: wheelhouse
+          package-dir: src/bindings/python/
+
