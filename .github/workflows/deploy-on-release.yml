@@ -84,7 +84,6 @@ jobs:
             name: "Windows Server 2025 MSVC",
             os: windows-2025,
             cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2025/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
             name: "Ubuntu 24.04 GCC",
@@ -205,18 +204,12 @@ jobs:
 
         math(EXPR JOBS "${N} + 1")
 
-        if ("${{ runner.os }}" STREQUAL "Windows")
-          set(BUILD_COMMMAND msbuild libCellML.sln /t:Build /p:Configuration=$ENV{BUILD_TYPE} /m:${N})
-        else()
-          set(BUILD_COMMMAND make -j ${JOBS})
-        endif()
-
-        set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
         execute_process(
-          COMMAND ${BUILD_COMMMAND}
+          COMMAND cmake --build . --config $ENV{BUILD_TYPE} --parallel ${JOBS}
           WORKING_DIRECTORY "${ACTION_DIR}/build"
           RESULT_VARIABLE result
         )
+
         if (NOT result EQUAL 0)
           message(FATAL_ERROR "Build failed.")
         endif()
@@ -239,6 +232,7 @@ jobs:
           WORKING_DIRECTORY "${ACTION_DIR}/build"
           RESULT_VARIABLE result
         )
+
         if (NOT result EQUAL 0)
           message(FATAL_ERROR "Tests failed.")
         endif()
