@@ -67,7 +67,7 @@ configure_file(
   COPYONLY
 )
 
-add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
+add_library(test_utils ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
 target_link_libraries(test_utils PUBLIC cellml gtest)
 target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(test_utils PROPERTIES

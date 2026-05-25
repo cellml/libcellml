@@ -205,7 +205,7 @@ endif()
 apply_dependency_settings(cellml)
 
 # Use target compile features to propagate features to consuming projects.
-target_compile_features(cellml PUBLIC cxx_std_17)
+target_compile_features(cellml PUBLIC cxx_std_20)
 
 set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -230,7 +230,7 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_20)
 
 target_include_directories(cellml_debug_utilities
   PUBLIC
@@ -283,7 +283,7 @@ endfunction()
 
 if(LIBCELLML_COVERAGE)
   append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-arcs> $<BUILD_INTERFACE:-ftest-coverage>)
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -301,7 +301,7 @@ endif()
 
 if(LIBCELLML_LLVM_COVERAGE)
   append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
-  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-instr-generate>)
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets

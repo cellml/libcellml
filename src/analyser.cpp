@@ -35,6 +35,14 @@ limitations under the License.
 
 namespace libcellml {
 
+static bool containsInternalVariable(const AnalyserInternalVariablePtrs &variables,
+                                     const AnalyserInternalVariablePtr &variable)
+{
+    return std::any_of(variables.begin(), variables.end(), [&variable](const auto &candidate) {
+        return candidate == variable;
+    });
+}
+
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
     auto res = std::make_shared<AnalyserInternalVariable>();
@@ -111,7 +119,7 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInter
 
 void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &variable)
 {
-    if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
+    if (!containsInternalVariable(mVariables, variable)) {
         mVariables.push_back(variable);
         mAllVariables.push_back(variable);
     }
@@ -119,7 +127,7 @@ void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &va
 
 void AnalyserInternalEquation::addStateVariable(const AnalyserInternalVariablePtr &stateVariable)
 {
-    if (std::find(mStateVariables.begin(), mStateVariables.end(), stateVariable) == mStateVariables.end()) {
+    if (!containsInternalVariable(mStateVariables, stateVariable)) {
         mStateVariables.push_back(stateVariable);
         mAllVariables.push_back(stateVariable);
     }
@@ -2439,7 +2447,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
                 if (unknownVariable->mIsExternalVariable
-                    && (std::find(addedExternalVariables.begin(), addedExternalVariables.end(), unknownVariable) == addedExternalVariables.end())) {
+                    && !containsInternalVariable(addedExternalVariables, unknownVariable)) {
                     addedExternalVariables.push_back(unknownVariable);
                     addedInternalEquations.push_back(AnalyserInternalEquation::create(unknownVariable));
                 }
@@ -2450,12 +2458,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             internalEquation->mUnknownVariables.erase(std::remove_if(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(),
-                                                                     [&externalUnknownVariables](const auto &uv) {
-                                                                         return std::find(externalUnknownVariables.begin(),
-                                                                                          externalUnknownVariables.end(),
-                                                                                          uv)
-                                                                                != externalUnknownVariables.end();
-                                                                     }),
+                                                                  [&externalUnknownVariables](const auto &uv) {
+                                                                      return std::find(externalUnknownVariables.begin(), externalUnknownVariables.end(), uv) != externalUnknownVariables.end();
+                                                                  }),
                                                       internalEquation->mUnknownVariables.end());
         }
 
@@ -2531,12 +2536,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (!removedInternalEquations.empty()) {
         mInternalEquations.erase(std::remove_if(mInternalEquations.begin(), mInternalEquations.end(),
-                                                [&removedInternalEquations](const auto &ie) {
-                                                    return std::find(removedInternalEquations.begin(),
-                                                                     removedInternalEquations.end(),
-                                                                     ie)
-                                                           != removedInternalEquations.end();
-                                                }),
+                                             [&removedInternalEquations](const auto &ie) {
+                                                 return std::find(removedInternalEquations.begin(), removedInternalEquations.end(), ie) != removedInternalEquations.end();
+                                             }),
                                  mInternalEquations.end());
     }
 
@@ -2867,7 +2869,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         AnalyserEquationPtrs equations;
 
         for (const auto &internalEquation : mInternalEquations) {
-            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
+            if (containsInternalVariable(internalEquation->mUnknownVariables, internalVariable)) {
                 equations.push_back(aie2aeMappings[internalEquation]);
             }
         }
