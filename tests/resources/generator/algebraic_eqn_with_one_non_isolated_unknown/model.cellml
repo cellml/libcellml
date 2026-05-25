@@ -2,7 +2,7 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic equation with one non-isolated unknown
     Variables:
-     • a: 1 -> 9
+     • a: -> 9
      • b
      • c
      • d
@@ -10,7 +10,7 @@
      • a + b = c + d
     -->
     <component name="my_algebraic_eqn">
-        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
         <variable name="c" units="dimensionless"/>
         <variable name="d" units="dimensionless"/>

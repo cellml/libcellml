@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/annotator.h"
 
 #include <algorithm>
+#include <format>
 #include <sstream>
 #include <unordered_map>
 
@@ -236,13 +237,16 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                 if (idList.count(id) != 0) {
                     // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
+                    auto compEquiv = owningComponent(equivalentVariable);
+                    auto compVar = owningComponent(variable);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a CONNECTION item.
                         if (it->second->type() == CellmlElementType::CONNECTION) {
                             auto testPair = it->second->variablePair();
-                            if ((owningComponent(testPair->variable1()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable2()) == owningComponent(variable))) {
-                                found = true;
-                            } else if ((owningComponent(testPair->variable2()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable1()) == owningComponent(variable))) {
+                            auto compTest1 = owningComponent(testPair->variable1());
+                            auto compTest2 = owningComponent(testPair->variable2());
+                            if (((compTest1 == compEquiv) && (compTest2 == compVar))
+                                || ((compTest2 == compEquiv) && (compTest1 == compVar))) {
                                 found = true;
                             }
                         }
@@ -352,7 +356,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
 
     converted->mPimpl->mType = type;
 
-    switch (item->type()) {
+    switch (type) {
     case CellmlElementType::COMPONENT:
     case CellmlElementType::COMPONENT_REF: {
         ComponentWeakPtr weakComponent = item->component();
@@ -517,7 +521,7 @@ void Annotator::AnnotatorImpl::addIssueInvalidArgument(CellmlElementType type)
 void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id)
 {
     auto issue = Issue::IssueImpl::create();
-    issue->mPimpl->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
+    issue->mPimpl->setDescription("The identifier '" + id + "' occurs " + std::format("{}", mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->mPimpl->setLevel(Issue::Level::WARNING);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
     addIssue(issue);
@@ -1417,20 +1421,26 @@ size_t Annotator::itemCount(const std::string &id)
 
 void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &component, std::string &idsString)
 {
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        idsString += "v=" + std::to_string(i) + component->variable(i)->id();
+    const auto variableCount = component->variableCount();
+    const auto resetCount = component->resetCount();
+    const auto componentCount = component->componentCount();
+
+    idsString.reserve(idsString.size() + 24 * (variableCount + resetCount + componentCount));
+
+    for (size_t i = 0; i < variableCount; ++i) {
+        idsString += "v=" + std::format("{}", i) + component->variable(i)->id();
     }
 
-    for (size_t i = 0; i < component->resetCount(); ++i) {
+    for (size_t i = 0; i < resetCount; ++i) {
         auto reset = component->reset(i);
-        idsString += "r=" + std::to_string(i) + reset->id() + "rv=" + reset->resetValueId() + "tv=" + reset->testValueId();
+        idsString += "r=" + std::format("{}", i) + reset->id() + "rv=" + reset->resetValueId() + "tv=" + reset->testValueId();
     }
 
     // Note that MathML identifiers are not yet included.
 
-    for (size_t i = 0; i < component->componentCount(); ++i) {
+    for (size_t i = 0; i < componentCount; ++i) {
         auto child = component->component(i);
-        idsString += "c=" + std::to_string(i) + child->id() + "ce=" + child->encapsulationId();
+        idsString += "c=" + std::format("{}", i) + child->id() + "ce=" + child->encapsulationId();
         doUpdateComponentHash(child, idsString);
     }
 }
@@ -1443,26 +1453,27 @@ size_t Annotator::AnnotatorImpl::generateHash()
     if (model != nullptr) {
         std::string idsString;
         size_t i;
-        idsString += "m=" + model->id() + "me=" + model->encapsulationId();
 
         auto importSources = getAllImportSources(model);
+        idsString.reserve(64 + 32 * (importSources.size() + model->unitsCount() + model->componentCount()));
+        idsString += "m=" + model->id() + "me=" + model->encapsulationId();
         i = 0;
         for (auto &importSource : importSources) {
-            idsString += "i=" + std::to_string(++i) + importSource->id();
+            idsString += "i=" + std::format("{}", ++i) + importSource->id();
         }
 
         for (i = 0; i < model->unitsCount(); ++i) {
             auto units = model->units(i);
-            idsString += "U=" + std::to_string(i) + units->id();
+            idsString += "U=" + std::format("{}", i) + units->id();
             for (size_t j = 0; j < units->unitCount(); ++j) {
-                idsString += "u=" + std::to_string(j) + units->unitId(j);
+                idsString += "u=" + std::format("{}", j) + units->unitId(j);
             }
         }
 
         for (i = 0; i < model->componentCount(); ++i) {
             auto component = model->component(i);
-            idsString += "c=" + std::to_string(i) + component->id();
-            idsString += "cr=" + std::to_string(i) + component->encapsulationId();
+            idsString += "c=" + std::format("{}", i) + component->id();
+            idsString += "cr=" + std::format("{}", i) + component->encapsulationId();
             doUpdateComponentHash(component, idsString);
         }
 

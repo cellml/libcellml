@@ -210,10 +210,11 @@
         <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
         <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
-        <variable name="eqnNlaVariable1" initial_value="1" units="dimensionless"/>
-        <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
+        <variable name="eqnNlaVariable1" units="dimensionless"/>
+        <variable name="eqnNlaVariable2" units="dimensionless"/>
         <variable name="eqnComputedConstant1" units="dimensionless"/>
         <variable name="eqnComputedConstant2" units="dimensionless"/>
+        <variable name="eqnComputedConstant3" units="dimensionless"/>
         <variable initial_value="123" name="m" units="dimensionless"/>
         <variable initial_value="1.23" name="n" units="dimensionless"/>
         <variable initial_value="1e1" name="o" units="dimensionless"/>
@@ -3378,24 +3379,40 @@
                 <eq/>
                 <apply>
                     <plus/>
-                    <ci>eqnNlaVariable1</ci>
-                    <ci>eqnNlaVariable2</ci>
+                    <apply>
+                        <sin/>
+                        <ci>eqnNlaVariable1</ci>
+                    </apply>
+                    <apply>
+                        <sin/>
+                        <ci>eqnNlaVariable2</ci>
+                    </apply>
                     <ci>x</ci>
+                    <ci>m</ci>
+                    <ci>eqnComputedConstant3</ci>
                 </apply>
-                <cn cellml:units="dimensionless">0</cn>
+                <cn cellml:units="dimensionless">1</cn>
             </apply>
             <apply>
                 <eq/>
                 <apply>
                     <minus/>
-                    <ci>eqnNlaVariable1</ci>
-                    <ci>eqnNlaVariable2</ci>
+                    <apply>
+                        <sin/>
+                        <ci>eqnNlaVariable1</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <sin/>
+                            <ci>eqnNlaVariable2</ci>
+                        </apply>
+                        <ci>eqnComputedConstant1</ci>
+                        <ci>eqnComputedConstant2</ci>
+                        <ci>eqnComputedConstant3</ci>
+                    </apply>
                 </apply>
-                <apply>
-                    <plus/>
-                    <ci>eqnComputedConstant1</ci>
-                    <ci>eqnComputedConstant2</ci>
-                </apply>
+                <cn cellml:units="dimensionless">0.5</cn>
             </apply>
         </math>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -3408,6 +3425,15 @@
                 <eq/>
                 <ci>eqnComputedConstant2</ci>
                 <cn cellml:units="dimensionless">3</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnComputedConstant3</ci>
+                <apply>
+                    <plus/>
+                    <ci>eqnComputedConstant1</ci>
+                    <ci>eqnComputedConstant2</ci>
+                </apply>
             </apply>
         </math>
     </component>

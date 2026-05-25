@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.6.3";
 
 const size_t STATE_COUNT = 1;
 const size_t CONSTANT_COUNT = 7;
-const size_t COMPUTED_CONSTANT_COUNT = 199;
+const size_t COMPUTED_CONSTANT_COUNT = 200;
 const size_t ALGEBRAIC_VARIABLE_COUNT = 2;
 const size_t EXTERNAL_VARIABLE_COUNT = 1;
 
@@ -228,6 +228,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component"},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component"},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component"},
+    {"eqnComputedConstant3", "dimensionless", "my_component"},
     {"eqnComputedConstant2", "dimensionless", "my_component"},
     {"eqnComputedConstant1", "dimensionless", "my_component"}
 };
@@ -408,8 +409,8 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraicVariables[0] = u[0];
     algebraicVariables[1] = u[1];
 
-    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0;
-    f[1] = algebraicVariables[1]-algebraicVariables[0]-(computedConstants[198]+computedConstants[197]);
+    f[0] = sin(algebraicVariables[1])+sin(algebraicVariables[0])+states[0]+computedConstants[197]+constants[1]-1.0;
+    f[1] = -computedConstants[197]-sin(algebraicVariables[0])-computedConstants[198]-computedConstants[199]+sin(algebraicVariables[1])-0.5;
 }
 
 void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
@@ -446,10 +447,10 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     computedConstants[184] = 3.14159265358979;
     computedConstants[185] = INFINITY;
     computedConstants[186] = NAN;
-    computedConstants[198] = 1.0;
-    computedConstants[197] = 3.0;
-    algebraicVariables[0] = 2.0;
-    algebraicVariables[1] = 1.0;
+    computedConstants[199] = 1.0;
+    computedConstants[198] = 3.0;
+    algebraicVariables[0] = 0.0;
+    algebraicVariables[1] = 0.0;
 }
 
 void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
@@ -640,7 +641,8 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
     computedConstants[193] = xor(constants[1] && constants[0], xor(constants[1] || constants[0], xor((constants[2] > constants[3])?constants[0]:NAN, xor(xor(xor(constants[4], (constants[2] > constants[3])?constants[0]:NAN), constants[1] || constants[0]), constants[1] && constants[0]))));
     computedConstants[194] = pow(constants[1] && constants[0], pow((constants[2] > constants[3])?constants[0]:NAN, pow(pow(constants[4], (constants[2] > constants[3])?constants[0]:NAN), constants[1] && constants[0])));
     computedConstants[195] = pow(pow(pow(constants[1] && constants[0], 1.0/pow((constants[2] > constants[3])?constants[0]:NAN, 1.0/constants[4])), 1.0/((constants[2] > constants[3])?constants[0]:NAN)), 1.0/(constants[1] && constants[0]));
-    computedConstants[196] = -(constants[1] && constants[0])+-((constants[2] > constants[3])?constants[0]:NAN);
+    computedConstants[196] = -(constants[1] && constants[0])-((constants[2] > constants[3])?constants[0]:NAN);
+    computedConstants[197] = computedConstants[199]+computedConstants[198];
 }
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)

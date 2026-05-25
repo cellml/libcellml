@@ -2,18 +2,18 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic system with three linked unknown
     Variables:
-     • x: 1 -> 1
-     • y: 1 -> -1
-     • z: 1 -> 1
+     • x: -> 1
+     • y: -> -1
+     • z: -> 1
     Equations:
      • 2x + y - 2z = -1
      • 3x - 3y - z = 5
      • x - 2y + 3z = 6
     -->
     <component name="my_algebraic_system">
-        <variable initial_value="1" name="x" units="dimensionless"/>
-        <variable initial_value="1" name="y" units="dimensionless"/>
-        <variable initial_value="1" name="z" units="dimensionless"/>
+        <variable name="x" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <variable name="z" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>

@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Constant -->
+    <variable name="a" initial_value="1" units="dimensionless" />
+
+    <!-- sin -->
+
+    <variable name="sinEqn1" units="dimensionless" />
+    <variable name="sinEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>sinEqn1</ci><apply><sin/><ci>a</ci></apply></apply> <!-- sin(a) -->
+      <apply><eq/><ci>sinEqn2</ci><apply><sin/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- sin(0.5) -->
+    </math>
+
+    <!-- cos -->
+
+    <variable name="cosEqn1" units="dimensionless" />
+    <variable name="cosEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>cosEqn1</ci><apply><cos/><ci>a</ci></apply></apply> <!-- cos(a) -->
+      <apply><eq/><ci>cosEqn2</ci><apply><cos/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- cos(0.5) -->
+    </math>
+
+    <!-- tan -->
+
+    <variable name="tanEqn1" units="dimensionless" />
+    <variable name="tanEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>tanEqn1</ci><apply><tan/><ci>a</ci></apply></apply> <!-- tan(a) -->
+      <apply><eq/><ci>tanEqn2</ci><apply><tan/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- tan(0.5) -->
+    </math>
+
+    <!-- sec -->
+
+    <variable name="secEqn1" units="dimensionless" />
+    <variable name="secEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>secEqn1</ci><apply><sec/><ci>a</ci></apply></apply> <!-- sec(a) -->
+      <apply><eq/><ci>secEqn2</ci><apply><sec/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- sec(0.5) -->
+    </math>
+
+    <!-- csc -->
+
+    <variable name="cscEqn1" units="dimensionless" />
+    <variable name="cscEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>cscEqn1</ci><apply><csc/><ci>a</ci></apply></apply> <!-- csc(a) -->
+      <apply><eq/><ci>cscEqn2</ci><apply><csc/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- csc(0.5) -->
+    </math>
+
+    <!-- cot -->
+
+    <variable name="cotEqn1" units="dimensionless" />
+    <variable name="cotEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>cotEqn1</ci><apply><cot/><ci>a</ci></apply></apply> <!-- cot(a) -->
+      <apply><eq/><ci>cotEqn2</ci><apply><cot/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- cot(0.5) -->
+    </math>
+
+    <!-- sinh -->
+
+    <variable name="sinhEqn1" units="dimensionless" />
+    <variable name="sinhEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>sinhEqn1</ci><apply><sinh/><ci>a</ci></apply></apply> <!-- sinh(a) -->
+      <apply><eq/><ci>sinhEqn2</ci><apply><sinh/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- sinh(0.5) -->
+    </math>
+
+    <!-- cosh -->
+
+    <variable name="coshEqn1" units="dimensionless" />
+    <variable name="coshEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>coshEqn1</ci><apply><cosh/><ci>a</ci></apply></apply> <!-- cosh(a) -->
+      <apply><eq/><ci>coshEqn2</ci><apply><cosh/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- cosh(0.5) -->
+    </math>
+
+    <!-- tanh -->
+
+    <variable name="tanhEqn1" units="dimensionless" />
+    <variable name="tanhEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>tanhEqn1</ci><apply><tanh/><ci>a</ci></apply></apply> <!-- tanh(a) -->
+      <apply><eq/><ci>tanhEqn2</ci><apply><tanh/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- tanh(0.5) -->
+    </math>
+
+    <!-- sech -->
+
+    <variable name="sechEqn1" units="dimensionless" />
+    <variable name="sechEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>sechEqn1</ci><apply><sech/><ci>a</ci></apply></apply> <!-- sech(a) -->
+      <apply><eq/><ci>sechEqn2</ci><apply><sech/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- sech(0.5) -->
+    </math>
+
+    <!-- csch -->
+
+    <variable name="cschEqn1" units="dimensionless" />
+    <variable name="cschEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>cschEqn1</ci><apply><csch/><ci>a</ci></apply></apply> <!-- csch(a) -->
+      <apply><eq/><ci>cschEqn2</ci><apply><csch/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- csch(0.5) -->
+    </math>
+
+    <!-- coth -->
+
+    <variable name="cothEqn1" units="dimensionless" />
+    <variable name="cothEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>cothEqn1</ci><apply><coth/><ci>a</ci></apply></apply> <!-- coth(a) -->
+      <apply><eq/><ci>cothEqn2</ci><apply><coth/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- coth(0.5) -->
+    </math>
+
+    <!-- asin -->
+
+    <variable name="asinEqn1" units="dimensionless" />
+    <variable name="asinEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>asinEqn1</ci><apply><arcsin/><ci>a</ci></apply></apply> <!-- asin(a) -->
+      <apply><eq/><ci>asinEqn2</ci><apply><arcsin/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- asin(0.5) -->
+    </math>
+
+    <!-- acos -->
+
+    <variable name="acosEqn1" units="dimensionless" />
+    <variable name="acosEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acosEqn1</ci><apply><arccos/><ci>a</ci></apply></apply> <!-- acos(a) -->
+      <apply><eq/><ci>acosEqn2</ci><apply><arccos/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- acos(0.5) -->
+    </math>
+
+    <!-- atan -->
+
+    <variable name="atanEqn1" units="dimensionless" />
+    <variable name="atanEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>atanEqn1</ci><apply><arctan/><ci>a</ci></apply></apply> <!-- atan(a) -->
+      <apply><eq/><ci>atanEqn2</ci><apply><arctan/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- atan(0.5) -->
+    </math>
+
+    <!-- asec -->
+
+    <variable name="asecEqn1" units="dimensionless" />
+    <variable name="asecEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>asecEqn1</ci><apply><arcsec/><ci>a</ci></apply></apply> <!-- asec(a) -->
+      <apply><eq/><ci>asecEqn2</ci><apply><arcsec/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- asec(1.5) -->
+    </math>
+
+    <!-- acsc -->
+
+    <variable name="acscEqn1" units="dimensionless" />
+    <variable name="acscEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acscEqn1</ci><apply><arccsc/><ci>a</ci></apply></apply> <!-- acsc(a) -->
+      <apply><eq/><ci>acscEqn2</ci><apply><arccsc/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- acsc(1.5) -->
+    </math>
+
+    <!-- acot -->
+
+    <variable name="acotEqn1" units="dimensionless" />
+    <variable name="acotEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acotEqn1</ci><apply><arccot/><ci>a</ci></apply></apply> <!-- acot(a) -->
+      <apply><eq/><ci>acotEqn2</ci><apply><arccot/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- acot(0.5) -->
+    </math>
+
+    <!-- asinh -->
+
+    <variable name="asinhEqn1" units="dimensionless" />
+    <variable name="asinhEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>asinhEqn1</ci><apply><arcsinh/><ci>a</ci></apply></apply> <!-- asinh(a) -->
+      <apply><eq/><ci>asinhEqn2</ci><apply><arcsinh/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- asinh(0.5) -->
+    </math>
+
+    <!-- acosh -->
+
+    <variable name="acoshEqn1" units="dimensionless" />
+    <variable name="acoshEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acoshEqn1</ci><apply><arccosh/><ci>a</ci></apply></apply> <!-- acosh(a) -->
+      <apply><eq/><ci>acoshEqn2</ci><apply><arccosh/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- acosh(1.5) -->
+    </math>
+
+    <!-- atanh -->
+
+    <variable name="atanhEqn1" units="dimensionless" />
+    <variable name="atanhEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>atanhEqn1</ci><apply><arctanh/><ci>a</ci></apply></apply> <!-- atanh(a) -->
+      <apply><eq/><ci>atanhEqn2</ci><apply><arctanh/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- atanh(0.5) -->
+    </math>
+
+    <!-- asech -->
+
+    <variable name="asechEqn1" units="dimensionless" />
+    <variable name="asechEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>asechEqn1</ci><apply><arcsech/><ci>a</ci></apply></apply> <!-- asech(a) -->
+      <apply><eq/><ci>asechEqn2</ci><apply><arcsech/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- asech(0.5) -->
+    </math>
+
+    <!-- acsch -->
+
+    <variable name="acschEqn1" units="dimensionless" />
+    <variable name="acschEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acschEqn1</ci><apply><arccsch/><ci>a</ci></apply></apply> <!-- acsch(a) -->
+      <apply><eq/><ci>acschEqn2</ci><apply><arccsch/><cn cellml:units="dimensionless">0.5</cn></apply></apply> <!-- acsch(0.5) -->
+    </math>
+
+    <!-- acoth -->
+
+    <variable name="acothEqn1" units="dimensionless" />
+    <variable name="acothEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>acothEqn1</ci><apply><arccoth/><ci>a</ci></apply></apply> <!-- acoth(a) -->
+      <apply><eq/><ci>acothEqn2</ci><apply><arccoth/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- acoth(1.5) -->
+    </math>
+  </component>
+</model>

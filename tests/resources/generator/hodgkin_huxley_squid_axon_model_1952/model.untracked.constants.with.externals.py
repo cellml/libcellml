@@ -97,14 +97,14 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_g_L = 0.3
     algebraic_variables[1] = leakage_current_g_L*(states[0]-computed_constants[0])
     potassium_channel_g_K = 36.0
     algebraic_variables[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     algebraic_variables[3] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
-    rates[0] = -(-algebraic_variables[0]+external_variables[0]+algebraic_variables[2]+algebraic_variables[1])/constants[0]
+    algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    rates[0] = (algebraic_variables[0]-external_variables[0]-algebraic_variables[2]-algebraic_variables[1])/constants[0]
     algebraic_variables[4] = 4.0*exp(states[0]/18.0)
     rates[2] = algebraic_variables[3]*(1.0-states[2])-algebraic_variables[4]*states[2]
     algebraic_variables[6] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)

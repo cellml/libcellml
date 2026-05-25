@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Precomputed constants -->
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: a + ln(x) = 5 -->
+      <!-- Test equation for natural logarithm -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>a</ci><apply><ln/><ci>x</ci></apply></apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- Equation 2: log(3) - b = y -->
+      <!-- Test equation for implicit base-10 logarithm -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><log/><cn cellml:units="dimensionless">3</cn></apply><ci>b</ci></apply>
+        <ci>y</ci>
+      </apply>
+
+      <!-- Equation 3: log2(z) + c = 2.5 -->
+      <!-- Test equation for base-2 logarithm -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><log/><logbase><cn cellml:units="dimensionless">2</cn></logbase><ci>z</ci></apply><ci>c</ci></apply>
+        <cn cellml:units="dimensionless">2.5</cn>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">1000</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">1.5</cn></apply>
+    </math>
+  </component>
+</model>

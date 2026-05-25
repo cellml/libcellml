@@ -50,39 +50,12 @@ def create_algebraic_variables_array():
     return [nan]*ALGEBRAIC_VARIABLE_COUNT
 
 
-from nlasolver import nla_solve
-
-
-def objective_function_0(u, f, data):
-    voi = data[0]
-    states = data[1]
-    rates = data[2]
-    constants = data[3]
-    computed_constants = data[4]
-    algebraic_variables = data[5]
-
-    algebraic_variables[0] = u[0]
-
-    f[0] = 1.0-(states[1]+states[0]+algebraic_variables[0])
-
-
-def find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables):
-    u = [nan]*1
-
-    u[0] = algebraic_variables[0]
-
-    u = nla_solve(objective_function_0, u, 1, [voi, states, rates, constants, computed_constants, algebraic_variables])
-
-    algebraic_variables[0] = u[0]
-
-
 def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
     states[0] = 0.0
     states[1] = 1.0
     constants[0] = 1.0e4
     constants[1] = 0.04
     constants[2] = 3.0e7
-    algebraic_variables[0] = 0.0
 
 
 def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -90,11 +63,11 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
+    algebraic_variables[0] = 1.0-states[0]-states[1]
     rates[1] = -constants[1]*states[1]+constants[0]*states[0]*algebraic_variables[0]
     rates[0] = constants[1]*states[1]-constants[2]*pow(states[0], 2.0)-constants[0]*states[0]*algebraic_variables[0]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
+    algebraic_variables[0] = 1.0-states[0]-states[1]
     algebraic_variables[1] = 10000.0*states[0]

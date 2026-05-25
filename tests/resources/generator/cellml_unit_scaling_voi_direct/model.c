@@ -90,8 +90,8 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    rates[0] = voi/1.0;
-    rates[1] = 0.001*voi/1.0;
+    rates[0] = voi;
+    rates[1] = 0.001*voi;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)

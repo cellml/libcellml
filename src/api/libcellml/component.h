@@ -107,7 +107,7 @@ public:
      *
      * @return @c std::string math for this component.
      */
-    std::string math() const;
+    const std::string &math() const;
 
     /**
      * @brief Set the math string for this component.

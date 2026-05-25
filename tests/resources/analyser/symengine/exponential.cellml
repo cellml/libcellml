@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Precomputed constants -->
+    <variable name="w" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- a - exp(w - 10) = 200 -->
+      <!-- Test equation for exponentiated variable -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>a</ci><apply><exp/><apply><minus/><ci>w</ci><cn cellml:units="dimensionless">10</cn></apply></apply></apply>
+        <cn cellml:units="dimensionless">200</cn>
+      </apply>
+
+      <!-- b + exp(200) = exp(10) -->
+      <!-- Test equation for multiple exponentiated constants -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>b</ci><apply><exp/><cn cellml:units="dimensionless">200</cn></apply></apply>
+        <apply><exp/><cn cellml:units="dimensionless">10</cn></apply>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
+    </math>
+  </component>
+</model>

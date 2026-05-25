@@ -41,6 +41,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysersymengine.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.cpp
@@ -201,7 +202,7 @@ else()
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
-apply_libxml2_settings(cellml)
+apply_dependency_settings(cellml)
 
 # Use target compile features to propagate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_20)
@@ -237,7 +238,7 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
 
-apply_libxml2_settings(cellml_debug_utilities)
+apply_dependency_settings(cellml_debug_utilities)
 
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -282,7 +283,7 @@ endfunction()
 
 if(LIBCELLML_COVERAGE)
   append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-arcs> $<BUILD_INTERFACE:-ftest-coverage>)
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -300,7 +301,7 @@ endif()
 
 if(LIBCELLML_LLVM_COVERAGE)
   append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
-  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-instr-generate>)
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets

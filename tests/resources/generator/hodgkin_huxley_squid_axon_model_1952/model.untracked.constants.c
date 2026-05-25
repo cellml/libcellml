@@ -112,14 +112,14 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     double membrane_Cm = 1.0;
-    algebraicVariables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     double leakage_current_g_L = 0.3;
     algebraicVariables[1] = leakage_current_g_L*(states[0]-computedConstants[0]);
     double potassium_channel_g_K = 36.0;
     algebraicVariables[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
     double sodium_channel_g_Na = 120.0;
     algebraicVariables[3] = sodium_channel_g_Na*pow(states[2], 3.0)*states[1]*(states[0]-computedConstants[1]);
-    rates[0] = -(-algebraicVariables[0]+algebraicVariables[3]+algebraicVariables[2]+algebraicVariables[1])/membrane_Cm;
+    algebraicVariables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
+    rates[0] = (algebraicVariables[0]-algebraicVariables[3]-algebraicVariables[2]-algebraicVariables[1])/membrane_Cm;
     algebraicVariables[5] = 4.0*exp(states[0]/18.0);
     algebraicVariables[4] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     rates[2] = algebraicVariables[4]*(1.0-states[2])-algebraicVariables[5]*states[2];

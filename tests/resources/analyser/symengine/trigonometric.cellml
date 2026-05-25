@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Precomputed constants -->
+    <variable name="z1" units="radian"/>
+    <variable name="z2" units="radian"/>
+    <variable name="z3" units="radian"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+    <variable name="e" units="dimensionless"/>
+    <variable name="f" units="dimensionless"/>
+    <variable name="g" units="dimensionless"/>
+    <variable name="h" units="dimensionless"/>
+    <variable name="i" units="dimensionless"/>
+    <variable name="j" units="dimensionless"/>
+    <variable name="k" units="dimensionless"/>
+    <variable name="l" units="dimensionless"/>
+    <variable name="m" units="dimensionless"/>
+    <variable name="n" units="dimensionless"/>
+    <variable name="o" units="dimensionless"/>
+    <variable name="p" units="dimensionless"/>
+    <variable name="q" units="dimensionless"/>
+    <variable name="r" units="dimensionless"/>
+    <variable name="s" units="dimensionless"/>
+    <variable name="t" units="dimensionless"/>
+    <variable name="u" units="dimensionless"/>
+    <variable name="v" units="dimensionless"/>
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: 2*a + sin(z1) = 1 -->
+      <!-- Test equation for sine -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>a</ci></apply><apply><sin/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 2: cos(z2 + 4) - b = 0 -->
+      <!-- Test equation for cosine -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><cos/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>b</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 3: c - tan(3 - z3) = 2 -->
+      <!-- Test equation for tangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>c</ci><apply><tan/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 4: 2*d + sec(z1) = 1 -->
+      <!-- Test equation for secant -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>d</ci></apply><apply><sec/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 5: csc(z2 + 4) - e = 0 -->
+      <!-- Test equation for cosecant -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><csc/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>e</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 6: f - cot(3 - z3) = 2 -->
+      <!-- Test equation for cotangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>f</ci><apply><cot/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 7: 2*g + sinh(z1) = 1 -->
+      <!-- Test equation for hyperbolic sine -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>g</ci></apply><apply><sinh/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 8: cosh(z2 + 4) - h = 0 -->
+      <!-- Test equation for hyperbolic cosine -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><cosh/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>h</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 9: i - tanh(3 - z3) = 2 -->
+      <!-- Test equation for hyperbolic tangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>i</ci><apply><tanh/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 10: 2*j + sech(z1) = 1 -->
+      <!-- Test equation for hyperbolic secant -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>j</ci></apply><apply><sech/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 11: csch(z2 + 4) - k = 0 -->
+      <!-- Test equation for hyperbolic cosecant -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><csch/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>k</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 12: l - coth(3 - z3) = 2 -->
+      <!-- Test equation for hyperbolic cotangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>l</ci><apply><coth/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 13: 2*m + arcsin(z1) = 1 -->
+      <!-- Test equation for inverse sine -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>m</ci></apply><apply><arcsin/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 14: arccos(z2 + 4) - n = 0 -->
+      <!-- Test equation for inverse cosine -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccos/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>n</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 15: o - arctan(3 - z3) = 2 -->
+      <!-- Test equation for inverse tangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>o</ci><apply><arctan/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 16: 2*p + arcsec(z1) = 1 -->
+      <!-- Test equation for inverse secant -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>p</ci></apply><apply><arcsec/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 17: arccsc(z2 + 4) - q = 0 -->
+      <!-- Test equation for inverse cosecant -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccsc/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>q</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 18: r - arccot(3 - z3) = 2 -->
+      <!-- Test equation for inverse cotangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>r</ci><apply><arccot/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 19: 2+s + arcsinh(z1) = 1 -->
+      <!-- Test equation for inverse hyperbolic sine -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>s</ci></apply><apply><arcsinh/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 20: arccosh(z2 + 4) - t = 0 -->
+      <!-- Test equation for inverse hyperbolic cosine -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccosh/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>t</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 21: u - arctanh(3 - z3) = 2 -->
+      <!-- Test equation for inverse hyperbolic tangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>u</ci><apply><arctanh/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 22: 2*v + arcsech(z1) = 1 -->
+      <!-- Test equation for inverse hyperbolic secant -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>v</ci></apply><apply><arcsech/><ci>z1</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 23: arccsch(z2 + 4) - w = 0 -->
+      <!-- Test equation for inverse hyperbolic cosecant -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccsch/><apply><plus/><cn cellml:units="radian">4</cn><ci>z2</ci></apply></apply><ci>w</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 24: x - arccoth(3 - z3) = 2 -->
+      <!-- Test equation for inverse hyperbolic cotangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>x</ci><apply><arccoth/><apply><minus/><cn cellml:units="radian">3</cn><ci>z3</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>z1</ci><cn cellml:units="radian">0.5</cn></apply>
+      <apply><eq/><ci>z2</ci><cn cellml:units="radian">1.0</cn></apply>
+      <apply><eq/><ci>z3</ci><cn cellml:units="radian">1.5</cn></apply>
+    </math>
+  </component>
+</model>

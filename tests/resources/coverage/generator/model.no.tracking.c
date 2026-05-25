@@ -184,8 +184,13 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraicVariables[0] = u[0];
     algebraicVariables[1] = u[1];
 
-    f[0] = algebraicVariables[1]+algebraicVariables[0]+states[0]-0.0;
-    f[1] = algebraicVariables[1]-algebraicVariables[0]-(my_component_eqnComputedConstant1+my_component_eqnComputedConstant2);
+    double my_component_m = 123.0;
+    double my_component_eqnComputedConstant3 = my_component_eqnComputedConstant1+my_component_eqnComputedConstant2;
+    double my_component_eqnComputedConstant1 = 1.0;
+    double my_component_eqnComputedConstant2 = 3.0;
+
+    f[0] = sin(algebraicVariables[1])+sin(algebraicVariables[0])+states[0]+my_component_eqnComputedConstant3+my_component_m-1.0;
+    f[1] = -my_component_eqnComputedConstant3-sin(algebraicVariables[0])-my_component_eqnComputedConstant2-my_component_eqnComputedConstant1+sin(algebraicVariables[1])-0.5;
 }
 
 void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
@@ -205,20 +210,8 @@ void findRoot0(double voi, double *states, double *rates, double *constants, dou
 void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = 0.0;
-    double my_component_eqnCnInteger = 123.0;
-    double my_component_eqnCnDouble = 123.456789;
-    double my_component_eqnCnIntegerWithExponent = 123.0e99;
-    double my_component_eqnCnDoubleWithExponent = 123.456789e99;
-    double my_component_eqnTrue = 1.0;
-    double my_component_eqnFalse = 0.0;
-    double my_component_eqnExponentiale = 2.71828182845905;
-    double my_component_eqnPi = 3.14159265358979;
-    double my_component_eqnInfinity = INFINITY;
-    double my_component_eqnNotanumber = NAN;
-    double my_component_eqnComputedConstant1 = 1.0;
-    double my_component_eqnComputedConstant2 = 3.0;
-    algebraicVariables[0] = 2.0;
-    algebraicVariables[1] = 1.0;
+    algebraicVariables[0] = 0.0;
+    algebraicVariables[1] = 0.0;
 }
 
 void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)

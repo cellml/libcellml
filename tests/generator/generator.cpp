@@ -1397,13 +1397,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py", generator->implementationCode(analyserModel, profile));
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel195Dae)
+TEST(Generator, hodgkinHuxleySquidAxonModel195Variant)
 {
-    // Same as the hodgkinHuxleySquidAxonModel1952 test, except that all the
-    // algebraic equations are to be computed using NLA systems of one equation.
+    // Same as the hodgkinHuxleySquidAxonModel1952 test, except that all the equations have been rearranged to force the
+    // analyser to do more work to figure out how to compute things and to make sure that the generated code is correct
+    // in such a case.
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.cellml"));
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -1418,14 +1419,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel195Dae)
 
     auto profile = libcellml::GeneratorProfile::create();
 
-    profile->setInterfaceFileNameString("model.dae.h");
+    profile->setInterfaceFileNameString("model.variant.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.h", generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.c", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.h", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.py", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
@@ -1433,7 +1434,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
     // Same as hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables but with the DAE version of the HH52 model.
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.cellml"));
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -1457,14 +1458,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
 
     auto profile = libcellml::GeneratorProfile::create();
 
-    profile->setInterfaceFileNameString("model.dae.external.h");
+    profile->setInterfaceFileNameString("model.variant.external.h");
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.h", generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.c", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.h", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.external.py", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, nobleModel1962)
@@ -1753,4 +1754,26 @@ TEST(Generator, generateCodeUsingProfileEnum)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
+}
+
+TEST(Generator, generateCodeForModelsWithGlobalNlaSystems)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("generator/global_nla_systems/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
 }
