@@ -1857,7 +1857,7 @@ bool Analyser::AnalyserImpl::matchVariableAndEquation(const AnalyserInternalVari
 
             equation->mSEExpression = SymEngine::msubs(origSEExpression, {{seDiffExpression, diffOpaqueSymbol}});
 
-            auto rearrangedSEExpression = equation->rearrangeForSESymbol(diffOpaqueSymbol);
+            rearrangedSEExpression = equation->rearrangeForSESymbol(diffOpaqueSymbol);
 
             equation->mSEExpression = origSEExpression;
 
