@@ -1,4 +1,4 @@
-name: Deploy libCellML on Release
+name: On Push
 
 on:
   push:
@@ -143,11 +143,12 @@ jobs:
         execute_process(
           COMMAND cmake --build . --config $ENV{BUILD_TYPE} --parallel ${JOBS}
           WORKING_DIRECTORY "${ACTION_DIR}/build"
-          RESULT_VARIABLE result
+          RESULT_VARIABLE _RESULT
           OUTPUT_VARIABLE _OUTPUT
           ERROR_VARIABLE _ERROR
         )
 
+        message(STATUS "Build result: ${_RESULT}")
         message(STATUS "Build output: ${_OUTPUT}")
         message(STATUS "Build error output: ${_ERROR}")
 
