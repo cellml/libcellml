@@ -2458,9 +2458,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             internalEquation->mUnknownVariables.erase(std::remove_if(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(),
-                                                                  [&externalUnknownVariables](const auto &uv) {
-                                                                      return std::find(externalUnknownVariables.begin(), externalUnknownVariables.end(), uv) != externalUnknownVariables.end();
-                                                                  }),
+                                                                     [&externalUnknownVariables](const auto &uv) {
+                                                                         return std::find(externalUnknownVariables.begin(), externalUnknownVariables.end(), uv) != externalUnknownVariables.end();
+                                                                     }),
                                                       internalEquation->mUnknownVariables.end());
         }
 
@@ -2536,9 +2536,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (!removedInternalEquations.empty()) {
         mInternalEquations.erase(std::remove_if(mInternalEquations.begin(), mInternalEquations.end(),
-                                             [&removedInternalEquations](const auto &ie) {
-                                                 return std::find(removedInternalEquations.begin(), removedInternalEquations.end(), ie) != removedInternalEquations.end();
-                                             }),
+                                                [&removedInternalEquations](const auto &ie) {
+                                                    return std::find(removedInternalEquations.begin(), removedInternalEquations.end(), ie) != removedInternalEquations.end();
+                                                }),
                                  mInternalEquations.end());
     }
 
