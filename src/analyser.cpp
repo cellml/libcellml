@@ -40,6 +40,14 @@ limitations under the License.
 
 namespace libcellml {
 
+static bool containsInternalVariable(const AnalyserInternalVariablePtrs &variables,
+                                     const AnalyserInternalVariablePtr &variable)
+{
+    return std::any_of(variables.begin(), variables.end(), [&variable](const auto &candidate) {
+        return candidate == variable;
+    });
+}
+
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
     auto res = std::make_shared<AnalyserInternalVariable>();
@@ -108,14 +116,13 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInter
     res->mComponent = owningComponent(variable->mVariable);
 
     res->mUnknownVariables.push_back(variable);
-    res->mUnknownVariablesSet.insert(variable.get());
 
     return res;
 }
 
 void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &variable)
 {
-    if (mVariablesSet.insert(variable.get()).second) {
+    if (!containsInternalVariable(mVariables, variable)) {
         mVariables.push_back(variable);
         mAllVariables.push_back(variable);
     }
@@ -123,7 +130,7 @@ void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &va
 
 void AnalyserInternalEquation::addStateVariable(const AnalyserInternalVariablePtr &stateVariable)
 {
-    if (mStateVariablesSet.insert(stateVariable.get()).second) {
+    if (!containsInternalVariable(mStateVariables, stateVariable)) {
         mStateVariables.push_back(stateVariable);
         mAllVariables.push_back(stateVariable);
     }
@@ -229,20 +236,6 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mStateVariables.erase(std::remove_if(mStateVariables.begin(), mStateVariables.end(), isKnownStateVariable), mStateVariables.end());
 
-    // Rebuild our companion sets.
-
-    mVariablesSet.clear();
-
-    for (const auto &variable : mVariables) {
-        mVariablesSet.insert(variable.get());
-    }
-
-    mStateVariablesSet.clear();
-
-    for (const auto &stateVariable : mStateVariables) {
-        mStateVariablesSet.insert(stateVariable.get());
-    }
-
     // If there is no (state) variable left then it means that the variables in
     // the equation are overconstrained unless one of them was initialised in
     // which case it will now be considered as an algebraic variable and this
@@ -331,7 +324,6 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
                 variable->mIsKnownStateVariable = variable->mType == AnalyserInternalVariable::Type::STATE;
 
                 mUnknownVariables.push_back(variable);
-                mUnknownVariablesSet.insert(variable.get());
 
                 break;
             default:
@@ -2661,7 +2653,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make sure that our equations are valid.
 
     AnalyserInternalVariablePtrs addedExternalVariables;
-    std::unordered_set<AnalyserInternalVariable *> addedExternalVariablesSet;
     AnalyserInternalEquationPtrs addedInternalEquations;
     AnalyserInternalEquationPtrs removedInternalEquations;
     auto nlaSystemIndex = MAX_SIZE_T;
@@ -2675,21 +2666,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
                 if (unknownVariable->mIsExternalVariable
-                    && addedExternalVariablesSet.insert(unknownVariable.get()).second) {
+                    && !containsInternalVariable(addedExternalVariables, unknownVariable)) {
                     addedExternalVariables.push_back(unknownVariable);
                     addedInternalEquations.push_back(AnalyserInternalEquation::create(unknownVariable));
                 }
             }
 
             internalEquation->mUnknownVariables.erase(std::remove_if(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), isExternalVariable), internalEquation->mUnknownVariables.end());
-
-            // Rebuild our companion set.
-
-            internalEquation->mUnknownVariablesSet.clear();
-
-            for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                internalEquation->mUnknownVariablesSet.insert(unknownVariable.get());
-            }
         }
 
         // Discard the equation if we have no unknown variables left.
@@ -2723,7 +2706,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     AnalyserInternalVariablePtrs commonUnknownVariables;
 
                     for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                        if (otherInternalEquation->mUnknownVariablesSet.count(unknownVariable.get()) != 0) {
+                        if (containsInternalVariable(otherInternalEquation->mUnknownVariables, unknownVariable)) {
                             commonUnknownVariables.push_back(unknownVariable);
                         }
                     }
@@ -2750,18 +2733,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     if (!removedInternalEquations.empty()) {
-        std::unordered_set<AnalyserInternalEquation *> removedInternalEquationsSet;
-
-        removedInternalEquationsSet.reserve(removedInternalEquations.size());
-
-        for (const auto &removedInternalEquation : removedInternalEquations) {
-            removedInternalEquationsSet.insert(removedInternalEquation.get());
-        }
-
         mInternalEquations.erase(
             std::remove_if(mInternalEquations.begin(), mInternalEquations.end(),
-                           [&removedInternalEquationsSet](const auto &removedInternalEquation) {
-                               return removedInternalEquationsSet.count(removedInternalEquation.get()) != 0;
+                           [&removedInternalEquations](const auto &removedInternalEquation) {
+                               return std::find(removedInternalEquations.begin(), removedInternalEquations.end(), removedInternalEquation)
+                                      != removedInternalEquations.end();
                            }),
             mInternalEquations.end());
     }
@@ -2782,9 +2758,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     //       having been marked as external).
 
     AnalyserInternalVariablePtrs underconstrainedVariables;
-    std::unordered_set<AnalyserInternalVariable *> underconstrainedVariablesSet;
     AnalyserInternalVariablePtrs overconstrainedVariables;
-    std::unordered_set<AnalyserInternalVariable *> overconstrainedVariablesSet;
 
     for (const auto &internalEquation : mInternalEquations) {
         switch (internalEquation->mType) {
@@ -2815,7 +2789,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 // NLA system should be considered as underconstrained.
 
                 for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                    if (underconstrainedVariablesSet.insert(unknownVariable.get()).second) {
+                    if (!containsInternalVariable(underconstrainedVariables, unknownVariable)) {
                         unknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
 
                         addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
@@ -2828,7 +2802,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 // system should be considered as overconstrained.
 
                 for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                    if (overconstrainedVariablesSet.insert(unknownVariable.get()).second) {
+                    if (!containsInternalVariable(overconstrainedVariables, unknownVariable)) {
                         unknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
 
                         addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
@@ -3015,7 +2989,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         auto isNlaEquation = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            if (internalEquation->mUnknownVariablesSet.count(internalVariable.get()) != 0) {
+            if (containsInternalVariable(internalEquation->mUnknownVariables, internalVariable)) {
                 equations.push_back(aie2aeMappings[internalEquation]);
 
                 auto aetIt = aie2aetMappings.find(internalEquation);
