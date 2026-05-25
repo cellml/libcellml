@@ -137,6 +137,13 @@ if(LibXml2_FOUND)
   set(HAVE_LIBXML2_CONFIG TRUE)
   # Different versions of LibXml2 have different names for the library target.
   # We try and capture that here.
+  message(STATUS "=================")
+  messate(STATUS "LibXml2_FOUND: ${LibXml2_FOUND}")
+  messate(STATUS "LibXml2_VERSION: ${LibXml2_VERSION}")
+  messate(STATUS "LibXml2_DIR: ${LibXml2_DIR}")
+  file(READ "${LibXml2_DIR}/LibXml2Config.cmake" LIBXML2_CONFIG_CONTENTS)
+  messate(STATUS "LIbXml2Config.cmake contents:")
+  messate(STATUS "${LIBXML2_CONFIG_CONTENTS}")
   if(TARGET xml2)
     set(LIBXML2_TARGET_NAME xml2)
   elseif(TARGET LibXml2)
