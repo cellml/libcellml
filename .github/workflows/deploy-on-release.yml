@@ -156,7 +156,7 @@ jobs:
       shell: cmake -P {0}
       run: |
         # Configure library script
-        set(OPTIONAL_ARGUMENTS)
+        set(OPTIONAL_ARGUMENTS -D BINDINGS_PYTHON=OFF)
 
         set(ENV{CC} ${{ matrix.config.cc }})
         set(ENV{CXX} ${{ matrix.config.cxx }})
@@ -177,7 +177,7 @@ jobs:
         if ("${{ matrix.config.cc }}" STREQUAL "clang")
           list(APPEND OPTIONAL_ARGUMENTS -D LLVM_COVERAGE=OFF)
         endif()
-        if ("${{ matrix.config.os }}" STREQUAL "ubuntu-20.04")
+        if ("${{ matrix.config.os }}" STREQUAL "ubuntu-24.04")
           list(APPEND OPTIONAL_ARGUMENTS -D PACKAGE_ANY_LINUX=TRUE)
         endif()
 
@@ -205,12 +205,11 @@ jobs:
         math(EXPR JOBS "${N} + 1")
 
         execute_process(
-          COMMAND cmake --build . --config $ENV{BUILD_TYPE} --parallel ${JOBS}
-          WORKING_DIRECTORY "${ACTION_DIR}/build"
-          RESULT_VARIABLE result
+          COMMAND cmake --build build --config $ENV{BUILD_TYPE} --parallel ${JOBS}
+          RESULT_VARIABLE _RESULT
         )
 
-        if (NOT result EQUAL 0)
+        if (NOT _RESULT EQUAL 0)
           message(FATAL_ERROR "Build failed.")
         endif()
 
@@ -230,10 +229,10 @@ jobs:
         execute_process(
           COMMAND ${CMAKE_CTEST_COMMAND} -j ${JOBS} -C $ENV{BUILD_TYPE}
           WORKING_DIRECTORY "${ACTION_DIR}/build"
-          RESULT_VARIABLE result
+          RESULT_VARIABLE _RESULT
         )
 
-        if (NOT result EQUAL 0)
+        if (NOT _RESULT EQUAL 0)
           message(FATAL_ERROR "Tests failed.")
         endif()
 
