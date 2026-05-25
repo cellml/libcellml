@@ -152,6 +152,7 @@ endif()
 
 if(NOT _libxml2_target)
   if(DEFINED LIBXML2_LIBRARIES AND DEFINED LIBXML2_INCLUDE_DIRS)
+    message(WARNING "Creating legacy target for LibXml2. This is not ideal.")
     add_library(_libxml2_legacy INTERFACE)
     target_include_directories(_libxml2_legacy INTERFACE
       ${LIBXML2_INCLUDE_DIRS}
