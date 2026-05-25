@@ -107,75 +107,69 @@ else ()
   )
 endif()
 
-# Find libxml2
-set(HAVE_LIBXML2_CONFIG FALSE)
-# We want to use config mode for finding libXml2.
-# This is especially important on Windows with Visual Studio.
-# To do this we need to have two find_package calls and explicitly state that
-# we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-# is the preferred method so we will try this first quietly.
-#
-# This does change how we get information about include paths and such so we
-# need to track how we found LibXml2.
+
+find_package(ZLIB CONFIG QUIET)
+if(NOT ZLIB_FOUND)
+  find_package(ZLIB REQUIRED)
+  set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
+endif()
+
+set(_zlib_target "")
+
+if(TARGET ZLIB::ZLIB)
+  set(_zlib_target ZLIB::ZLIB)
+elseif(TARGET z)
+  set(_zlib_target z)
+endif()
+
+if(NOT _zlib_target)
+  add_library(_zlib_legacy INTERFACE)
+  target_include_directories(_zlib_legacy INTERFACE ${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(_zlib_legacy INTERFACE ${ZLIB_LIBRARIES})
+  set(_zlib_target _zlib_legacy)
+endif()
+
+if(NOT TARGET ZLIB::ZLIB)
+  add_library(ZLIB::ZLIB INTERFACE IMPORTED)
+  target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
+endif()
+
 find_package(LibXml2 CONFIG QUIET)
-if(LibXml2_FOUND)
-  if(TARGET z)
-    set(HAVE_ZLIB_TARGET TRUE)
-    get_target_property(ZLIB_TARGET_TYPE z TYPE)
-  else()
-    find_package(ZLIB CONFIG QUIET)
-    if(ZLIB_FOUND)
-      if(TARGET z)
-        set(HAVE_ZLIB_TARGET TRUE)
-        get_target_property(ZLIB_TARGET_TYPE z TYPE)
-      endif()
-    else()
-      find_package(ZLIB REQUIRED)
-      set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-    endif()
-  endif()
-  set(HAVE_LIBXML2_CONFIG TRUE)
-  # Different versions of LibXml2 have different names for the library target.
-  # We try and capture that here.
-  if(TARGET xml2)
-    set(LIBXML2_TARGET_NAME xml2)
-  elseif(TARGET LibXml2)
-    set(LIBXML2_TARGET_NAME LibXml2)
-  elseif(TARGET LibXml2::LibXml2)
-    set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
-  elseif(DEFINED LIBXML2_LIBRARIES AND DEFINED LIBXML2_INCLUDE_DIRS)
-    message(WARNING "LibXml2 config file does not define targets. Creating imported target.")
-    add_library(LibXml2::LibXml2 UNKNOWN IMPORTED)
-    set_target_properties(LibXml2::LibXml2 PROPERTIES
-      INTERFACE_LINK_LIBRARIES "${LIBXML2_LIBRARIES}"
-      INTERFACE_INCLUDE_DIRECTORIES "${LIBXML2_INCLUDE_DIRS}"
-    )
-    set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
-  else()
-    message(FATAL_ERROR "FindLibXml2: Config found but no usable targets or variables.")
-  endif()
-  get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET_NAME} TYPE)
-  set(HAVE_LIBXML2_TARGET TRUE)
-  # Clear out GUI variables created in module search mode.
-  foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
-    if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
-      unset(${_XML2_VAR} CACHE)
-    endif()
-  endforeach()
-else()
+if(NOT LibXml2_FOUND)
   find_package(LibXml2 REQUIRED)
   set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
-  if(TARGET z)
-    set(HAVE_ZLIB_TARGET TRUE)
-    get_target_property(ZLIB_TARGET_TYPE z TYPE)
+endif()
+
+set(_libxml2_target "")
+
+if(TARGET LibXml2::LibXml2)
+  set(_libxml2_target LibXml2::LibXml2)
+elseif(TARGET LibXml2)
+  set(_libxml2_target LibXml2)
+elseif(TARGET xml2)
+  set(_libxml2_target xml2)
+endif()
+
+if(NOT _libxml2_target)
+  if(DEFINED LIBXML2_LIBRARIES AND DEFINED LIBXML2_INCLUDE_DIRS)
+    add_library(_libxml2_legacy INTERFACE)
+    target_include_directories(_libxml2_legacy INTERFACE
+      ${LIBXML2_INCLUDE_DIRS}
+    )
+    target_link_libraries(_libxml2_legacy INTERFACE
+      ${LIBXML2_LIBRARIES}
+    )
+    set(_libxml2_target _libxml2_legacy)
   else()
-    find_package(ZLIB REQUIRED)
-    set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
+    message(FATAL_ERROR "LibXml2 found but no targets or usable variables.")
   endif()
-  if(LibXml2_FOUND)
-    # Clear out GUI variable created in config search mode.
-    unset(LibXml2_DIR CACHE)
-  endif()
+endif()
+
+if(NOT TARGET LibXml2::LibXml2)
+  add_library(LibXml2::LibXml2 INTERFACE IMPORTED)
+  target_link_libraries(LibXml2::LibXml2 INTERFACE
+    ${_libxml2_target}
+  )
 endif()
 
 if(NOT DEFINED _LibXml2_FIND_REPORTED)
