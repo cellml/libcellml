@@ -143,14 +143,16 @@ if(LibXml2_FOUND)
     set(LIBXML2_TARGET_NAME LibXml2)
   elseif(TARGET LibXml2::LibXml2)
     set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
-  else()
+  elseif(DEFINED LIBXML2_LIBRARIES AND DEFINED LIBXML2_INCLUDE_DIRS)
     message(WARNING "LibXml2 config file does not define targets. Creating imported target.")
     add_library(LibXml2::LibXml2 UNKNOWN IMPORTED)
     set_target_properties(LibXml2::LibXml2 PROPERTIES
-      IMPORTED_LOCATION "${LIBXML2_LIBRARIES}"
+      INTERFACE_LINK_LIBRARIES "${LIBXML2_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${LIBXML2_INCLUDE_DIRS}"
     )
     set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
+  else()
+    message(FATAL_ERROR "FindLibXml2: Config found but no usable targets or variables.")
   endif()
   get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET_NAME} TYPE)
   set(HAVE_LIBXML2_TARGET TRUE)
