@@ -28,24 +28,16 @@ function(Test_LibXml2_Const_Error_Structured_Error_Callback)
 cmake_minimum_required(VERSION 3.18.0)
 project(undefined CXX)
 add_library(foo SHARED \"foo.cpp\")
+
+add_library(LibXml2::LibXml2 INTERFACE IMPORTED)
+set_target_properties(LibXml2::LibXml2 PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES \"${_LIBXML2_INCLUDE_DIRS_ESCAPED}\"
+  INTERFACE_LINK_LIBRARIES \"${_LIBXML2_LIBRARIES_ESCAPED}\")
+string(REPLACE \"|\" \";\" LIBXML2_DEFINITIONS \"${_LIBXML2_DEFINITIONS_ESCAPED}\")
+target_compile_definitions(LibXml2::LibXml2 INTERFACE \${LIBXML2_DEFINITIONS})
+
+target_link_libraries(foo PUBLIC LibXml2::LibXml2)
 ")
-    if(HAVE_LIBXML2_CONFIG)
-      file(TO_CMAKE_PATH "${LibXml2_DIR}" _SAFE_LibXml2_DIR)
-      file(APPEND "${_TEST_PROJECT_DIR}/CMakeLists.txt"
-"
-set(LibXml2_DIR \"${_SAFE_LibXml2_DIR}\")
-find_package(LibXml2 CONFIG)
-target_link_libraries(foo PUBLIC ${LIBXML2_TARGET_NAME})
-")
-    else()
-      file(APPEND "${_TEST_PROJECT_DIR}/CMakeLists.txt"
-"
-find_package(LibXml2)
-target_include_directories(foo PUBLIC ${LIBXML2_INCLUDE_DIR})
-target_link_libraries(foo PUBLIC ${LIBXML2_LIBRARIES})
-target_compile_definitions(foo PUBLIC ${LIBXML2_DEFINITIONS})
-")
-    endif()
 
     file(WRITE "${_TEST_PROJECT_DIR}/foo.cpp"
 "

@@ -107,33 +107,6 @@ else ()
   )
 endif()
 
-
-find_package(ZLIB CONFIG QUIET)
-if(NOT ZLIB_FOUND)
-  find_package(ZLIB REQUIRED)
-  set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-endif()
-
-set(_zlib_target "")
-
-if(TARGET ZLIB::ZLIB)
-  set(_zlib_target ZLIB::ZLIB)
-elseif(TARGET z)
-  set(_zlib_target z)
-endif()
-
-if(NOT _zlib_target)
-  add_library(_zlib_legacy INTERFACE)
-  target_include_directories(_zlib_legacy INTERFACE ${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(_zlib_legacy INTERFACE ${ZLIB_LIBRARIES})
-  set(_zlib_target _zlib_legacy)
-endif()
-
-if(NOT TARGET ZLIB::ZLIB)
-  add_library(ZLIB::ZLIB INTERFACE IMPORTED)
-  target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
-endif()
-
 find_package(LibXml2 CONFIG QUIET)
 if(NOT LibXml2_FOUND)
   find_package(LibXml2 REQUIRED)
@@ -160,6 +133,11 @@ if(NOT _libxml2_target)
     target_link_libraries(_libxml2_legacy INTERFACE
       ${LIBXML2_LIBRARIES}
     )
+    set(_libxml2_defs "${LIBXML2_DEFINITIONS}")
+    if(_libxml2_defs)
+      list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
+      target_compile_definitions(_libxml2_legacy INTERFACE ${_libxml2_defs})
+    endif()
     set(_libxml2_target _libxml2_legacy)
   else()
     message(FATAL_ERROR "LibXml2 found but no targets or usable variables.")
@@ -171,6 +149,37 @@ if(NOT TARGET LibXml2::LibXml2)
   target_link_libraries(LibXml2::LibXml2 INTERFACE
     ${_libxml2_target}
   )
+endif()
+set(_libxml2_defs "${LIBXML2_DEFINITIONS}")
+list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
+string(REPLACE ";" "|" _LIBXML2_DEFINITIONS_ESCAPED "${_libxml2_defs}")
+
+if(NOT ZLIB_FOUND)
+  find_package(ZLIB CONFIG QUIET)
+  if(NOT ZLIB_FOUND)
+    find_package(ZLIB REQUIRED)
+    set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
+  endif()
+endif()
+
+set(_zlib_target "")
+
+if(TARGET ZLIB::ZLIB)
+  set(_zlib_target ZLIB::ZLIB)
+elseif(TARGET z)
+  set(_zlib_target z)
+endif()
+
+if(NOT _zlib_target)
+  add_library(_zlib_legacy INTERFACE)
+  target_include_directories(_zlib_legacy INTERFACE ${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(_zlib_legacy INTERFACE ${ZLIB_LIBRARIES})
+  set(_zlib_target _zlib_legacy)
+endif()
+
+if(NOT TARGET ZLIB::ZLIB)
+  add_library(ZLIB::ZLIB INTERFACE IMPORTED)
+  target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
 endif()
 
 if(NOT DEFINED _LibXml2_FIND_REPORTED)
