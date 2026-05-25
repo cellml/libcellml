@@ -10,8 +10,6 @@ env:
 jobs:
 
   wheels:
-    needs: setup-jobs
-    if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: ${{ matrix.name }} ${{ matrix.py }} wheel
     runs-on: ${{ matrix.os }}
     strategy:
