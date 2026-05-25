@@ -17,8 +17,6 @@ limitations under the License.
 #include "libcellml/generatorprofile.h"
 #include "libcellml/issue.h"
 
-#include <unordered_set>
-
 #include "analysermodel_p.h"
 #include "internaltypes.h"
 #include "logger_p.h"
@@ -98,12 +96,9 @@ struct AnalyserInternalEquation
     ComponentPtr mComponent;
 
     AnalyserInternalVariablePtrs mVariables;
-    std::unordered_set<AnalyserInternalVariable *> mVariablesSet;
     AnalyserInternalVariablePtrs mStateVariables;
-    std::unordered_set<AnalyserInternalVariable *> mStateVariablesSet;
     AnalyserInternalVariablePtrs mAllVariables;
     AnalyserInternalVariablePtrs mUnknownVariables;
-    std::unordered_set<AnalyserInternalVariable *> mUnknownVariablesSet;
 
     size_t mNlaSystemIndex = MAX_SIZE_T;
     AnalyserInternalEquationWeakPtrs mNlaSiblings;
