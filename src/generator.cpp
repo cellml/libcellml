@@ -16,7 +16,9 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
-#include <regex>
+#include <format>
+#include <set>
+#include <unordered_set>
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
@@ -40,6 +42,8 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
+
+    mCode.reserve(32768);
 }
 
 std::string Generator::GeneratorImpl::analyserVariableIndexString(const AnalyserVariablePtr &analyserVariable)
@@ -47,7 +51,7 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     // Determine the actual index of the analyser variable in the list of analyser variables by accounting for the fact
     // that some analyser variables may be untracked.
 
-    auto analyserVariables = libcellml::analyserVariables(analyserVariable);
+    const auto &analyserVariables = libcellml::analyserVariables(analyserVariable);
 
     if (analyserVariables.empty()) {
         return convertToString(analyserVariable->index());
@@ -57,7 +61,7 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     size_t res = MAX_SIZE_T;
 
     for (;;) {
-        auto analyserVar = analyserVariables[++i];
+        const auto &analyserVar = analyserVariables[++i];
 
         if (isTrackedVariable(analyserVar, true)) {
             ++res;
@@ -249,9 +253,13 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                sha1(profileContents) != PYTHON_GENERATOR_PROFILE_SHA1;
 }
 
-std::string Generator::GeneratorImpl::newLineIfNeeded()
+void Generator::GeneratorImpl::addCode(const std::string &code)
 {
-    return mCode.empty() ? "" : "\n";
+    if (!mCode.empty()) {
+        mCode += '\n';
+    }
+
+    mCode += code;
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -267,17 +275,15 @@ void Generator::GeneratorImpl::addOriginCommentCode()
                                   "Python";
         profileInformation += " profile of";
 
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->commentString(),
-                           "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
+        addCode(replace(mProfile->commentString(),
+                        "[CODE]", replace(replace(mProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString())));
     }
 }
 
 void Generator::GeneratorImpl::addInterfaceHeaderCode()
 {
     if (!mProfile->interfaceHeaderString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->interfaceHeaderString();
+        addCode(mProfile->interfaceHeaderString());
     }
 }
 
@@ -290,9 +296,8 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
     if (!mProfile->implementationHeaderString().empty()
         && ((hasInterfaceFileName && !mProfile->interfaceFileNameString().empty())
             || !hasInterfaceFileName)) {
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationHeaderString(),
-                           "[INTERFACE_FILE_NAME]", mProfile->interfaceFileNameString());
+        addCode(replace(mProfile->implementationHeaderString(),
+                        "[INTERFACE_FILE_NAME]", mProfile->interfaceFileNameString()));
     }
 }
 
@@ -306,9 +311,47 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
             code += mProfile->interfaceVersionString();
         } else {
             if (modifiedProfile()) {
-                static const std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
+                // Find the semver pattern (X.Y.Z) and append ".post0".
 
-                code += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
+                auto versionString = mProfile->implementationVersionString();
+                size_t start = std::string::npos;
+
+                for (size_t i = 0; i < versionString.size(); ++i) {
+                    if (std::isdigit(static_cast<unsigned char>(versionString[i]))) {
+                        if (start == std::string::npos) {
+                            start = i;
+                        }
+                    } else if (versionString[i] == '.' && start != std::string::npos) {
+                        // Continue (it's part of the version string).
+                    } else {
+                        if (start != std::string::npos) {
+                            auto candidate = versionString.substr(start, i - start);
+
+                            // Check that it has exactly 2 dots (semver X.Y.Z).
+
+                            if (std::count(candidate.begin(), candidate.end(), '.') == 2) {
+                                versionString.insert(i, ".post0");
+
+                                break;
+                            }
+                        }
+
+                        start = std::string::npos;
+                    }
+                }
+
+                // If we reached the end of the string and we found a semver pattern, then append ".post0" to the end of
+                // the string.
+
+                if (start != std::string::npos) {
+                    auto candidate = versionString.substr(start);
+
+                    if (std::count(candidate.begin(), candidate.end(), '.') == 2) {
+                        versionString += ".post0";
+                    }
+                }
+
+                code += versionString;
             } else {
                 code += mProfile->implementationVersionString();
             }
@@ -324,8 +367,7 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
     }
 
     if (!code.empty()) {
-        mCode += newLineIfNeeded()
-                 + code;
+        addCode(code);
     }
 }
 
@@ -339,7 +381,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         code += interface ?
                     mProfile->interfaceStateCountString() :
                     replace(mProfile->implementationStateCountString(),
-                            "[STATE_COUNT]", std::to_string(mAnalyserModel->stateCount()));
+                            "[STATE_COUNT]", std::format("{}", mAnalyserModel->stateCount()));
     }
 
     if ((interface && !mProfile->interfaceConstantCountString().empty())
@@ -347,7 +389,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         code += interface ?
                     mProfile->interfaceConstantCountString() :
                     replace(mProfile->implementationConstantCountString(),
-                            "[CONSTANT_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedConstantCount(mAnalyserModel) : mAnalyserModel->constantCount()));
+                            "[CONSTANT_COUNT]", std::format("{}", (mVariableTracker != nullptr) ? mVariableTracker->trackedConstantCount(mAnalyserModel) : mAnalyserModel->constantCount()));
     }
 
     if ((interface && !mProfile->interfaceComputedConstantCountString().empty())
@@ -355,7 +397,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         code += interface ?
                     mProfile->interfaceComputedConstantCountString() :
                     replace(mProfile->implementationComputedConstantCountString(),
-                            "[COMPUTED_CONSTANT_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedComputedConstantCount(mAnalyserModel) : mAnalyserModel->computedConstantCount()));
+                            "[COMPUTED_CONSTANT_COUNT]", std::format("{}", (mVariableTracker != nullptr) ? mVariableTracker->trackedComputedConstantCount(mAnalyserModel) : mAnalyserModel->computedConstantCount()));
     }
 
     if ((interface && !mProfile->interfaceAlgebraicVariableCountString().empty())
@@ -363,7 +405,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         code += interface ?
                     mProfile->interfaceAlgebraicVariableCountString() :
                     replace(mProfile->implementationAlgebraicVariableCountString(),
-                            "[ALGEBRAIC_VARIABLE_COUNT]", std::to_string((mVariableTracker != nullptr) ? mVariableTracker->trackedAlgebraicVariableCount(mAnalyserModel) : mAnalyserModel->algebraicVariableCount()));
+                            "[ALGEBRAIC_VARIABLE_COUNT]", std::format("{}", (mVariableTracker != nullptr) ? mVariableTracker->trackedAlgebraicVariableCount(mAnalyserModel) : mAnalyserModel->algebraicVariableCount()));
     }
 
     if ((mAnalyserModel->externalVariableCount() != 0)
@@ -372,12 +414,11 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         code += interface ?
                     mProfile->interfaceExternalVariableCountString() :
                     replace(mProfile->implementationExternalVariableCountString(),
-                            "[EXTERNAL_VARIABLE_COUNT]", std::to_string(mAnalyserModel->externalVariableCount()));
+                            "[EXTERNAL_VARIABLE_COUNT]", std::format("{}", mAnalyserModel->externalVariableCount()));
     }
 
     if (!code.empty()) {
-        mCode += newLineIfNeeded()
-                 + code;
+        addCode(code);
     }
 }
 
@@ -394,16 +435,15 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     }
 
     return replace(replace(replace(objectString,
-                                   "[COMPONENT_SIZE]", std::to_string(componentSize)),
-                           "[NAME_SIZE]", std::to_string(nameSize)),
-                   "[UNITS_SIZE]", std::to_string(unitsSize));
+                                   "[COMPONENT_SIZE]", std::format("{}", componentSize)),
+                           "[NAME_SIZE]", std::format("{}", nameSize)),
+                   "[UNITS_SIZE]", std::format("{}", unitsSize));
 }
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
     if (!mProfile->variableInfoObjectString().empty()) {
-        mCode += newLineIfNeeded()
-                 + generateVariableInfoObjectCode(mProfile->variableInfoObjectString());
+        addCode(generateVariableInfoObjectCode(mProfile->variableInfoObjectString()));
     }
 }
 
@@ -449,8 +489,7 @@ void Generator::GeneratorImpl::addInterfaceVariableInfoCode()
     }
 
     if (!code.empty()) {
-        mCode += newLineIfNeeded()
-                 + code;
+        addCode(code);
     }
 }
 
@@ -462,6 +501,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
         && !mProfile->variableInfoEntryString().empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
+
+        infoElementsCode.reserve(analyserVariables.size() * 200);
 
         for (const auto &analyserVariable : analyserVariables) {
             if (isTrackedVariable(analyserVariable, true)) {
@@ -482,8 +523,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
             infoElementsCode += "\n";
         }
 
-        mCode += newLineIfNeeded()
-                 + replace(variableInfoString, "[CODE]", infoElementsCode);
+        addCode(replace(variableInfoString, "[CODE]", infoElementsCode));
     }
 }
 
@@ -507,74 +547,62 @@ void Generator::GeneratorImpl::addArithmeticFunctionsCode()
 {
     if (mAnalyserModel->needEqFunction() && !mProfile->hasEqOperator()
         && !mProfile->eqFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->eqFunctionString();
+        addCode(mProfile->eqFunctionString());
     }
 
     if (mAnalyserModel->needNeqFunction() && !mProfile->hasNeqOperator()
         && !mProfile->neqFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->neqFunctionString();
+        addCode(mProfile->neqFunctionString());
     }
 
     if (mAnalyserModel->needLtFunction() && !mProfile->hasLtOperator()
         && !mProfile->ltFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->ltFunctionString();
+        addCode(mProfile->ltFunctionString());
     }
 
     if (mAnalyserModel->needLeqFunction() && !mProfile->hasLeqOperator()
         && !mProfile->leqFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->leqFunctionString();
+        addCode(mProfile->leqFunctionString());
     }
 
     if (mAnalyserModel->needGtFunction() && !mProfile->hasGtOperator()
         && !mProfile->gtFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->gtFunctionString();
+        addCode(mProfile->gtFunctionString());
     }
 
     if (mAnalyserModel->needGeqFunction() && !mProfile->hasGeqOperator()
         && !mProfile->geqFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->geqFunctionString();
+        addCode(mProfile->geqFunctionString());
     }
 
     if (mAnalyserModel->needAndFunction() && !mProfile->hasAndOperator()
         && !mProfile->andFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->andFunctionString();
+        addCode(mProfile->andFunctionString());
     }
 
     if (mAnalyserModel->needOrFunction() && !mProfile->hasOrOperator()
         && !mProfile->orFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->orFunctionString();
+        addCode(mProfile->orFunctionString());
     }
 
     if (mAnalyserModel->needXorFunction() && !mProfile->hasXorOperator()
         && !mProfile->xorFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->xorFunctionString();
+        addCode(mProfile->xorFunctionString());
     }
 
     if (mAnalyserModel->needNotFunction() && !mProfile->hasNotOperator()
         && !mProfile->notFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->notFunctionString();
+        addCode(mProfile->notFunctionString());
     }
 
     if (mAnalyserModel->needMinFunction()
         && !mProfile->minFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->minFunctionString();
+        addCode(mProfile->minFunctionString());
     }
 
     if (mAnalyserModel->needMaxFunction()
         && !mProfile->maxFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->maxFunctionString();
+        addCode(mProfile->maxFunctionString());
     }
 }
 
@@ -582,74 +610,62 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode()
 {
     if (mAnalyserModel->needSecFunction()
         && !mProfile->secFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->secFunctionString();
+        addCode(mProfile->secFunctionString());
     }
 
     if (mAnalyserModel->needCscFunction()
         && !mProfile->cscFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->cscFunctionString();
+        addCode(mProfile->cscFunctionString());
     }
 
     if (mAnalyserModel->needCotFunction()
         && !mProfile->cotFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->cotFunctionString();
+        addCode(mProfile->cotFunctionString());
     }
 
     if (mAnalyserModel->needSechFunction()
         && !mProfile->sechFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->sechFunctionString();
+        addCode(mProfile->sechFunctionString());
     }
 
     if (mAnalyserModel->needCschFunction()
         && !mProfile->cschFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->cschFunctionString();
+        addCode(mProfile->cschFunctionString());
     }
 
     if (mAnalyserModel->needCothFunction()
         && !mProfile->cothFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->cothFunctionString();
+        addCode(mProfile->cothFunctionString());
     }
 
     if (mAnalyserModel->needAsecFunction()
         && !mProfile->asecFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->asecFunctionString();
+        addCode(mProfile->asecFunctionString());
     }
 
     if (mAnalyserModel->needAcscFunction()
         && !mProfile->acscFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->acscFunctionString();
+        addCode(mProfile->acscFunctionString());
     }
 
     if (mAnalyserModel->needAcotFunction()
         && !mProfile->acotFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->acotFunctionString();
+        addCode(mProfile->acotFunctionString());
     }
 
     if (mAnalyserModel->needAsechFunction()
         && !mProfile->asechFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->asechFunctionString();
+        addCode(mProfile->asechFunctionString());
     }
 
     if (mAnalyserModel->needAcschFunction()
         && !mProfile->acschFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->acschFunctionString();
+        addCode(mProfile->acschFunctionString());
     }
 
     if (mAnalyserModel->needAcothFunction()
         && !mProfile->acothFunctionString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->acothFunctionString();
+        addCode(mProfile->acothFunctionString());
     }
 }
 
@@ -685,8 +701,7 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
     }
 
     if (!code.empty()) {
-        mCode += newLineIfNeeded()
-                 + code;
+        addCode(code);
     }
 }
 
@@ -694,45 +709,38 @@ void Generator::GeneratorImpl::addImplementationCreateDeleteArrayMethodsCode()
 {
     if (modelHasOdes(mAnalyserModel)
         && !mProfile->implementationCreateStatesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateStatesArrayMethodString();
+        addCode(mProfile->implementationCreateStatesArrayMethodString());
     }
 
     if (!mProfile->implementationCreateConstantsArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateConstantsArrayMethodString();
+        addCode(mProfile->implementationCreateConstantsArrayMethodString());
     }
 
     if (!mProfile->implementationCreateComputedConstantsArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateComputedConstantsArrayMethodString();
+        addCode(mProfile->implementationCreateComputedConstantsArrayMethodString());
     }
 
     if (!mProfile->implementationCreateAlgebraicVariablesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateAlgebraicVariablesArrayMethodString();
+        addCode(mProfile->implementationCreateAlgebraicVariablesArrayMethodString());
     }
 
     if (mAnalyserModel->hasExternalVariables()
         && !mProfile->implementationCreateExternalVariablesArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationCreateExternalVariablesArrayMethodString();
+        addCode(mProfile->implementationCreateExternalVariablesArrayMethodString());
     }
 
     if (!mProfile->implementationDeleteArrayMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->implementationDeleteArrayMethodString();
+        addCode(mProfile->implementationDeleteArrayMethodString());
     }
 }
 
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 {
     if (mAnalyserModel->hasExternalVariables()) {
-        auto externalVariableMethodTypeDefinitionString = mProfile->externalVariableMethodTypeDefinitionString(modelHasOdes(mAnalyserModel));
+        const auto &externalVariableMethodTypeDefinitionString = mProfile->externalVariableMethodTypeDefinitionString(modelHasOdes(mAnalyserModel));
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
-            mCode += newLineIfNeeded()
-                     + externalVariableMethodTypeDefinitionString;
+            addCode(externalVariableMethodTypeDefinitionString);
         }
     }
 }
@@ -740,16 +748,14 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 {
     if (!mProfile->rootFindingInfoObjectString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()).empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->rootFindingInfoObjectString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables());
+        addCode(mProfile->rootFindingInfoObjectString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()));
     }
 }
 
 void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 {
     if (!mProfile->externNlaSolveMethodString().empty()) {
-        mCode += newLineIfNeeded()
-                 + mProfile->externNlaSolveMethodString();
+        addCode(mProfile->externNlaSolveMethodString());
     }
 }
 
@@ -761,17 +767,19 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
         // Note: only states and algebraic variables can be computed through an NLA system. Constants, computed
         //       constants, and external variables cannot, by definition, be computed through an NLA system.
 
-        std::vector<AnalyserEquationPtr> handledNlaAnalyserEquations;
+        std::unordered_set<AnalyserEquation *> handledNlaAnalyserEquations;
 
         for (const auto &analyserEquation : mAnalyserModel->analyserEquations()) {
             if ((analyserEquation->type() == AnalyserEquation::Type::NLA)
-                && (std::find(handledNlaAnalyserEquations.begin(), handledNlaAnalyserEquations.end(), analyserEquation) == handledNlaAnalyserEquations.end())) {
+                && (handledNlaAnalyserEquations.find(analyserEquation.get()) == handledNlaAnalyserEquations.end())) {
                 // 1) Generate some code for the objectiveFunction[INDEX]() method.
                 //     a) Retrieve the values from our NLA solver's u array.
 
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
                 auto analyserVariables = libcellml::analyserVariables(analyserEquation);
+
+                methodBody.reserve(analyserVariables.size() * 256 + 512);
 
                 for (const auto &analyserVariable : analyserVariables) {
                     auto arrayString = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
@@ -798,9 +806,10 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                     }
                 }
 
-                std::vector<AnalyserEquationPtr> dummyRemainingAnalyserEquations = mAnalyserModel->analyserEquations();
-                std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
-                std::vector<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
+                const auto &analyserEquations = mAnalyserModel->analyserEquations();
+                std::unordered_set<AnalyserEquationPtr> dummyRemainingAnalyserEquations(analyserEquations.begin(), analyserEquations.end());
+                std::unordered_set<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
+                std::unordered_set<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
 
                 for (const auto &dependency : analyserEquation->dependencies()) {
                     if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
@@ -825,7 +834,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                               + generateCode(analyserEquation->ast())
                               + mProfile->commandSeparatorString() + "\n";
 
-                handledNlaAnalyserEquations.push_back(analyserEquation);
+                handledNlaAnalyserEquations.insert(analyserEquation.get());
 
                 for (const auto &nlaSibling : analyserEquation->nlaSiblings()) {
                     methodBody += mProfile->indentString()
@@ -834,18 +843,19 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                                   + generateCode(nlaSibling->ast())
                                   + mProfile->commandSeparatorString() + "\n";
 
-                    handledNlaAnalyserEquations.push_back(nlaSibling);
+                    handledNlaAnalyserEquations.insert(nlaSibling.get());
                 }
 
-                mCode += newLineIfNeeded()
-                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()),
-                                           "[INDEX]", convertToString(analyserEquation->nlaSystemIndex())),
-                                   "[CODE]", generateMethodBodyCode(methodBody));
+                addCode(replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()),
+                                        "[INDEX]", convertToString(analyserEquation->nlaSystemIndex())),
+                                "[CODE]", generateMethodBodyCode(methodBody)));
 
                 // 2) Generate some code for the findRoot[INDEX]() method.
                 //     a) Assign the values to our NLA solver's u array.
 
                 methodBody = {};
+
+                methodBody.reserve(analyserVariables.size() * 192 + 256);
 
                 i = MAX_SIZE_T;
 
@@ -889,11 +899,10 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
-                mCode += newLineIfNeeded()
-                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()),
-                                                   "[INDEX]", convertToString(analyserEquation->nlaSystemIndex())),
-                                           "[SIZE]", convertToString(analyserVariablesCount)),
-                                   "[CODE]", generateMethodBodyCode(methodBody));
+                addCode(replace(replace(replace(mProfile->findRootMethodString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()),
+                                                "[INDEX]", convertToString(analyserEquation->nlaSystemIndex())),
+                                        "[SIZE]", convertToString(analyserVariablesCount)),
+                                "[CODE]", generateMethodBodyCode(methodBody)));
             }
         }
     }
@@ -972,7 +981,9 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
     }
 
     if (isTrackedVariable(analyserVariable, false)) {
-        return owningComponent(analyserVariable->variable())->name() + "_" + analyserVariable->variable()->name();
+        const auto &var = analyserVariable->variable();
+
+        return owningComponent(var)->name() + "_" + var->name();
     }
 
     std::string arrayName;
@@ -998,7 +1009,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 {
     // Generate the code for the left and right branches of the given AST.
 
-    std::string res;
     auto astLeftChild = ast->leftChild();
     auto astRightChild = ast->rightChild();
     auto astLeftChildCode = generateCode(astLeftChild);
@@ -1024,19 +1034,22 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         if (isRelationalOperator(astLeftChild)
             || isLogicalOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         }
 
         if (isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         }
     } else if (isMinusOperator(ast)) {
         if (isRelationalOperator(astLeftChild)
             || isLogicalOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         }
 
         if (isNegativeNumber(astRightChild)
@@ -1045,43 +1058,51 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isMinusOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)
             || (astRightChildCode.rfind(mProfile->minusString(), 0) == 0)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         }
     } else if (isTimesOperator(ast)) {
         if (isRelationalOperator(astLeftChild)
             || isLogicalOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)
                    || isMinusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         }
 
         if (isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)
                    || isMinusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         }
     } else if (isDivideOperator(ast)) {
         if (isRelationalOperator(astLeftChild)
             || isLogicalOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)
                    || isMinusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         }
 
@@ -1090,11 +1111,13 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isTimesOperator(astRightChild)
             || isDivideOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)
                    || isMinusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         }
     } else if (isAndOperator(ast)) {
@@ -1107,32 +1130,40 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isOrOperator(astLeftChild)
             || isXorOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)
                    || isMinusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         } else if (isPowerOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isRootOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         }
 
         if (isRelationalOperator(astRightChild)
             || isOrOperator(astRightChild)
             || isXorOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)
                    || isMinusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         } else if (isPowerOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isRootOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         }
     } else if (isOrOperator(ast)) {
         // Note: according to the precedence rules above, we only need to
@@ -1144,32 +1175,40 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isAndOperator(astLeftChild)
             || isXorOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)
                    || isMinusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         } else if (isPowerOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isRootOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         }
 
         if (isRelationalOperator(astRightChild)
             || isAndOperator(astRightChild)
             || isXorOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)
                    || isMinusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         } else if (isPowerOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isRootOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         }
     } else if (isXorOperator(ast)) {
         // Note: according to the precedence rules above, we only need to
@@ -1181,32 +1220,40 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isAndOperator(astLeftChild)
             || isOrOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)
                    || isMinusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         } else if (isPowerOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isRootOperator(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         }
 
         if (isRelationalOperator(astRightChild)
             || isAndOperator(astRightChild)
             || isOrOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)
                    || isMinusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         } else if (isPowerOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isRootOperator(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         }
     } else if (isPowerOperator(ast)) {
         if (isRelationalOperator(astLeftChild)
@@ -1215,10 +1262,12 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isTimesOperator(astLeftChild)
             || isDivideOperator(astLeftChild)
             || isPiecewiseStatement(astLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChild)) {
             if (astLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         }
 
@@ -1230,10 +1279,12 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isPowerOperator(astRightChild)
             || isRootOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         }
     } else if (isRootOperator(ast)) {
@@ -1243,10 +1294,12 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isTimesOperator(astRightChild)
             || isDivideOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
-            astRightChildCode = "(" + astRightChildCode + ")";
+            astRightChildCode.insert(0, "(");
+            astRightChildCode += ')';
         } else if (isPlusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
-                astRightChildCode = "(" + astRightChildCode + ")";
+                astRightChildCode.insert(0, "(");
+                astRightChildCode += ')';
             }
         }
 
@@ -1260,17 +1313,37 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isPowerOperator(astLeftChildLeftChild)
             || isRootOperator(astLeftChildLeftChild)
             || isPiecewiseStatement(astLeftChildLeftChild)) {
-            astLeftChildCode = "(" + astLeftChildCode + ")";
+            astLeftChildCode.insert(0, "(");
+            astLeftChildCode += ')';
         } else if (isPlusOperator(astLeftChildLeftChild)) {
             if (astLeftChildLeftChild->rightChild() != nullptr) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
+                astLeftChildCode.insert(0, "(");
+                astLeftChildCode += ')';
             }
         }
 
-        return astRightChildCode + op + "(1.0/" + astLeftChildCode + ")";
+        std::string res;
+
+        res.reserve(astRightChildCode.size() + op.size() + 5 + astLeftChildCode.size() + 1);
+
+        res += astRightChildCode;
+        res += op;
+        res += "(1.0/";
+        res += astLeftChildCode;
+        res += ")";
+
+        return res;
     }
 
-    return astLeftChildCode + op + astRightChildCode;
+    std::string res;
+
+    res.reserve(astLeftChildCode.size() + op.size() + astRightChildCode.size());
+
+    res += astLeftChildCode;
+    res += op;
+    res += astRightChildCode;
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast)
@@ -1287,22 +1360,54 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
         || isPlusOperator(astLeftChild)
         || isMinusOperator(astLeftChild)
         || isPiecewiseStatement(astLeftChild)) {
-        code = "(" + code + ")";
+        code.insert(0, "(");
+        code += ')';
     }
 
-    return mProfile->minusString() + code;
+    const auto &minusStr = mProfile->minusString();
+    std::string res;
+
+    res.reserve(minusStr.size() + code.size());
+
+    res += minusStr;
+    res += code;
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
                                                                        const AnalyserEquationAstPtr &ast)
 {
-    return function + "(" + generateCode(ast->leftChild()) + ")";
+    auto leftChildString = generateCode(ast->leftChild());
+    std::string res;
+
+    res.reserve(function.size() + 1 + leftChildString.size() + 1);
+
+    res += function;
+    res += '(';
+    res += leftChildString;
+    res += ')';
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
                                                                        const AnalyserEquationAstPtr &ast)
 {
-    return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
+    auto leftChildString = generateCode(ast->leftChild());
+    auto rightChildString = generateCode(ast->rightChild());
+    std::string res;
+
+    res.reserve(function.size() + 1 + leftChildString.size() + 2 + rightChildString.size() + 1);
+
+    res += function;
+    res += '(';
+    res += leftChildString;
+    res += ", ";
+    res += rightChildString;
+    res += ')';
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
@@ -1412,7 +1517,13 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
-            code = mProfile->notString() + generateCode(ast->leftChild());
+            auto leftChildString = generateCode(ast->leftChild());
+            const auto &notString = mProfile->notString();
+
+            code.reserve(notString.size() + leftChildString.size());
+
+            code += notString;
+            code += leftChildString;
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
         }
@@ -1453,9 +1564,21 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                    && !mProfile->squareString().empty()) {
             code = generateOneParameterFunctionCode(mProfile->squareString(), ast);
         } else {
-            code = mProfile->hasPowerOperator() ?
-                       generateOperatorCode(mProfile->powerString(), ast) :
-                       mProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
+            if (mProfile->hasPowerOperator()) {
+                code = generateOperatorCode(mProfile->powerString(), ast);
+            } else {
+                auto leftChildString = generateCode(ast->leftChild());
+                const auto &powerString = mProfile->powerString();
+
+                code.reserve(powerString.size() + 1 + leftChildString.size() + 2 + stringValue.size() + 1);
+
+                code += powerString;
+                code += '(';
+                code += leftChildString;
+                code += ", ";
+                code += stringValue;
+                code += ')';
+            }
         }
     } break;
     case AnalyserEquationAst::Type::ROOT: {
@@ -1467,7 +1590,15 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
             if (convertToDouble(generateCode(astLeftChild), doubleValue)
                 && areEqual(doubleValue, 2.0)) {
-                code = mProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
+                auto rightChildString = generateCode(astRightChild);
+                const auto &squareRootString = mProfile->squareRootString();
+
+                code.reserve(squareRootString.size() + 1 + rightChildString.size() + 1);
+
+                code += squareRootString;
+                code += '(';
+                code += rightChildString;
+                code += ')';
             } else {
                 if (mProfile->hasPowerOperator()) {
                     code = generateOperatorCode(mProfile->powerString(), ast);
@@ -1486,7 +1617,20 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                     rootValueAst->setLeftChild(leftChild);
                     rootValueAst->setRightChild(astLeftChild->leftChild());
 
-                    code = mProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mProfile->divideString(), rootValueAst) + ")";
+                    {
+                        auto rightChildString = generateCode(astRightChild);
+                        auto exponentString = generateOperatorCode(mProfile->divideString(), rootValueAst);
+                        const auto &powerString = mProfile->powerString();
+
+                        code.reserve(powerString.size() + 1 + rightChildString.size() + 2 + exponentString.size() + 1);
+
+                        code += powerString;
+                        code += '(';
+                        code += rightChildString;
+                        code += ", ";
+                        code += exponentString;
+                        code += ')';
+                    }
                 }
             }
         } else {
@@ -1514,9 +1658,29 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
             if (convertToDouble(stringValue, doubleValue)
                 && areEqual(doubleValue, 10.0)) {
-                code = mProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
+                const auto &commonLogarithmString = mProfile->commonLogarithmString();
+                auto rightChildString = generateCode(astRightChild);
+
+                code.reserve(commonLogarithmString.size() + 1 + rightChildString.size() + 1);
+
+                code += commonLogarithmString;
+                code += '(';
+                code += rightChildString;
+                code += ')';
             } else {
-                code = mProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mProfile->naturalLogarithmString() + "(" + stringValue + ")";
+                const auto &naturalLogarithmString = mProfile->naturalLogarithmString();
+                auto rightChildString = generateCode(astRightChild);
+
+                code.reserve(naturalLogarithmString.size() + 1 + rightChildString.size() + 2 + naturalLogarithmString.size() + 1 + stringValue.size() + 1);
+
+                code += naturalLogarithmString;
+                code += '(';
+                code += rightChildString;
+                code += ")/";
+                code += naturalLogarithmString;
+                code += '(';
+                code += stringValue;
+                code += ')';
             }
         } else {
             code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast);
@@ -1546,7 +1710,15 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         if (mAnalyserModel != nullptr) {
             code = generateCode(ast->rightChild());
         } else {
-            code = "d" + generateCode(ast->rightChild()) + "/d" + generateCode(ast->leftChild());
+            auto rightChildString = generateCode(ast->rightChild());
+            auto leftChildString = generateCode(ast->leftChild());
+
+            code.reserve(1 + rightChildString.size() + 2 + leftChildString.size());
+
+            code = 'd';
+            code += rightChildString;
+            code += "/d";
+            code += leftChildString;
         }
 
         break;
@@ -1698,27 +1870,27 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         break;
     case AnalyserEquationAst::Type::TRUE:
-        code = mProfile->trueString();
+        code += mProfile->trueString();
 
         break;
     case AnalyserEquationAst::Type::FALSE:
-        code = mProfile->falseString();
+        code += mProfile->falseString();
 
         break;
     case AnalyserEquationAst::Type::E:
-        code = mProfile->eString();
+        code += mProfile->eString();
 
         break;
     case AnalyserEquationAst::Type::PI:
-        code = mProfile->piString();
+        code += mProfile->piString();
 
         break;
     case AnalyserEquationAst::Type::INF:
-        code = mProfile->infString();
+        code += mProfile->infString();
 
         break;
     default: // AnalyserEquationAst::Type::NAN.
-        code = mProfile->nanString();
+        code += mProfile->nanString();
 
         break;
     }
@@ -1791,29 +1963,28 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
         code = replace(mProfile->variableDeclarationString(), "[CODE]", code);
     }
 
-    return mProfile->indentString()
-           + code;
+    return mProfile->indentString() + code;
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &analyserEquation,
-                                                           std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
-                                                           std::vector<AnalyserEquationPtr> &analyserEquationsForDependencies,
-                                                           std::vector<AnalyserVariablePtr> &generatedConstantDependencies,
+                                                           std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                           std::unordered_set<AnalyserEquationPtr> &analyserEquationsForDependencies,
+                                                           std::unordered_set<AnalyserVariablePtr> &generatedConstantDependencies,
                                                            bool includeComputedConstants,
                                                            GenerateEquationCodeTarget target)
 {
     std::string res;
 
-    if (std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end()) {
+    if (remainingAnalyserEquations.count(analyserEquation) != 0) {
         // Stop tracking the analyser equation and its NLA siblings, if any.
         // Note: we need to do this as soon as possible to avoid recursive
         //       calls, something that would happen if we were to do this at the
         //       end of this if statement.
 
-        remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation));
+        remainingAnalyserEquations.erase(analyserEquation);
 
         for (const auto &nlaSibling : analyserEquation->nlaSiblings()) {
-            remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), nlaSibling));
+            remainingAnalyserEquations.erase(nlaSibling);
         }
 
         // Generate any dependency that this analyser equation may have.
@@ -1821,10 +1992,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
             if ((analyserEquation->type() != AnalyserEquation::Type::NLA)
                 && isTrackedVariable(constantDependency, false)
-                && (std::find(generatedConstantDependencies.begin(), generatedConstantDependencies.end(), constantDependency) == generatedConstantDependencies.end())) {
+                && (generatedConstantDependencies.count(constantDependency) == 0)) {
                 res += generateInitialisationCode(constantDependency, true);
 
-                generatedConstantDependencies.push_back(constantDependency);
+                generatedConstantDependencies.insert(constantDependency);
             }
         }
 
@@ -1837,14 +2008,14 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                          || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
                              && ((dependency->type() != AnalyserEquation::Type::NLA)
                                  || isToBeComputedAgain(dependency)
-                                 || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
+                                 || (analyserEquationsForDependencies.count(dependency) != 0))))
                         && (dependency->type() != AnalyserEquation::Type::ODE)
                         && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (analyserEquationsForDependencies.empty()
                             || isToBeComputedAgain(dependency)
-                            || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end())))) {
+                            || (analyserEquationsForDependencies.count(dependency) != 0)))) {
                     res += generateEquationCode(dependency, remainingAnalyserEquations, analyserEquationsForDependencies,
                                                 generatedConstantDependencies, includeComputedConstants, target);
                 }
@@ -1885,10 +2056,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &analyserEquation,
-                                                           std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
-                                                           std::vector<AnalyserVariablePtr> &generatedConstantDependencies)
+                                                           std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                           std::unordered_set<AnalyserVariablePtr> &generatedConstantDependencies)
 {
-    std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForComputeVariables;
+    std::unordered_set<AnalyserEquationPtr> dummyAnalyserEquationsForComputeVariables;
 
     return generateEquationCode(analyserEquation, remainingAnalyserEquations, dummyAnalyserEquationsForComputeVariables,
                                 generatedConstantDependencies, true);
@@ -1913,12 +2084,12 @@ bool Generator::GeneratorImpl::hasComputedConstantDependency(const AnalyserVaria
 }
 
 std::string Generator::GeneratorImpl::generateInitialiseVariableCode(const AnalyserVariablePtr &analyserVariable,
-                                                                     std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+                                                                     std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations,
                                                                      std::vector<AnalyserVariablePtr> &remainingStates,
                                                                      std::vector<AnalyserVariablePtr> &remainingConstants,
                                                                      std::vector<AnalyserVariablePtr> &remainingComputedConstants,
                                                                      std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables,
-                                                                     std::vector<AnalyserVariablePtr> *generatedConstantDependencies)
+                                                                     std::unordered_set<AnalyserVariablePtr> *generatedConstantDependencies)
 {
     std::string res;
 
@@ -1987,38 +2158,39 @@ std::string Generator::GeneratorImpl::generateInitialiseVariableCode(const Analy
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseArraysMethodString = mProfile->interfaceInitialiseArraysMethodString(modelHasOdes(mAnalyserModel));
+    const auto &interfaceInitialiseArraysMethodString = mProfile->interfaceInitialiseArraysMethodString(modelHasOdes(mAnalyserModel));
     std::string code;
 
     if (!interfaceInitialiseArraysMethodString.empty()) {
         code += interfaceInitialiseArraysMethodString;
     }
 
-    if (!mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel)).empty()) {
-        code += mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel));
+    const auto &interfaceComputeComputedConstantsMethodString = mProfile->interfaceComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel));
+
+    if (!interfaceComputeComputedConstantsMethodString.empty()) {
+        code += interfaceComputeComputedConstantsMethodString;
     }
 
-    auto interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(mAnalyserModel->hasExternalVariables());
+    const auto &interfaceComputeRatesMethodString = mProfile->interfaceComputeRatesMethodString(mAnalyserModel->hasExternalVariables());
 
     if (modelHasOdes(mAnalyserModel)
         && !interfaceComputeRatesMethodString.empty()) {
         code += interfaceComputeRatesMethodString;
     }
 
-    auto interfaceComputeVariablesMethodString = mProfile->interfaceComputeVariablesMethodString(modelHasOdes(mAnalyserModel),
-                                                                                                 mAnalyserModel->hasExternalVariables());
+    const auto &interfaceComputeVariablesMethodString = mProfile->interfaceComputeVariablesMethodString(modelHasOdes(mAnalyserModel),
+                                                                                                        mAnalyserModel->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
         code += interfaceComputeVariablesMethodString;
     }
 
     if (!code.empty()) {
-        mCode += newLineIfNeeded()
-                 + code;
+        addCode(code);
     }
 }
 
-void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations,
                                                                            std::vector<AnalyserVariablePtr> &remainingStates,
                                                                            std::vector<AnalyserVariablePtr> &remainingConstants,
                                                                            std::vector<AnalyserVariablePtr> &remainingComputedConstants,
@@ -2057,7 +2229,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(std::
     // Initialise our computed constants that are initialised using an equation (e.g., x = 3 rather than x with an
     // initial value of 3).
 
-    std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+    std::unordered_set<AnalyserVariablePtr> generatedConstantDependencies;
 
     for (const auto &equation : mAnalyserModel->analyserEquations()) {
         if (equation->type() == AnalyserEquation::Type::CONSTANT) {
@@ -2084,26 +2256,27 @@ void Generator::GeneratorImpl::addImplementationInitialiseArraysMethodCode(std::
 
     // Generate the method itself, if needed.
 
-    auto implementationInitialiseArraysMethodString = mProfile->implementationInitialiseArraysMethodString(modelHasOdes(mAnalyserModel));
+    const auto &implementationInitialiseArraysMethodString = mProfile->implementationInitialiseArraysMethodString(modelHasOdes(mAnalyserModel));
 
     if (!implementationInitialiseArraysMethodString.empty()) {
-        mCode += newLineIfNeeded()
-                 + replace(implementationInitialiseArraysMethodString,
-                           "[CODE]", generateMethodBodyCode(methodBody));
+        addCode(replace(implementationInitialiseArraysMethodString,
+                        "[CODE]", generateMethodBodyCode(methodBody)));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingAnalyserEquations,
+void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations,
                                                                                    std::vector<AnalyserVariablePtr> &remainingStates,
                                                                                    std::vector<AnalyserVariablePtr> &remainingConstants,
                                                                                    std::vector<AnalyserVariablePtr> &remainingComputedConstants,
                                                                                    std::vector<AnalyserVariablePtr> &remainingAlgebraicVariables)
 {
-    if (!mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel)).empty()) {
+    const auto &implementationComputeComputedConstantsMethodString = mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel));
+
+    if (!implementationComputeComputedConstantsMethodString.empty()) {
         // Initialise our remaining states (which are initialised using a computed constant).
 
         std::string methodBody;
-        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+        std::unordered_set<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &state : mAnalyserModel->states()) {
             methodBody += generateInitialiseVariableCode(state,
@@ -2135,20 +2308,19 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
             }
         }
 
-        mCode += newLineIfNeeded()
-                 + replace(mProfile->implementationComputeComputedConstantsMethodString(modelHasOdes(mAnalyserModel)),
-                           "[CODE]", generateMethodBodyCode(methodBody));
+        addCode(replace(implementationComputeComputedConstantsMethodString,
+                        "[CODE]", generateMethodBodyCode(methodBody)));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingAnalyserEquations)
+void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations)
 {
-    auto implementationComputeRatesMethodString = mProfile->implementationComputeRatesMethodString(mAnalyserModel->hasExternalVariables());
+    const auto &implementationComputeRatesMethodString = mProfile->implementationComputeRatesMethodString(mAnalyserModel->hasExternalVariables());
 
     if (modelHasOdes(mAnalyserModel)
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
-        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+        std::unordered_set<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &analyserEquation : mAnalyserModel->analyserEquations()) {
             // A rate is computed either through an ODE equation or through an
@@ -2165,25 +2337,24 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += newLineIfNeeded()
-                 + replace(implementationComputeRatesMethodString,
-                           "[CODE]", generateMethodBodyCode(methodBody));
+        addCode(replace(implementationComputeRatesMethodString,
+                        "[CODE]", generateMethodBodyCode(methodBody)));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingAnalyserEquations)
+void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::unordered_set<AnalyserEquationPtr> &remainingAnalyserEquations)
 {
-    auto implementationComputeVariablesMethodString = mProfile->implementationComputeVariablesMethodString(modelHasOdes(mAnalyserModel),
-                                                                                                           mAnalyserModel->hasExternalVariables());
+    const auto &implementationComputeVariablesMethodString = mProfile->implementationComputeVariablesMethodString(modelHasOdes(mAnalyserModel),
+                                                                                                                  mAnalyserModel->hasExternalVariables());
 
     if (!implementationComputeVariablesMethodString.empty()) {
         std::string methodBody;
-        auto analyserEquations = mAnalyserModel->analyserEquations();
-        auto newRemainingAnalyserEquations = analyserEquations;
-        std::vector<AnalyserVariablePtr> generatedConstantDependencies;
+        const auto &analyserEquations = mAnalyserModel->analyserEquations();
+        std::unordered_set<AnalyserEquationPtr> newRemainingAnalyserEquations(analyserEquations.begin(), analyserEquations.end());
+        std::unordered_set<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &analyserEquation : analyserEquations) {
-            if (((std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end())
+            if (((remainingAnalyserEquations.count(analyserEquation) != 0)
                  || isToBeComputedAgain(analyserEquation))
                 && isTrackedEquation(analyserEquation, true)) {
                 methodBody += generateEquationCode(analyserEquation, newRemainingAnalyserEquations, remainingAnalyserEquations,
@@ -2192,9 +2363,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             }
         }
 
-        mCode += newLineIfNeeded()
-                 + replace(implementationComputeVariablesMethodString,
-                           "[CODE]", generateMethodBodyCode(methodBody));
+        addCode(replace(implementationComputeVariablesMethodString,
+                        "[CODE]", generateMethodBodyCode(methodBody)));
     }
 }
 
@@ -2383,7 +2553,8 @@ std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel,
 
     // Add code for the implementation to initialise our arrays.
 
-    auto remainingAnalyserEquations = pFunc()->mAnalyserModel->analyserEquations();
+    const auto &analyserEquations = pFunc()->mAnalyserModel->analyserEquations();
+    std::unordered_set<AnalyserEquationPtr> remainingAnalyserEquations(analyserEquations.begin(), analyserEquations.end());
     auto remainingStates = pFunc()->mAnalyserModel->states();
     auto remainingConstants = pFunc()->mAnalyserModel->constants();
     auto remainingComputedConstants = pFunc()->mAnalyserModel->computedConstants();

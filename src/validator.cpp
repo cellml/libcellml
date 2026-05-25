@@ -18,12 +18,13 @@ limitations under the License.
 
 #include <algorithm>
 #include <cmath>
+#include <format>
 #include <libxml/uri.h>
 #include <map>
-#include <regex>
-#include <set>
 #include <sstream>
 #include <stdexcept>
+#include <string_view>
+#include <unordered_set>
 
 #include "libcellml/importsource.h"
 #include "libcellml/reset.h"
@@ -308,7 +309,7 @@ public:
      * @param component The component to validate the name of.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const ComponentPtr &component, NameList &names);
+    void validateUniqueName(const ModelPtr &model, const ComponentPtr &component, std::unordered_set<std::string> &namesSet);
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -334,7 +335,7 @@ public:
      * @param history The history of visited components.
      * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::unordered_set<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -412,7 +413,7 @@ public:
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const NameList &variableNames);
+    void validateVariable(const VariablePtr &variable, const std::unordered_set<std::string> &variableNames);
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -477,7 +478,7 @@ public:
      * @param component The component the @p node is a part of.
      * @param variableNames A list of variable names.
      */
-    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames);
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::unordered_set<std::string> &variableNames);
 
     /**
      * @brief Validate the text of a @c cn element.
@@ -503,7 +504,7 @@ public:
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
      */
-    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames);
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::unordered_set<std::string> &variableNames);
 
     /**
      * @brief Add a MathML-related issue.
@@ -640,7 +641,7 @@ public:
      * @param idMap The IdMap object to construct.
      * @param reportedConnections A set of connection identifiers to prevent duplicate reporting.
      */
-    void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections);
+    void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::unordered_set<std::string> &reportedConnections);
 
     /** @brief Utility function to add an item to the idMap.
      *
@@ -728,7 +729,7 @@ public:
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEpochPtr &i) -> bool { return (i->mName == h->mName) && (i->mSourceUrl == h->mSourceUrl); })
+                        [&](const HistoryEpochPtr &i) -> bool { return (i->mName == h->mName) && (i->mSourceUrl == h->mSourceUrl); })
            != history.end();
 }
 
@@ -765,25 +766,27 @@ void Validator::validateModel(const ModelPtr &model)
         pFunc()->addIssue(issue);
     } else {
         // Check for a valid name attribute.
-        if (!isCellmlIdentifier(model->name())) {
-            auto issue = pFunc()->makeIssueIllegalIdentifier(model->name());
+        const auto &modelName = model->name();
+        if (!isCellmlIdentifier(modelName)) {
+            auto issue = pFunc()->makeIssueIllegalIdentifier(modelName);
             issue->mPimpl->mItem->mPimpl->setModel(model);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME_VALUE);
-            issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
+            issue->mPimpl->setDescription("Model '" + modelName + "' does not have a valid name attribute. " + issue->description());
             pFunc()->addIssue(issue);
         }
         // Check for a valid identifier.
-        if (!isValidXmlName(model->id())) {
+        const auto &modelId = model->id();
+        if (!isValidXmlName(modelId)) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid 'id' attribute, '" + model->id() + "'.");
+            issue->mPimpl->setDescription("Model '" + modelName + "' does not have a valid 'id' attribute, '" + modelId + "'.");
             pFunc()->addIssue(issue);
         }
         std::vector<ModelPtr> modelsVisited = {model};
         // Check for components in this model.
         if (model->componentCount() > 0) {
-            NameList componentNames;
+            std::unordered_set<std::string> componentNames;
             History history;
             for (size_t i = 0; i < model->componentCount(); ++i) {
                 history.clear();
@@ -811,11 +814,11 @@ void Validator::validateModel(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const ComponentPtr &component, NameList &names)
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const ComponentPtr &component, std::unordered_set<std::string> &namesSet)
 {
     std::string name = component->name();
     if (!name.empty()) {
-        if (std::find(names.begin(), names.end(), name) != names.end()) {
+        if (!namesSet.insert(name).second) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + name + "'. Valid component names must be unique to their model.");
             issue->mPimpl->mItem->mPimpl->setModel(model);
@@ -825,13 +828,11 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const C
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME_UNIQUE);
             }
             addIssue(issue);
-        } else {
-            names.push_back(name);
         }
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::unordered_set<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component, componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
@@ -1018,12 +1019,12 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         }
     } else {
         // Check for variables in this component.
-        NameList variableNames;
+        std::unordered_set<std::string> variableNames;
         // Validate variable(s).
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->variable(i);
             validateVariable(variable, variableNames);
-            variableNames.push_back(variable->name());
+            variableNames.insert(variable->name());
         }
         // Check for resets in this component.
         for (size_t i = 0; i < component->resetCount(); ++i) {
@@ -1040,12 +1041,12 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
     handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Component", componentName, history, component, nullptr);
 }
 
-std::set<std::string> namesInCycle(NameList allNames)
+std::unordered_set<std::string> namesInCycle(NameList allNames)
 {
     std::string cycleStartName = allNames.back();
     allNames.pop_back();
     std::reverse(allNames.begin(), allNames.end());
-    std::set<std::string> namesInCycle = {cycleStartName};
+    std::unordered_set<std::string> namesInCycle = {cycleStartName};
     std::string name = *allNames.begin();
     while (name != cycleStartName) {
         namesInCycle.emplace(name);
@@ -1058,7 +1059,7 @@ std::set<std::string> namesInCycle(NameList allNames)
 
 bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
-    std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
+    std::unordered_set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
     for (size_t i = 0; !found && (i < mValidator->issueCount()); ++i) {
         auto issue = mValidator->issue(i);
@@ -1277,14 +1278,16 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
     units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
         ModelPtr model = owningModel(units);
-        if (model->hasUnits(reference) && !isStandardUnitName(reference)) {
-            validateUnits(model->units(reference), history, modelsVisited);
-        } else if (!model->hasUnits(reference) && !isStandardUnitName(reference)) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
-            issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REFERENCE);
-            addIssue(issue);
+        if (!isStandardUnitName(reference)) {
+            if (model->hasUnits(reference)) {
+                validateUnits(model->units(reference), history, modelsVisited);
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
+                issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REFERENCE);
+                addIssue(issue);
+            }
         }
     } else {
         auto issue = makeIssueIllegalIdentifier(reference);
@@ -1325,12 +1328,12 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const NameList &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::unordered_set<std::string> &variableNames)
 {
     ComponentPtr component = owningComponent(variable);
     auto variableName = variable->name();
     if (!variableName.empty()) {
-        if (std::find(variableNames.begin(), variableNames.end(), variableName) != variableNames.end()) {
+        if (variableNames.count(variableName) != 0) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
@@ -1422,6 +1425,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     std::string testVarParentName;
 
     std::string description = "Reset in component '" + component->name() + "' ";
+    description.reserve(256 + component->name().size());
 
     if (reset->isOrderSet()) {
         description += "with order '" + convertToString(reset->order()) + "', ";
@@ -1579,12 +1583,9 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
 
         XmlNodePtr nodeCopy = node;
-        NameList variableNames;
+        std::unordered_set<std::string> variableNames;
         for (size_t i = 0; i < component->variableCount(); ++i) {
-            std::string variableName = component->variable(i)->name();
-            if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
-                variableNames.push_back(variableName);
-            }
+            variableNames.insert(component->variable(i)->name());
         }
 
         validateMathMLElements(nodeCopy, component);
@@ -1709,13 +1710,13 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames)
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::unordered_set<std::string> &variableNames)
 {
     XmlNodePtr childNode = node->firstChild();
     std::string textInNode = text(childNode);
     if (!textInNode.empty()) {
         // Check whether we can find this text as a variable name in this component.
-        if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
+        if (variableNames.count(textInNode) == 0) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setMath(component);
@@ -1725,7 +1726,7 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames)
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::unordered_set<std::string> &variableNames)
 {
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
@@ -2448,8 +2449,9 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node) const
 {
-    return (node->namespaceUri() == MATHML_NS)
-           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
+    static const std::unordered_set<std::string_view> supportedMathMLElementsSet(supportedMathMLElements.begin(), supportedMathMLElements.end());
+
+    return node->isMathmlElement() && supportedMathMLElementsSet.count(node->rawName()) != 0;
 }
 
 IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string &name) const
@@ -2478,7 +2480,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
                         std::string &hints,
                         double &multiplier)
 {
-    std::map<std::string, double> unitMap = {};
+    std::map<std::string, double> unitMap;
 
     for (const auto &baseUnits : baseUnitsList) {
         unitMap.emplace(baseUnits, 0.0);
@@ -2489,37 +2491,36 @@ bool unitsAreEquivalent(const ModelPtr &model,
 
     std::string v1UnitsName = v1->units()->name();
     if (model->hasUnits(v1UnitsName)) {
-        UnitsPtr u1 = Units::create();
-        u1 = model->units(v1UnitsName);
+        auto u1 = model->units(v1UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1UnitsName) != unitMap.end()) {
-        unitMap.at(v1UnitsName) += 1.0;
-    } else if (isStandardUnitName(v1UnitsName)) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1UnitsName, 1, 0, 1);
+    } else {
+        auto it = unitMap.find(v1UnitsName);
+        if (it != unitMap.end()) {
+            it->second += 1.0;
+        } else if (isStandardUnitName(v1UnitsName)) {
+            updateBaseUnitCount(model, unitMap, multiplier, v1UnitsName, 1, 0, 1);
+        }
     }
 
     std::string v2UnitsName = v2->units()->name();
     if (model->hasUnits(v2UnitsName)) {
-        UnitsPtr u2 = Units::create();
-        u2 = model->units(v2UnitsName);
+        auto u2 = model->units(v2UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2UnitsName) != unitMap.end()) {
-        unitMap.at(v2UnitsName) -= 1.0;
-    } else if (isStandardUnitName(v2UnitsName)) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2UnitsName, 1, 0, -1);
+    } else {
+        auto it = unitMap.find(v2UnitsName);
+        if (it != unitMap.end()) {
+            it->second -= 1.0;
+        } else if (isStandardUnitName(v2UnitsName)) {
+            updateBaseUnitCount(model, unitMap, multiplier, v2UnitsName, 1, 0, -1);
+        }
     }
 
     // Remove "dimensionless" from base unit testing.
     unitMap.erase("dimensionless");
-    static const std::regex fullStopAtEndRegex(".$");
-
     bool status = true;
     for (const auto &basePair : unitMap) {
         if (basePair.second != 0.0) {
-            std::string num = std::to_string(basePair.second);
-            num.erase(num.find_last_not_of('0') + 1, num.length());
-            num = std::regex_replace(num, fullStopAtEndRegex, "");
-            hints += basePair.first + "^" + num + ", ";
+            hints += basePair.first + "^" + std::format("{}", basePair.second) + ", ";
             status = false;
         }
     }
@@ -2528,10 +2529,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
         // NB: multiplication issues are only reported when there is a base issue mismatch too, does not trigger it alone.
         // The multiplication mismatch will be returned through the multiplier argument in all cases.
 
-        std::string num = std::to_string(multiplier);
-        num.erase(num.find_last_not_of('0') + 1, num.length());
-        num = std::regex_replace(num, fullStopAtEndRegex, "");
-        hints += "multiplication factor of 10^" + num + ", ";
+        hints += "multiplication factor of 10^" + std::format("{}", multiplier) + ", ";
     }
 
     // Remove the final trailing comma from the hints string.
@@ -2553,9 +2551,6 @@ void updateBaseUnitCount(const ModelPtr &model,
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
         if (u->isBaseUnit()) {
-            if (unitMap.find(uName) == unitMap.end()) {
-                unitMap.emplace(uName, 0.0);
-            }
             unitMap[uName] += direction * uExp;
             multiplier += direction * logMult;
         } else {
@@ -2593,7 +2588,7 @@ void Validator::ValidatorImpl::checkUniqueResetOrders(const ModelPtr &model)
         auto variable = variableOrder.first;
         auto orders = variableOrder.second;
 
-        std::set<int> ordersSet(orders.begin(), orders.end());
+        std::unordered_set<int> ordersSet(orders.begin(), orders.end());
 
         if (ordersSet.size() < orders.size()) {
             auto issue = Issue::IssueImpl::create();
@@ -2608,20 +2603,19 @@ void Validator::ValidatorImpl::checkUniqueResetOrders(const ModelPtr &model)
 void Validator::ValidatorImpl::addResetOrderMapItem(const VariablePtr &variable, int order, ResetOrderMap &resetOrderMap)
 {
     auto currentVariable = variable;
-    bool existingVariableFound = resetOrderMap.count(currentVariable) > 0;
+    auto it = resetOrderMap.find(currentVariable);
     size_t i = 0;
 
-    while ((i < variable->equivalentVariableCount()) && !existingVariableFound) {
+    while ((i < variable->equivalentVariableCount()) && (it == resetOrderMap.end())) {
         currentVariable = variable->equivalentVariable(i);
-        existingVariableFound = resetOrderMap.count(currentVariable) > 0;
+        it = resetOrderMap.find(currentVariable);
         ++i;
     }
 
-    if (existingVariableFound) {
-        resetOrderMap[currentVariable].emplace_back(order);
+    if (it != resetOrderMap.end()) {
+        it->second.emplace_back(order);
     } else {
-        std::vector<int> orders = {order};
-        resetOrderMap.emplace(variable, orders);
+        resetOrderMap.emplace(variable, std::vector<int> {order});
     }
 }
 
@@ -2682,13 +2676,12 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 
 void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap)
 {
-    if (idMap.count(id) > 0) {
-        idMap[id].second.emplace_back(info);
-        idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
+    auto it = idMap.find(id);
+    if (it != idMap.end()) {
+        it->second.second.emplace_back(info);
+        ++it->second.first;
     } else {
-        Strings infos;
-        infos.emplace_back(info);
-        idMap.emplace(id, std::make_pair(1, infos));
+        idMap.emplace(id, std::make_pair(1, Strings {info}));
     }
 }
 
@@ -2696,7 +2689,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
 {
     IdMap idMap;
     std::string info;
-    std::set<std::string> reportedConnections;
+    std::unordered_set<std::string> reportedConnections;
     // Model.
     if (!model->id().empty()) {
         info = " - model '" + model->name() + "'";
@@ -2753,7 +2746,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     return idMap;
 }
 
-void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections)
+void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::unordered_set<std::string> &reportedConnections)
 {
     std::string info;
 
@@ -2764,8 +2757,9 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
         if (component->isImport()) {
             imported = "imported ";
         }
-        if (owningComponent(component) != nullptr) {
-            owning = "' in component '" + owningComponent(component)->name() + "'";
+        auto parent = owningComponent(component);
+        if (parent != nullptr) {
+            owning = "' in component '" + parent->name() + "'";
         } else {
             owning = "' in model '" + owningModel(component)->name() + "'";
         }
@@ -2835,20 +2829,20 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     for (size_t i = 0; i < component->resetCount(); ++i) {
         auto item = component->reset(i);
         if (!item->id().empty()) {
-            info = " - reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            info = " - reset at index " + std::format("{}", i) + " in component '" + component->name() + "'";
             addIdMapItem(item->id(), info, idMap);
         }
         if (!item->testValueId().empty()) {
-            info = " - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            info = " - test_value in reset at index " + std::format("{}", i) + " in component '" + component->name() + "'";
             addIdMapItem(item->testValueId(), info, idMap);
         }
-        info = "test_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        info = "test_value in reset " + std::format("{}", i) + " in component '" + component->name() + "'";
         buildMathIdMap(info, idMap, item->testValue());
         if (!item->resetValueId().empty()) {
-            info = " - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            info = " - reset_value in reset at index " + std::format("{}", i) + " in component '" + component->name() + "'";
             addIdMapItem(item->resetValueId(), info, idMap);
         }
-        info = "reset_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        info = "reset_value in reset " + std::format("{}", i) + " in component '" + component->name() + "'";
         buildMathIdMap(info, idMap, item->resetValue());
     }
 

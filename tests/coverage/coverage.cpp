@@ -968,6 +968,31 @@ TEST(Coverage, generator)
     libcellml::Generator::equationCode(analyser->analyserModel()->analyserEquation(0)->ast());
 }
 
+TEST(Coverage, generatorVersionString)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setImplementationVersionString("const char VERSION[] = \".\";\n");
+
+    generator->implementationCode(analyserModel, profile);
+
+    profile->setImplementationVersionString("const char VERSION[] = \"0.0.0.0\";\n");
+
+    generator->implementationCode(analyserModel, profile);
+
+    profile->setImplementationVersionString("const char VERSION[] = \"0.0.0");
+
+    generator->implementationCode(analyserModel, profile);
+}
+
 TEST(Coverage, generatorWithNoTracking)
 {
     auto parser = libcellml::Parser::create();
@@ -1155,4 +1180,18 @@ TEST(CoverageModelFlattening, componentWithMathThatIsNotMathML)
     importer->resolveImports(model, ".");
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(1), flattenedModel->unitsCount());
+}
+
+TEST(PrinterCoverage, printMath)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+
+    model->addComponent(component);
+
+    auto printer = libcellml::Printer::create();
+
+    component->setMath("<?xml");
+
+    printer->printModel(model);
 }

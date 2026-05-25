@@ -137,7 +137,7 @@ public:
      *
      * @return The states as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> states() const;
+    const std::vector<AnalyserVariablePtr> &states() const;
 
     /**
      * @brief Get the state at @p index.
@@ -167,7 +167,7 @@ public:
      *
      * @return The constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> constants() const;
+    const std::vector<AnalyserVariablePtr> &constants() const;
 
     /**
      * @brief Get the constant at @p index.
@@ -197,7 +197,7 @@ public:
      *
      * @return The computed constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> computedConstants() const;
+    const std::vector<AnalyserVariablePtr> &computedConstants() const;
 
     /**
      * @brief Get the computed constant at @p index.
@@ -227,7 +227,7 @@ public:
      *
      * @return The algebraic variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> algebraicVariables() const;
+    const std::vector<AnalyserVariablePtr> &algebraicVariables() const;
 
     /**
      * @brief Get the algebraic variable at @p index.
@@ -257,7 +257,7 @@ public:
      *
      * @return The external variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> externalVariables() const;
+    const std::vector<AnalyserVariablePtr> &externalVariables() const;
 
     /**
      * @brief Get the external variable at @p index.
@@ -298,7 +298,7 @@ public:
      *
      * @return The analyser equations as a @c std::vector.
      */
-    std::vector<AnalyserEquationPtr> analyserEquations() const;
+    const std::vector<AnalyserEquationPtr> &analyserEquations() const;
 
     /**
      * @brief Get the analyser equation at @p index.

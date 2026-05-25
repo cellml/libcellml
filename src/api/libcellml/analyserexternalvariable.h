@@ -227,7 +227,7 @@ public:
      *
      * @return The dependencies as a @c std::vector.
      */
-    std::vector<VariablePtr> dependencies() const;
+    const std::vector<VariablePtr> &dependencies() const;
 
     /**
      * @brief Get the number of dependencies of this @ref AnalyserExternalVariable.

@@ -93,7 +93,7 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
 std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
 {
     return std::find_if(mUnitDefinitions.begin(), mUnitDefinitions.end(),
-                        [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
+                        [&](const UnitDefinition &u) -> bool { return u.mReference == reference; });
 }
 
 Units::UnitsImpl *Units::pFunc()
@@ -433,15 +433,20 @@ void Units::unitAttributes(const std::string &reference, std::string &prefix, do
 
 void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
-    UnitDefinition ud;
     if (index < pFunc()->mUnitDefinitions.size()) {
-        ud = pFunc()->mUnitDefinitions.at(index);
+        const auto &ud = pFunc()->mUnitDefinitions[index];
+        reference = ud.mReference;
+        prefix = ud.mPrefix;
+        exponent = ud.mExponent;
+        multiplier = ud.mMultiplier;
+        id = ud.mId;
+    } else {
+        reference.clear();
+        prefix.clear();
+        exponent = 1.0;
+        multiplier = 1.0;
+        id.clear();
     }
-    reference = ud.mReference;
-    prefix = ud.mPrefix;
-    exponent = ud.mExponent;
-    multiplier = ud.mMultiplier;
-    id = ud.mId;
 }
 
 std::string Units::unitAttributeReference(size_t index) const
@@ -458,9 +463,7 @@ std::string Units::unitAttributeReference(size_t index) const
 void Units::setUnitAttributeReference(size_t index, const std::string &reference)
 {
     if (index < pFunc()->mUnitDefinitions.size()) {
-        UnitDefinition unitDefinition = pFunc()->mUnitDefinitions.at(index);
-        unitDefinition.mReference = reference;
-        pFunc()->mUnitDefinitions[index] = unitDefinition;
+        pFunc()->mUnitDefinitions[index].mReference = reference;
     }
 }
 

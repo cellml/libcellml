@@ -160,12 +160,13 @@ public:
     AnalyserExternalVariablePtrs mExternalVariables;
 
     AnalyserInternalVariablePtrs mInternalVariables;
+    std::unordered_map<Variable *, AnalyserInternalVariablePtr> mInternalVariableCache;
     AnalyserInternalEquationPtrs mInternalEquations;
 
     GeneratorProfilePtr mGeneratorProfile = GeneratorProfile::create();
 
-    std::map<std::string, UnitsPtr> mStandardUnits;
-    std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
+    std::unordered_map<std::string, UnitsPtr> mStandardUnits;
+    std::unordered_map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
 
     AnalyserImpl();
 
@@ -180,10 +181,6 @@ public:
                      const AnalyserInternalEquationPtr &equation);
     void analyseComponent(const ComponentPtr &component);
     void analyseComponentVariables(const ComponentPtr &component);
-
-    void equivalentVariables(const VariablePtr &variable,
-                             VariablePtrs &equivalentVariables) const;
-    VariablePtrs equivalentVariables(const VariablePtr &variable) const;
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
@@ -251,7 +248,7 @@ public:
     static bool isExternalVariable(const AnalyserInternalVariablePtr &variable);
 
     bool isStateRateBased(const AnalyserEquationPtr &analyserEquation,
-                          AnalyserEquationPtrs &checkedEquations);
+                          std::unordered_set<AnalyserEquation *> &checkedEquations);
 
     void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
                                  Issue::ReferenceRule referenceRule);

@@ -93,6 +93,8 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
 {
     std::vector<AnalyserEquationPtr> res;
 
+    res.reserve(mPimpl->mDependencies.size());
+
     for (const auto &dependency : mPimpl->mDependencies) {
         res.push_back(dependency.lock());
     }
@@ -123,6 +125,8 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::nlaSiblings() const
 {
     std::vector<AnalyserEquationPtr> res;
 
+    res.reserve(mPimpl->mNlaSiblings.size());
+
     for (const auto &nlaSibling : mPimpl->mNlaSiblings) {
         res.push_back(nlaSibling.lock());
     }
@@ -149,7 +153,7 @@ size_t AnalyserEquation::stateCount() const
     return mPimpl->mStates.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::states() const
+const std::vector<AnalyserVariablePtr> &AnalyserEquation::states() const
 {
     return mPimpl->mStates;
 }
@@ -168,7 +172,7 @@ size_t AnalyserEquation::computedConstantCount() const
     return mPimpl->mComputedConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::computedConstants() const
+const std::vector<AnalyserVariablePtr> &AnalyserEquation::computedConstants() const
 {
     return mPimpl->mComputedConstants;
 }
@@ -187,7 +191,7 @@ size_t AnalyserEquation::algebraicVariableCount() const
     return mPimpl->mAlgebraicVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::algebraicVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserEquation::algebraicVariables() const
 {
     return mPimpl->mAlgebraicVariables;
 }
@@ -206,7 +210,7 @@ size_t AnalyserEquation::externalVariableCount() const
     return mPimpl->mExternalVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::externalVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserEquation::externalVariables() const
 {
     return mPimpl->mExternalVariables;
 }

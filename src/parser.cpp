@@ -407,8 +407,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     auto elementNamespaceMap = traverseTreeForElementNamespaces(node);
     if (mParsing20Version) {
         for (const auto &e : elementNamespaceMap) {
-            std::string name = e.first;
-            std::string uri = e.second;
+            const auto &name = e.first;
+            const auto &uri = e.second;
             if ((uri != CELLML_2_0_NS) && (uri != MATHML_NS)) {
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Element '" + name + "' uses namespace '" + uri + "' which does not belong to an allowed namespace. ");
@@ -421,10 +421,10 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     auto attributeNamespaceMap = traverseTreeForAttributeNamespaces(node);
     if (mParsing20Version) {
         for (const auto &e : attributeNamespaceMap) {
-            std::string nodeName = std::get<0>(e);
-            std::string nodeUri = std::get<4>(e);
-            std::string attributeName = std::get<1>(e);
-            std::string uri = std::get<3>(e);
+            const auto &nodeName = std::get<0>(e);
+            const auto &nodeUri = std::get<4>(e);
+            const auto &attributeName = std::get<1>(e);
+            const auto &uri = std::get<3>(e);
             if ((nodeName == "cn") && (nodeUri == MATHML_NS) && (attributeName == "units") && (uri == CELLML_2_0_NS)) {
                 // Explicitly allowed attribute namespace prefix.
             } else if ((nodeName == "import") && (nodeUri == CELLML_2_0_NS) && (attributeName == "href") && (uri == XLINK_NS)) {
@@ -982,6 +982,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     if (!nameAttributePresent || !unitsAttributePresent) {
         auto issue = Issue::IssueImpl::create();
         std::string description = "Variable ";
+        description.reserve(256);
         if (nameAttributePresent) {
             description += "'" + node->attribute("name") + "' does not specify a units attribute.";
         } else if (unitsAttributePresent) {

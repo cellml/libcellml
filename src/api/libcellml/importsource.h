@@ -65,7 +65,7 @@ public:
      *
      * @return The URL of the source @ref Model if set otherwise the empty string.
      */
-    std::string url() const;
+    const std::string &url() const;
 
     /**
      * @brief Set the source @ref Model's URL.
