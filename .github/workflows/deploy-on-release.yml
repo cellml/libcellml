@@ -296,6 +296,9 @@ jobs:
             os: ubuntu-24.04
           - name: 'macOS'
             os: macos-15-intel
+        exclude:
+          - os: ubuntu-24.04
+            py: '3.9'
 
     steps:
       - name: Check out libCellML
