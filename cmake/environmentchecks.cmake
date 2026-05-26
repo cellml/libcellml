@@ -188,24 +188,28 @@ function(print_target_properties target)
 endfunction()
 
 print_target_properties(LibXml2::LibXml2)
+print_target_properties(_libxml2_legacy)
+print_target_properties(_libxml2_target)
+
+message(STATUS "_libxml2_legacy: ${_libxml2_legacy}")
 
 set(_libxml2_includes "")
 set(_libxml2_libs "")
 set(_libxml2_defs "")
 
-get_target_property(_tmp LibXml2::LibXml2 INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(_tmp _libxml2_target INTERFACE_INCLUDE_DIRECTORIES)
 if(_tmp)
   set(_libxml2_includes "${_tmp}")
   string(REPLACE ";" "|" _LIBXML2_INCLUDE_DIRS_ESCAPED "${_libxml2_includes}")
 endif()
 
-get_target_property(_tmp LibXml2::LibXml2 INTERFACE_LINK_LIBRARIES)
+get_target_property(_tmp _libxml2_target INTERFACE_LINK_LIBRARIES)
 if(_tmp)
   set(_libxml2_libs "${_tmp}")
   string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_libxml2_libs}")
 endif()
 
-get_target_property(_tmp LibXml2::LibXml2 INTERFACE_COMPILE_DEFINITIONS)
+get_target_property(_tmp _libxml2_target INTERFACE_COMPILE_DEFINITIONS)
 if(_tmp)
   set(_libxml2_defs "${_tmp}")
   list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
