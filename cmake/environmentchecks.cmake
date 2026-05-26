@@ -151,62 +151,19 @@ if(NOT TARGET LibXml2::LibXml2)
   )
 endif()
 
-# Get all propreties that cmake supports
-if(NOT CMAKE_PROPERTY_LIST)
-    execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
-
-    # Convert command output into a CMake list
-    string(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-    string(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-    list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
-endif()
-
-function(print_properties)
-    message("CMAKE_PROPERTY_LIST = ${CMAKE_PROPERTY_LIST}")
-endfunction()
-
-function(print_target_properties target)
-    if(NOT TARGET ${target})
-      message(STATUS "There is no target named '${target}'")
-      return()
-    endif()
-
-    foreach(property ${CMAKE_PROPERTY_LIST})
-        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" property ${property})
-
-        # Fix https://stackoverflow.com/questions/32197663/how-can-i-remove-the-the-location-property-may-not-be-read-from-target-error-i
-        if(property STREQUAL "LOCATION" OR property MATCHES "^LOCATION_" OR property MATCHES "_LOCATION$")
-            continue()
-        endif()
-
-        get_property(was_set TARGET ${target} PROPERTY ${property} SET)
-        if(was_set)
-            get_target_property(value ${target} ${property})
-            message("${target} ${property} = ${value}")
-        endif()
-    endforeach()
-endfunction()
-
-print_target_properties(LibXml2::LibXml2)
-print_target_properties(_libxml2_legacy)
-print_target_properties(${_libxml2_target})
-
-message(STATUS "_libxml2_legacy: ${_libxml2_legacy}")
-
-set(_libxml2_includes "")
-set(_libxml2_libs "")
 set(_libxml2_defs "")
 
 get_target_property(_tmp ${_libxml2_target} INTERFACE_INCLUDE_DIRECTORIES)
 if(_tmp)
-  set(_libxml2_includes "${_tmp}")
-  string(REPLACE ";" "|" _LIBXML2_INCLUDE_DIRS_ESCAPED "${_libxml2_includes}")
+  string(REPLACE ";" "|" _LIBXML2_INCLUDE_DIRS_ESCAPED "${_tmp}")
 endif()
 
 get_target_property(_tmp ${_libxml2_target} INTERFACE_LINK_LIBRARIES)
 if(_tmp)
-  set(_libxml2_libs "${_tmp}")
-  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_libxml2_libs}")
+  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_tmp}")
+else()
+  get_target_property(_tmp ${_libxml2_target} NAME)
+  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_tmp}")
 endif()
 
 get_target_property(_tmp ${_libxml2_target} INTERFACE_COMPILE_DEFINITIONS)
@@ -243,6 +200,7 @@ if(NOT TARGET ZLIB::ZLIB)
   add_library(ZLIB::ZLIB INTERFACE IMPORTED)
   target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
 endif()
+
 get_target_property(ZLIB_TARGET_TYPE ZLIB::ZLIB TYPE)
 get_target_property(LIBXML2_TARGET_TYPE LibXml2::LibXml2 TYPE)
 
@@ -332,9 +290,7 @@ if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()
 
-message(STATUS "about to call test_libxml2_const_error_structured_error_callback:")
 test_libxml2_const_error_structured_error_callback()
-message(STATUS "finished call test_libxml2_const_error_structured_error_callback:")
 
 if(CONST_ERROR_STRUCTURED_ERROR_CALLBACK)
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "const xmlError *")
