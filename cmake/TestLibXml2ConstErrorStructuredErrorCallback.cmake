@@ -29,12 +29,20 @@ cmake_minimum_required(VERSION 3.18.0)
 project(undefined CXX)
 add_library(foo SHARED \"foo.cpp\")
 
+string(REPLACE \"|\" \";\" LIBXML2_INCLUDE_DIRS \"${_LIBXML2_INCLUDE_DIRS_ESCAPED}\")
+string(REPLACE \"|\" \";\" LIBXML2_LIBRARIES \"${_LIBXML2_LIBRARIES_ESCAPED}\")
+
 add_library(LibXml2::LibXml2 INTERFACE IMPORTED)
 set_target_properties(LibXml2::LibXml2 PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES \"${_LIBXML2_INCLUDE_DIRS_ESCAPED}\"
-  INTERFACE_LINK_LIBRARIES \"${_LIBXML2_LIBRARIES_ESCAPED}\")
+  INTERFACE_INCLUDE_DIRECTORIES \"\${LIBXML2_INCLUDE_DIRS}\"
+  INTERFACE_LINK_LIBRARIES \"\${LIBXML2_LIBRARIES}\")
 string(REPLACE \"|\" \";\" LIBXML2_DEFINITIONS \"${_LIBXML2_DEFINITIONS_ESCAPED}\")
 target_compile_definitions(LibXml2::LibXml2 INTERFACE \${LIBXML2_DEFINITIONS})
+
+message(STATUS \"Test_LibXml2_Const_Error_Structured_Error_Callback:\")
+message(STATUS \"LIBXML2_DEFINITIONS: \${LIBXML2_DEFINITIONS}\")
+message(STATUS \"LIBXML2_LIBRARIES: \${LIBXML2_LIBRARIES}\")
+message(STATUS \"LIBXML2_INCLUDE_DIRS: \${LIBXML2_INCLUDE_DIRS}\")
 
 target_link_libraries(foo PUBLIC LibXml2::LibXml2)
 ")
@@ -68,6 +76,9 @@ void function()
       OUTPUT_VARIABLE _OUTPUT)
 
     set(${_HASH_VAR_NAME} "${_CMAKE_FLAGS_HASH}" CACHE INTERNAL  "Hashed try_compile flags.")
+
+    message(STATUS "_OUTPUT Test_LibXml2_Const_Error_Structured_Error_Callback: ")
+    message(STATUS "${_OUTPUT}")
 
     if(${_VAR_NAME})
       message(STATUS "Performing Test ${_VAR_NAME} - Success")
