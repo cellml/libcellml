@@ -20,7 +20,7 @@ function(Test_LibXml2_Const_Error_Structured_Error_Callback)
   endif()
 
   if(NOT DEFINED "${_VAR_NAME}")
-    message(STATUS "Performing Test ${_VAR_NAME} - ...")
+    message(STATUS "Performing Test ${_VAR_NAME}")
     set(_TEST_PROJECT_DIR "${PROJECT_BINARY_DIR}/CMakeTmp/${_VAR_NAME}")
 
     file(WRITE "${_TEST_PROJECT_DIR}/CMakeLists.txt"
@@ -76,6 +76,14 @@ void function()
       OUTPUT_VARIABLE _OUTPUT)
 
     set(${_HASH_VAR_NAME} "${_CMAKE_FLAGS_HASH}" CACHE INTERNAL  "Hashed try_compile flags.")
+
+    message(STATUS "00000000000000000000000000000000000000000000000000000")
+    message(STATUS "_LIBXML2_INCLUDE_DIRS_ESCAPED: ${_LIBXML2_INCLUDE_DIRS_ESCAPED}")
+    message(STATUS "_LIBXML2_LIBRARIES_ESCAPED: ${_LIBXML2_LIBRARIES_ESCAPED}")
+    message(STATUS "_LIBXML2_DEFINITIONS_ESCAPED: ${_LIBXML2_DEFINITIONS_ESCAPED}")
+    file(READ "${_TEST_PROJECT_DIR}/CMakeLists.txt" _HERE)
+    message(STATUS "CMakeLists.txt:")
+    message(STATUS "${_HERE}")
 
     message(STATUS "_OUTPUT Test_LibXml2_Const_Error_Structured_Error_Callback: ")
     message(STATUS "${_OUTPUT}")
