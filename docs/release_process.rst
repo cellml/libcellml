@@ -163,7 +163,7 @@ If end-to-end tests fail:
 
 - The release **may still proceed**, however:
   - The user documentation will **not** be updated as part of the release process.
-  - The metadata recorded in the workflow comment will be used bu subsequent workflows to finalise documentation updates on the libcellml.org website.
+  - The metadata recorded in the workflow comment will be used by subsequent workflows to finalise documentation updates on the libcellml.org website.
 
 Failure handling
 ----------------
