@@ -150,9 +150,29 @@ if(NOT TARGET LibXml2::LibXml2)
     ${_libxml2_target}
   )
 endif()
-set(_libxml2_defs "${LIBXML2_DEFINITIONS}")
-list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
-string(REPLACE ";" "|" _LIBXML2_DEFINITIONS_ESCAPED "${_libxml2_defs}")
+
+set(_libxml2_includes "")
+set(_libxml2_libs "")
+set(_libxml2_defs "")
+
+get_target_property(_tmp LibXml2::LibXml2 INTERFACE_INCLUDE_DIRECTORIES)
+if(_tmp)
+  set(_libxml2_includes "${_tmp}")
+  string(REPLACE ";" "|" _LIBXML2_INCLUDE_DIRS_ESCAPED "${_libxml2_includes}")
+endif()
+
+get_target_property(_tmp LibXml2::LibXml2 INTERFACE_LINK_LIBRARIES)
+if(_tmp)
+  set(_libxml2_libs "${_tmp}")
+  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_libxml2_libs}")
+endif()
+
+get_target_property(_tmp LibXml2::LibXml2 INTERFACE_COMPILE_DEFINITIONS)
+if(_tmp)
+  set(_libxml2_defs "${_tmp}")
+  list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
+  string(REPLACE ";" "|" _LIBXML2_DEFINITIONS_ESCAPED "${_libxml2_defs}")
+endif()
 
 if(NOT ZLIB_FOUND)
   find_package(ZLIB CONFIG QUIET)
