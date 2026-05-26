@@ -270,7 +270,9 @@ if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()
 
+message(STATUS "about to call test_libxml2_const_error_structured_error_callback:")
 test_libxml2_const_error_structured_error_callback()
+message(STATUS "finished call test_libxml2_const_error_structured_error_callback:")
 
 if(CONST_ERROR_STRUCTURED_ERROR_CALLBACK)
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "const xmlError *")
