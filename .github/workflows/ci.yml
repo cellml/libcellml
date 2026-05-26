@@ -13,7 +13,7 @@ on:
 jobs:
   cpp_python:
     name: ${{ matrix.name }}
-    if: false
+    if: true
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
