@@ -181,6 +181,8 @@ if(NOT TARGET ZLIB::ZLIB)
   add_library(ZLIB::ZLIB INTERFACE IMPORTED)
   target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
 endif()
+get_target_property(ZLIB_TARGET_TYPE ZLIB::ZLIB TYPE)
+get_target_property(LIBXML2_TARGET_TYPE LibXml2::LibXml2 TYPE)
 
 if(NOT DEFINED _LibXml2_FIND_REPORTED)
   set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
