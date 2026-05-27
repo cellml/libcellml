@@ -14,7 +14,8 @@
 
 include(CheckCXXCompilerFlag)
 include(TestUndefinedSymbolsAllowed)
-include(TestLibXml2ConstErrorStructuredErrorCallback)
+include(libcellml/ResolveLibXml2)
+include(libcellml/ResolveZLIB)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -107,115 +108,11 @@ else ()
   )
 endif()
 
-find_package(LibXml2 CONFIG QUIET)
-if(NOT LibXml2_FOUND)
-  find_package(LibXml2 REQUIRED)
-  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
-endif()
+resolve_libxml2(LIBXML2_TARGET)
+resolve_zlib(${LIBXML2_TARGET} ZLIB_TARGET)
 
-set(_libxml2_target "")
-
-if(TARGET LibXml2::LibXml2)
-  set(_libxml2_target LibXml2::LibXml2)
-elseif(TARGET LibXml2)
-  set(_libxml2_target LibXml2)
-elseif(TARGET xml2)
-  set(_libxml2_target xml2)
-endif()
-
-if(NOT _libxml2_target)
-  if(DEFINED LIBXML2_LIBRARIES AND DEFINED LIBXML2_INCLUDE_DIRS)
-    message(WARNING "Creating legacy target for LibXml2. This is not ideal.")
-    add_library(_libxml2_legacy INTERFACE)
-    target_include_directories(_libxml2_legacy INTERFACE
-      ${LIBXML2_INCLUDE_DIRS}
-    )
-    target_link_libraries(_libxml2_legacy INTERFACE
-      ${LIBXML2_LIBRARIES}
-    )
-    set(_libxml2_defs "${LIBXML2_DEFINITIONS}")
-    if(_libxml2_defs)
-      list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
-      target_compile_definitions(_libxml2_legacy INTERFACE ${_libxml2_defs})
-    endif()
-    set(_libxml2_target _libxml2_legacy)
-  else()
-    message(FATAL_ERROR "LibXml2 found but no targets or usable variables.")
-  endif()
-endif()
-
-if(NOT TARGET LibXml2::LibXml2)
-  add_library(LibXml2::LibXml2 INTERFACE IMPORTED)
-  target_link_libraries(LibXml2::LibXml2 INTERFACE
-    ${_libxml2_target}
-  )
-endif()
-
-set(_libxml2_defs "")
-
-get_target_property(_tmp ${_libxml2_target} INTERFACE_INCLUDE_DIRECTORIES)
-if(_tmp)
-  string(REPLACE ";" "|" _LIBXML2_INCLUDE_DIRS_ESCAPED "${_tmp}")
-endif()
-
-get_target_property(_tmp ${_libxml2_target} INTERFACE_LINK_LIBRARIES)
-if(_tmp)
-  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_tmp}")
-else()
-  get_target_property(_tmp ${_libxml2_target} NAME)
-  string(REPLACE ";" "|" _LIBXML2_LIBRARIES_ESCAPED "${_tmp}")
-endif()
-
-get_target_property(_tmp ${_libxml2_target} INTERFACE_COMPILE_DEFINITIONS)
-if(_tmp)
-  set(_libxml2_defs "${_tmp}")
-  list(TRANSFORM _libxml2_defs REPLACE "^-D" "")
-  string(REPLACE ";" "|" _LIBXML2_DEFINITIONS_ESCAPED "${_libxml2_defs}")
-endif()
-
-if(NOT ZLIB_FOUND)
-  find_package(ZLIB CONFIG QUIET)
-  if(NOT ZLIB_FOUND)
-    find_package(ZLIB REQUIRED)
-    set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-  endif()
-endif()
-
-set(_zlib_target "")
-
-if(TARGET ZLIB::ZLIB)
-  set(_zlib_target ZLIB::ZLIB)
-elseif(TARGET z)
-  set(_zlib_target z)
-endif()
-
-if(NOT _zlib_target)
-  add_library(_zlib_legacy INTERFACE)
-  target_include_directories(_zlib_legacy INTERFACE ${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(_zlib_legacy INTERFACE ${ZLIB_LIBRARIES})
-  set(_zlib_target _zlib_legacy)
-endif()
-
-if(NOT TARGET ZLIB::ZLIB)
-  add_library(ZLIB::ZLIB INTERFACE IMPORTED)
-  target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_target})
-endif()
-
-get_target_property(ZLIB_TARGET_TYPE ZLIB::ZLIB TYPE)
-get_target_property(LIBXML2_TARGET_TYPE LibXml2::LibXml2 TYPE)
-
-if(NOT DEFINED _LibXml2_FIND_REPORTED)
-  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
-  message(STATUS "Found LibXml2: ${LIBXML2_LIBRARIES} (found version \"${LIBXML2_VERSION_STRING}\").")
-endif()
-
-if(NOT DEFINED _ZLIB_FIND_REPORTED)
-  set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
-    set(ZLIB_VERSION_STRING ${ZLIB_VERSION})
-  endif()
-  message(STATUS "Found ZLIB: ${ZLIB_LIBRARIES} (found version \"${ZLIB_VERSION_STRING}\").")
-endif()
+get_target_property(ZLIB_TARGET_TYPE ${ZLIB_TARGET} TYPE)
+get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET} TYPE)
 
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
   set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
@@ -290,9 +187,7 @@ if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()
 
-test_libxml2_const_error_structured_error_callback()
-
-if(CONST_ERROR_STRUCTURED_ERROR_CALLBACK)
+if(CONST_XMLERROR STREQUAL "CONST")
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "const xmlError *")
 else()
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "xmlErrorPtr")
