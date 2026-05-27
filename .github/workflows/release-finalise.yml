@@ -1,0 +1,83 @@
+name: Finalise Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  determine_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_branch: ${{ steps.find_branch.outputs.release_branch }}
+      release_version: ${{ steps.find_branch.outputs.release_version }}
+      pr_number: ${{ steps.find_pr.outputs.pr_number }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Determine release staging branch
+        id: find_branch
+        run: |
+          git remote set-branches origin '*'
+          git fetch -v --depth=1
+
+          branch=$(git branch -r \
+            | grep 'origin/${{ vars.RELEASE_STAGING_BRANCH_STEM }}' \
+            | sed 's|[ \t]*origin/||' \
+            | sort -V \
+            | tail -1)
+
+          if [ -z "$branch" ]; then
+            echo "::error::No release staging branch found"
+            exit 1
+          fi
+
+          echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
+          tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
+          echo "release_version=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Determine PR number
+        id: find_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="${{ steps.find_branch.outputs.release_branch }}"
+
+          pr_number=$(gh pr list \
+            --head "$branch" \
+            --base release \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -z "$pr_number" ]; then
+            echo "::error::No PR found for branch $branch"
+            exit 1
+          fi
+
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata
+        id: extract_metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="${{ steps.find_pr.outputs.pr_number }}"
+
+          metadata=$(gh pr view "$pr_number" --json comments --jq '.comments[].body' | sed -n '/```json/,/```/p' | sed '1d;$d')
+
+          if [ -z "$metadata" ]; then
+            echo "::error::No metadata found in PR #$pr_number"
+            exit 1
+          fi
+
+          echo "metadata=$metadata" >> "$GITHUB_OUTPUT"
+          echo "Extracted metadata: $metadata"
