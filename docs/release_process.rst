@@ -114,7 +114,7 @@ Procedure
    :alt: GitHub Action check release manual trigger interface.
    :name: libcellml_release_process_check_release_interface
 
-   *Check Release Builder* interface from GitHub Action.
+   *Check Release* workflow interface from GitHub Action.
 
 Tasks performed
 ---------------
@@ -137,6 +137,7 @@ Results from the workflow are published as comments on the staging pull request:
 
 .. figure:: ./images/release_process/check_release_unit_test_comment.png
    :align: center
+   :width: 67%
    :alt: GitHub Action check release unit test passing comment.
    :name: libcellml_release_process_check_release_unit_test_comment
 
@@ -144,6 +145,7 @@ Results from the workflow are published as comments on the staging pull request:
 
 .. figure:: ./images/release_process/check_release_end_to_end_comment.png
    :align: center
+   :width: 67%
    :alt: GitHub Action check release end-to-end passing comment.
    :name: libcellml_release_process_check_release_end_to_end_comment
 
@@ -184,36 +186,53 @@ Once all required checks have passed and the results have been reviewed, the rel
 Step 3 - Make the release
 =========================
 
-A release is created using the *Create Release Builder* (:numref:`libcellml_release_process_create_release`).
+The *Make Release* GitHub Actions workflow creates a release on GitHub and builds all the release assets.
 
-.. figure:: ./images/release_process/create_release_builder.png
+.. figure:: ./images/release_process/make_release_interface.png
    :align: center
-   :alt: Buildbot create release builder interface.
-   :name: libcellml_release_process_create_release
+   :width: 25%
+   :alt: GitHub Action make release manual trigger interface.
+   :name: libcellml_release_process_make_release
 
-   *Create Release Builder* on Buildbot.
+   *Make Release* workflow interface from GitHub Action.
 
-A release can only be created from a *release_staging_<version number>* branch.
-The *Create Release Builder* interface interrogates `cellml/libcellml <https://github.com/cellml/libcellml>`__ for potential release branches.
-Select the release preparation branch (there should only ever be one), to create the release from, and start the build with the *Start Build* button, :numref:`libcellml_release_process_create_release_builder_interface`.
+This workflow behaves differently depending on the type of release:
 
-.. figure:: ./images/release_process/create_release_builder_interface.png
-   :align: center
-   :alt: Buildbot create release interface.
-   :name: libcellml_release_process_create_release_builder_interface
+- For official releases, it publishes binaries to GitHub and external registries.
+- For developer (pre-)releases, it produces build artifacts only.
 
-   *Create Release Builder* interface showing the branch a release can be created from.
+In addition, the workflow creates a pull request to the Julia packaging repository, `Yggdrasil <https://github.com/JuliaPackaging/Yggdrasil>`_, to updating the *libCellML* package.
+The pull request to Yggdrasil must be manually managed.
+Historically, the Julia package maintainers have been very good at approving and merging pull requests in a timely manner.
 
-The *Create Release Builder* creates a release on GitHub and adds tags to identify where the release was created from.
-The current status for the *release_staging_<version number>* branch will be applied to the *release* branch.
-The tagged *release* branch is where the GitHub release will be created from.
-When the release is created GitHub actions will take over to build all the assets.
-The assets here are the binaries: installers and archives from Windows, macOS, and Ubuntu; Python wheels; and, the Javascript package.
+Procedure
+---------
 
-.. note::
+1. Navigate to the *Make Release* workflow in the GitHub Actions tab of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Manually trigger the workflow (this workflow may take up to 20 minutes to run).
+3. Check the workflow run for any failures.
+4. Monitor the pull request created on the `Yggdrasil <https://github.com/JuliaPackaging/Yggdrasil>`_ repository.
 
-  **Do not** start the *Finalise Release Builder* until the deploy libCellML GitHub action has finished.
-  The GitHub action for deploying libCellML is currently taking between 11 and 15 minutes to complete.
+Tasks performed
+---------------
+
+The workflow performs the following tasks
+
+- Moves the staged code to the release branch.
+- Creates a release on GitHub using information from the staging branch.
+- Builds release assets including:
+  - Binaries
+  - Python wheels
+  - Javascript package
+  - Julia packaging update (pull request), and
+  - source code
+- Publishes release assets to GitHub and public registries (for official releases only).
+
+Failure handling
+----------------
+
+If there is a failure in the workflow that release will be incomplete, but should not be considered a failed release.
+The only solution is to fix the problems through the normal channels and start the release process again.
 
 Step 4 - Finalising the Release
 ===============================
