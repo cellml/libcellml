@@ -6,7 +6,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/ResolveZLIB.cmake")
 
 resolve_libxml2(LIBXML2_TARGET)
 
-if ("${CONST_XMLERROR}" NOT EQUAL "@CONST_XMLERROR@")
+if (NOT "${CONST_XMLERROR}" STREQUAL "@CONST_XMLERROR@")
     message(FATAL_ERROR "LibXml2 found but does not have the required API (xmlSetStructuredErrorFunc with const xmlError*) for this version of libCellML.")
 endif()
 
