@@ -60,7 +60,7 @@ function(resolve_libxml2 out_var)
 
       string(REGEX REPLACE "^#define[\t ]+LIBXML_DOTTED_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
             LibXml2_VERSION "${libxml2_version_str}")
-      set(LIBXML2_VERSION_STRING "${LibXml2_VERSION}")
+      set(LIBXML2_VERSION_STRING "${LibXml2_VERSION}" PARENT_SCOPE)
       unset(libxml2_version_str)
       break()
     endif()
