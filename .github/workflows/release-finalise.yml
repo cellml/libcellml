@@ -79,5 +79,5 @@ jobs:
             exit 1
           fi
 
-          echo "metadata=$metadata" >> "$GITHUB_OUTPUT"
+          #echo "metadata=$metadata" >> "$GITHUB_OUTPUT"
           echo "Extracted metadata: $metadata"
