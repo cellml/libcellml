@@ -86,3 +86,32 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           echo "Extracted metadata: $metadata"
+
+  prepare_documentation:
+    needs: determine_release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.determine_release.outputs.release_version }}
+          path: libcellml
+
+      - name: Extract documentation metadata
+        id: extract_doc_metadata
+        run: |
+          metadata="${{ needs.determine_release.outputs.metadata }}"
+          echo "$metadata"
+          database_repo=$(echo "$metadata" | jq -r '.database_repo')
+          database_sha=$(echo "$metadata" | jq -r '.database_sha')
+          echo "database_repo=$database_repo" >> "$GITHUB_OUTPUT"
+          echo "database_sha=$database_sha" >> "$GITHUB_OUTPUT"
+          echo "$database_repo"
+          echo "$database_sha"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: libcellml/website-src
+          ref: production
+          path: website-src
+
