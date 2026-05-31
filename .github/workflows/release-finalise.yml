@@ -127,7 +127,7 @@ jobs:
         run: |
           echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ steps.extract_doc_metadata.outputs.passed_tests }}"
           echo "yes"
-          ls .github/scripts
+          ls libcellml/.github/scripts
 
 
 
