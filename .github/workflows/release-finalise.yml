@@ -16,6 +16,7 @@ jobs:
       release_branch: ${{ steps.find_branch.outputs.release_branch }}
       release_version: ${{ steps.find_branch.outputs.release_version }}
       pr_number: ${{ steps.find_pr.outputs.pr_number }}
+      metadata: ${{ steps.extract_metadata.outputs.metadata }}
 
     steps:
       - name: Checkout repository
