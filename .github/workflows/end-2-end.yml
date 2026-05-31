@@ -71,6 +71,8 @@ jobs:
   end2end:
     runs-on: ubuntu-latest
     needs: set_inputs
+    outputs:
+      test_summary: ${{ steps.export_summary.outputs.test_summary }}
     steps:
       - name: Checkout libCellML repository
         uses: actions/checkout@v6
@@ -124,4 +126,44 @@ jobs:
       - name: Run end-to-end tests
         run: |
           cd end-to-end-framework-build
-          ctest --output-on-failure
+          ctest --output-on-failure | tee ctest_output.txt
+
+      - name: Parse test results
+        id: parse_results
+        run: |
+          cd end-to-end-framework-build
+          python libcellml/.github/scripts/scrape_ctest_output.py < ctest_output.txt > test_summary.json
+
+      - name: Export test summary
+        id: export_summary
+        run: |
+          cd end-to-end-framework
+          framework_sha=$(git rev-parse HEAD)
+          cd ../
+          cd database
+          database_sha=$(git rev-parse HEAD)
+          cd ../
+
+          summary=$(cat end-to-end-framework-build/test_summary.json)
+
+          combined=$(jq -n \
+            --argjson summary "$summary" \
+            --arg framework_sha "$framework_sha" \
+            --arg database_sha "$database_sha" \
+            '{
+              test_summary: $summary,
+              repos: {
+                end_to_end_framework: $framework_sha,
+                database: $database_sha
+              }
+            }')
+
+          echo "Test summary:"
+          echo $combined
+
+          {
+            echo "test_summary<<EOF"
+            echo "$combined"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
