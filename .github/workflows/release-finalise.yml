@@ -102,20 +102,32 @@ jobs:
           metadata_b64="${{ needs.determine_release.outputs.metadata_b64 }}"
           metadata=$(echo "$metadata_b64" | base64 -d)
           echo "$metadata"
+
           database_repo=$(echo "$metadata" | jq -r '.database_repo')
           database_sha=$(echo "$metadata" | jq -r '.database_sha')
+
           echo "database_repo=$database_repo" >> "$GITHUB_OUTPUT"
           echo "database_sha=$database_sha" >> "$GITHUB_OUTPUT"
-          echo "$database_repo"
-          echo "$database_sha"
+
           passed_tests=$(echo "$metadata" | jq -r '.test_summary | to_entries | map(select(.key != "total_failed" and .value.failed == 0)) | map(.key) | join(" ")')
           echo "passed_tests=$passed_tests" >> "$GITHUB_OUTPUT"
+
+          echo "Database repo.: $database_repo"
+          echo "Database SHA: $database_sha"
           echo "Passed tests: $passed_tests"
 
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          repository: libcellml/website-src
-          ref: production
-          path: website-src
+          repository: ${{ outputs.extract_doc_metadata.outputs.database_repo }}
+          ref: ${{ outputs.extract_doc_metadata.outputs.database_sha }}
+          path: database
+
+      - name: Prepare documentation
+        run: |
+          echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ outputs.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ outputs.extract_doc_metadata.outputs.passed_tests }}"
+          echo "yes"
+          ls .github/scripts
+
+
 
