@@ -224,21 +224,9 @@ jobs:
 
           $status_text
 
-<<<<<<< HEAD
-          ```json
-          {
-            "end_to_end_test_repo": "$TEST_REPO",
-            "end_to_end_test_tag": "$TEST_TAG",
-            "database_repo": "$DB_REPO",
-            "database_tag": "$DB_TAG",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          ```
-=======
           \`\`\`json
           $combined
           \`\`\`
->>>>>>> make-release
           EOF
           )
 
