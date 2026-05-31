@@ -10,8 +10,8 @@ permissions:
   contents: write
 
 jobs:
+  runs-on: ubuntu-latest
   determine_release:
-    runs-on: ubuntu-latest
     outputs:
       release_branch: ${{ steps.find_branch.outputs.release_branch }}
       release_version: ${{ steps.find_branch.outputs.release_version }}
