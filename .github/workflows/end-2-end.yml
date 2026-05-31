@@ -132,7 +132,7 @@ jobs:
         id: parse_results
         run: |
           cd end-to-end-framework-build
-          python libcellml/.github/scripts/scrape_ctest_output.py < ctest_output.txt > test_summary.json
+          python ${GITHUB_WORKSPACE}/libcellml/.github/scripts/scrape_ctest_output.py < ctest_output.txt > test_summary.json
 
       - name: Export test summary
         id: export_summary
