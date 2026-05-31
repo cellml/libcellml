@@ -1,4 +1,4 @@
-name: Finalise Release
+name: Release (stage: 04) - Finalise
 
 on:
   push:
