@@ -3,7 +3,7 @@ name: Finalise Release
 on:
   push:
     branches:
-      - main
+      - main2
   workflow_dispatch:
 
 permissions:
