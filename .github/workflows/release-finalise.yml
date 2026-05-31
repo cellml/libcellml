@@ -108,6 +108,9 @@ jobs:
           echo "database_sha=$database_sha" >> "$GITHUB_OUTPUT"
           echo "$database_repo"
           echo "$database_sha"
+          passed_tests=$(echo "$metadata" | jq -r '.test_summary | to_entries | map(select(.key != "total_failed" and .value.failed == 0)) | map(.key) | join(" ")')
+          echo "passed_tests=$passed_tests" >> "$GITHUB_OUTPUT"
+          echo "Passed tests: $passed_tests"
 
       - name: Checkout repository
         uses: actions/checkout@v6
