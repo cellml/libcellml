@@ -120,12 +120,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: ${{ steps.extract_doc_metadata.outputs.database_repo }}
-          ref: ${{ outputs.extract_doc_metadata.outputs.database_sha }}
+          ref: ${{ steps.extract_doc_metadata.outputs.database_sha }}
           path: database
 
       - name: Prepare documentation
         run: |
-          echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ outputs.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ outputs.extract_doc_metadata.outputs.passed_tests }}"
+          echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ steps.extract_doc_metadata.outputs.passed_tests }}"
           echo "yes"
           ls .github/scripts
 
