@@ -123,11 +123,17 @@ jobs:
           ref: ${{ steps.extract_doc_metadata.outputs.database_sha }}
           path: database
 
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: main2
+          path: main2
+
       - name: Prepare documentation
         run: |
           echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ steps.extract_doc_metadata.outputs.passed_tests }}"
           echo "yes"
-          ls libcellml/.github/scripts
+          ls main2/.github/scripts
 
 
 
