@@ -16,7 +16,7 @@ jobs:
       release_branch: ${{ steps.find_branch.outputs.release_branch }}
       release_version: ${{ steps.find_branch.outputs.release_version }}
       pr_number: ${{ steps.find_pr.outputs.pr_number }}
-      metadata: ${{ steps.extract_metadata.outputs.metadata }}
+      metadata_b64: ${{ steps.extract_metadata.outputs.metadata_b64 }}
 
     steps:
       - name: Checkout repository
@@ -80,11 +80,9 @@ jobs:
             exit 1
           fi
 
-          {
-            echo "metadata<<EOF"
-            echo "$metadata"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          encoded=$(echo "$metadata" | base64 -w 0)
+
+          echo "metadata_b64=$encoded" >> "$GITHUB_OUTPUT"
 
           echo "Extracted metadata: $metadata"
 
@@ -101,7 +99,8 @@ jobs:
       - name: Extract documentation metadata
         id: extract_doc_metadata
         run: |
-          metadata="${{ needs.determine_release.outputs.metadata }}"
+          metadata_b64="${{ needs.determine_release.outputs.metadata_b64 }}"
+          metadata=$(echo "$metadata_b64" | base64 -d)
           echo "$metadata"
           database_repo=$(echo "$metadata" | jq -r '.database_repo')
           database_sha=$(echo "$metadata" | jq -r '.database_sha')
