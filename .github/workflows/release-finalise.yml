@@ -119,7 +119,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          repository: ${{ outputs.extract_doc_metadata.outputs.database_repo }}
+          repository: ${{ steps.extract_doc_metadata.outputs.database_repo }}
           ref: ${{ outputs.extract_doc_metadata.outputs.database_sha }}
           path: database
 
