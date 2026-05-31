@@ -71,8 +71,11 @@ jobs:
   end2end:
     runs-on: ubuntu-latest
     needs: set_inputs
+<<<<<<< HEAD
     outputs:
       test_summary: ${{ steps.export_summary.outputs.test_summary }}
+=======
+>>>>>>> 908445491cd9cda907689e74aa698216c5030735
     steps:
       - name: Checkout libCellML repository
         uses: actions/checkout@v6
@@ -166,4 +169,3 @@ jobs:
             echo "$combined"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
-
