@@ -195,6 +195,28 @@ jobs:
           URL=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[] | select(.body | contains("## Documentation Tests")) | .url')
           comment_id=$(echo "${URL##*-}")
 
+          summary='${{ needs.documentation_checks.outputs.test_summary }}'
+
+          combined=$(jq -n \
+            --arg TEST_REPO "$TEST_REPO" \
+            --arg TEST_TAG "$TEST_TAG" \
+            --arg TEST_SHA "$(echo "$summary" | jq -r .repos.end_to_end_framework)" \
+            --arg DB_REPO "$DB_REPO" \
+            --arg DB_TAG "$DB_TAG" \
+            --arg DB_SHA "$(echo "$summary" | jq -r .repos.database)" \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --argjson test_summary "$(echo "$summary" | jq '.test_summary')" \
+            '{
+              end_to_end_test_repo: $TEST_REPO,
+              end_to_end_test_tag: $TEST_TAG,
+              end_to_end_test_sha: $TEST_SHA,
+              database_repo: $DB_REPO,
+              database_tag: $DB_TAG,
+              database_sha: $DB_SHA,
+              timestamp: $timestamp,
+              test_summary: $test_summary
+            }')
+
           # metadata="{\"end_to_end_test_repo\":\"$TEST_REPO\",\"end_to_end_test_tag\":\"$TEST_TAG\",\"database_repo\":\"$DB_REPO\",\"database_tag\":\"$DB_TAG\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
 
           full_comment=$(cat <<EOF
@@ -202,13 +224,9 @@ jobs:
 
           $status_text
 
-          metadata={
-            "end_to_end_test_repo": "$TEST_REPO",
-            "end_to_end_test_tag": "$TEST_TAG",
-            "database_repo": "$DB_REPO",
-            "database_tag": "$DB_TAG",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
+          \`\`\`json
+          $combined
+          \`\`\`
           EOF
           )
 
