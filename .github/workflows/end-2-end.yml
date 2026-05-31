@@ -40,6 +40,10 @@ on:
         description: "Tag of the database repository to use (e.g. v1.0.0)"
         required: true
         type: string
+    outputs:
+      test_summary:
+        description: "Combined test summary JSON"
+        value: ${{ jobs.end2end.outputs.test_summary }}
 
 jobs:
   set_inputs:
