@@ -196,14 +196,11 @@ jobs:
           comment_id=$(echo "${URL##*-}")
 
           summary='${{ needs.documentation_checks.outputs.test_summary }}'
-          end_to_end_test_sha=$(echo $summary | jq .repos.end_to_end_framework)
-          database_sha=$(echo $summary | jq .repos.database)
-          test_summary=$(echo "$summary" | jq .test_summary)
 
           combined=$(jq -n \
             --arg TEST_REPO "$TEST_REPO" \
             --arg TEST_TAG "$TEST_TAG" \
-            --arg TEST_SHA "$end_to_end_test_sha" \
+            --arg TEST_SHA "$(echo "$summary" | jq -r .repos.end_to_end_framework)" \
             --arg DB_REPO "$DB_REPO" \
             --arg DB_TAG "$DB_TAG" \
             --arg DB_SHA "$(echo "$summary" | jq -r .repos.database)" \
