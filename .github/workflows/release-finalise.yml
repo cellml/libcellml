@@ -42,7 +42,7 @@ jobs:
 
           echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
           tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
-          echo "release_version=$tag" >> "$GITHUB_OUTPUT"
+          echo "release_version=v$tag" >> "$GITHUB_OUTPUT"
 
       - name: Determine PR number
         id: find_pr
