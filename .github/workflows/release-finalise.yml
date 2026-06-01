@@ -208,7 +208,7 @@ jobs:
             python main2/.github/scripts/remove_html_files.py "docs/$test/_build"
             short_test=${test#libcellml_}
             ls "docs/$test/_build"
-            mv "docs/$test/_build/xml" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
+            mv "docs/$test/_build" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
           done
 
       - name: Create release asset list
