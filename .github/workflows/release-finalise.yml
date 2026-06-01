@@ -185,8 +185,8 @@ jobs:
 
       - name: Build libCellML Developer documentation
         run: |
-          sphinx-build -b html -c build-libcellml-release/docs -d _doctrees libcellml/docs developer_docs
-          sphinx-build -b xml -c build-libcellml-release/docs -d _doctrees libcellml/docs developer_docs
+          sphinx-build -b html -c build-libcellml-release/docs/_build -d _doctrees libcellml/docs developer_docs
+          sphinx-build -b xml -c build-libcellml-release/docs/_build -d _doctrees libcellml/docs developer_docs
 
           python main2/.github/scripts/sphinx_numfig_for_xml.py developer_docs
           python main2/.github/scripts/remove_html_files.py developer_docs
