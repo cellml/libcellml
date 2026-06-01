@@ -262,7 +262,11 @@ jobs:
           python main2/.github/scripts/documentation_version_update.py website-src
           cd website-src
           git status
+          git diff
+          git config user.name "libcellml-release-app"
+          git config user.email "actions@github.com"
           git add public/generated/${{ needs.determine_release.outputs.release_version }}
+          git add src/js/documentationversions.js
 
           git commit -m "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}"
           git push origin production:release_documentation
@@ -271,6 +275,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          cd website-src
           pr_url=$(gh pr create \
             --repo ${{ github.repository_owner }}/website-src \
             --head release_documentation \
