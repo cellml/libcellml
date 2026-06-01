@@ -184,8 +184,6 @@ jobs:
       - name: Build libCellML API documentation
         run: |
           cmake --build build-libcellml-release --target api_xml_docs
-          ls build-libcellml-release/
-          ls build-libcellml-release/docs
           mv build-libcellml-release/docs/doxygen-xml ${{ steps.make_docs_dir.outputs.docs_dir }}/api
 
       - name: Build libCellML Developer documentation
@@ -196,6 +194,20 @@ jobs:
           python main2/.github/scripts/sphinx_numfig_for_xml.py developer_docs
           python main2/.github/scripts/remove_html_files.py developer_docs
 
-          ls build-libcellml-release/
-          ls build-libcellml-release/docs
+          mv developer_docs ${{ steps.make_docs_dir.outputs.docs_dir }}/developer
+
+      - name: Build tested documentation
+        run: |
+          echo "this"
+          passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
+          echo "$passed_tests" | jq -r '.[]' | while read test; do
+            echo "Building documentation for test: $test"
+            sphinx-build -b html "docs/$test" "docs/$test/_build/html"
+            sphinx-build -b xml "docs/$test" "docs/$test/_build/xml"
+            python main2/.github/scripts/sphinx_numfig_for_xml.py "docs/$test/_build/html"
+            python main2/.github/scripts/remove_html_files.py "docs/$test/_build/html"
+            short_test=${test#libcellml_}
+            ls "docs/$test/_build"
+            mv "docs/$test/_build/xml" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
+          done
 
