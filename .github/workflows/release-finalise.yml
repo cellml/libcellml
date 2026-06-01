@@ -108,7 +108,7 @@ jobs:
       - name: Checkout website-src repository
         uses: actions/checkout@v6
         with:
-          repository: libcellml/website-src
+          repository: ${{ github.repository_owner }}/website-src
           token: ${{ steps.app_token.outputs.token }}
           ref: production
           path: website-src
