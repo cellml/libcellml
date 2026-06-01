@@ -90,13 +90,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: determine_release
     steps:
-      - name: Checkout repository
+      - name: Checkout release repository
         uses: actions/checkout@v6
         with:
           ref: ${{ needs.determine_release.outputs.release_version }}
           path: libcellml
 
-      - name: Checkout repository
+      - name: Checkout website-src repository
         uses: actions/checkout@v6
         with:
           repository: libcellml/website-src
@@ -124,7 +124,7 @@ jobs:
           echo "Database SHA: $database_sha"
           echo "Passed tests: $passed_tests"
 
-      - name: Checkout repository
+      - name: Checkout documentation database repository
         uses: actions/checkout@v6
         with:
           repository: ${{ steps.extract_doc_metadata.outputs.database_repo }}
@@ -185,8 +185,8 @@ jobs:
 
       - name: Build libCellML Developer documentation
         run: |
-          sphinx-build -b html -c _build -d _doctrees libcellml/src/docs developer_docs
-          sphinx-build -b xml -c _build -d _doctrees libcellml/src/docs developer_docs
+          sphinx-build -b html -c _build -d _doctrees libcellml/docs developer_docs
+          sphinx-build -b xml -c _build -d _doctrees libcellml/docs developer_docs
 
           python main2/.github/scripts/sphinx_numfig_for_xml.py developer_docs
           python main2/.github/scripts/remove_html_files.py developer_docs
