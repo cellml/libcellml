@@ -144,7 +144,7 @@ jobs:
 
       - name: Install Sphinx
         run: |
-          pip install Sphinx lxml
+          pip install Sphinx lxml sphinx_tabs
 
       - name: Install Doxygen
         run: sudo apt-get install -y doxygen graphviz
@@ -211,3 +211,11 @@ jobs:
             mv "docs/$test/_build/xml" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
           done
 
+      - name: Generate release asset list
+        env:
+          LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          python main2/.github/scripts/generate_release_asset_list.py \
+            --release-version "${{ needs.determine_release.outputs.release_version }}" \
+            --docs-dir "${{ steps.make_docs_dir.outputs.docs_dir }}" \
+            --output-file "${{ steps.make_docs_dir.outputs.docs_dir }}/assets.json"
