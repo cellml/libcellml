@@ -13,7 +13,7 @@ Releases are made using GitHub Actions CI and consist of four steps:
 1. `Step 1 - Preparing the release`_
 2. `Step 2 - Checking the release`_
 3. `Step 3 - Make the release`_
-4. `Step 4 - Finalising the Release`_
+4. `Step 4 - Finalising the release`_
 
 Each step must be performed in order. Later steps assume that all previous steps have completed successfully.
 
@@ -42,23 +42,11 @@ Release staging branches, named *release-staging-v<version number>*, are tempora
 Step 1 - Preparing the release
 ==============================
 
-The *Prepare Release* GitHub Actions workflow prepares a release candidate using information supplied when the workflow is triggered.
+The *Prepare Release* GitHub Actions workflow creates a staged release candidate
+based on a specified source branch and version number.
 
-This workflow performs the following tasks:
-
-- Collects all changes that will make up the release from a specified source branch.
-- Generates a changelog summarising the merged pull requests included in the release.
-- Updates version numbers throughout the codebase.
-
-These changes are separated into multiple commits (for example, content changes, changelog generation, and version updates) to make reviewing the release easier.
-
-The workflow creates a staging branch in the repository that contains all proposed release changes.
-The source branch is typically the *main* branch (which is the default), but it may be any branch or tag in the repository.
-The staging branch is named *release-staging-v<version number>*, where <version number> is the version number specified when triggering the workflow.
-
-The workflow can be triggered from the *Actions* tab of the `cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__ repository.
-
-This workflow is manually triggered and requires a version number to be provided using the GitHub Actions user interface.
+This workflow assembles all changes intended for the release into a dedicated
+staging branch and prepares them for review before validation and publication.
 
 .. figure:: ./images/release_process/prepare_release_interface.png
    :align: center
@@ -67,7 +55,39 @@ This workflow is manually triggered and requires a version number to be provided
 
    *Prepare Release* interface on GitHub.
 
-Version numbers must follow semantic versioning rules. See `Semantic Versioning <https://semver.org/>`_ for further information.
+The workflow is manually triggered from the *Actions* tab of the
+`cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__
+repository.
+
+Procedure
+---------
+
+1. Navigate to the *Prepare Release* workflow in the GitHub Actions tab of the
+   `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Enter the version number for the release.
+3. (Optional) Specify a source branch if different from the default *main* branch.
+4. Manually trigger the workflow.
+5. Monitor the workflow run for completion and check for any failures.
+6. Review the pull request created from the staging branch into the *release* branch.
+
+Tasks performed
+---------------
+
+The workflow performs the following tasks:
+
+- Collects all changes for the release from the specified source branch.
+- Generates a changelog summarising the pull requests included in the release.
+- Updates version numbers throughout the codebase.
+- Organises these changes into multiple commits to simplify review.
+- Creates a release staging branch named *release-staging-v<version number>*.
+- Opens a pull request from the staging branch to the *release* branch.
+
+Versioning
+----------
+
+Version numbers must follow semantic versioning rules. See
+`Semantic Versioning <https://semver.org/>`_ for further information.
+
 Examples of valid version numbers include:
 
 - 1.0.0
@@ -79,20 +99,44 @@ Examples of valid version numbers include:
 - 1.0.0-rc.1+build.1
 - 1.0.0-post.1
 
-There are no explicit checks to ensure that version numbers strictly follow semantic versioning conventions; however, the workflow will fail if the supplied version number cannot be parsed as a semantic version.
+The version number consists of:
 
-The version number is split into two components: a core version (major, minor, and patch numbers) and an optional developer suffix.
-An official release is created by omitting the developer suffix.
-Developer releases include a suffix and differ from official releases in that the resulting assets are not published to public registries or attached to a GitHub release.
+- A core version (major, minor, patch).
+- An optional suffix indicating a development or pre-release.
 
-On successful completion, this workflow creates a pull request on the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository with *release* as the base branch and the newly created staging branch as the head branch.
+An official release is created without a suffix. Developer releases include a suffix
+and differ in that artifacts are not published to public registries or GitHub releases.
 
-If the workflow fails, the pull request will not be created. Depending on how far the workflow progressed before failure, the staging branch may still exist and may need to be cleaned up manually or reused after resolving the issue.
+There are no strict validation checks beyond parsing; however, invalid semantic version
+strings will cause the workflow to fail.
 
-Next Step
+Results
+-------
+
+On successful completion:
+
+- A staging branch (*release-staging-v<version number>*) is created.
+- A pull request targeting the *release* branch is opened for review.
+
+Failure handling
+----------------
+
+If the workflow fails:
+
+- The pull request will not be created.
+- The staging branch may still exist depending on when the failure occurred.
+
+Recommended actions:
+
+- Review the workflow logs to identify the failure.
+- Delete or reuse the staging branch as appropriate.
+- Apply fixes to the source branch.
+- Re-run the workflow once the issue has been resolved.
+
+Next step
 ---------
 
-Once the pull request has been created, the checking of the release can begin (see `Step 2 - Checking the release`_).
+Once the staging pull request has been created and is ready for validation, proceed to `Step 2 - Checking the release`_.
 
 Step 2 - Checking the release
 =============================
@@ -234,7 +278,12 @@ Failure handling
 If there is a failure in the workflow that release will be incomplete, but should not be considered a failed release.
 The only solution is to fix the problems through the normal channels and start the release process again.
 
-Step 4 - Finalising the Release
+Next step
+---------
+
+Once the release has been made and the assets have been published, the release process can continue with `Step 4 - Finalising the release`_.
+
+Step 4 - Finalising the release
 ===============================
 
 The *Finalise Release* GitHub Actions workflow completes the release process by updating the libcellml.org website, integrating release changes back into the main development branch, and cleaning up release staging artefacts.
