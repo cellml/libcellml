@@ -229,23 +229,31 @@ jobs:
           database_sha=$(echo "$metadata" | jq -r '.database_sha')
           database_tag=$(echo "$metadata" | jq -r '.database_tag')
 
-          framework_repo=$(echo "$metadata" | jq -r '.framework_repo')
-          framework_sha=$(echo "$metadata" | jq -r '.framework_sha')
-          framework_tag=$(echo "$metadata" | jq -r '.framework_tag')
+          framework_repo=$(echo "$metadata" | jq -r '.end_to_end_test_repo')
+          framework_sha=$(echo "$metadata" | jq -r '.end_to_end_test_sha')
+          framework_tag=$(echo "$metadata" | jq -r '.end_to_end_test_tag')
 
-          validation_provenance = {
-            "version": "0.1.0",
-            "id": "libcellml-website-validation-provenance",
-            "testing_framework": {
-              "project": ${framework_repo},
-              "reference": ${framework_tag},
-              "sha": ${framework_sha}
-            },
-            "testing_database": {
-              "project": ${database_repo},
-              "reference": ${database_tag},
-              "sha": ${database_sha}
-            }
-          }
+          jq -n \
+            --arg framework_repo "$framework_repo" \
+            --arg framework_tag "$framework_tag" \
+            --arg framework_sha "$framework_sha" \
+            --arg database_repo "$database_repo" \
+            --arg database_tag "$database_tag" \
+            --arg database_sha "$database_sha" \
+            '{
+              version: "0.1.0",
+              id: "libcellml-website-validation-provenance",
+              testing_framework: {
+                project: $framework_repo,
+                reference: $framework_tag,
+                sha: $framework_sha
+              },
+              testing_database: {
+                project: $database_repo,
+                reference: $database_tag,
+                sha: $database_sha
+              }
+            }' > validation_provenance.json
 
-
+          echo "Generated validation_provenance.json:"
+          cat validation_provenance.json
