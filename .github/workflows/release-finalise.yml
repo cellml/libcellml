@@ -223,8 +223,6 @@ jobs:
           metadata_b64="${{ needs.determine_release.outputs.metadata_b64 }}"
           metadata=$(echo "$metadata_b64" | base64 -d)
 
-          echo "metadata: $metadata"
-
           database_repo=$(echo "$metadata" | jq -r '.database_repo')
           database_sha=$(echo "$metadata" | jq -r '.database_sha')
           database_tag=$(echo "$metadata" | jq -r '.database_tag')
@@ -258,3 +256,13 @@ jobs:
           echo "Generated validation_provenance.json:"
           cat validation_provenance.json
           mv validation_provenance.json "${{ steps.make_docs_dir.outputs.docs_dir }}/validation_provenance.json"
+
+      - name: Update libCellML Website
+        run: |
+          python main2/.github/scripts/documentation_version_update.py website-src
+          cd website-src
+          git status
+          git add public/generated/${{ needs.determine_release.outputs.release_version }}
+
+          git commit -m "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}"
+          git push origin production:release_documentation
