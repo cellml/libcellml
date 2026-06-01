@@ -177,7 +177,20 @@ jobs:
         run: |
           cmake -S libcellml -B build-libcellml-release -DBUILD_TYPE=Release -DBINDINGS_PYTHON=OFF -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
 
-          echo "-0-"
-          cmake --build build-libcellml-release --target help
-          echo "-0-"
+      - name: Build libCellML API documentation
+        run: |
           cmake --build build-libcellml-release --target api_xml_docs
+          ls build-libcellml-release/
+          ls build-libcellml-release/docs
+
+      - name: Build libCellML Developer documentation
+        run: |
+          sphinx-build -b html -c _build -d _doctrees libcellml/src/docs developer_docs
+          sphinx-build -b xml -c _build -d _doctrees libcellml/src/docs developer_docs
+
+          python main2/.github/scripts/sphinx_numfig_for_xml.py developer_docs
+          python main2/.github/scripts/remove_html_files.py developer_docs
+
+          ls build-libcellml-release/
+          ls build-libcellml-release/docs
+
