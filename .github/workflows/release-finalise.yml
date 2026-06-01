@@ -96,6 +96,16 @@ jobs:
           ref: ${{ needs.determine_release.outputs.release_version }}
           path: libcellml
 
+      - name: Generate GitHub App token
+        id: app_token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.RELEASE_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          token: ${{ steps.app_token.outputs.token }}
+          repositories: website-src
+
       - name: Checkout website-src repository
         uses: actions/checkout@v6
         with:
