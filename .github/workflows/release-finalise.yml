@@ -308,7 +308,7 @@ jobs:
 
   set_version_post:
     needs: determine_release
-    if: ${{ inputs.successful || true }}
+    if: ${{ inputs.successful || false }}
     uses: ./.github/workflows/set-version.yml
     with:
       target_branch: ${{ needs.determine_release.outputs.release_branch }}
