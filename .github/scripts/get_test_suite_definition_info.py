@@ -20,16 +20,11 @@ def _extract_info(content, regex):
     for line in content:
         m1 = regex.match(line)
         if m1:
-            print('match m1')
-            print(m1.group(1))
             return m1.group(1)
 
         m2 = EXTERNAL_REFERENCE_REGEX.match(line)
         if m2:
-            print('m2 match')
-            ss = _get_remote_info(m2.group(1), regex)
-            print(ss)
-            return ss
+            return _get_remote_info(m2.group(1), regex)
 
     return "hogwash"
 
