@@ -144,7 +144,9 @@ jobs:
             repo=$(python main2/.github/scripts/get_test_suite_definition_info.py repo "database/${test}.cmake")
             branch=$(python main2/.github/scripts/get_test_suite_definition_info.py branch "database/${test}.cmake")
             echo "repo: $repo, branch: $branch"
-            git clone --depth 1 --branch "$branch" "$repo" "docs/$test"
+            git clone "$repo" "docs/$test"
+            cd "docs/$test"
+            git reset --hard "$branch"
           done
 
           ls docs
