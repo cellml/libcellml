@@ -142,6 +142,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Sphinx
+        run: |
+          pip install Sphinx
+
       - name: Make website documentation directory
         run: mkdir -p website-src/public/generated/${{ needs.determine_release.outputs.release_version }}
 
