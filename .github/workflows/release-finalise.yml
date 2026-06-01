@@ -150,7 +150,11 @@ jobs:
         run: sudo apt-get install -y doxygen graphviz
 
       - name: Make website documentation directory
-        run: mkdir -p website-src/public/generated/${{ needs.determine_release.outputs.release_version }}
+        id: make_docs_dir
+        run: |
+          docs_dir="website-src/public/generated/${{ needs.determine_release.outputs.release_version }}"
+          mkdir -p $docs_dir
+          echo "docs_dir=$docs_dir" >> "$GITHUB_OUTPUT"
 
       - name: Prepare documentation
         run: |
@@ -182,6 +186,7 @@ jobs:
           cmake --build build-libcellml-release --target api_xml_docs
           ls build-libcellml-release/
           ls build-libcellml-release/docs
+          mv build-libcellml-release/docs/doxygen-xml ${{ steps.make_docs_dir.outputs.docs_dir }}/api
 
       - name: Build libCellML Developer documentation
         run: |
