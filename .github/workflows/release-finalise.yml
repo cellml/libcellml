@@ -283,7 +283,7 @@ jobs:
 
       - name: Create website release documentation pull request
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           cd website-src
           pr_url=$(gh pr create \
