@@ -216,7 +216,7 @@ jobs:
           LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
         run: |
           python main2/.github/scripts/create_release_asset_list.py -p hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}"
-          ls
+          mv release_assets.json "${{ steps.make_docs_dir.outputs.docs_dir }}/release_assets.json"
 
       - name: Generate testing provenance
         run: |
@@ -257,3 +257,4 @@ jobs:
 
           echo "Generated validation_provenance.json:"
           cat validation_provenance.json
+          mv validation_provenance.json "${{ steps.make_docs_dir.outputs.docs_dir }}/validation_provenance.json"
