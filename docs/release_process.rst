@@ -237,55 +237,57 @@ The only solution is to fix the problems through the normal channels and start t
 Step 4 - Finalising the Release
 ===============================
 
-The release is finalised using the *Finalise Release Builder* (:numref:`libcellml_release_process_finalise_release`).
+The *Finalise Release* GitHub Actions workflow completes the release process by updating the libcellml.org website, integrating release changes back into the main development branch, and cleaning up release staging artefacts.
 
-.. figure:: ./images/release_process/finalise_release_builder.png
+.. figure:: ./images/release_process/finalise_release_interface.png
    :align: center
-   :alt: Buildbot finalise release builder interface.
+   :width: 25%
+   :alt: GitHub Action finalise release manual trigger interface.
    :name: libcellml_release_process_finalise_release
 
-   *Finalise Release Builder* on Buildbot.
+   *Finalise Release* workflow interface from GitHub Action.
 
-The *Finalise Release Builder* interface interrogates `cellml/libcellml <https://github.com/cellml/libcellml>`__ for release branches, and `end-to-end testing framework <https://github.com/libcellml/end-to-end-testing>`__, and `end-to-end testing database <https://github.com/libcellml/end-to-end-test-database>`__ for tags.
-Choose the values for finalising the release in the finalise release interface, :numref:`libcellml_release_process_finalise_release_builder_interface`.
-The branch input in the interface should be set to the *release_staging_<version number>* branch (again, there should be only one), :numref:`libcellml_release_process_release_branch_chooser_example`.
-The end-to-end testing tag is the tag that specifies the version of the testing framework to use for running the tests, :numref:`libcellml_release_process_end_to_end_framework_tag_chooser_example`.
-The end-to-end testing database is the tag that specifies the version of the database that describes the tests to run, :numref:`libcellml_release_process_end_to_end_database_tag_chooser_example`.
+This workflow is the final step in the release process and performs post-release housekeeping tasks.
+The API and developer documentation will be updated and any user documentation that passed the end-to-end testing will be updated on the website.
 
-.. figure:: ./images/release_process/finalise_release_builder_interface.png
-   :align: center
-   :alt: Buildbot finalise release interface.
-   :name: libcellml_release_process_finalise_release_builder_interface
+If the release is considered a successful release:
 
-   *Finalise Release Builder* interface.
+- The libcellml.org website will be updated with the latest applicable documentation.
+- The release staging branch will be merged back into the main development branch.
 
-.. figure:: ./images/release_process/release_branch_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an available branch.
-   :name: libcellml_release_process_release_branch_chooser_example
+Regardless of the release outcome:
 
-   Example of choosing a release branch.
+- The release staging branch will be deleted.
+- The associated pull request will be closed.
 
-.. figure:: ./images/release_process/end_to_end_framework_tag_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an end-to-end testing tag.
-   :name: libcellml_release_process_end_to_end_framework_tag_chooser_example
+Procedure
+---------
 
-   Example of choosing a tag for the end-to-end testing framework.
+1. Navigate to the Finalise Release workflow in the GitHub Actions tab of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Manually trigger the workflow.
 
-.. figure:: ./images/release_process/end_to_end_database_tag_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an end-to-end database tag.
-   :name: libcellml_release_process_end_to_end_database_tag_chooser_example
+   - If the release was successful, enable the option to update the website and merge changes back into the main development branch.
 
-   Example of choosing a tag for the end-to-end testing database.
+3. Monitor the workflow run for completion and check for any failures.
+4. Review the pull request created against the production branch of the `libcellml.org website <https://github.com/libcellml/website-src>`_ repository, and merge it if the updates are correct.
 
-The *Finalise Release Builder* will update the libCellML staging website with the API documentation and the developer documentation.
-The user documentation will only be updated for the release, if the end-to-end testing passes.
-To this end, it is important to choose the appropriate end-to-end testing tag and end-to-end testing database tag.
-If the end-to-end testing passes, the specifics of the versions that the release was tested with will be saved and surfaced on the website.
+Tasks performed
+---------------
 
-The last thing that the *Finalise Release Builder* does is the merging of the *release_staging_<version number>* into the *main* branch and the deletion of the *release_staging_<version number>* branch.
+The workflow performs the following tasks:
+
+- Generates API and developer documentation for the release and creates a pull request to update the website.
+- Generates user documentation for components that passed end-to-end testing and updates the existing website update pull request.
+- Updates the project version by appending a .post suffix.
+- Merges the release staging branch back into the main development branch.
+- Deletes the release staging branch and closes the associated draft pull request.
+
+Failure handling
+----------------
+
+If a failure occurs during this workflow, manual intervention may be required to resolve any issues.
+Recommended actions:
+
+- Review the workflow logs to identify the source of the failure.
+- Fix any issues in the staging or documentation repositories.
+- Re-run the workflow once the problem has been resolved.
