@@ -119,6 +119,8 @@ jobs:
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install ClangFormat
         run: |
           sudo apt update
@@ -143,6 +145,8 @@ jobs:
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install LLVM
@@ -168,6 +172,8 @@ jobs:
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install Valgrind
@@ -192,6 +198,8 @@ jobs:
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
       - name: Install Doxygen
