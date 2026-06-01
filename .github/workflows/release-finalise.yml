@@ -109,8 +109,9 @@ jobs:
           echo "database_repo=$database_repo" >> "$GITHUB_OUTPUT"
           echo "database_sha=$database_sha" >> "$GITHUB_OUTPUT"
 
-          passed_tests=$(echo "$metadata" | jq -r '.test_summary | to_entries | map(select(.key != "total_failed" and .value.failed == 0)) | map(.key) | join(" ")')
-          echo "passed_tests=$passed_tests" >> "$GITHUB_OUTPUT"
+          passed_tests=$(echo "$metadata" | jq -r '.test_summary | to_entries | map(select(.key != "total_failed" and .value.failed == 0)) | map(.key)')
+          encoded=$(echo "$passed_tests" | base64 -w 0)
+          echo "passed_tests_b64=$encoded" >> "$GITHUB_OUTPUT"
 
           echo "Database repo.: $database_repo"
           echo "Database SHA: $database_sha"
@@ -131,9 +132,19 @@ jobs:
 
       - name: Prepare documentation
         run: |
-          echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: ${{ steps.extract_doc_metadata.outputs.passed_tests }}"
+          passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
+          echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: $passed_tests"
           echo "yes"
           ls main2/.github/scripts
+          mkdir docs
+          echo '$passed_tests' | jq -r '.[]' | while read test; do
+            echo "Processing test: $test"
+            repo=$(python main2/github/scripts/get_test_suite_definition_info.py repo "database/$test")
+            branch=$(python main2/github/scripts/get_test_suite_definition_info.py branch "database/$test")
+            git clone --depth 1 --branch "$branch" "https://github.com/$repo.git" "docs/$test"
+          done
+
+          ls docs
 
 
 
