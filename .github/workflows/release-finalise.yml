@@ -266,3 +266,16 @@ jobs:
 
           git commit -m "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}"
           git push origin production:release_documentation
+
+      - name: Create website release documentation pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_url=$(gh pr create \
+            --repo ${{ github.repository_owner }}/website-src \
+            --head release_documentation \
+            --base production \
+            --title "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}" \
+            --body "This PR adds the generated documentation for libCellML ${{ needs.determine_release.outputs.release_version }} to the website repository.")
+
+          echo "Created PR: $pr_url"
