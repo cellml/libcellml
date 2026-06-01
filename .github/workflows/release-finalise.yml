@@ -202,10 +202,10 @@ jobs:
           passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
           echo "$passed_tests" | jq -r '.[]' | while read test; do
             echo "Building documentation for test: $test"
-            sphinx-build -b html "docs/$test" "docs/$test/_build/html"
-            sphinx-build -b xml "docs/$test" "docs/$test/_build/xml"
-            python main2/.github/scripts/sphinx_numfig_for_xml.py "docs/$test/_build/html"
-            python main2/.github/scripts/remove_html_files.py "docs/$test/_build/html"
+            sphinx-build -b html "docs/$test" "docs/$test/_build"
+            sphinx-build -b xml "docs/$test" "docs/$test/_build"
+            python main2/.github/scripts/sphinx_numfig_for_xml.py "docs/$test/_build"
+            python main2/.github/scripts/remove_html_files.py "docs/$test/_build"
             short_test=${test#libcellml_}
             ls "docs/$test/_build"
             mv "docs/$test/_build/xml" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
@@ -215,4 +215,4 @@ jobs:
         env:
           LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
         run: |
-          python main2/.github/scripts/create_release_asset_list.py hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}" \
+          python main2/.github/scripts/create_release_asset_list.py -p hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}"
