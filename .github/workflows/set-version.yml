@@ -28,18 +28,14 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   set-version:
     runs-on: ubuntu-latest
-
     steps:
-
       - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.target_branch }}
-
 
       - name: Set GitHub Actions bot identity
         run: |
