@@ -146,6 +146,9 @@ jobs:
         run: |
           pip install Sphinx
 
+      - name: Install Doxygen
+        run: sudo apt-get install -y doxygen graphviz
+
       - name: Make website documentation directory
         run: mkdir -p website-src/public/generated/${{ needs.determine_release.outputs.release_version }}
 
