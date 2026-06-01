@@ -12,7 +12,7 @@ import shutil
 
 from packaging.version import InvalidVersion, Version
 
-from abi.buildbotscripts.libcellml.utilities import unwanted_versions
+from utilities import unwanted_versions
 
 
 def do_documentation_version_update(website_src_dir):
