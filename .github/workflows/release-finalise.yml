@@ -96,6 +96,13 @@ jobs:
           ref: ${{ needs.determine_release.outputs.release_version }}
           path: libcellml
 
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: libcellml/website-src
+          ref: production
+          path: website-src
+
       - name: Extract documentation metadata
         id: extract_doc_metadata
         run: |
@@ -130,6 +137,14 @@ jobs:
           ref: main2
           path: main2
 
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Make website documentation directory
+        run: mkdir -p website-src/public/generated/${{ needs.determine_release.outputs.release_version }}
+
       - name: Prepare documentation
         run: |
           passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
@@ -139,14 +154,20 @@ jobs:
           ls database
           mkdir docs
           echo "$passed_tests" | jq -r '.[]' | while read test; do
-            echo "Processing test: $test"
+            echo -n "Processing test: $test"
             # Replace main2 with libcellml from above when the script is in the release.
             repo=$(python main2/.github/scripts/get_test_suite_definition_info.py repo "database/${test}.cmake")
             branch=$(python main2/.github/scripts/get_test_suite_definition_info.py branch "database/${test}.cmake")
-            echo "repo: $repo, branch: $branch"
+            echo ", repo: $repo, branch: $branch"
             git clone "$repo" "docs/$test"
             cd "docs/$test"
             git reset --hard "$branch"
           done
 
           ls docs
+
+      - name: Prepare libCellML documentation
+        run: |
+          cmake -S libcellml -B build-libcellml-release -DBUILD_TYPE=Release -DBINDINGS_PYTHON=OFF -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
+
+          cmake --build build-libcellml-release --target api_xml_docs
