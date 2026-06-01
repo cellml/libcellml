@@ -140,9 +140,11 @@ jobs:
           mkdir docs
           echo "$passed_tests" | jq -r '.[]' | while read test; do
             echo "Processing test: $test"
+            # Replace main2 with libcellml from above when the script is in the release.
             repo=$(python main2/.github/scripts/get_test_suite_definition_info.py repo "database/${test}.cmake")
             branch=$(python main2/.github/scripts/get_test_suite_definition_info.py branch "database/${test}.cmake")
-            git clone --depth 1 --branch "$branch" "https://github.com/$repo.git" "docs/$test"
+            echo "repo: $repo, branch: $branch"
+            git clone --depth 1 --branch "$branch" "$repo" "docs/$test"
           done
 
           ls docs
