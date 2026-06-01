@@ -216,3 +216,36 @@ jobs:
           LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
         run: |
           python main2/.github/scripts/create_release_asset_list.py -p hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}"
+          ls
+
+      - name: Generate testing provenance
+        run: |
+          metadata_b64="${{ needs.determine_release.outputs.metadata_b64 }}"
+          metadata=$(echo "$metadata_b64" | base64 -d)
+
+          echo "metadata: $metadata"
+
+          database_repo=$(echo "$metadata" | jq -r '.database_repo')
+          database_sha=$(echo "$metadata" | jq -r '.database_sha')
+          database_tag=$(echo "$metadata" | jq -r '.database_tag')
+
+          framework_repo=$(echo "$metadata" | jq -r '.framework_repo')
+          framework_sha=$(echo "$metadata" | jq -r '.framework_sha')
+          framework_tag=$(echo "$metadata" | jq -r '.framework_tag')
+
+          validation_provenance = {
+            "version": "0.1.0",
+            "id": "libcellml-website-validation-provenance",
+            "testing_framework": {
+              "project": ${framework_repo},
+              "reference": ${framework_tag},
+              "sha": ${framework_sha}
+            },
+            "testing_database": {
+              "project": ${database_repo},
+              "reference": ${database_tag},
+              "sha": ${database_sha}
+            }
+          }
+
+
