@@ -336,7 +336,7 @@ jobs:
         with:
           ref: ${{ needs.determine_release.outputs.release_branch }}
           token: ${{ steps.app_token.outputs.token }}
-          depth: 0
+          fetch-depth: 0
 
       - name: Merge into main
         if: ${{ inputs.successful || true }}
