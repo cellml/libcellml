@@ -49,8 +49,9 @@ jobs:
           fi
 
           echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
-          tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
-          echo "release_version=v$tag" >> "$GITHUB_OUTPUT"
+          just_version="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
+          echo "just_version=$just_version" >> "$GITHUB_OUTPUT"
+          echo "release_version=v$just_version" >> "$GITHUB_OUTPUT"
 
       - name: Determine PR number
         id: find_pr
@@ -311,7 +312,7 @@ jobs:
     uses: ./.github/workflows/set-version.yml
     with:
       target_branch: ${{ needs.determine_release.outputs.release_branch }}
-      version: ${{ replace(needs.determine_release.outputs.release_version, 'v', '') }}.post
+      version: ${{ needs.determine_release.outputs.just_version }}.post
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
