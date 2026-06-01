@@ -174,4 +174,7 @@ jobs:
         run: |
           cmake -S libcellml -B build-libcellml-release -DBUILD_TYPE=Release -DBINDINGS_PYTHON=OFF -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
 
+          echo "-0-"
+          cmake --build build-libcellml-release --target help
+          echo "-0-"
           cmake --build build-libcellml-release --target api_xml_docs
