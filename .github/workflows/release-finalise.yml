@@ -211,8 +211,8 @@ jobs:
             mv "docs/$test/_build/xml" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
           done
 
-      - name: Generate release asset list
+      - name: Create release asset list
         env:
           LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
         run: |
-          python main2/.github/scripts/generate_release_asset_list.py hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}" \
+          python main2/.github/scripts/create_release_asset_list.py hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}" \
