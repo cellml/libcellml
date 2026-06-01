@@ -103,13 +103,13 @@ jobs:
           client-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          token: ${{ steps.app_token.outputs.token }}
           repositories: website-src
 
       - name: Checkout website-src repository
         uses: actions/checkout@v6
         with:
           repository: libcellml/website-src
+          token: ${{ steps.app_token.outputs.token }}
           ref: production
           path: website-src
 
