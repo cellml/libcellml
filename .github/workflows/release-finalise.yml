@@ -22,6 +22,7 @@ jobs:
     outputs:
       release_branch: ${{ steps.find_branch.outputs.release_branch }}
       release_version: ${{ steps.find_branch.outputs.release_version }}
+      just_version: ${{ steps.find_branch.outputs.just_version }}
       pr_number: ${{ steps.find_pr.outputs.pr_number }}
       metadata_b64: ${{ steps.extract_metadata.outputs.metadata_b64 }}
 
@@ -96,7 +97,7 @@ jobs:
 
   prepare_documentation:
     runs-on: ubuntu-latest
-    if: ${{ inputs.successful || true }}
+    if: ${{ inputs.successful }}
     needs: determine_release
     steps:
       - name: Checkout release repository
@@ -308,7 +309,7 @@ jobs:
 
   set_version_post:
     needs: determine_release
-    if: ${{ inputs.successful || false }}
+    if: ${{ inputs.successful }}
     uses: ./.github/workflows/set-version.yml
     with:
       target_branch: ${{ needs.determine_release.outputs.release_branch }}
@@ -320,7 +321,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - determine_release
-#      - set_version_post
+      - set_version_post
     steps:
       - name: Generate GitHub App token
         id: app_token
@@ -339,7 +340,7 @@ jobs:
           fetch-depth: 0
 
       - name: Merge into main
-        if: ${{ inputs.successful || true }}
+        if: ${{ inputs.successful }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
