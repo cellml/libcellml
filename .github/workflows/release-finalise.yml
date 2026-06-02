@@ -1,9 +1,6 @@
 name: Release (stage 04) - Finalise
 
 on:
-  push:
-    branches:
-      - main2
   workflow_dispatch:
     inputs:
       successful:
@@ -151,12 +148,6 @@ jobs:
           ref: ${{ steps.extract_doc_metadata.outputs.database_sha }}
           path: database
 
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          ref: main2
-          path: main2
-
       - name: Install Python
         uses: actions/setup-python@v6
         with:
@@ -181,14 +172,13 @@ jobs:
           passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
           echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: $passed_tests"
           echo "yes"
-          ls main2/.github/scripts
+          ls libcellml/.github/scripts
           ls database
           mkdir docs
           echo "$passed_tests" | jq -r '.[]' | while read test; do
             echo -n "Processing test: $test"
-            # Replace main2 with libcellml from above when the script is in the release.
-            repo=$(python main2/.github/scripts/get_test_suite_definition_info.py repo "database/${test}.cmake")
-            branch=$(python main2/.github/scripts/get_test_suite_definition_info.py branch "database/${test}.cmake")
+            repo=$(python libcellml/.github/scripts/get_test_suite_definition_info.py repo "database/${test}.cmake")
+            branch=$(python libcellml/.github/scripts/get_test_suite_definition_info.py branch "database/${test}.cmake")
             echo ", repo: $repo, branch: $branch"
             git clone "$repo" "docs/$test"
             cd "docs/$test"
@@ -211,8 +201,8 @@ jobs:
           sphinx-build -b html -c build-libcellml-release/docs/_build -d _doctrees libcellml/docs developer_docs
           sphinx-build -b xml -c build-libcellml-release/docs/_build -d _doctrees libcellml/docs developer_docs
 
-          python main2/.github/scripts/sphinx_numfig_for_xml.py developer_docs
-          python main2/.github/scripts/remove_html_files.py developer_docs
+          python libcellml/.github/scripts/sphinx_numfig_for_xml.py developer_docs
+          python libcellml/.github/scripts/remove_html_files.py developer_docs
 
           mv developer_docs ${{ steps.make_docs_dir.outputs.docs_dir }}/developer
 
@@ -224,8 +214,8 @@ jobs:
             echo "Building documentation for test: $test"
             sphinx-build -b html "docs/$test" "docs/$test/_build"
             sphinx-build -b xml "docs/$test" "docs/$test/_build"
-            python main2/.github/scripts/sphinx_numfig_for_xml.py "docs/$test/_build"
-            python main2/.github/scripts/remove_html_files.py "docs/$test/_build"
+            python libcellml/.github/scripts/sphinx_numfig_for_xml.py "docs/$test/_build"
+            python libcellml/.github/scripts/remove_html_files.py "docs/$test/_build"
             short_test=${test#libcellml_}
             ls "docs/$test/_build"
             mv "docs/$test/_build" "${{ steps.make_docs_dir.outputs.docs_dir }}/$short_test"
@@ -235,7 +225,7 @@ jobs:
         env:
           LIBCELLML_AUTHORISED_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
         run: |
-          python main2/.github/scripts/create_release_asset_list.py -p hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}"
+          python libcellml/.github/scripts/create_release_asset_list.py -p hsorby/libcellml "${{ needs.determine_release.outputs.release_version }}"
           mv release_assets.json "${{ steps.make_docs_dir.outputs.docs_dir }}/release_assets.json"
 
       - name: Generate testing provenance
@@ -278,9 +268,8 @@ jobs:
           mv validation_provenance.json "${{ steps.make_docs_dir.outputs.docs_dir }}/validation_provenance.json"
 
       - name: Update libCellML Website
-        if: false
         run: |
-          python main2/.github/scripts/documentation_version_update.py website-src
+          python libcellml/.github/scripts/documentation_version_update.py website-src
           cd website-src
           git status
           git diff
@@ -293,7 +282,6 @@ jobs:
           git push origin production:release_documentation
 
       - name: Create website release documentation pull request
-        if: false
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
@@ -358,4 +346,3 @@ jobs:
           echo "Closing PR #$pr_number and deleting branch"
 
           gh pr close "$pr_number" --delete-branch
-
