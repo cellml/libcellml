@@ -1,4 +1,4 @@
-name: Check Release
+name: Release (stage 02) - Check
 
 on:
   workflow_dispatch:
