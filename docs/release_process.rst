@@ -208,6 +208,7 @@ A release candidate is considered valid when:
 If end-to-end tests fail:
 
 - The release **may still proceed**, however:
+
   - The user documentation will **not** be updated as part of the release process.
   - The metadata recorded in the workflow comment will be used by subsequent workflows to finalise documentation updates on the libcellml.org website.
 
@@ -215,10 +216,12 @@ Failure handling
 ----------------
 
 - If **unit tests fail**:
+
   - The release **must not proceed**.
   - The staged release should be removed and fixes applied to the source branch before starting the release process again.
 
 - If **end-to-end tests fail**, either:
+
   - Continue with the release, understanding that the user documentation will not be updated.
   - Or, fix the issues stemming from the end-to-end testing and re-run the workflow.
 
@@ -265,6 +268,7 @@ The workflow performs the following tasks
 - Moves the staged code to the release branch.
 - Creates a release on GitHub using information from the staging branch.
 - Builds release assets including:
+
   - Binaries
   - Python wheels
   - Javascript package
