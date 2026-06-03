@@ -1,0 +1,145 @@
+name: Push
+
+on:
+  push:
+
+env:
+  BUILD_TYPE: Release
+  ARTIFACT_RETENTION_DAYS: 7
+
+jobs:
+
+  os-binaries:
+    name: Windows Server 2025 MSVC
+    runs-on: windows-2025
+    env:
+      BUILD_TYPE: Release
+      CC: "cl"
+      CXX: "cl"
+
+    steps:
+    - name: Checkout libCellML
+      uses: actions/checkout@v6
+      with:
+        ref: main
+        path: libcellml
+
+    - name: Checkout zlib
+      uses: actions/checkout@v6
+      with:
+        repository: CMLibs-Dependencies/zlib
+        path: zlib
+        ref: v1.2.12
+
+    - name: Checkout LibXml2
+      uses: actions/checkout@v6
+      with:
+        repository: CMLibs-Dependencies/libxml2
+        path: libxml2
+        ref: v2.9.10
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v3
+
+    - name: Prepare Windows environment
+      shell: cmake -P {0}
+      run: |
+        # Prepare environment script.
+
+        set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
+        set(WIN_PATH)
+        file(TO_CMAKE_PATH "$ENV{PATH}" ENV_PATH)
+        set(PATH_LIST "")
+        foreach(_PATH ${ENV_PATH})
+          if (NOT "${_PATH}" MATCHES ".*Strawberry")
+            list(APPEND WIN_PATH "${_PATH}")
+          endif()
+        endforeach()
+        file(TO_NATIVE_PATH "${WIN_PATH}" WIN_PATH)
+        set(ENV{PATH} "${WIN_PATH}")
+        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DBUILD_SHARED_LIBS=FALSE -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local)
+        execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-zlib" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
+        execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
+
+        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" -DCMAKE_PREFIX_PATH=$ENV{GITHUB_WORKSPACE}/usr/local -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+          RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
+        execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+        execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+
+    - name: Configure
+      shell: cmake -P {0}
+      run: |
+        # Configure library script
+        set(OPTIONAL_ARGUMENTS -D BINDINGS_PYTHON=OFF)
+
+        set(PYTHON_LOCATION $ENV{pythonLocation})
+
+        set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
+        if (NOT "${{ runner.os }}" STREQUAL "Windows")
+          list(APPEND OPTIONAL_ARGUMENTS -D BUILD_TYPE=$ENV{BUILD_TYPE})
+          list(APPEND OPTIONAL_ARGUMENTS -D COVERAGE=OFF)
+        endif()
+
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/usr/local" _SAFE_PATH)
+          list(APPEND OPTIONAL_ARGUMENTS -D CMAKE_PREFIX_PATH=${_SAFE_PATH})
+        endif()
+
+        message(STATUS "Configuring with optional arguments: ${OPTIONAL_ARGUMENTS}")
+        execute_process(
+          COMMAND ${CMAKE_COMMAND}
+            -S libcellml
+            -B build
+            ${OPTIONAL_ARGUMENTS}
+          RESULT_VARIABLE _RESULT
+        )
+
+        if (NOT _RESULT EQUAL 0)
+          message(FATAL_ERROR "Configure failed.")
+        endif()
+
+    - name: Build
+      shell: cmake -P {0}
+      run: |
+        # Build library script
+
+        include(ProcessorCount)
+        ProcessorCount(N)
+
+        math(EXPR JOBS "${N} + 1")
+
+        execute_process(
+          COMMAND cmake --build build --config $ENV{BUILD_TYPE} --parallel ${JOBS}
+          RESULT_VARIABLE _RESULT
+        )
+
+        if (NOT _RESULT EQUAL 0)
+          message(FATAL_ERROR "Build failed.")
+        endif()
+
+    - name: Test
+      shell: cmake -P {0}
+      run: |
+        # Test library script
+
+        include(ProcessorCount)
+        ProcessorCount(N)
+
+        math(EXPR JOBS "${N} + 1")
+
+        set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
+
+        set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
+        execute_process(
+          COMMAND ${CMAKE_CTEST_COMMAND} -j ${JOBS} -C $ENV{BUILD_TYPE}
+          WORKING_DIRECTORY "${ACTION_DIR}/build"
+          RESULT_VARIABLE _RESULT
+        )
+
+        if (NOT _RESULT EQUAL 0)
+          message(FATAL_ERROR "Tests failed.")
+        endif()
