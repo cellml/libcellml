@@ -1,4 +1,4 @@
-name: Make Release
+name: Release (stage 03) - Make
 
 on:
   workflow_dispatch:
