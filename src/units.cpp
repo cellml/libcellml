@@ -22,7 +22,6 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <cstdint>
 #include <cstring>
 #include <map>
 #include <numeric>
@@ -253,8 +252,8 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
-                // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
-                localMultiplier += mult + standardMult * exp + prefixMult;
+                // Combine the information into a single local multiplier: exponent applies to standard multiplier and prefix multiplier.
+                localMultiplier += mult + (standardMult + prefixMult) * exp;
             } else {
                 auto model = owningModel(units);
                 auto refUnits = model->units(ref);

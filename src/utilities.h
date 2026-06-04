@@ -870,4 +870,37 @@ size_t mathmlChildCount(const XmlNodePtr &node);
  */
 XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
 
+/**
+ * @brief Return the analyser variables of the same type as the given analyser variable.
+ *
+ * Return the analyser variables of the same type as the given analyser variable.
+ *
+ * @param analyserVariable The analyser variable for which we want the analyser variables of the same type.
+ *
+ * @return The analyser variables of the same type as the given analyser variable.
+ */
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserVariablePtr &analyserVariable);
+
+/**
+ * @brief Return the analyser variables in the given analyser model.
+ *
+ * Return the analyser variables in the given analyser model.
+ *
+ * @param analyserModel The analyser model for which we want the analyser variables.
+ *
+ * @return The analyser variables in the given analyser model.
+ */
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analyserModel);
+
+/**
+ * @brief Return the analyser variables in the given analyser equation.
+ *
+ * Return the analyser variables in the given analyser equation.
+ *
+ * @param analyserEquation The analyser equation for which we want the analyser variables.
+ *
+ * @return The analyser variables in the given analyser equation.
+ */
+std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &analyserEquation);
+
 } // namespace libcellml
