@@ -183,7 +183,7 @@ def process_arguments():
 if __name__ == "__main__":
     args = process_arguments()
     previous_source_tag = find_previous_source_tag(args.tag_end) if args.tag_start == "PREV" else args.tag_start
-    messages = get_merge_commits(previous_source_tag)
+    messages = get_merge_commits(previous_source_tag, 'source-v' + args.tag_end if args.tag_end != "HEAD" else "HEAD")
     print(f"Found {len(messages)} merge commits between {previous_source_tag} and {args.tag_end}.")
     pr_numbers = extract_pr_numbers(messages)
     print(f"Extracted {len(pr_numbers)} PR numbers from merge commits.")
