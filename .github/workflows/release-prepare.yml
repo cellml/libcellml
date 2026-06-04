@@ -80,8 +80,13 @@ jobs:
       - name: Create staging branch
         run: |
           cd release-repo
-          git tag -a "source-v${{ inputs.version }}" -m "Source tag for release v${{ inputs.version }}"
           git checkout -b ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+
+      - name: Tag source of release
+        run: |
+          cd source-repo
+          git tag -a "source-v${{ inputs.version }}" -m "Source tag for release v${{ inputs.version }}"
+          git push origin "source-v${{ inputs.version }}"
 
       - name: Copy release changes to release repo
         run: |
@@ -97,7 +102,7 @@ jobs:
       - name: Push branch
         run: |
           cd release-repo
-          git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }} source-v${{ inputs.version }}
+          git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
   generate_changelog:
     needs: prepare
