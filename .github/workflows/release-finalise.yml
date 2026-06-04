@@ -74,6 +74,7 @@ jobs:
 
       - name: Extract metadata
         id: extract_metadata
+        if: ${{ inputs.successful }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
