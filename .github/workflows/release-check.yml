@@ -166,7 +166,9 @@ jobs:
       end_to_end_test_tag: ${{ needs.set_inputs.outputs.end_to_end_test_tag }}
       database_repo: ${{ needs.set_inputs.outputs.database_repo }}
       database_tag: ${{ needs.set_inputs.outputs.database_tag }}
+
   documentation_comment:
+    if: always() && needs.determine_release.result == 'success' && needs.set_inputs.result == 'success'
     needs:
       - determine_release
       - documentation_checks
