@@ -348,3 +348,7 @@ jobs:
           echo "Closing PR #$pr_number and deleting branch"
 
           gh pr close "$pr_number" --delete-branch
+
+          if [[ "${{ inputs.successful }}" == "false" ]]; then
+            git push origin ":refs/tags/source-${{ needs.determine_release.outputs.release_version }}"
+          fi

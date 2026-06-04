@@ -36,10 +36,6 @@ jobs:
           tag="${branch#${{ vars.RELEASE_STAGING_BRANCH_STEM }}}"
           echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
 
-      - name: Checkout release staging branch
-        run: |
-          git checkout "${{ inputs.changelog_branch }}"
-
       - uses: actions/setup-python@v6
         if: ${{ env.ACT != 'true' }}
         with:
