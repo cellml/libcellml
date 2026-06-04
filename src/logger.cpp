@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "libcellml/logger.h"
 
-#include <algorithm>
 #include <vector>
 
 #include "libcellml/issue.h"

@@ -20,6 +20,7 @@ from libcellml.component import Component
 from libcellml.enums import CellmlElementType, cellmlElementTypeAsString
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
+from libcellml.generatorvariabletracker import GeneratorVariableTracker
 from libcellml.importer import Importer
 from libcellml.importsource import ImportSource
 from libcellml.issue import Issue
@@ -55,8 +56,8 @@ def convert(base, enum, variables, new_base=None):
 
 
 convert(AnalyserEquation, 'Type', [
-    'TRUE_CONSTANT',
-    'VARIABLE_BASED_CONSTANT',
+    'CONSTANT',
+    'COMPUTED_CONSTANT',
     'ODE',
     'NLA',
     'ALGEBRAIC',
@@ -169,8 +170,8 @@ convert(AnalyserVariable, 'Type', [
     'STATE',
     'CONSTANT',
     'COMPUTED_CONSTANT',
-    'ALGEBRAIC',
-    'EXTERNAL',
+    'ALGEBRAIC_VARIABLE',
+    'EXTERNAL_VARIABLE',
 ])
 convert(GeneratorProfile, 'Profile', [
     'C',
@@ -310,14 +311,16 @@ convert(Issue, 'ReferenceRule', [
     'ANALYSER_UNITS',
     'ANALYSER_UNLINKED_UNITS',
     'ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE',
-    'ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION',
+    'ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE',
+    'ANALYSER_VARIABLE_INITIALISED_USING_VARIABLE_WITH_DIFFERENT_UNITS',
     'ANALYSER_VOI_INITIALISED',
     'ANALYSER_VOI_SEVERAL',
     'ANALYSER_ODE_NOT_FIRST_ORDER',
     'ANALYSER_VARIABLE_UNUSED',
     'ANALYSER_STATE_NOT_INITIALISED',
-    'ANALYSER_STATE_RATE_AS_ALGEBRAIC',
-    'ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE',
+    'ANALYSER_STATE_RATE_AS_ALGEBRAIC_VARIABLE',
+    'ANALYSER_VARIABLE_UNDERCONSTRAINED',
+    'ANALYSER_VARIABLE_OVERCONSTRAINED',
     'ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL',
     'ANALYSER_EXTERNAL_VARIABLE_VOI',
     'ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE',

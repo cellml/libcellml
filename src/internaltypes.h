@@ -60,6 +60,8 @@ using ResetOrderMap = std::map<VariablePtr, std::vector<int>>; /** Type definiti
 
 using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
 using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
+using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
+using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type definition for weak analyser variable pointer. */
 using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
 using ImportSourceWeakPtr = std::weak_ptr<ImportSource>; /**< Type definition for weak import source pointer. */
 using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */

@@ -16,11 +16,6 @@ limitations under the License.
 
 #include "libcellml/reset.h"
 
-#include <algorithm>
-#include <vector>
-
-#include "libcellml/variable.h"
-
 #include "reset_p.h"
 #include "utilities.h"
 

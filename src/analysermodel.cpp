@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
+#include "libcellml/analyservariable.h"
+
 #include "analysermodel_p.h"
 #include "utilities.h"
 
@@ -121,58 +123,154 @@ AnalyserVariablePtr AnalyserModel::state(size_t index) const
     return mPimpl->mStates[index];
 }
 
-size_t AnalyserModel::variableCount() const
+size_t AnalyserModel::constantCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mVariables.size();
+    return mPimpl->mConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::variables() const
+std::vector<AnalyserVariablePtr> AnalyserModel::constants() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mVariables;
+    return mPimpl->mConstants;
 }
 
-AnalyserVariablePtr AnalyserModel::variable(size_t index) const
+AnalyserVariablePtr AnalyserModel::constant(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mVariables.size())) {
+    if (!isValid() || (index >= mPimpl->mConstants.size())) {
         return {};
     }
 
-    return mPimpl->mVariables[index];
+    return mPimpl->mConstants[index];
 }
 
-size_t AnalyserModel::equationCount() const
+size_t AnalyserModel::computedConstantCount() const
 {
     if (!isValid()) {
         return 0;
     }
 
-    return mPimpl->mEquations.size();
+    return mPimpl->mComputedConstants.size();
 }
 
-std::vector<AnalyserEquationPtr> AnalyserModel::equations() const
+std::vector<AnalyserVariablePtr> AnalyserModel::computedConstants() const
 {
     if (!isValid()) {
         return {};
     }
 
-    return mPimpl->mEquations;
+    return mPimpl->mComputedConstants;
 }
 
-AnalyserEquationPtr AnalyserModel::equation(size_t index) const
+AnalyserVariablePtr AnalyserModel::computedConstant(size_t index) const
 {
-    if (!isValid() || (index >= mPimpl->mEquations.size())) {
+    if (!isValid() || (index >= mPimpl->mComputedConstants.size())) {
         return {};
     }
 
-    return mPimpl->mEquations[index];
+    return mPimpl->mComputedConstants[index];
+}
+
+size_t AnalyserModel::algebraicVariableCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mAlgebraicVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::algebraicVariables() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraicVariables;
+}
+
+AnalyserVariablePtr AnalyserModel::algebraicVariable(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mAlgebraicVariables.size())) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraicVariables[index];
+}
+
+size_t AnalyserModel::externalVariableCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mExternalVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::externalVariables() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mExternalVariables;
+}
+
+AnalyserVariablePtr AnalyserModel::externalVariable(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mExternalVariables.size())) {
+        return {};
+    }
+
+    return mPimpl->mExternalVariables[index];
+}
+
+AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
+{
+    if (!isValid() || (variable == nullptr)) {
+        return {};
+    }
+
+    for (const auto &analyserVariable : analyserVariables(shared_from_this())) {
+        if (areEquivalentVariables(variable, analyserVariable->variable())) {
+            return analyserVariable;
+        }
+    }
+
+    return {};
+}
+
+size_t AnalyserModel::analyserEquationCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mAnalyserEquations.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserModel::analyserEquations() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mAnalyserEquations;
+}
+
+AnalyserEquationPtr AnalyserModel::analyserEquation(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mAnalyserEquations.size())) {
+        return {};
+    }
+
+    return mPimpl->mAnalyserEquations[index];
 }
 
 bool AnalyserModel::needEqFunction() const
@@ -398,25 +496,20 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // an AnalyserModel object refers to a static version of a model, which
     // means that we can safely cache the result of a call to that utility. In
     // turn, this means that we can speed up any feature (e.g., code generation)
-    // that also relies on that utility. When it comes to the key for the cache,
-    // we use the Cantor pairing function with the address of the two variables
-    // as parameters, thus ensuring the uniqueness of the key (see
-    // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function).
+    // that also relies on that utility.
 
     auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    if (v2 < v1) {
-        v1 += v2;
-        v2 = v1 - v2;
-        v1 = v1 - v2;
+    if (v1 > v2) {
+        std::swap(v1, v2);
     }
 
-    auto key = ((v1 + v2) * (v1 + v2 + 1) >> 1U) + v2;
-    auto cacheKey = mPimpl->mCachedEquivalentVariables.find(key);
+    auto key = AnalyserModel::AnalyserModelImpl::VariableKeyPair {v1, v2};
+    auto it = mPimpl->mCachedEquivalentVariables.find(key);
 
-    if (cacheKey != mPimpl->mCachedEquivalentVariables.end()) {
-        return cacheKey->second;
+    if (it != mPimpl->mCachedEquivalentVariables.end()) {
+        return it->second;
     }
 
     auto res = libcellml::areEquivalentVariables(variable1, variable2);
