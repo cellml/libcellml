@@ -25,6 +25,15 @@ For all steps in the release process, you must:
 - Be a maintainer (have write access) of the *cellml/libcellml* GitHub repository.
 - Be familiar with semantic versioning.
 - Ensure that no other release is currently in progress.
+- Choose the **main** branch as the branch to run the worklfow from.
+
+.. figure:: ./images/release_process/workflow_branch_chooser.png
+   :align: center
+   :width: 25%
+   :alt: GitHub Actions run workflow branch chooser.
+   :name: libcellml_release_process_workflow_branch_chooser
+
+   Run workflow from branch chooser interface on GitHub.
 
 .. note::
 
