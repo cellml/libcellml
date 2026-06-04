@@ -13,7 +13,6 @@ on:
 jobs:
   cpp_python:
     name: ${{ matrix.name }}
-    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -59,7 +58,9 @@ jobs:
         uses: lukka/get-cmake@latest
       - name: Configure MSVC (Windows only)
         if: ${{ runner.os == 'Windows' }}
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
       - name: Install libxml2 (Windows only)
         if: ${{ runner.os == 'Windows' }}
         run: |
@@ -83,7 +84,6 @@ jobs:
         run: cmake --build build --target test
   javascript:
     name: JavaScript
-    if: false
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -138,7 +138,6 @@ jobs:
           ninja test_clang_format
   coverage:
     name: Code coverage
-    if: false
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -165,7 +164,6 @@ jobs:
           if [ `ninja llvm_coverage | grep TOTAL | sed 's/ /\n/g' | grep "100.00%" | wc -l | sed 's/ //g'` -eq 4 ]; then exit 0; else exit 1; fi
   memory_leaks:
     name: Memory leaks
-    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -191,7 +189,6 @@ jobs:
           ninja memcheck
   documentation:
     name: Documentation
-    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

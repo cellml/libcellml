@@ -13,7 +13,7 @@ Releases are made using GitHub Actions CI and consist of four steps:
 1. `Step 1 - Preparing the release`_
 2. `Step 2 - Checking the release`_
 3. `Step 3 - Make the release`_
-4. `Step 4 - Finalising the Release`_
+4. `Step 4 - Finalising the release`_
 
 Each step must be performed in order. Later steps assume that all previous steps have completed successfully.
 
@@ -25,6 +25,15 @@ For all steps in the release process, you must:
 - Be a maintainer (have write access) of the *cellml/libcellml* GitHub repository.
 - Be familiar with semantic versioning.
 - Ensure that no other release is currently in progress.
+- Choose the **main** branch as the branch to run the workflow from.
+
+.. figure:: ./images/release_process/workflow_branch_chooser.png
+   :align: center
+   :width: 25%
+   :alt: GitHub Actions run workflow branch chooser.
+   :name: libcellml_release_process_workflow_branch_chooser
+
+   Run workflow from branch chooser interface on GitHub.
 
 .. note::
 
@@ -42,23 +51,11 @@ Release staging branches, named *release-staging-v<version number>*, are tempora
 Step 1 - Preparing the release
 ==============================
 
-The *Prepare Release* GitHub Actions workflow prepares a release candidate using information supplied when the workflow is triggered.
+The *Prepare Release* GitHub Actions workflow creates a staged release candidate
+based on a specified source branch and version number.
 
-This workflow performs the following tasks:
-
-- Collects all changes that will make up the release from a specified source branch.
-- Generates a changelog summarising the merged pull requests included in the release.
-- Updates version numbers throughout the codebase.
-
-These changes are separated into multiple commits (for example, content changes, changelog generation, and version updates) to make reviewing the release easier.
-
-The workflow creates a staging branch in the repository that contains all proposed release changes.
-The source branch is typically the *main* branch (which is the default), but it may be any branch or tag in the repository.
-The staging branch is named *release-staging-v<version number>*, where <version number> is the version number specified when triggering the workflow.
-
-The workflow can be triggered from the *Actions* tab of the `cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__ repository.
-
-This workflow is manually triggered and requires a version number to be provided using the GitHub Actions user interface.
+This workflow assembles all changes intended for the release into a dedicated
+staging branch and prepares them for review before validation and publication.
 
 .. figure:: ./images/release_process/prepare_release_interface.png
    :align: center
@@ -67,7 +64,39 @@ This workflow is manually triggered and requires a version number to be provided
 
    *Prepare Release* interface on GitHub.
 
-Version numbers must follow semantic versioning rules. See `Semantic Versioning <https://semver.org/>`_ for further information.
+The workflow is manually triggered from the *Actions* tab of the
+`cellml/libcellml <https://github.com/cellml/libcellml/actions/workflows/release-prepare.yml>`__
+repository.
+
+Procedure
+---------
+
+1. Navigate to the *Prepare Release* workflow in the GitHub Actions tab of the
+   `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Enter the version number for the release.
+3. (Optional) Specify a source branch if different from the default *main* branch.
+4. Manually trigger the workflow.
+5. Monitor the workflow run for completion and check for any failures.
+6. Review the pull request created from the staging branch into the *release* branch.
+
+Tasks performed
+---------------
+
+The workflow performs the following tasks:
+
+- Collects all changes for the release from the specified source branch.
+- Generates a changelog summarising the pull requests included in the release.
+- Updates version numbers throughout the codebase.
+- Organises these changes into multiple commits to simplify review.
+- Creates a release staging branch named *release-staging-v<version number>*.
+- Opens a pull request from the staging branch to the *release* branch.
+
+Versioning
+----------
+
+Version numbers must follow semantic versioning rules. See
+`Semantic Versioning <https://semver.org/>`_ for further information.
+
 Examples of valid version numbers include:
 
 - 1.0.0
@@ -79,20 +108,44 @@ Examples of valid version numbers include:
 - 1.0.0-rc.1+build.1
 - 1.0.0-post.1
 
-There are no explicit checks to ensure that version numbers strictly follow semantic versioning conventions; however, the workflow will fail if the supplied version number cannot be parsed as a semantic version.
+The version number consists of:
 
-The version number is split into two components: a core version (major, minor, and patch numbers) and an optional developer suffix.
-An official release is created by omitting the developer suffix.
-Developer releases include a suffix and differ from official releases in that the resulting assets are not published to public registries or attached to a GitHub release.
+- A core version (major, minor, patch).
+- An optional suffix indicating a development or pre-release.
 
-On successful completion, this workflow creates a pull request on the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository with *release* as the base branch and the newly created staging branch as the head branch.
+An official release is created without a suffix. Developer releases include a suffix
+and differ in that artifacts are not published to public registries or GitHub releases.
 
-If the workflow fails, the pull request will not be created. Depending on how far the workflow progressed before failure, the staging branch may still exist and may need to be cleaned up manually or reused after resolving the issue.
+There are no strict validation checks beyond parsing; however, invalid semantic version
+strings will cause the workflow to fail.
 
-Next Step
+Results
+-------
+
+On successful completion:
+
+- A staging branch (*release-staging-v<version number>*) is created.
+- A pull request targeting the *release* branch is opened for review.
+
+Failure handling
+----------------
+
+If the workflow fails:
+
+- The pull request will not be created.
+- The staging branch may still exist depending on when the failure occurred.
+
+Recommended actions:
+
+- Review the workflow logs to identify the failure.
+- Delete or reuse the staging branch as appropriate.
+- Apply fixes to the source branch.
+- Re-run the workflow once the issue has been resolved.
+
+Next step
 ---------
 
-Once the pull request has been created, the checking of the release can begin (see `Step 2 - Checking the release`_).
+Once the staging pull request has been created and is ready for validation, proceed to `Step 2 - Checking the release`_.
 
 Step 2 - Checking the release
 =============================
@@ -164,6 +217,7 @@ A release candidate is considered valid when:
 If end-to-end tests fail:
 
 - The release **may still proceed**, however:
+
   - The user documentation will **not** be updated as part of the release process.
   - The metadata recorded in the workflow comment will be used by subsequent workflows to finalise documentation updates on the libcellml.org website.
 
@@ -171,10 +225,12 @@ Failure handling
 ----------------
 
 - If **unit tests fail**:
+
   - The release **must not proceed**.
   - The staged release should be removed and fixes applied to the source branch before starting the release process again.
 
 - If **end-to-end tests fail**, either:
+
   - Continue with the release, understanding that the user documentation will not be updated.
   - Or, fix the issues stemming from the end-to-end testing and re-run the workflow.
 
@@ -205,6 +261,12 @@ In addition, the workflow creates a pull request to the Julia packaging reposito
 The pull request to Yggdrasil must be manually managed.
 Historically, the Julia package maintainers have been very good at approving and merging pull requests in a timely manner.
 
+The *Make Release* workflow makes use of a classic personal access token with write access and pull request access to the `cellml/Yggdrasil <https://github.com/cellml/yggdrasil>`_ repository so that it can create a pull request to update the Julia package.
+This classic personal access token is stored as a secret (*YGGDRASIL_PR_PAT*) in the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository and is used by the workflow to create the pull request to Yggdrasil.
+It needs to be updated with a new token if the old token is revoked or expires.
+The current expiry date for the current token is 2026-06-23.
+Any maintainer of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository can create a new token and update the secret if necessary.
+
 Procedure
 ---------
 
@@ -221,6 +283,7 @@ The workflow performs the following tasks
 - Moves the staged code to the release branch.
 - Creates a release on GitHub using information from the staging branch.
 - Builds release assets including:
+
   - Binaries
   - Python wheels
   - Javascript package
@@ -234,58 +297,65 @@ Failure handling
 If there is a failure in the workflow that release will be incomplete, but should not be considered a failed release.
 The only solution is to fix the problems through the normal channels and start the release process again.
 
-Step 4 - Finalising the Release
+Next step
+---------
+
+Once the release has been made and the assets have been published, the release process can continue with `Step 4 - Finalising the release`_.
+
+Step 4 - Finalising the release
 ===============================
 
-The release is finalised using the *Finalise Release Builder* (:numref:`libcellml_release_process_finalise_release`).
+The *Finalise Release* GitHub Actions workflow completes the release process by updating the libcellml.org website, integrating release changes back into the main development branch, and cleaning up release staging artefacts.
 
-.. figure:: ./images/release_process/finalise_release_builder.png
+.. figure:: ./images/release_process/finalise_release_interface.png
    :align: center
-   :alt: Buildbot finalise release builder interface.
+   :width: 25%
+   :alt: GitHub Action finalise release manual trigger interface.
    :name: libcellml_release_process_finalise_release
 
-   *Finalise Release Builder* on Buildbot.
+   *Finalise Release* workflow interface from GitHub Action.
 
-The *Finalise Release Builder* interface interrogates `cellml/libcellml <https://github.com/cellml/libcellml>`__ for release branches, and `end-to-end testing framework <https://github.com/libcellml/end-to-end-testing>`__, and `end-to-end testing database <https://github.com/libcellml/end-to-end-test-database>`__ for tags.
-Choose the values for finalising the release in the finalise release interface, :numref:`libcellml_release_process_finalise_release_builder_interface`.
-The branch input in the interface should be set to the *release_staging_<version number>* branch (again, there should be only one), :numref:`libcellml_release_process_release_branch_chooser_example`.
-The end-to-end testing tag is the tag that specifies the version of the testing framework to use for running the tests, :numref:`libcellml_release_process_end_to_end_framework_tag_chooser_example`.
-The end-to-end testing database is the tag that specifies the version of the database that describes the tests to run, :numref:`libcellml_release_process_end_to_end_database_tag_chooser_example`.
+This workflow is the final step in the release process and performs post-release housekeeping tasks.
+The API and developer documentation will be updated and any user documentation that passed the end-to-end testing will be updated on the website.
 
-.. figure:: ./images/release_process/finalise_release_builder_interface.png
-   :align: center
-   :alt: Buildbot finalise release interface.
-   :name: libcellml_release_process_finalise_release_builder_interface
+If the release is considered a successful release:
 
-   *Finalise Release Builder* interface.
+- The libcellml.org website will be updated with the latest applicable documentation.
+- The release staging branch will be merged back into the main development branch.
 
-.. figure:: ./images/release_process/release_branch_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an available branch.
-   :name: libcellml_release_process_release_branch_chooser_example
+Regardless of the release outcome:
 
-   Example of choosing a release branch.
+- The release staging branch will be deleted.
+- The associated pull request will be closed.
 
-.. figure:: ./images/release_process/end_to_end_framework_tag_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an end-to-end testing tag.
-   :name: libcellml_release_process_end_to_end_framework_tag_chooser_example
+Procedure
+---------
 
-   Example of choosing a tag for the end-to-end testing framework.
+1. Navigate to the Finalise Release workflow in the GitHub Actions tab of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository.
+2. Manually trigger the workflow.
 
-.. figure:: ./images/release_process/end_to_end_database_tag_chooser_example.png
-   :align: center
-   :width: 50%
-   :alt: Buildbot finalise release interface showing example of choosing an end-to-end database tag.
-   :name: libcellml_release_process_end_to_end_database_tag_chooser_example
+   - If the release was successful, enable the option to update the website and merge changes back into the main development branch.
 
-   Example of choosing a tag for the end-to-end testing database.
+3. Monitor the workflow run for completion and check for any failures.
+4. Review the pull request created against the production branch of the `libcellml.org website <https://github.com/libcellml/website-src>`_ repository, and merge it if the updates are correct.
 
-The *Finalise Release Builder* will update the libCellML staging website with the API documentation and the developer documentation.
-The user documentation will only be updated for the release, if the end-to-end testing passes.
-To this end, it is important to choose the appropriate end-to-end testing tag and end-to-end testing database tag.
-If the end-to-end testing passes, the specifics of the versions that the release was tested with will be saved and surfaced on the website.
+Tasks performed
+---------------
 
-The last thing that the *Finalise Release Builder* does is the merging of the *release_staging_<version number>* into the *main* branch and the deletion of the *release_staging_<version number>* branch.
+The workflow performs the following tasks:
+
+- Generates API and developer documentation for the release and creates a pull request to update the website.
+- Generates user documentation for components that passed end-to-end testing and updates the existing website update pull request.
+- Updates the project version by appending a .post suffix.
+- Merges the release staging branch back into the main development branch.
+- Deletes the release staging branch and closes the associated draft pull request.
+
+Failure handling
+----------------
+
+If a failure occurs during this workflow, manual intervention may be required to resolve any issues.
+Recommended actions:
+
+- Review the workflow logs to identify the source of the failure.
+- Fix any issues in the staging or documentation repositories.
+- Re-run the workflow once the problem has been resolved.
