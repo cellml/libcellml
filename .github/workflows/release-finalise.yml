@@ -110,7 +110,7 @@ jobs:
         with:
           client-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
+          owner: libcellml
           repositories: website-src
 
       - name: Checkout website-src repository
