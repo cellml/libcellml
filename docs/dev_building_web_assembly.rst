@@ -34,8 +34,8 @@ Start by creating a directory under which all our files will live and make it ou
 
 Now, we can clone our dependencies (we suggest using these exact repositories other repositories may work but these repositories are known to work)::
 
-  git clone https://github.com/OpenCMISS-Dependencies/zlib.git -b v1.2.3
-  git clone https://github.com/OpenCMISS-Dependencies/libxml2.git -b v2.9.10
+  git clone https://github.com/CMLibs-Dependencies/zlib.git -b v1.2.12
+  git clone https://github.com/CMLibs-Dependencies/libxml2.git -b v2.9.10
 
 We will create two directories to hold the build files::
 

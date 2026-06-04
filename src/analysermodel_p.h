@@ -16,6 +16,9 @@ limitations under the License.
 
 #pragma once
 
+#include <cstdint>
+#include <unordered_map>
+
 #include "libcellml/analysermodel.h"
 
 namespace libcellml {
@@ -34,9 +37,41 @@ struct AnalyserModel::AnalyserModelImpl
     bool mHasExternalVariables = false;
 
     AnalyserVariablePtr mVoi;
+
     std::vector<AnalyserVariablePtr> mStates;
-    std::vector<AnalyserVariablePtr> mVariables;
-    std::vector<AnalyserEquationPtr> mEquations;
+    std::vector<AnalyserVariablePtr> mConstants;
+    std::vector<AnalyserVariablePtr> mComputedConstants;
+    std::vector<AnalyserVariablePtr> mAlgebraicVariables;
+    std::vector<AnalyserVariablePtr> mExternalVariables;
+
+    std::vector<AnalyserEquationPtr> mAnalyserEquations;
+
+    struct VariableKeyPair
+    {
+        uintptr_t first;
+        uintptr_t second;
+
+        bool operator==(const VariableKeyPair &other) const
+        {
+            return (first == other.first) & (second == other.second);
+        }
+    };
+
+    struct VariableKeyPairHash
+    {
+        size_t operator()(const VariableKeyPair &pair) const
+        {
+            // A simple and portable hash function for a pair of pointers.
+
+            size_t hash = pair.first;
+
+            hash ^= pair.second + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+
+            return hash;
+        }
+    };
+
+    std::unordered_map<VariableKeyPair, bool, VariableKeyPairHash> mCachedEquivalentVariables;
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -64,8 +99,6 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAsechFunction = false;
     bool mNeedAcschFunction = false;
     bool mNeedAcothFunction = false;
-
-    std::map<uintptr_t, bool> mCachedEquivalentVariables;
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 

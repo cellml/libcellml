@@ -14,7 +14,8 @@
 
 include(CheckCXXCompilerFlag)
 include(TestUndefinedSymbolsAllowed)
-include(TestLibXml2ConstErrorStructuredErrorCallback)
+include(libcellml/ResolveLibXml2)
+include(libcellml/ResolveZLIB)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -107,81 +108,11 @@ else ()
   )
 endif()
 
-# Find libxml2
-set(HAVE_LIBXML2_CONFIG FALSE)
-# We want to use config mode for finding libXml2.
-# This is especially important on Windows with Visual Studio.
-# To do this we need to have two find_package calls and explicitly state that
-# we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-# is the preferred method so we will try this first quietly.
-#
-# This does change how we get information about include paths and such so we
-# need to track how we found LibXml2.
-find_package(LibXml2 CONFIG QUIET)
-if(LibXml2_FOUND)
-  if(TARGET z)
-    set(HAVE_ZLIB_TARGET TRUE)
-    get_target_property(ZLIB_TARGET_TYPE z TYPE)
-  else()
-    find_package(ZLIB CONFIG QUIET)
-    if(ZLIB_FOUND)
-      if(TARGET z)
-        set(HAVE_ZLIB_TARGET TRUE)
-        get_target_property(ZLIB_TARGET_TYPE z TYPE)
-      endif()
-    else()
-      find_package(ZLIB REQUIRED)
-      set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-    endif()
-  endif()
-  set(HAVE_LIBXML2_CONFIG TRUE)
-  # Different versions of LibXml2 have different names for the library target.
-  # We try and capture that here.
-  if(TARGET xml2)
-    set(LIBXML2_TARGET_NAME xml2)
-  elseif(TARGET LibXml2)
-    set(LIBXML2_TARGET_NAME LibXml2)
-  elseif(TARGET LibXml2::LibXml2)
-    set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
-  else()
-    message(FATAL_ERROR "FindLibXml2: Found configuration file for LibXml2 but could not determine a target name from it.")
-  endif()
-  get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET_NAME} TYPE)
-  set(HAVE_LIBXML2_TARGET TRUE)
-  # Clear out GUI variables created in module search mode.
-  foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
-    if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
-      unset(${_XML2_VAR} CACHE)
-    endif()
-  endforeach()
-else()
-  find_package(LibXml2 REQUIRED)
-  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
-  if(TARGET z)
-    set(HAVE_ZLIB_TARGET TRUE)
-    get_target_property(ZLIB_TARGET_TYPE z TYPE)
-  else()
-    find_package(ZLIB REQUIRED)
-    set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-  endif()
-  if(LibXml2_FOUND)
-    # Clear out GUI variable created in config search mode.
-    unset(LibXml2_DIR CACHE)
-  endif()
-endif()
+resolve_libxml2(LIBXML2_TARGET)
+resolve_zlib(${LIBXML2_TARGET} ZLIB_TARGET)
 
-if(NOT DEFINED _LibXml2_FIND_REPORTED)
-  set(_LibXml2_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what LibXml2 was found.")
-  message(STATUS "Found LibXml2: ${LIBXML2_LIBRARIES} (found version \"${LIBXML2_VERSION_STRING}\").")
-endif()
-
-if(NOT DEFINED _ZLIB_FIND_REPORTED)
-  set(_ZLIB_FIND_REPORTED TRUE CACHE INTERNAL "Flag for reporting on what ZLIB was found.")
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
-    set(ZLIB_VERSION_STRING ${ZLIB_VERSION})
-  endif()
-  message(STATUS "Found ZLIB: ${ZLIB_LIBRARIES} (found version \"${ZLIB_VERSION_STRING}\").")
-endif()
+get_target_property(ZLIB_TARGET_TYPE ${ZLIB_TARGET} TYPE)
+get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET} TYPE)
 
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
   set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
@@ -256,9 +187,7 @@ if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
     set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()
 
-test_libxml2_const_error_structured_error_callback()
-
-if(CONST_ERROR_STRUCTURED_ERROR_CALLBACK)
+if(CONST_XMLERROR STREQUAL "CONST")
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "const xmlError *")
 else()
   set(CONST_ERROR_STRUCTURED_ERROR_CALLBACK_TYPE "xmlErrorPtr")
