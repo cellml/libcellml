@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.6.3. */
+/* The content of this file was generated using the C profile of libCellML 0.7.0. */
 
 #pragma once
 
@@ -7,26 +7,26 @@
 extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
-extern const size_t VARIABLE_COUNT;
-
-typedef enum {
-    CONSTANT,
-    COMPUTED_CONSTANT,
-    ALGEBRAIC
-} VariableType;
+extern const size_t CONSTANT_COUNT;
+extern const size_t COMPUTED_CONSTANT_COUNT;
+extern const size_t ALGEBRAIC_VARIABLE_COUNT;
 
 typedef struct {
     char name[2];
     char units[14];
     char component[13];
-    VariableType type;
 } VariableInfo;
 
-extern const VariableInfo VARIABLE_INFO[];
+extern const VariableInfo CONSTANT_INFO[];
+extern const VariableInfo COMPUTED_CONSTANT_INFO[];
+extern const VariableInfo ALGEBRAIC_VARIABLE_INFO[];
 
-double * createVariablesArray();
+double * createConstantsArray();
+double * createComputedConstantsArray();
+double * createAlgebraicVariablesArray();
+
 void deleteArray(double *array);
 
-void initialiseVariables(double *variables);
-void computeComputedConstants(double *variables);
-void computeVariables(double *variables);
+void initialiseArrays(double *constants, double *computedConstants, double *algebraicVariables);
+void computeComputedConstants(double *constants, double *computedConstants, double *algebraicVariables);
+void computeVariables(double *constants, double *computedConstants, double *algebraicVariables);

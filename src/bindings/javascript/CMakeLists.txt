@@ -13,6 +13,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorvariabletracker.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -39,7 +40,7 @@ target_link_libraries(javascript-bindings PUBLIC cellml)
 # I want to add '-fwasm-exceptions' to the COMPILE_FLAGS but Node doesn't support
 # this yet.  This is a reminder to enable it when Node does support exceptions.
 set_target_properties(javascript-bindings PROPERTIES
-  CXX_STANDARD 11
+  CXX_STANDARD 20
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 0
