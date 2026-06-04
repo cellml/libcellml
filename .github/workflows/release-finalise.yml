@@ -110,7 +110,7 @@ jobs:
         with:
           client-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
+          owner: libcellml
           repositories: website-src
 
       - name: Checkout website-src repository
@@ -322,21 +322,32 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: libcellml
 
-      - name: Checkout repository
+      - name: Checkout release changes
         uses: actions/checkout@v6
         with:
           ref: ${{ needs.determine_release.outputs.release_branch }}
+          path: release-changes
+
+      - name: Checkout return branch
+        uses: actions/checkout@v6
+        with:
+          ref: main
           token: ${{ steps.app_token.outputs.token }}
-          fetch-depth: 0
+          path: update
 
       - name: Merge into main
         if: ${{ inputs.successful }}
         run: |
+
+          rsync -avW --delete --exclude='.git' release-changes/ update/
+
+          cd update
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git checkout main
-          git merge --no-ff ${{ needs.determine_release.outputs.release_branch }} -m "Merge release branch ${{ needs.determine_release.outputs.release_branch }} into main."
+          git add -A
+          git commit -m "Update main with release changes from ${{ needs.determine_release.outputs.release_branch }}."
           git push origin main
 
       - name: Close PR and delete branch
