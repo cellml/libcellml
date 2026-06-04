@@ -20,8 +20,8 @@ endif()
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
-set(_PROJECT_VERSION 0.6.3)
-set(PROJECT_DEVELOPER_VERSION)
+set(_PROJECT_VERSION 0.7.0)
+set(PROJECT_DEVELOPER_VERSION -rc.1)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
