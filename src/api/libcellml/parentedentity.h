@@ -16,8 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"

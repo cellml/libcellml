@@ -19,7 +19,6 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <map>
-#include <sstream>
 #include <vector>
 
 #include "libcellml/units.h"

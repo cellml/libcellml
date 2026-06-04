@@ -1,8 +1,11 @@
-# OS X hidden system files
+# macOS hidden system files
 .DS_Store
 
 # Ignore the build directory
 build/
+
+# Debugging files
+*.profraw
 
 # Eclipse project files
 .project
@@ -18,3 +21,8 @@ CMakeLists.txt.user
 
 # VS Code system files
 .vscode/
+
+# Act resource files
+.actrc
+act-payload.json
+act-*input.txt

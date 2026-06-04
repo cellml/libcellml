@@ -19,19 +19,24 @@ limitations under the License.
 #include "libcellml/analyserequationast.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
+#include "libcellml/generatorvariabletracker.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_generator)
 {
-    class_<libcellml::Generator>("Generator")
+    class_<libcellml::Generator, base<libcellml::Logger>>("Generator")
         .smart_ptr_constructor("Generator", &libcellml::Generator::create)
-        .function("profile", &libcellml::Generator::profile)
-        .function("setProfile", &libcellml::Generator::setProfile)
-        .function("model", &libcellml::Generator::model)
-        .function("setModel", &libcellml::Generator::setModel)
-        .function("interfaceCode", &libcellml::Generator::interfaceCode)
-        .function("implementationCode", &libcellml::Generator::implementationCode)
+        .function("interfaceCode", select_overload<std::string(const libcellml::AnalyserModelPtr &)>(&libcellml::Generator::interfaceCode))
+        .function("interfaceCodeByProfile", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::interfaceCode))
+        .function("interfaceCodeByProfileEnumeration", select_overload<std::string(const libcellml::AnalyserModelPtr &, libcellml::GeneratorProfile::Profile)>(&libcellml::Generator::interfaceCode))
+        .function("interfaceCodeByVariableTracker", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorVariableTrackerPtr &)>(&libcellml::Generator::interfaceCode))
+        .function("interfaceCodeByProfileAndVariableTracker", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorProfilePtr &, const libcellml::GeneratorVariableTrackerPtr &)>(&libcellml::Generator::interfaceCode))
+        .function("implementationCode", select_overload<std::string(const libcellml::AnalyserModelPtr &)>(&libcellml::Generator::implementationCode))
+        .function("implementationCodeByProfile", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::implementationCode))
+        .function("implementationCodeByProfileEnumeration", select_overload<std::string(const libcellml::AnalyserModelPtr &, libcellml::GeneratorProfile::Profile)>(&libcellml::Generator::implementationCode))
+        .function("implementationCodeByVariableTracker", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorVariableTrackerPtr &)>(&libcellml::Generator::implementationCode))
+        .function("implementationCodeByProfileAndVariableTracker", select_overload<std::string(const libcellml::AnalyserModelPtr &, const libcellml::GeneratorProfilePtr &, const libcellml::GeneratorVariableTrackerPtr &)>(&libcellml::Generator::implementationCode))
         .class_function("equationCode", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &)>(&libcellml::Generator::equationCode))
         .class_function("equationCodeByProfile", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::equationCode))
     ;

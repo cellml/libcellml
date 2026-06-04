@@ -25,6 +25,7 @@ set(TEST_SRCS
   entity.test.js
   enums.test.js
   generator.test.js
+  generatorvariabletracker.test.js
   generatorprofile.test.js
   importsource.test.js
   model.test.js
@@ -60,7 +61,7 @@ set(TEST_PACKAGE_JSON "{
   \"author\": \"\",
   \"license\": \"Apache-2.0\",
   \"devDependencies\": {
-    \"jest\": \"^26.6.3\"
+    \"jest\": \"^30.2.0\"
   },
   \"dependencies\": {
       \"libcellml.js\": \"file:${_RELATIVE_PATH}\"

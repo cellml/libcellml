@@ -20,6 +20,7 @@ limitations under the License.
 #include <iterator>
 
 #include "analyserequation_p.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -28,36 +29,26 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
-                                                      const AnalyserEquationAstPtr &ast,
-                                                      const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      size_t nlaSystemIndex,
-                                                      const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                                                      const std::vector<AnalyserVariablePtr> &variables)
+bool AnalyserEquation::AnalyserEquationImpl::isStagingDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    mType = type;
-    mAst = ast;
-    mNlaSystemIndex = nlaSystemIndex;
-
-    std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
-    std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
-    std::copy(variables.begin(), variables.end(), back_inserter(mVariables));
+    return libcellml::analyserVariables(dependency.lock()).empty();
 }
 
-bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+void AnalyserEquation::AnalyserEquationImpl::removeStagingDependencies()
 {
-    auto variables = dependency.lock()->variables();
+    // Keep track of our constant dependencies, so that we can generate some code for them, should they be untracked.
 
-    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
-        return false;
+    for (const auto &dependency : mDependencies) {
+        auto constantDependency = dependency.lock()->mPimpl->mConstant;
+
+        if (isStagingDependency(dependency)) {
+            mConstantDependencies.push_back(constantDependency);
+        }
     }
 
-    return true;
-}
+    // Effectively remove our staging dependencies.
 
-void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
-{
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isStagingDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -76,8 +67,8 @@ AnalyserEquation::Type AnalyserEquation::type() const
 }
 
 static const std::map<AnalyserEquation::Type, std::string> typeToString = {
-    {AnalyserEquation::Type::TRUE_CONSTANT, "true_constant"},
-    {AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, "variable_based_constant"},
+    {AnalyserEquation::Type::CONSTANT, "constant"},
+    {AnalyserEquation::Type::COMPUTED_CONSTANT, "computed_constant"},
     {AnalyserEquation::Type::ODE, "ode"},
     {AnalyserEquation::Type::NLA, "nla"},
     {AnalyserEquation::Type::ALGEBRAIC, "algebraic"},
@@ -153,23 +144,80 @@ bool AnalyserEquation::isStateRateBased() const
     return mPimpl->mIsStateRateBased;
 }
 
-size_t AnalyserEquation::variableCount() const
+size_t AnalyserEquation::stateCount() const
 {
-    return mPimpl->mVariables.size();
+    return mPimpl->mStates.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserEquation::variables() const
+std::vector<AnalyserVariablePtr> AnalyserEquation::states() const
 {
-    return mPimpl->mVariables;
+    return mPimpl->mStates;
 }
 
-AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
+AnalyserVariablePtr AnalyserEquation::state(size_t index) const
 {
-    if (index >= mPimpl->mVariables.size()) {
+    if (index >= mPimpl->mStates.size()) {
         return {};
     }
 
-    return mPimpl->mVariables[index];
+    return mPimpl->mStates[index];
+}
+
+size_t AnalyserEquation::computedConstantCount() const
+{
+    return mPimpl->mComputedConstants.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::computedConstants() const
+{
+    return mPimpl->mComputedConstants;
+}
+
+AnalyserVariablePtr AnalyserEquation::computedConstant(size_t index) const
+{
+    if (index >= mPimpl->mComputedConstants.size()) {
+        return {};
+    }
+
+    return mPimpl->mComputedConstants[index];
+}
+
+size_t AnalyserEquation::algebraicVariableCount() const
+{
+    return mPimpl->mAlgebraicVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::algebraicVariables() const
+{
+    return mPimpl->mAlgebraicVariables;
+}
+
+AnalyserVariablePtr AnalyserEquation::algebraicVariable(size_t index) const
+{
+    if (index >= mPimpl->mAlgebraicVariables.size()) {
+        return {};
+    }
+
+    return mPimpl->mAlgebraicVariables[index];
+}
+
+size_t AnalyserEquation::externalVariableCount() const
+{
+    return mPimpl->mExternalVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::externalVariables() const
+{
+    return mPimpl->mExternalVariables;
+}
+
+AnalyserVariablePtr AnalyserEquation::externalVariable(size_t index) const
+{
+    if (index >= mPimpl->mExternalVariables.size()) {
+        return {};
+    }
+
+    return mPimpl->mExternalVariables[index];
 }
 
 } // namespace libcellml
