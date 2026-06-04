@@ -261,6 +261,12 @@ In addition, the workflow creates a pull request to the Julia packaging reposito
 The pull request to Yggdrasil must be manually managed.
 Historically, the Julia package maintainers have been very good at approving and merging pull requests in a timely manner.
 
+The *Make Release* workflow makes use of a classic personal access token with write access and pull request access to the `cellml/Yggdrasil <https://github.com/cellml/yggdrasil>`_ repository so that it can create a pull request to update the Julia package.
+This classic personal access token is stored as a secret (*YGGDRASIL_PR_PAT*) in the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository and is used by the workflow to create the pull request to Yggdrasil.
+It needs to be updated with a new token if the old token is revoked or expires.
+The current expiry date for the current token is 2026-06-23.
+Any maintainer of the `cellml/libcellml <https://github.com/cellml/libcellml>`_ repository can create a new token and update the secret if necessary.
+
 Procedure
 ---------
 
