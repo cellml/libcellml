@@ -199,6 +199,10 @@ jobs:
 
           summary='${{ needs.documentation_checks.outputs.test_summary }}'
 
+          if [[ -z "$summary" ]]; then
+            summary='{ "test_summary": {}, "repos": { "end_to_end_framework": "null", "database": "null" } }'
+          fi
+
           combined=$(jq -n \
             --arg TEST_REPO "$TEST_REPO" \
             --arg TEST_TAG "$TEST_TAG" \
