@@ -80,7 +80,7 @@ jobs:
       - name: Create staging branch
         run: |
           cd release-repo
-          git tag -a -v "source-v${{ inputs.version }}" -m "Source tag for release v${{ inputs.version }}"
+          git tag -a "source-v${{ inputs.version }}" -m "Source tag for release v${{ inputs.version }}"
           git checkout -b ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Copy release changes to release repo
