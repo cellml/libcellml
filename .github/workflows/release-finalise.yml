@@ -308,6 +308,7 @@ jobs:
 
   tidy_up:
     runs-on: ubuntu-latest
+    if: always()
     needs:
       - determine_release
       - set_version_post

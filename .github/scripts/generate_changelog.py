@@ -47,11 +47,13 @@ def run(cmd):
 
 def find_previous_source_tag(end_tag):
     tags = run(["git", "tag"]).splitlines()
+    print('Found tags:', tags)
     valid = []
 
     m = None if end_tag == "HEAD" else TAG_PATTERN.match(end_tag)
     end_version = semver.parse(m.group(1)) if m else None
 
+    print(f"Finding previous source tag before {end_tag} (version {end_version})")
     for t in tags:
         m = TAG_PATTERN.match(t)
         if not m:
@@ -63,10 +65,12 @@ def find_previous_source_tag(end_tag):
 
         valid.append((v, t))
 
+    print(valid)
     if not valid:
         raise RuntimeError("No valid source-vX.Y.Z tags found")
 
     valid.sort(reverse=True)
+    print(f"Previous source tag found: {valid[0][1]} with version {valid[0][0]}")
     return valid[0][1]
 
 
@@ -180,7 +184,9 @@ if __name__ == "__main__":
     args = process_arguments()
     previous_source_tag = find_previous_source_tag(args.tag_end) if args.tag_start == "PREV" else args.tag_start
     messages = get_merge_commits(previous_source_tag)
+    print(f"Found {len(messages)} merge commits between {previous_source_tag} and {args.tag_end}.")
     pr_numbers = extract_pr_numbers(messages)
+    print(f"Extracted {len(pr_numbers)} PR numbers from merge commits.")
 
     summaries = []
     for pr_number in pr_numbers:
@@ -193,6 +199,8 @@ if __name__ == "__main__":
             summaries.append(extract_summary(pr))
 
     sorted_summaries = sorted(summaries, key=lambda x: x["label"])
+    print(f"Extracted summaries for {len(sorted_summaries)} merged PRs.")
+    print(sorted_summaries)
 
     tag_end_label = "latest" if args.tag_end == "HEAD" else f"v{args.tag_end}"
     tag_end_label = tag_end_label if args.tag_end_display_name is None else args.tag_end_display_name
