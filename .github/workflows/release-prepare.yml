@@ -161,3 +161,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git push origin --delete "$branch" || echo "Branch already deleted"
+          git push origin :refs/tags/"source-v${{ inputs.version }}" || echo "Tag already deleted"

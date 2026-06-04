@@ -82,6 +82,7 @@ def get_merge_commits(start, end="HEAD"):
         "--first-parent",
         "--pretty=%s"
     ])
+    print(f"Git log between {start} and {end}:\n{log}")
     return log.splitlines()
 
 
