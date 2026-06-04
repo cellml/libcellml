@@ -34,7 +34,7 @@ describe("Import Source tests", () => {
         const iS = new libcellml.ImportSource()
         const m = new libcellml.Model()
 
-        expect(iS.model()).toBe(null)
+        expect(iS.model()).toBeNull()
 
         iS.setModel(m)
 

@@ -730,19 +730,16 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
 
     analyser->analyseModel(model);
 
+    auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
-    generator->setModel(analyser->model());
-
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.c", generator->implementationCode(analyserModel));
 
     libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    generator->setProfile(profile);
-
-    EXPECT_EQ("", generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+    EXPECT_EQ("", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
@@ -1917,4 +1914,29 @@ TEST(ModelFlattening, modelWithCnUnitsNotDefinedInImportedComponent)
 
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ("The model is not fully defined.", importer->error(0)->description());
+}
+
+TEST(ModelFlattening, multiLayeredImportOfNonStandardUnits)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("importer/periodicstimulus/experiments/periodic-stimulus.xml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    auto importer = libcellml::Importer::create(false);
+
+    importer->resolveImports(model, resourcePath("importer/periodicstimulus/experiments"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flattenModel = importer->flattenModel(model);
+
+    EXPECT_NE(nullptr, flattenModel);
 }

@@ -16,10 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
-#include "libcellml/exportdefinitions.h"
-#include "libcellml/types.h"
+#include "libcellml/generatorprofile.h"
+#include "libcellml/logger.h"
 
 namespace libcellml {
 
@@ -28,7 +26,7 @@ namespace libcellml {
  *
  * The Generator class is for representing a CellML Generator.
  */
-class LIBCELLML_EXPORT Generator
+class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
     ~Generator(); /**< Destructor, @private. */
@@ -50,67 +48,157 @@ public:
     static GeneratorPtr create() noexcept;
 
     /**
-     * @brief Get the @ref GeneratorProfile.
-     *
-     * Get the @ref GeneratorProfile used by this @ref Generator.
-     *
-     * @return The @ref GeneratorProfile used.
-     */
-    GeneratorProfilePtr profile();
-
-    /**
-     * @brief Set the @ref GeneratorProfile.
-     *
-     * Set the @ref GeneratorProfile to be used by this @ref Generator.
-     *
-     * @param profile The @ref GeneratorProfile to set.
-     */
-    void setProfile(const GeneratorProfilePtr &profile);
-
-    /**
-     * @brief Get the @ref AnalyserModel.
-     *
-     * Get the @ref AnalyserModel used by this @ref Generator.
-     *
-     * @return The @ref AnalyserModel used.
-     */
-    AnalyserModelPtr model();
-
-    /**
-     * @brief Set the @ref AnalyserModel.
-     *
-     * Set the @ref AnalyserModel to be used by this @ref Generator.
-     *
-     * @param model The @ref AnalyserModel to set.
-     */
-    void setModel(const AnalyserModelPtr &model);
-
-    /**
      * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Return the interface code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile and the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the interface code
      *
      * @return The interface code as a @c std::string.
      */
-    std::string interfaceCode() const;
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
+
+    /**
+     * @overload
+     *
+     * @brief Get the interface code for the @ref AnalyserModel.
+     *
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the interface code.
+     *
+     * @return The interface code as a @c std::string.
+     */
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
+
+    /**
+     * @overload
+     *
+     * @brief Get the interface code for the @ref AnalyserModel.
+     *
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param profile The @ref GeneratorProfile to use to generate the interface code.
+     *
+     * @return The interface code as a @c std::string.
+     */
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
+
+    /**
+     * @overload
+     *
+     * @brief Get the interface code for the @ref AnalyserModel.
+     *
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the interface code
+     *
+     * @return The interface code as a @c std::string.
+     */
+
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
+
+    /**
+     * @overload
+     *
+     * @brief Get the interface code for the @ref AnalyserModel.
+     *
+     * Return the interface code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some interface code.
+     *
+     * @return The interface code as a @c std::string.
+     */
+    std::string interfaceCode(const AnalyserModelPtr &analyserModel);
 
     /**
      * @brief Get the implementation code for the @ref AnalyserModel.
      *
-     * Return the implementation code for the @ref AnalyserModel, using the
-     * @ref GeneratorProfile.
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile and the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the implementation code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the implementation code
      *
      * @return The implementation code as a @c std::string.
      */
-    std::string implementationCode() const;
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile, const GeneratorVariableTrackerPtr &generatorVariableTracker);
 
     /**
+     * @overload
+     *
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorProfile The @ref GeneratorProfile to use to generate the implementation code.
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorProfilePtr &generatorProfile);
+
+    /**
+     * @overload
+     *
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile::Profile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param profile The @ref GeneratorProfile::Profile type to use to generate the implementation code.
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, GeneratorProfile::Profile profile);
+
+    /**
+     * @overload
+     *
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorVariableTracker.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     * @param generatorVariableTracker The @ref GeneratorVariableTracker to use to generate the implementation code
+     *
+     * @return The implementation code as a @c std::string.
+     */
+
+    std::string implementationCode(const AnalyserModelPtr &analyserModel, const GeneratorVariableTrackerPtr &generatorVariableTracker);
+
+    /**
+     * @overload
+     *
+     * @brief Get the implementation code for the @ref AnalyserModel.
+     *
+     * Return the implementation code for the @ref AnalyserModel, using the @ref GeneratorProfile.
+     *
+     * @param analyserModel The @ref AnalyserModel for which we want to generate some implementation code.
+     *
+     * @return The implementation code as a @c std::string.
+     */
+    std::string implementationCode(const AnalyserModelPtr &analyserModel);
+
+    /**
+     * @overload
+     *
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      * @param generatorProfile The @ref GeneratorProfile, if any, to use to generate the equation code. If no
      * @ref GeneratorProfile is provided then the default @ref GeneratorProfile is used.
      *
@@ -120,11 +208,13 @@ public:
                                     const GeneratorProfilePtr &generatorProfile);
 
     /**
+     * @overload
+     *
      * @brief Get the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
      *
      * Return the equation code for the given @ref AnalyserEquationAst using a default @ref GeneratorProfile.
      *
-     * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
+     * @param ast The @ref AnalyserEquationAst for which we want to generate the equation code.
      *
      * @return The equation code as a @c std::string.
      */
@@ -134,7 +224,9 @@ private:
     Generator(); /**< Constructor, @private. */
 
     struct GeneratorImpl;
-    GeneratorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+
+    GeneratorImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const GeneratorImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

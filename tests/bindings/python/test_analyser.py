@@ -40,9 +40,9 @@ class AnalyserTestCase(unittest.TestCase):
         a.analyseModel(m)
 
         self.assertEqual(0, a.errorCount())
-        self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
-        self.assertEqual("unknown", AnalyserModel.typeAsString(a.model().type()))
-        self.assertEqual("unknown", AnalyserModel_typeAsString(a.model().type()))
+        self.assertEqual(AnalyserModel.Type.UNKNOWN, a.analyserModel().type())
+        self.assertEqual("unknown", AnalyserModel.typeAsString(a.analyserModel().type()))
+        self.assertEqual("unknown", AnalyserModel_typeAsString(a.analyserModel().type()))
 
     def test_coverage(self):
         from libcellml import Analyser
@@ -82,10 +82,10 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertTrue(a.addExternalVariable(aev))
 
         self.assertTrue(a.containsExternalVariable(aev))
-        self.assertTrue(a.containsExternalVariable(m, c.name(), v0.name()))
+        self.assertTrue(a.containsExternalVariable(v0))
 
         self.assertEqual(aev.variable().name(), a.externalVariable(0).variable().name())
-        self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v0.name()).variable().name())
+        self.assertEqual(aev.variable().name(), a.externalVariable(v0).variable().name())
 
         v2 = c.variable(2)
 
@@ -97,13 +97,13 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertTrue(a.removeExternalVariable(1))
         self.assertTrue(a.removeExternalVariable(aev))
-        self.assertTrue(a.removeExternalVariable(m, c.name(), v2.name()))
+        self.assertTrue(a.removeExternalVariable(v2))
 
         a.removeAllExternalVariables()
 
         # Ensure coverage for AnalyserModel.
 
-        am = a.model()
+        am = a.analyserModel()
 
         self.assertTrue(am.isValid())
 
@@ -115,13 +115,21 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(am.states())
         self.assertIsNotNone(am.state(3))
 
-        self.assertEqual(17, am.variableCount())
-        self.assertIsNotNone(am.variables())
-        self.assertIsNotNone(am.variable(3))
+        self.assertEqual(5, am.constantCount())
+        self.assertIsNotNone(am.constants())
+        self.assertIsNotNone(am.constant(3))
+        self.assertEqual(0, am.computedConstantCount())
+        self.assertIsNotNone(am.computedConstants())
+        self.assertIsNone(am.computedConstant(3))
+        self.assertEqual(12, am.algebraicVariableCount())
+        self.assertIsNotNone(am.algebraicVariables())
+        self.assertIsNotNone(am.algebraicVariable(3))
+        self.assertIsNone(am.analyserVariable(None))
+        self.assertIsNotNone(am.analyserVariable(m.component("membrane").variable("V")))
 
-        self.assertEqual(16, am.equationCount())
-        self.assertIsNotNone(am.equations())
-        self.assertIsNotNone(am.equation(3))
+        self.assertEqual(16, am.analyserEquationCount())
+        self.assertIsNotNone(am.analyserEquations())
+        self.assertIsNotNone(am.analyserEquation(3))
 
         self.assertFalse(am.needEqFunction())
         self.assertFalse(am.needNeqFunction())
@@ -152,21 +160,22 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for AnalyserVariable.
 
-        av = am.variable(4)
+        av = am.algebraicVariable(3)
 
-        self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
-        self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
-        self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
-        self.assertEqual(4, av.index())
-        self.assertIsNotNone(av.initialisingVariable())
+        self.assertEqual(AnalyserVariable.Type.ALGEBRAIC_VARIABLE, av.type())
+        self.assertEqual("algebraic_variable", AnalyserVariable.typeAsString(av.type()))
+        self.assertEqual("algebraic_variable", AnalyserVariable_typeAsString(av.type()))
+        self.assertEqual(3, av.index())
+        self.assertIsNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertEqual(1, av.equationCount())
-        self.assertIsNotNone(av.equations())
-        self.assertIsNone(av.equation(0))
+        self.assertIsNotNone(av.analyserModel())
+        self.assertEqual(1, av.analyserEquationCount())
+        self.assertIsNotNone(av.analyserEquations())
+        self.assertIsNotNone(av.analyserEquation(0))
 
         # Ensure coverage for AnalyserEquation.
 
-        ae = am.equation(3)
+        ae = am.analyserEquation(3)
 
         self.assertEqual(AnalyserEquation.Type.ALGEBRAIC, ae.type())
         self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))
@@ -180,9 +189,15 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(ae.nlaSiblings())
         self.assertIsNone(ae.nlaSibling(0))
         self.assertTrue(ae.isStateRateBased())
-        self.assertEqual(1, ae.variableCount())
-        self.assertIsNotNone(ae.variables())
-        self.assertIsNotNone(ae.variable(0))
+        self.assertEqual(0, ae.computedConstantCount())
+        self.assertIsNotNone(ae.computedConstants())
+        self.assertIsNone(ae.computedConstant(0))
+        self.assertEqual(1, ae.algebraicVariableCount())
+        self.assertIsNotNone(ae.algebraicVariables())
+        self.assertIsNotNone(ae.algebraicVariable(0))
+        self.assertEqual(0, ae.externalVariableCount())
+        self.assertIsNotNone(ae.externalVariables())
+        self.assertIsNone(ae.externalVariable(0))
 
         # Check Analyser Equation type with invalid values.
 

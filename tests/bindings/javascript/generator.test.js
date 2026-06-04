@@ -24,31 +24,13 @@ describe("Generator tests", () => {
         libcellml = await loadLibCellML()
     })
     test('Checking Generator profile manipulation.', () => {
-        const g = new libcellml.Generator()
-        const gP = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-        expect(g.profile().commentString()).toBe("/* [CODE] */\n")
+        expect(gp.commentString()).toBe("/* [CODE] */\n")
 
-        gP.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
-        g.setProfile(gP)
+        gp.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
 
-        expect(g.profile().commentString()).toBe("# [CODE]\n")
-    })
-    test('Checking Generator model manipulation.', () => {
-        const g = new libcellml.Generator()
-        const p = new libcellml.Parser(true)
-
-        m = p.parseModel(basicModel)
-        a = new libcellml.Analyser()
-
-        a.analyseModel(m)
-
-        expect(g.model()).toBe(null)
-
-        g.setModel(a.model())
-
-        expect(g.model()).toBeDefined()
-        expect(g.model().stateCount()).toBe(1)
+        expect(gp.commentString()).toBe("# [CODE]\n")
     })
     test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
@@ -59,19 +41,46 @@ describe("Generator tests", () => {
 
         a.analyseModel(m)
 
-        g.setModel(a.model())
+        am = a.analyserModel()
 
-        const interface_lines = g.interfaceCode().split('\n')
-        expect(interface_lines.length).toBe(40)
+        const interface_lines = g.interfaceCode(am).split('\n')
+        expect(interface_lines.length).toBe(38)
 
-        const implementation_lines = g.implementationCode().split('\n')
-        expect(implementation_lines.length).toBe(67)
+        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-        const equation_line_1 = libcellml.Generator.equationCode(a.model().equation(0).ast())
+        const interface_lines_profile = g.interfaceCodeByProfile(am, gp).split('\n')
+        expect(interface_lines_profile.length).toBe(38)
+
+        const interface_lines_profile_enumeration = g.interfaceCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
+        expect(interface_lines_profile_enumeration.length).toBe(38)
+
+        const gvt = new libcellml.GeneratorVariableTracker()
+
+        const interface_lines_variable_tracker = g.interfaceCodeByVariableTracker(am, gvt).split('\n')
+        expect(interface_lines_variable_tracker.length).toBe(38)
+
+        const interface_lines_profile_variable_tracker = g.interfaceCodeByProfileAndVariableTracker(am, gp, gvt).split('\n')
+        expect(interface_lines_profile_variable_tracker.length).toBe(38)
+
+        const implementation_lines = g.implementationCode(am).split('\n')
+        expect(implementation_lines.length).toBe(97)
+
+        const implementation_lines_profile = g.implementationCodeByProfile(am, gp).split('\n')
+        expect(implementation_lines_profile.length).toBe(97)
+
+        const implementation_lines_profile_enumeration = g.implementationCodeByProfileEnumeration(am, libcellml.GeneratorProfile.Profile.C).split('\n')
+        expect(implementation_lines_profile_enumeration.length).toBe(97)
+
+        const implementation_lines_variable_tracker = g.implementationCodeByVariableTracker(am, gvt).split('\n')
+        expect(implementation_lines_variable_tracker.length).toBe(97)
+
+        const implementation_lines_profile_variable_tracker = g.implementationCodeByProfileAndVariableTracker(am, gp, gvt).split('\n')
+        expect(implementation_lines_profile_variable_tracker.length).toBe(97)
+
+        const equation_line_1 = libcellml.Generator.equationCode(a.analyserModel().analyserEquation(0).ast())
         expect(equation_line_1.length).toBe(14)
 
-        const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
-        const equation_line_2 = libcellml.Generator.equationCodeByProfile(a.model().equation(0).ast(), gp)
+        const equation_line_2 = libcellml.Generator.equationCodeByProfile(a.analyserModel().analyserEquation(0).ast(), gp)
         expect(equation_line_2.length).toBe(14)
     })
 })

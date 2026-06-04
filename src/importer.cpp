@@ -17,13 +17,10 @@ limitations under the License.
 #include "libcellml/importer.h"
 
 #include <algorithm>
-#include <cmath>
 #include <fstream>
 #include <libxml/uri.h>
 #include <sstream>
-#include <stdexcept>
 
-#include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
@@ -767,8 +764,8 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, con
             updateUnitsNameUsages(originalName, newName, component, units);
             changedNames.emplace(originalName, newName);
         }
-    } else if (targetUnits->name() != units->name()) {
-        const std::string originalName = units->name();
+    } else if (targetUnits->name() != newName) {
+        const std::string originalName = newName;
         newName = targetUnits->name();
         updateUnitsNameUsages(originalName, newName, component, targetUnits);
         changedNames.emplace(originalName, newName);
@@ -909,7 +906,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                 }
             }
 
-            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : units;
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits : units;
 
             for (size_t unitIndex = 0; unitIndex < replacementUnits->unitCount(); ++unitIndex) {
                 const std::string ref = replacementUnits->unitAttributeReference(unitIndex);
@@ -919,6 +916,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                     }
                 }
             }
+
             StringStringMap changedNames = transferUnitsRenamingIfRequired(clonedImportModel, flatModel, replacementUnits, importedComponentCopy);
             if (!changedNames.empty()) {
                 unitNamesToReplace.merge(changedNames);

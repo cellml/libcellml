@@ -33,15 +33,16 @@ struct AnalyserVariable::AnalyserVariableImpl
     size_t mIndex = 0;
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    ComponentPtr mComponent;
-    std::vector<AnalyserEquationWeakPtr> mEquations;
+    AnalyserModelWeakPtr mAnalyserModel;
+    std::vector<AnalyserEquationWeakPtr> mAnalyserEquations;
 
     static AnalyserVariablePtr create();
 
-    void populate(AnalyserVariable::Type type, size_t index,
-                  const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable,
-                  const std::vector<AnalyserEquationPtr> &equations);
+    void populate(AnalyserVariable::Type type, size_t index, const VariablePtr &initialisingVariable,
+                  const VariablePtr &variable, const AnalyserModelPtr &analyserModel,
+                  const std::vector<AnalyserEquationPtr> &analyserEquations);
+
+    bool constantWithDummyEquation() const;
 };
 
 } // namespace libcellml
