@@ -84,7 +84,7 @@ jobs:
 
       - name: Update release branch
         run: |
-          rsync -av --delete --exclude='.git' repo-staging/ repo-release/
+          rsync -avW --delete --exclude='.git' repo-staging/ repo-release/
           cd repo-release
 
           git add -A
