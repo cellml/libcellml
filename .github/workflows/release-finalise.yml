@@ -143,6 +143,7 @@ jobs:
           echo "Passed tests: $passed_tests"
 
       - name: Checkout documentation database repository
+        if: ${{ steps.extract_doc_metadata.outputs.database_sha }} != 'null'
         uses: actions/checkout@v6
         with:
           repository: ${{ steps.extract_doc_metadata.outputs.database_repo }}
@@ -168,13 +169,12 @@ jobs:
           mkdir -p $docs_dir
           echo "docs_dir=$docs_dir" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare documentation
+      - name: Prepare user documentation
+        if: ${{ steps.extract_doc_metadata.outputs.database_sha }} != 'null'
         run: |
           passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
           echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: $passed_tests"
-          echo "yes"
-          ls libcellml/.github/scripts
-          ls database
+
           mkdir docs
           echo "$passed_tests" | jq -r '.[]' | while read test; do
             echo -n "Processing test: $test"
@@ -188,7 +188,7 @@ jobs:
 
           ls docs
 
-      - name: Prepare libCellML documentation
+      - name: Prepare libCellML documentation targets
         run: |
           cmake -S libcellml -B build-libcellml-release -DBUILD_TYPE=Release -DBINDINGS_PYTHON=OFF -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
 
@@ -288,7 +288,7 @@ jobs:
         run: |
           cd website-src
           pr_url=$(gh pr create \
-            --repo ${{ github.repository_owner }}/website-src \
+            --repo libcellml/website-src \
             --head release_documentation_${{ needs.determine_release.outputs.release_version }} \
             --base production \
             --title "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}" \
@@ -354,6 +354,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
+          cd update
+
           pr_number="${{ needs.determine_release.outputs.pr_number }}"
 
           echo "Closing PR #$pr_number and deleting branch"
