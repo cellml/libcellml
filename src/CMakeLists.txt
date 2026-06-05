@@ -373,7 +373,6 @@ install(
     ${LIBCELLML_CONFIG_CMAKE_FILE}
     ${LIBCELLML_CONFIG_VERSION_FILE}
     ${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveLibXml2.cmake
-    ${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveZLIB.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT development
 )
