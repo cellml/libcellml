@@ -137,10 +137,38 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   else()
     set(RPATH_ORIGIN "no_rpath")
   endif()
+  # Initialise the RPATH list with the origin.
+  set(RPATH_LIST "${RPATH_ORIGIN}")
+  # For development builds, add RPATH entries for all shared dependency library directories so that the Python bindings
+  # can resolve @rpath-based library references (e.g., from GHA-provided dependencies) at runtime. For wheel builds
+  # (SKBUILD), all dependencies are bundled alongside the bindings so the origin RPATH is sufficient.
+  if(NOT SKBUILD)
+    # Resolve each dependency target to a SHARED target usable with $<TARGET_FILE_DIR:>. This handles INTERFACE IMPORTED
+    # aliases (e.g., ZLIB::ZLIB wrapping zlib) by resolving INTERFACE_LINK_LIBRARIES to find the underlying shared
+    # library target.
+    foreach(_rpath_target ${LIBXML2_TARGET} ${SYMENGINE_TARGET} ${ZLIB_TARGET})
+      if(TARGET ${_rpath_target})
+        get_target_property(_rpath_target_type ${_rpath_target} TYPE)
+        if(_rpath_target_type STREQUAL "SHARED_LIBRARY")
+          list(APPEND RPATH_LIST "$<TARGET_FILE_DIR:${_rpath_target}>")
+        elseif(_rpath_target_type STREQUAL "INTERFACE_LIBRARY")
+          get_target_property(_link_libraries ${_rpath_target} INTERFACE_LINK_LIBRARIES)
+          foreach(_link_library ${_link_libraries})
+            if(TARGET ${_link_library})
+              get_target_property(_link_type ${_link_library} TYPE)
+              if(_link_type STREQUAL "SHARED_LIBRARY")
+                list(APPEND RPATH_LIST "$<TARGET_FILE_DIR:${_link_library}>")
+              endif()
+            endif()
+          endforeach()
+        endif()
+      endif()
+    endforeach()
+  endif()
   set_target_properties(${MODULE_TARGET} PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH "${RPATH_ORIGIN}"
+    INSTALL_RPATH "${RPATH_LIST}"
     FOLDER bindings/python
     RUNTIME_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
     LIBRARY_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
