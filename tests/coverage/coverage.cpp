@@ -608,6 +608,8 @@ TEST(Coverage, analyserEquationAstClone)
     ast->setLeftChild(leftChild);
     ast->setRightChild(rightChild);
 
+    ast->clone();
+
     auto cloned = ast->clone();
 
     EXPECT_EQ(libcellml::AnalyserEquationAst::Type::PLUS, cloned->type());

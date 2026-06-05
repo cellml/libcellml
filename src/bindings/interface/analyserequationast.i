@@ -49,6 +49,9 @@
 %feature("docstring") libcellml::AnalyserEquationAst::setRightChild
 "Sets the :class:`AnalyserEquationAst` right child for this :class:`AnalyserEquationAst` object.";
 
+%feature("docstring") libcellml::AnalyserEquationAst::clone
+"Create a copy of this :class:`AnalyserEquationAst` object.";
+
 %feature("docstring") libcellml::AnalyserEquationAst::swapLeftAndRightChildren
 "Swaps the left and right children of this :class:`AnalyserEquationAst` object.";
 
@@ -67,3 +70,10 @@
 
 %include "libcellml/types.h"
 %include "libcellml/analyserequationast.h"
+
+%pythoncode %{
+def _analyserequationast_clone(self, parentAst=None):
+    r"""Create a copy of this :class:`AnalyserEquationAst` object."""
+    return _analyserequationast.AnalyserEquationAst_clone(self, parentAst)
+AnalyserEquationAst.clone = _analyserequationast_clone
+%}

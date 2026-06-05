@@ -226,6 +226,7 @@ class AnalyserTestCase(unittest.TestCase):
         aea.setParent(aea)
         aea.setLeftChild(None)
         aea.setRightChild(None)
+        aea.clone()
 
         self.assertEqual(AnalyserEquationAst.Type.EQ, aea.type())
         self.assertEqual("eq", AnalyserEquationAst.typeAsString(aea.type()))
