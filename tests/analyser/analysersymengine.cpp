@@ -120,7 +120,12 @@ TEST(AnalyserSymEngine, rearrangeEquationsWithConstants)
     EXPECT_EQ("a = 8.65-x", libcellml::Generator::equationCode(analyserModel->analyserEquation(0)->ast()));
     EXPECT_EQ("b = 400000.0/w", libcellml::Generator::equationCode(analyserModel->analyserEquation(1)->ast()));
     EXPECT_EQ("c = y*2.71828182845905", libcellml::Generator::equationCode(analyserModel->analyserEquation(2)->ast()));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ("d = 3.14159265358979+z", libcellml::Generator::equationCode(analyserModel->analyserEquation(3)->ast()));
+#else
     EXPECT_EQ("d = z+3.14159265358979", libcellml::Generator::equationCode(analyserModel->analyserEquation(3)->ast()));
+#endif
+
     EXPECT_EQ("e = INFINITY-w", libcellml::Generator::equationCode(analyserModel->analyserEquation(4)->ast()));
 }
 
@@ -283,7 +288,11 @@ TEST(AnalyserSymEngine, breakAlgebraicLoop)
 
     EXPECT_EQ("v_y = v_in-v_z", libcellml::Generator::equationCode(analyserModel->analyserEquation(0)->ast()));
     EXPECT_EQ("P_x = P_out+P_R", libcellml::Generator::equationCode(analyserModel->analyserEquation(1)->ast()));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ("v_z = -P_C/(-R-R_v)-R_v*v_in/(-R-R_v)+P_out/(-R-R_v)", libcellml::Generator::equationCode(analyserModel->analyserEquation(2)->ast()));
+#else
     EXPECT_EQ("v_z = -R_v*v_in/(-R-R_v)+P_out/(-R-R_v)-P_C/(-R-R_v)", libcellml::Generator::equationCode(analyserModel->analyserEquation(2)->ast()));
+#endif
     EXPECT_EQ("P_R = v_z*R", libcellml::Generator::equationCode(analyserModel->analyserEquation(3)->ast()));
     EXPECT_EQ("P_R_v = v_y*R_v", libcellml::Generator::equationCode(analyserModel->analyserEquation(4)->ast()));
     EXPECT_EQ("dq/dt = v_y", libcellml::Generator::equationCode(analyserModel->analyserEquation(5)->ast()));
@@ -306,7 +315,11 @@ TEST(AnalyserSymEngine, breakTwoIndependentAlgebraicLoops)
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
     EXPECT_EQ("p_1 = k_1Ca/(k_2+k_1Ca)", libcellml::Generator::equationCode(analyserModel->analyserEquation(37)->ast()));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ("o_1 = pow(p_C, n_exp)*alpha/(pow(p_C, n_exp)*beta+pow(p_C, n_exp)*alpha+pow(p_1, n_exp)*alpha)", libcellml::Generator::equationCode(analyserModel->analyserEquation(40)->ast()));
+#else
     EXPECT_EQ("o_1 = pow(p_C, n_exp)*alpha/(pow(p_C, n_exp)*alpha+pow(p_C, n_exp)*beta+pow(p_1, n_exp)*alpha)", libcellml::Generator::equationCode(analyserModel->analyserEquation(40)->ast()));
+#endif
 }
 
 TEST(AnalyserSymEngine, break2dLinearSystem)
@@ -467,5 +480,9 @@ TEST(AnalyserSymEngine, coverage)
     auto analyserModel = analyser->analyserModel();
     auto generator = libcellml::Generator::create();
 
-    EXPECT_EQ_FILE_CONTENTS("analyser/symengine/coverage.c", generator->implementationCode(analyserModel));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("analyser/symengine/coverage_windows_linux.c", generator->implementationCode(analyserModel));
+#else
+    EXPECT_EQ_FILE_CONTENTS("analyser/symengine/coverage_macos.c", generator->implementationCode(analyserModel));
+#endif
 }

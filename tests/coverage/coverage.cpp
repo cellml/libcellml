@@ -825,7 +825,11 @@ TEST(Coverage, generator)
     auto profile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_windows_linux.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_macos.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#endif
 
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
@@ -840,7 +844,11 @@ TEST(Coverage, generator)
                                                             "}\n");
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile_windows_linux.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile_macos.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+#endif
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -909,7 +917,11 @@ TEST(Coverage, generator)
     profile->setImplementationComputeVariablesMethodString(true, true, "");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode(analyserModel, profile));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_windows_linux.out", generator->implementationCode(analyserModel, profile));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_macos.out", generator->implementationCode(analyserModel, profile));
+#endif
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -981,19 +993,31 @@ TEST(Coverage, generator)
     profile->setVariableInfoEntryString("");
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode(analyserModel, profile));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation_windows_linux.out", generator->implementationCode(analyserModel, profile));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation_macos.out", generator->implementationCode(analyserModel, profile));
+#endif
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode(analyserModel, profile));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_windows_linux.py", generator->implementationCode(analyserModel, profile));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model_macos.py", generator->implementationCode(analyserModel, profile));
+#endif
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
                                                             "    return [nan]*STATE_COUNT\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode(analyserModel, profile));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile_windows_linux.py", generator->implementationCode(analyserModel, profile));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile_macos.py", generator->implementationCode(analyserModel, profile));
+#endif
 
     // Coverage for the case where we pass a null profile.
 
@@ -1123,7 +1147,11 @@ TEST(Coverage, generatorWithNoTracking)
     generatorVariableTracker->untrackAllVariables(analyserModel);
 
     EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.h", generator->interfaceCode(analyserModel, generatorVariableTracker));
-    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking.c", generator->implementationCode(analyserModel, generatorVariableTracker));
+#if defined(_WIN32) || defined(__linux__)
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking_windows_linux.c", generator->implementationCode(analyserModel, generatorVariableTracker));
+#else
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.no.tracking_macos.c", generator->implementationCode(analyserModel, generatorVariableTracker));
+#endif
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)
