@@ -322,6 +322,12 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: libcellml
 
+      - name: Install Python
+        if: ${{ inputs.successful }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
       - name: Checkout release changes
         uses: actions/checkout@v6
         with:
@@ -335,7 +341,7 @@ jobs:
           token: ${{ steps.app_token.outputs.token }}
           path: update
 
-      - name: Merge into main
+      - name: Prepare to update main with release changes
         if: ${{ inputs.successful }}
         run: |
 
@@ -346,13 +352,30 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git remote -v
-          git remote set-url origin \
-            https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/${{ github.repository }}.git
-          git remote -v
-
           git add -A
           git commit -m "Update main with release changes from ${{ needs.determine_release.outputs.release_branch }}."
+          git push origin main
+
+      - name: Install CMake and Ninja
+        if: ${{ inputs.successful }}
+        uses: lukka/get-cmake@latest
+
+      - name: Configure libCellML
+        if: ${{ inputs.successful }}
+        run: cmake -G Ninja -S update -B build -DBINDINGS_PYTHON=ON -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=ON
+
+      - name: Build libCellML
+        if: ${{ inputs.successful }}
+        run: cmake --build build
+
+      - name: Run unit tests
+        if: ${{ inputs.successful }}
+        run: cmake --build build --target test
+
+      - name: Push to main
+        if: ${{ inputs.successful }}
+        run: |
+          cd update
           git push origin main
 
       - name: Close PR and delete branch
