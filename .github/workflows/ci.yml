@@ -121,15 +121,18 @@ jobs:
       - name: Install dependencies
         run: |
           cd $HOME
+          wget https://github.com/cellml/gha/releases/download/gha/flint-WASM.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/gmp-WASM.tar.gz -O - | tar -xz
           wget https://github.com/cellml/gha/releases/download/gha/libxml2-WASM.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/mpfr-WASM.tar.gz -O - | tar -xz
           wget https://github.com/cellml/gha/releases/download/gha/symengine-WASM.tar.gz -O - | tar -xz
           wget https://github.com/cellml/gha/releases/download/gha/zlib-WASM.tar.gz -O - | tar -xz
       - name: Configure libCellML
-        run: emcmake cmake -G Ninja -S . -B build-wasm -DBUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$HOME
+        run: emcmake cmake -G Ninja -S . -B build -DBUILD_TYPE=Release -DLIBXML2_LIBRARY=$HOME/libxml2/lib/libxml2.a -DLIBXML2_INCLUDE_DIR=$HOME/libxml2/include/libxml2 -DSymEngine_DIR=$HOME/symengine/lib/cmake/symengine -DSYMENGINE_FLINT_LIBRARIES=$HOME/flint/lib/libflint.a -DSYMENGINE_GMP_LIBRARIES=$HOME/gmp/lib/libgmp.a -DSYMENGINE_MPFR_LIBRARIES=$HOME/mpfr/lib/libmpfr.a -DZLIB_LIBRARY=$HOME/zlib/lib/libz.a -DZLIB_INCLUDE_DIR=$HOME/zlib/include
       - name: Build libCellML
-        run: cmake --build build-wasm
+        run: cmake --build build
       - name: Unit testing
-        run: cmake --build build-wasm --target jest_test
+        run: cmake --build build --target jest_test
   code_formatting:
     name: Code formatting
     runs-on: ubuntu-latest
