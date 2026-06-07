@@ -277,11 +277,11 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.h", generator->interfaceCode(analyserModel));
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel));
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
@@ -307,11 +307,11 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
     profile->setInterfaceFileNameString("model.external.h");
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.h", generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.c", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -1422,19 +1422,11 @@ TEST(Generator, hodgkinHuxleySquidAxonModel195Variant)
     profile->setInterfaceFileNameString("model.variant.h");
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.h", generator->interfaceCode(analyserModel, profile));
-#if defined(_WIN32) || defined(__linux__)
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant_windows_linux.c", generator->implementationCode(analyserModel, profile));
-#else
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant_macos.c", generator->implementationCode(analyserModel, profile));
-#endif
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-#if defined(_WIN32) || defined(__linux__)
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant_windows_linux.py", generator->implementationCode(analyserModel, profile));
-#else
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant_macos.py", generator->implementationCode(analyserModel, profile));
-#endif
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
@@ -1469,11 +1461,11 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952DaeWithVariousExternalVariables)
     profile->setInterfaceFileNameString("model.variant.external.h");
 
     EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.h", generator->interfaceCode(analyserModel, profile));
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.c", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external.py", generator->implementationCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/hodgkin_huxley_squid_axon_model_1952/model.variant.external" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, nobleModel1962)
@@ -1549,19 +1541,11 @@ TEST(Generator, robertsonDaeModel1966)
     profile->setInterfaceFileNameString("model.dae.h");
 
     EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae.h", generator->interfaceCode(analyserModel, profile));
-#if defined(_WIN32) || defined(__linux__)
-    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae_windows_linux.c", generator->implementationCode(analyserModel, profile));
-#else
-    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae_macos.c", generator->implementationCode(analyserModel, profile));
-#endif
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel, profile));
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-#if defined(_WIN32) || defined(__linux__)
-    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae_windows_linux.py", generator->implementationCode(analyserModel, profile));
-#else
-    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae_macos.py", generator->implementationCode(analyserModel, profile));
-#endif
+    EXPECT_EQ_FILE_CONTENTS("generator/robertson_model_1966/model.dae" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, sineImports)
@@ -1789,7 +1773,7 @@ TEST(Generator, generateCodeForModelsWithGlobalNlaSystems)
     auto generator = libcellml::Generator::create();
 
     EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.h", generator->interfaceCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
-    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model" OS_FILE_SUFFIX ".c", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::C));
 
-    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
+    EXPECT_EQ_FILE_CONTENTS("generator/global_nla_systems/model" OS_FILE_SUFFIX ".py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
 }
