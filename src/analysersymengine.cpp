@@ -2413,10 +2413,6 @@ void Analyser::AnalyserImpl::classifyVariablesAndEquations()
                 }
 
                 switch (dependentVariable->mType) {
-                case AnalyserInternalVariable::Type::CONSTANT:
-                    onlyComputedConstants = false;
-
-                    break;
                 case AnalyserInternalVariable::Type::INITIALISED:
                 case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
                 case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
