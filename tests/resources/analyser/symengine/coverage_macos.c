@@ -228,7 +228,7 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
     computedConstants[7] = (0.0 < constants[6]) && (0.0 < constants[5]);
     computedConstants[8] = (0.0 < constants[6]) || (0.0 < constants[5]);
     computedConstants[9] = xor(0.0 < constants[6], 0.0 < constants[5]);
-    constants[7]/(-1.0+NAN) = computedConstants[10];
+    computedConstants[10] = constants[7]/(-1.0+NAN);
     computedConstants[11] = !xor(constants[9] < constants[8], constants[9] < constants[10]);
     computedConstants[12] = (0.0 < constants[11]) && (constants[11] == constants[12]);
     computedConstants[13] = -5.0+pow(2.0, computedConstants[14]);

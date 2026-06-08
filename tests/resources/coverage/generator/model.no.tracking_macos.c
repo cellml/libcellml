@@ -185,9 +185,9 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraicVariables[1] = u[1];
 
     double my_component_m = 123.0;
-    double my_component_eqnComputedConstant3 = my_component_eqnComputedConstant1+my_component_eqnComputedConstant2;
     double my_component_eqnComputedConstant1 = 1.0;
     double my_component_eqnComputedConstant2 = 3.0;
+    double my_component_eqnComputedConstant3 = my_component_eqnComputedConstant1+my_component_eqnComputedConstant2;
 
     f[0] = sin(algebraicVariables[1])+sin(algebraicVariables[0])+states[0]+my_component_eqnComputedConstant3+my_component_m-1.0;
     f[1] = -my_component_eqnComputedConstant3-sin(algebraicVariables[0])-my_component_eqnComputedConstant2-my_component_eqnComputedConstant1+sin(algebraicVariables[1])-0.5;
