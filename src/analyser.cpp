@@ -226,6 +226,30 @@ Analyser::AnalyserImpl::AnalyserImpl()
     mGeneratorProfile->setNanString("notanumber");
 }
 
+Analyser::AnalyserImpl::~AnalyserImpl()
+{
+    // "Reset" ourselves to break the shared_ptr cycles between internal equations and variables so that they can be properly cleaned up.
+
+    reset();
+}
+
+void Analyser::AnalyserImpl::reset()
+{
+    for (const auto &internalVariable : mInternalVariables) {
+        internalVariable->mMatchedEquation.reset();
+        internalVariable->mUnmatchedEquations.clear();
+    }
+
+    mFirstVariables.clear();
+    mLastVariables.clear();
+
+    mInternalVariables.clear();
+    mInternalVariableCache.clear();
+    mInternalEquations.clear();
+
+    mCiCnUnits.clear();
+}
+
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
 {
     // Check the direct pointer cache first.
@@ -2133,16 +2157,13 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
 
 void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 {
-    // Reset a few things in case this analyser was to be used to analyse more
-    // than one model.
+    // Reset a few things in case this analyser was to be used to analyse more than one model.
+
+    reset();
+
+    // Create the analyser model.
 
     mAnalyserModel = AnalyserModel::AnalyserModelImpl::create(model);
-
-    mInternalVariables.clear();
-    mInternalVariableCache.clear();
-    mInternalEquations.clear();
-
-    mCiCnUnits.clear();
 
     // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.

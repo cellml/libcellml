@@ -186,6 +186,9 @@ public:
     std::unordered_map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
 
     AnalyserImpl();
+    ~AnalyserImpl();
+
+    void reset();
 
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
