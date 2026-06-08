@@ -1352,8 +1352,9 @@ AnalyserEquationAstPtr Analyser::AnalyserImpl::symEngineToAst(const SEExpression
     auto seExpressionRhs = (seExpressionArgsSize > 1) ? seExpressionArgs.back() : SEExpression();
 
     if ((parentAst == nullptr)
-        && ((osName2osInfoMap != nullptr)
-            || (seExpressionLhs->get_type_code() != SymEngine::SYMENGINE_SYMBOL))) {
+        && ((seExpressionLhs->get_type_code() != SymEngine::SYMENGINE_SYMBOL)
+            || ((osName2osInfoMap != nullptr)
+                && (osName2osInfoMap->count(SymEngine::rcp_dynamic_cast<const SymEngine::Symbol>(seExpressionLhs)->get_name()) > 0)))) {
         std::swap(seExpressionArgs.front(), seExpressionArgs.back());
     }
 

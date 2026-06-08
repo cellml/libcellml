@@ -214,7 +214,11 @@ TEST(AnalyserSymEngine, rearrangeUncommonArithmeticEquations)
 
     EXPECT_EQ("a = 2.0-sqrt(w)", libcellml::Generator::equationCode(analyserModel->analyserEquation(0)->ast()));
     EXPECT_EQ("b = pow(w, -0.25)", libcellml::Generator::equationCode(analyserModel->analyserEquation(1)->ast()));
+#ifdef _WIN32
     EXPECT_EQ("c = 3.0*fabs(x-y)", libcellml::Generator::equationCode(analyserModel->analyserEquation(2)->ast()));
+#else
+    EXPECT_EQ("c = 3.0*fabs(-y+x)", libcellml::Generator::equationCode(analyserModel->analyserEquation(2)->ast()));
+#endif
     EXPECT_EQ("d = w-ceil(0.4+x)", libcellml::Generator::equationCode(analyserModel->analyserEquation(3)->ast()));
     EXPECT_EQ("e = 1.0+floor(0.5*z)", libcellml::Generator::equationCode(analyserModel->analyserEquation(4)->ast()));
     EXPECT_EQ("f = 0.2*min(x, y)", libcellml::Generator::equationCode(analyserModel->analyserEquation(5)->ast()));

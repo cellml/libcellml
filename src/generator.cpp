@@ -16,8 +16,10 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
+#include <algorithm>
 #include <format>
 #include <set>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "libcellml/analyserequation.h"
@@ -755,7 +757,8 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
             if ((analyserEquation->type() == AnalyserEquation::Type::NLA)
                 && (handledNlaAnalyserEquations.find(analyserEquation.get()) == handledNlaAnalyserEquations.end())) {
                 // 1) Generate some code for the objectiveFunction[INDEX]() method.
-                //     a) Retrieve the values from our NLA solver's u array.
+                //     a) Assign the values to our NLA solver's f array for the current equation's algebraic variables
+                //        and collect them in the process.
 
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
@@ -771,17 +774,14 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
-                //     b) Initialise any untracked constant or computed constant that is needed by our NLA system.
+                //     b) Collect the equations that we need to generate code for.
 
                 methodBody += "\n";
 
-                auto methodBodySize = methodBody.size();
                 std::vector<AnalyserEquationPtr> nlaEquations;
                 const auto &nlaSiblings = analyserEquation->nlaSiblings();
-                const auto &analyserEquations = mAnalyserModel->analyserEquations();
-                std::unordered_set<AnalyserEquationPtr> dummyRemainingAnalyserEquations(analyserEquations.begin(), analyserEquations.end());
-                std::unordered_set<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
-                std::unordered_set<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
+                std::unordered_set<AnalyserEquation *> seenDependencyEquations;
+                std::vector<AnalyserEquationPtr> collectedDependencies;
 
                 nlaEquations.reserve(1 + nlaSiblings.size());
 
@@ -798,16 +798,42 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                     for (const auto &dependency : nlaEquation->dependencies()) {
                         if (((dependency->type() == AnalyserEquation::Type::CONSTANT)
                              || (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT))
-                            && isTrackedEquation(dependency, false)) {
-                            methodBody += generateEquationCode(dependency, dummyRemainingAnalyserEquations,
-                                                               dummyAnalyserEquationsForDependencies,
-                                                               dummyGeneratedConstantDependencies, false,
-                                                               GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
+                            && isTrackedEquation(dependency, false)
+                            && seenDependencyEquations.insert(dependency.get()).second) {
+                            collectedDependencies.push_back(dependency);
                         }
                     }
                 }
 
-                //     c) Generate our NLA system's objective functions.
+                //     c) Sort the collected dependencies according to the order in which they appear in our NLA
+                //        system's dependency graph.
+
+                const auto &analyserEquations = mAnalyserModel->analyserEquations();
+                std::unordered_map<AnalyserEquation *, size_t> equationIndices;
+
+                for (size_t j = 0; j < analyserEquations.size(); ++j) {
+                    equationIndices[analyserEquations[j].get()] = j;
+                }
+
+                std::sort(collectedDependencies.begin(), collectedDependencies.end(), [&equationIndices](const AnalyserEquationPtr &ae1, const AnalyserEquationPtr &ae2) {
+                    return equationIndices.at(ae1.get()) < equationIndices.at(ae2.get());
+                });
+
+                //     d) Generate code for the collected dependencies.
+
+                auto methodBodySize = methodBody.size();
+                std::unordered_set<AnalyserEquationPtr> dummyRemainingAnalyserEquations(analyserEquations.begin(), analyserEquations.end());
+                std::unordered_set<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
+                std::unordered_set<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
+
+                for (const auto &dependency : collectedDependencies) {
+                    methodBody += generateEquationCode(dependency, dummyRemainingAnalyserEquations,
+                                                       dummyAnalyserEquationsForDependencies,
+                                                       dummyGeneratedConstantDependencies, false,
+                                                       GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
+                }
+
+                //     e) Generate code for the current equation and any of its NLA siblings.
 
                 methodBody += (methodBody.size() == methodBodySize) ? "" : "\n";
 
@@ -1980,7 +2006,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
         }
 
-        if (!isSomeConstant(analyserEquation, includeComputedConstants)) {
+        if (!isSomeConstant(analyserEquation, includeComputedConstants)
+            || (target == GenerateEquationCodeTarget::OBJECTIVE_FUNCTION)) {
             for (const auto &dependency : analyserEquation->dependencies()) {
                 if (((analyserEquation->type() != AnalyserEquation::Type::NLA)
                      && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
