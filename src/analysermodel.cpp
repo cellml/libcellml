@@ -16,9 +16,8 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
-#include "libcellml/analyservariable.h"
-
 #include "analysermodel_p.h"
+#include "analyservariable_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -28,7 +27,13 @@ static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
 
 AnalyserModelPtr AnalyserModel::AnalyserModelImpl::create(const ModelPtr &model)
 {
-    return std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+    auto res = std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+
+    if (model) {
+        res->mPimpl->buildEquivalentVariablesCache();
+    }
+
+    return res;
 }
 
 AnalyserModel::AnalyserModelImpl::AnalyserModelImpl(const ModelPtr &model)
@@ -44,6 +49,38 @@ AnalyserModel::AnalyserModel(const ModelPtr &model)
 AnalyserModel::~AnalyserModel()
 {
     delete mPimpl;
+}
+
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component)
+{
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto variable = component->variable(i);
+
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            auto equivalentVariable = variable->equivalentVariable(j);
+            auto v1 = reinterpret_cast<uintptr_t>(variable.get());
+            auto v2 = reinterpret_cast<uintptr_t>(equivalentVariable.get());
+
+            if (v2 < v1) {
+                std::swap(v1, v2);
+            }
+
+            uniteEquivalentVariableAddresses(v1, v2);
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        buildEquivalentVariablesCache(component->component(i));
+    }
+}
+
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
+{
+    mEquivalentVariableCache.clear();
+
+    for (size_t i = 0; i < mModel->componentCount(); ++i) {
+        buildEquivalentVariablesCache(mModel->component(i));
+    }
 }
 
 bool AnalyserModel::isValid() const
@@ -513,25 +550,18 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // turn, this means that we can speed up any feature (e.g., code generation)
     // that also relies on that utility.
 
-    auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
-    auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
-
-    if (v1 > v2) {
-        std::swap(v1, v2);
+    if ((variable1 == nullptr) || (variable2 == nullptr)) {
+        return false;
     }
 
-    auto key = AnalyserModel::AnalyserModelImpl::VariableKeyPair {v1, v2};
-    auto it = mPimpl->mCachedEquivalentVariables.find(key);
-
-    if (it != mPimpl->mCachedEquivalentVariables.end()) {
-        return it->second;
+    if (variable1 == variable2) {
+        return true;
     }
 
-    auto res = libcellml::areEquivalentVariables(variable1, variable2);
+    const auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
+    const auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    mPimpl->mCachedEquivalentVariables.emplace(key, res);
-
-    return res;
+    return mPimpl->findVariableAddress(v1) == mPimpl->findVariableAddress(v2);
 }
 
 } // namespace libcellml

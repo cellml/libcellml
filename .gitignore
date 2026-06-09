@@ -21,3 +21,8 @@ CMakeLists.txt.user
 
 # VS Code system files
 .vscode/
+
+# Act resource files
+.actrc
+act-payload.json
+act-*input.txt
