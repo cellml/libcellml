@@ -274,8 +274,6 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
                                TRUE_VALUE :
                                FALSE_VALUE;
 
-    profileContents.reserve(4096);
-
     // Equality.
 
     profileContents += generatorProfile->equalityString();

@@ -982,7 +982,6 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     if (!nameAttributePresent || !unitsAttributePresent) {
         auto issue = Issue::IssueImpl::create();
         std::string description = "Variable ";
-        description.reserve(256);
         if (nameAttributePresent) {
             description += "'" + node->attribute("name") + "' does not specify a units attribute.";
         } else if (unitsAttributePresent) {

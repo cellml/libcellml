@@ -46,34 +46,36 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
-    struct VariableKeyPair
-    {
-        uintptr_t first;
-        uintptr_t second;
-
-        bool operator==(const VariableKeyPair &other) const
-        {
-            return (first == other.first) & (second == other.second);
-        }
-    };
-
     mutable std::unordered_map<Variable *, AnalyserVariablePtr> mAnalyserVariables;
 
-    struct VariableKeyPairHash
+    std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
+
+    uintptr_t findVariableAddress(uintptr_t x)
     {
-        size_t operator()(const VariableKeyPair &pair) const
-        {
-            // A simple and portable hash function for a pair of pointers.
+        auto it = mEquivalentVariableCache.find(x);
 
-            size_t hash = pair.first;
+        if (it == mEquivalentVariableCache.end()) {
+            mEquivalentVariableCache[x] = x;
 
-            hash ^= pair.second + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-
-            return hash;
+            return x;
         }
-    };
 
-    std::unordered_map<VariableKeyPair, bool, VariableKeyPairHash> mCachedEquivalentVariables;
+        if (it->second != x) {
+            it->second = findVariableAddress(it->second);
+        }
+
+        return it->second;
+    }
+
+    void uniteEquivalentVariableAddresses(uintptr_t x, uintptr_t y)
+    {
+        const uintptr_t &rootX = findVariableAddress(x);
+        const uintptr_t &rootY = findVariableAddress(y);
+
+        if (rootX != rootY) {
+            mEquivalentVariableCache[rootY] = rootX;
+        }
+    }
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -103,6 +105,9 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAcothFunction = false;
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
+
+    void buildEquivalentVariablesCache(const ComponentPtr &component);
+    void buildEquivalentVariablesCache();
 
     AnalyserModelImpl(const ModelPtr &model);
 };

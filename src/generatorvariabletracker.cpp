@@ -305,7 +305,6 @@ std::vector<AnalyserVariablePtr> GeneratorVariableTracker::GeneratorVariableTrac
 
     std::vector<AnalyserVariablePtr> res;
 
-    res.reserve(constants.size() + computedConstants.size() + algebraic.size());
     res.insert(res.end(), constants.begin(), constants.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());
     res.insert(res.end(), algebraic.begin(), algebraic.end());
