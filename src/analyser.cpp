@@ -1206,8 +1206,6 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &first
 
     UnitsMaps res;
 
-    res.reserve(firstUnitsMaps.size() * secondUnitsMaps.size());
-
     for (const auto &firstUnitsMap : firstUnitsMaps) {
         for (const auto &secondUnitsMap : secondUnitsMaps) {
             res.push_back(multiplyDivideUnitsMaps(firstUnitsMap, secondUnitsMap, multiply));
@@ -1255,8 +1253,6 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const Un
 
     UnitsMultipliers res;
 
-    res.reserve(firstUnitsMultipliers.size() * secondUnitsMultipliers.size());
-
     for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
         for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
             res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
@@ -1277,8 +1273,6 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double f
 
     UnitsMultipliers res;
 
-    res.reserve(secondUnitsMultipliers.size());
-
     for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
         res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
                                                      secondUnitsMultiplier,
@@ -1297,8 +1291,6 @@ UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMu
 
     UnitsMultipliers res;
     auto realFactor = power ? factor : 1.0 / factor;
-
-    res.reserve(unitsMultipliers.size());
 
     for (const auto &unitsMultiplier : unitsMultipliers) {
         res.push_back(realFactor * unitsMultiplier);
@@ -1989,8 +1981,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!isDimensionlessUnitsMaps) {
             auto isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
-            issueDescription.reserve(512);
-
             issueDescription = "The unit";
 
             if (!isDimensionlessRightUnitsMaps) {
@@ -2422,8 +2412,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                   != primaryExternalVariable.second.end();
 
         if (isVoi || (equivalentVariableCount > 1) || !hasPrimaryVariable) {
-            description.reserve(256 + 250 * equivalentVariableCount);
-
             description += (equivalentVariableCount == 2) ? "Both " : "";
 
             for (size_t i = 0; i < equivalentVariableCount; ++i) {

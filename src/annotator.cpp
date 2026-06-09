@@ -1425,8 +1425,6 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
     const auto resetCount = component->resetCount();
     const auto componentCount = component->componentCount();
 
-    idsString.reserve(idsString.size() + 24 * (variableCount + resetCount + componentCount));
-
     for (size_t i = 0; i < variableCount; ++i) {
         idsString += "v=" + std::format("{}", i) + component->variable(i)->id();
     }
@@ -1455,7 +1453,6 @@ size_t Annotator::AnnotatorImpl::generateHash()
         size_t i;
 
         auto importSources = getAllImportSources(model);
-        idsString.reserve(64 + 32 * (importSources.size() + model->unitsCount() + model->componentCount()));
         idsString += "m=" + model->id() + "me=" + model->encapsulationId();
         i = 0;
         for (auto &importSource : importSources) {

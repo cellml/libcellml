@@ -62,7 +62,6 @@ std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idLis
     const auto &variable1Name = variablePair->variable1()->name();
     const auto &variable2Name = variablePair->variable2()->name();
     std::string mapVariables;
-    mapVariables.reserve(variable1Name.size() + variable2Name.size() + 64);
     mapVariables = "<map_variables variable_1=\"" + variable1Name + "\""
                    + " variable_2=\"" + variable2Name + "\"";
     std::string mappingId = Variable::equivalenceMappingId(variablePair->variable1(), variablePair->variable2());
@@ -78,7 +77,6 @@ std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idLis
 std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap, IdList &idList, bool autoIds)
 {
     std::string connections;
-    connections.reserve(128 * componentMap.size());
     using ComponentPairKey = std::pair<Component *, Component *>;
     std::set<ComponentPairKey> serialisedComponentPairs;
     size_t componentMapIndex1 = 0;
@@ -155,7 +153,6 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
         }
         // Clean whitespace in the math.
         std::string cleaned;
-        cleaned.reserve(result.size());
         bool afterGt = false;
         for (char c : result) {
             if (c == '>') {
@@ -227,7 +224,6 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
     std::string repr;
     if (!units->isImport() && !isStandardUnit(units)) {
         const auto unitCount = units->unitCount();
-        repr.reserve(64 + 128 * unitCount);
         bool endTag = false;
         repr += "<units";
         std::string unitsName = units->name();

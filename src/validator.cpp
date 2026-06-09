@@ -1425,7 +1425,6 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     std::string testVarParentName;
 
     std::string description = "Reset in component '" + component->name() + "' ";
-    description.reserve(256 + component->name().size());
 
     if (reset->isOrderSet()) {
         description += "with order '" + convertToString(reset->order()) + "', ";

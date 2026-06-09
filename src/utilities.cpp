@@ -104,8 +104,6 @@ Strings split(const std::string &content, const std::string &delimiter)
 {
     Strings strings;
 
-    strings.reserve(content.length() / (delimiter.length() + 4) + 1);
-
     size_t current;
     size_t previous = 0;
     current = content.find(delimiter);
@@ -207,8 +205,6 @@ bool isCellMLExponent(const std::string &candidate)
 std::vector<size_t> findOccurrences(const std::string &candidate, const std::string &sub)
 {
     std::vector<size_t> occurrences;
-
-    occurrences.reserve(candidate.length() / sub.length());
 
     size_t pos = candidate.find(sub, 0);
     while (pos != std::string::npos) {
@@ -329,7 +325,6 @@ std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &c
         }
 
         auto childImportedComponents = getImportedComponents(component);
-        importedComponents.reserve(importedComponents.size() + childImportedComponents.size());
         importedComponents.insert(importedComponents.end(), childImportedComponents.begin(), childImportedComponents.end());
     }
 
@@ -356,7 +351,6 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
     auto importedComponents = getImportedComponents(model);
     auto importedUnits = getImportedUnits(model);
 
-    importSources.reserve(importedComponents.size() + importedUnits.size());
     for (auto &component : importedComponents) {
         importSources.push_back(component->importSource());
     }
@@ -1234,7 +1228,6 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     HistoryEpochPtr h;
     size_t i = 0;
     std::string msgHistory;
-    msgHistory.reserve(history.size() * 160);
     while (i < history.size()) {
         h = history[i];
         msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
@@ -1346,8 +1339,6 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserModelPtr &analy
     const auto &algebraicVariables = analyserModel->algebraicVariables();
     const auto &externalVariables = analyserModel->externalVariables();
 
-    res.reserve((analyserModel->voi() != nullptr ? 1 : 0) + states.size() + constants.size() + computedConstants.size() + algebraicVariables.size() + externalVariables.size());
-
     if (analyserModel->voi() != nullptr) {
         res.push_back(analyserModel->voi());
     }
@@ -1369,8 +1360,6 @@ std::vector<AnalyserVariablePtr> analyserVariables(const AnalyserEquationPtr &an
     const auto &externalVariables = analyserEquation->externalVariables();
 
     std::vector<AnalyserVariablePtr> res;
-
-    res.reserve(states.size() + computedConstants.size() + algebraicVariables.size() + externalVariables.size());
 
     res.insert(res.end(), states.begin(), states.end());
     res.insert(res.end(), computedConstants.begin(), computedConstants.end());

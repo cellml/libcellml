@@ -93,8 +93,6 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
 {
     std::vector<AnalyserEquationPtr> res;
 
-    res.reserve(mPimpl->mDependencies.size());
-
     for (const auto &dependency : mPimpl->mDependencies) {
         res.push_back(dependency.lock());
     }
@@ -124,8 +122,6 @@ size_t AnalyserEquation::nlaSiblingCount() const
 std::vector<AnalyserEquationPtr> AnalyserEquation::nlaSiblings() const
 {
     std::vector<AnalyserEquationPtr> res;
-
-    res.reserve(mPimpl->mNlaSiblings.size());
 
     for (const auto &nlaSibling : mPimpl->mNlaSiblings) {
         res.push_back(nlaSibling.lock());

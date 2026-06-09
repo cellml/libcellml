@@ -42,8 +42,6 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
-
-    mCode.reserve(32768);
 }
 
 std::string Generator::GeneratorImpl::analyserVariableIndexString(const AnalyserVariablePtr &analyserVariable)
@@ -502,8 +500,6 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(const std::stri
         && !mProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
 
-        infoElementsCode.reserve(analyserVariables.size() * 200);
-
         for (const auto &analyserVariable : analyserVariables) {
             if (isTrackedVariable(analyserVariable, true)) {
                 if (!infoElementsCode.empty()) {
@@ -779,8 +775,6 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 auto i = MAX_SIZE_T;
                 auto analyserVariables = libcellml::analyserVariables(analyserEquation);
 
-                methodBody.reserve(analyserVariables.size() * 256 + 512);
-
                 for (const auto &analyserVariable : analyserVariables) {
                     auto arrayString = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
@@ -854,8 +848,6 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 //     a) Assign the values to our NLA solver's u array.
 
                 methodBody = {};
-
-                methodBody.reserve(analyserVariables.size() * 192 + 256);
 
                 i = MAX_SIZE_T;
 
@@ -1324,8 +1316,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 
         std::string res;
 
-        res.reserve(astRightChildCode.size() + op.size() + 5 + astLeftChildCode.size() + 1);
-
         res += astRightChildCode;
         res += op;
         res += "(1.0/";
@@ -1336,8 +1326,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     }
 
     std::string res;
-
-    res.reserve(astLeftChildCode.size() + op.size() + astRightChildCode.size());
 
     res += astLeftChildCode;
     res += op;
@@ -1367,8 +1355,6 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
     const auto &minusStr = mProfile->minusString();
     std::string res;
 
-    res.reserve(minusStr.size() + code.size());
-
     res += minusStr;
     res += code;
 
@@ -1380,8 +1366,6 @@ std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std
 {
     auto leftChildString = generateCode(ast->leftChild());
     std::string res;
-
-    res.reserve(function.size() + 1 + leftChildString.size() + 1);
 
     res += function;
     res += '(';
@@ -1397,8 +1381,6 @@ std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std
     auto leftChildString = generateCode(ast->leftChild());
     auto rightChildString = generateCode(ast->rightChild());
     std::string res;
-
-    res.reserve(function.size() + 1 + leftChildString.size() + 2 + rightChildString.size() + 1);
 
     res += function;
     res += '(';
@@ -1520,8 +1502,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             auto leftChildString = generateCode(ast->leftChild());
             const auto &notString = mProfile->notString();
 
-            code.reserve(notString.size() + leftChildString.size());
-
             code += notString;
             code += leftChildString;
         } else {
@@ -1570,8 +1550,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 auto leftChildString = generateCode(ast->leftChild());
                 const auto &powerString = mProfile->powerString();
 
-                code.reserve(powerString.size() + 1 + leftChildString.size() + 2 + stringValue.size() + 1);
-
                 code += powerString;
                 code += '(';
                 code += leftChildString;
@@ -1592,8 +1570,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 && areEqual(doubleValue, 2.0)) {
                 auto rightChildString = generateCode(astRightChild);
                 const auto &squareRootString = mProfile->squareRootString();
-
-                code.reserve(squareRootString.size() + 1 + rightChildString.size() + 1);
 
                 code += squareRootString;
                 code += '(';
@@ -1621,8 +1597,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                         auto rightChildString = generateCode(astRightChild);
                         auto exponentString = generateOperatorCode(mProfile->divideString(), rootValueAst);
                         const auto &powerString = mProfile->powerString();
-
-                        code.reserve(powerString.size() + 1 + rightChildString.size() + 2 + exponentString.size() + 1);
 
                         code += powerString;
                         code += '(';
@@ -1661,8 +1635,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 const auto &commonLogarithmString = mProfile->commonLogarithmString();
                 auto rightChildString = generateCode(astRightChild);
 
-                code.reserve(commonLogarithmString.size() + 1 + rightChildString.size() + 1);
-
                 code += commonLogarithmString;
                 code += '(';
                 code += rightChildString;
@@ -1670,8 +1642,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             } else {
                 const auto &naturalLogarithmString = mProfile->naturalLogarithmString();
                 auto rightChildString = generateCode(astRightChild);
-
-                code.reserve(naturalLogarithmString.size() + 1 + rightChildString.size() + 2 + naturalLogarithmString.size() + 1 + stringValue.size() + 1);
 
                 code += naturalLogarithmString;
                 code += '(';
@@ -1712,8 +1682,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             auto rightChildString = generateCode(ast->rightChild());
             auto leftChildString = generateCode(ast->leftChild());
-
-            code.reserve(1 + rightChildString.size() + 2 + leftChildString.size());
 
             code = 'd';
             code += rightChildString;
