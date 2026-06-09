@@ -46,6 +46,8 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
+    mutable std::unordered_map<Variable *, AnalyserVariablePtr> mAnalyserVariables;
+
     std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
 
     uintptr_t findVariableAddress(uintptr_t x)
