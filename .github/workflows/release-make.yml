@@ -84,7 +84,7 @@ jobs:
 
       - name: Update release branch
         run: |
-          rsync -av --delete --exclude='.git' repo-staging/ repo-release/
+          rsync -avW --delete --exclude='.git' repo-staging/ repo-release/
           cd repo-release
 
           git add -A
@@ -106,14 +106,30 @@ jobs:
           version="${{ needs.determine_release.outputs.release_version }}"
           core="${version%%+*}"
 
+          day=$(date +%-d)
+
+          # Determine suffix
+          if [[ $day -ge 11 && $day -le 13 ]]; then
+            suffix="th"
+          else
+            case $((day % 10)) in
+              1) suffix="st" ;;
+              2) suffix="nd" ;;
+              3) suffix="rd" ;;
+              *) suffix="th" ;;
+            esac
+          fi
+
+          formatted_date="$(date +"$day$suffix %B %Y")"
+
           if [[ "$core" == *"-"* ]]; then
             prerelease_flag="--prerelease"
-            note="This is a pre-release of libCellML v${{ needs.determine_release.outputs.release_version }}."
+            note="This is a release candidate of libCellML made on ${formatted_date}."
           else
             prerelease_flag=""
-            note="This is an official release of libCellML v${{ needs.determine_release.outputs.release_version }}."
+            note="This is an official release of libCellML made on ${formatted_date}."
           fi
 
           gh release create "v${{ needs.determine_release.outputs.release_version }}" \
-            --title "libCellML v${{ needs.determine_release.outputs.release_version }}" \
+            --title "v${{ needs.determine_release.outputs.release_version }}" \
             --notes "$note" ${prerelease_flag}
