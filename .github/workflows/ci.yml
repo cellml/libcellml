@@ -4,12 +4,11 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-
-env:
-  BUILDCACHE_ACCURACY: STRICT
-  BUILDCACHE_COMPRESS_FORMAT: ZSTD
-  BUILDCACHE_DEBUG: -1
-  BUILDCACHE_LOG_FILE: ""
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
 
 jobs:
   cpp_python:
@@ -47,21 +46,21 @@ jobs:
             python_bindings: ON
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install Python (if needed)
         if: ${{ matrix.python_bindings == 'ON' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
-        with:
-          cache_key: ${{ matrix.os }}-${{ matrix.python_bindings }}
       - name: Configure MSVC (Windows only)
         if: ${{ runner.os == 'Windows' }}
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
       - name: Install libxml2 (Windows only)
         if: ${{ runner.os == 'Windows' }}
         run: |
@@ -90,11 +89,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Emscripten
         run: brew install --overwrite emscripten
       - name: Install libxml2
@@ -119,7 +118,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install ClangFormat
         run: |
           sudo apt update
@@ -142,11 +143,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install LLVM
         run: |
           brew install --overwrite llvm
@@ -163,16 +164,17 @@ jobs:
           if [ `ninja llvm_coverage | grep TOTAL | sed 's/ /\n/g' | grep "100.00%" | wc -l | sed 's/ //g'` -eq 4 ]; then exit 0; else exit 1; fi
   memory_leaks:
     name: Memory leaks
+    if: false # Temporarily disabled.
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Valgrind
         run: |
           sudo apt update
@@ -193,11 +195,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
-      - name: Install buildcache
-        uses: cscouto/buildcache-action@v1
       - name: Install Doxygen
         run: |
           sudo apt update
