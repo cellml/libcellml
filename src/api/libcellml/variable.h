@@ -368,7 +368,7 @@ public:
      *
      * @return the initial value as a @c std::string.
      */
-    std::string initialValue() const;
+    const std::string &initialValue() const;
 
     /**
      * @brief Clear the initial value for this variable.
@@ -411,7 +411,7 @@ public:
      *
      * @return the interface type as a @c std::string.
      */
-    std::string interfaceType() const;
+    const std::string &interfaceType() const;
 
     /**
      * @brief Clear the interface type for this variable.

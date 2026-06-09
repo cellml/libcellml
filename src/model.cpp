@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <iterator>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -37,7 +38,7 @@ namespace libcellml {
 std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::string &name) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u->name() == name; });
+                        [&](const UnitsPtr &u) -> bool { return u->name() == name; });
 }
 
 std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr &units) const
@@ -47,7 +48,7 @@ std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr
         return result;
     }
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u->equals(units); });
+                        [&](const UnitsPtr &u) -> bool { return u->equals(units); });
 }
 
 bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
@@ -461,19 +462,20 @@ bool Model::doEquals(const EntityPtr &other) const
 std::vector<std::string> Model::importRequirements() const
 {
     std::vector<std::string> requirements;
+    std::unordered_set<std::string> seenUrls;
 
     auto importedComponents = getImportedComponents(shared_from_this());
     auto importedUnits = getImportedUnits(shared_from_this());
 
     for (auto &component : importedComponents) {
         auto url = component->importSource()->url();
-        if (std::find(requirements.begin(), requirements.end(), url) == requirements.end()) {
+        if (seenUrls.insert(url).second) {
             requirements.push_back(url);
         }
     }
     for (auto &units : importedUnits) {
         auto url = units->importSource()->url();
-        if (std::find(requirements.begin(), requirements.end(), url) == requirements.end()) {
+        if (seenUrls.insert(url).second) {
             requirements.push_back(url);
         }
     }
