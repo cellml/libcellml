@@ -6,5 +6,6 @@ list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 set(${CURRENT_TEST}_SRCS
   ${CMAKE_CURRENT_LIST_DIR}/analyser.cpp
   ${CMAKE_CURRENT_LIST_DIR}/analyserexternalvariable.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/analysersymengine.cpp
   ${CMAKE_CURRENT_LIST_DIR}/analyserunits.cpp
 )

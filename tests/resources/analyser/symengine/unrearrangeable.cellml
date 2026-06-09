@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <!-- Contains all equations we don't want or expect SymEngine to rearrange -->
+
+  <component name="my_component">
+    <!-- Precomputed constants -->
+    <variable name="x1" units="dimensionless"/>
+    <variable name="x2" units="dimensionless"/>
+    <variable name="x3" units="dimensionless"/>
+
+    <!-- Unknowns to fail at solving -->
+    <variable name="a" units="radian"/>
+    <variable name="b" units="radian"/>
+    <variable name="c" units="radian"/>
+    <variable name="d" units="radian"/>
+    <variable name="e" units="radian"/>
+    <variable name="f" units="radian"/>
+    <variable name="g" units="radian"/>
+    <variable name="h" units="radian"/>
+    <variable name="i" units="dimensionless"/>
+    <variable name="j" units="dimensionless"/>
+    <variable name="k" units="dimensionless"/>
+    <variable name="l" units="dimensionless"/>
+    <variable name="m" units="dimensionless"/>
+    <variable name="n" units="dimensionless"/>
+    <variable name="o" units="dimensionless"/>
+    <variable name="p" units="dimensionless"/>
+    <variable name="q" units="dimensionless"/>
+    <variable name="r" units="dimensionless"/>
+    <variable name="s" units="dimensionless"/>
+    <variable name="t" units="dimensionless"/>
+    <variable name="u" units="dimensionless"/>
+    <variable name="v" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: 2*x1 + sin(a) = 1 -->
+      <!-- Cannot inverse sine -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><times/><cn cellml:units="dimensionless">2</cn><ci>x1</ci></apply><apply><sin/><ci>a</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 2: csc(b + 4) - x2 = 0 -->
+      <!-- Cannot inverse cosec -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><csc/><apply><plus/><cn cellml:units="radian">4</cn><ci>b</ci></apply></apply><ci>x2</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 3: x1 - tanh(3 - c) = 2 -->
+      <!-- Cannot inverse hyperbolic tangent -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>x1</ci><apply><tanh/><apply><minus/><cn cellml:units="radian">3</cn><ci>c</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 4: sech(d) + x2 = 1 -->
+      <!-- Cannot inverse hyperbolic secant -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><sech/><ci>d</ci></apply><ci>x2</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 5: arccos(e) - x1 = 0.5 -->
+      <!-- Cannot inverse arccosine -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccos/><ci>e</ci></apply><ci>x1</ci></apply>
+        <cn cellml:units="radian">0.5</cn>
+      </apply>
+
+      <!-- Equation 6: arccot(f + 2) = x2 -->
+      <!-- Cannot inverse arccotangent -->
+      <apply>
+        <eq/>
+        <apply><arccot/><apply><plus/><ci>f</ci><cn cellml:units="dimensionless">2</cn></apply></apply>
+        <ci>x2</ci>
+      </apply>
+
+      <!-- Equation 7: x1 + arcsinh(g) = 1 -->
+      <!-- Cannot inverse hyperbolic arcsine -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>x1</ci><apply><arcsinh/><ci>g</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 8: arccsch(h - 1) - x1 = 0 -->
+      <!-- Cannot rearrange with inverse hyperbolic cosecant -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><arccsch/><apply><minus/><ci>h</ci><cn cellml:units="dimensionless">1</cn></apply></apply><ci>x1</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 9: i^2 - 3i + 2 = 0-->
+      <!-- Cannot rearrange polynomial with multiple solutions -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><minus/><apply><power/><ci>i</ci><cn cellml:units="dimensionless">2</cn></apply><apply><times/><cn cellml:units="dimensionless">3</cn><ci>i</ci></apply></apply><cn cellml:units="dimensionless">2</cn></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 10: ln(j) = x1-->
+      <!-- Cannot inverse natural logarithm -->
+      <apply>
+        <eq/>
+        <apply><ln/><ci>j</ci></apply>
+        <ci>x1</ci>
+      </apply>
+
+      <!-- Equation 11: x2 - log(k) = 0 -->
+      <!-- Cannot inverse (base-10) logarithm -->
+      <apply>
+        <eq/>
+        <apply><minus/><ci>x2</ci><apply><log/><ci>k</ci></apply></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 12: exp(l) + x1 = 3 -->
+      <!-- Cannot inverse exponential -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><exp/><ci>l</ci></apply><ci>x1</ci></apply>
+        <cn cellml:units="dimensionless">3</cn>
+      </apply>
+
+      <!-- Equation 13: pow(m, 2.5) = 30 -->
+      <!-- Cannot solve when target variable is raised to a non-integer power -->
+      <apply>
+        <eq/>
+        <apply><power/><ci>m</ci><cn cellml:units="dimensionless">2.5</cn></apply>
+        <cn cellml:units="dimensionless">30</cn>
+      </apply>
+
+      <!-- Equation 14: pow(2, n) = 16 -->
+      <!-- Cannot solve when variable is in an exponent -->
+      <apply>
+        <eq/>
+        <apply><power/><cn cellml:units="dimensionless">2</cn><ci>n</ci></apply>
+        <cn cellml:units="dimensionless">16</cn>
+      </apply>
+
+      <!-- Equation 15: x2 = { x1, if x1 == 0; o, otherwise } -->
+      <!-- Cannot rearrange piecewise function -->
+      <apply>
+        <eq/>
+        <ci>x2</ci>
+        <piecewise>
+          <piece>
+            <ci>x1</ci>
+            <apply><eq/><ci>x1</ci><cn cellml:units="dimensionless">0</cn></apply>
+          </piece>
+          <otherwise>
+            <ci>o</ci>
+          </otherwise>
+        </piecewise>
+      </apply>
+
+      <!-- Equation 16: p * exp(p) = x3 -->
+      <!-- Cannot rearrange equation -->
+      <apply>
+        <eq/>
+        <apply><times/><ci>p</ci><apply><exp/><ci>p</ci></apply></apply>
+        <ci>x3</ci>
+      </apply>
+
+      <!-- Equation 17: abs(q) - x1 = 0 -->
+      <!-- Cannot inverse absolute function -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><abs/><ci>q</ci></apply><ci>x1</ci></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Equation 18: ceil(r) = 5 -->
+      <!-- Cannot inverse ceiling function -->
+      <apply>
+        <eq/>
+        <apply><ceiling/><ci>r</ci></apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- Equation 19: floor(s) + x2 = 3 -->
+      <!-- Cannot inverse floor function -->
+      <apply>
+        <eq/>
+        <apply><plus/><apply><floor/><ci>s</ci></apply><ci>x2</ci></apply>
+        <cn cellml:units="dimensionless">3</cn>
+      </apply>
+
+      <!-- Equation 20: min(t, x1) = x2 -->
+      <!-- Cannot inverse min function -->
+      <apply>
+        <eq/>
+        <apply><min/><ci>t</ci><ci>x1</ci></apply>
+        <ci>x2</ci>
+      </apply>
+
+      <!-- Equation 21: max(u, 2) - x1 = 1 -->
+      <!-- Cannot inverse max function -->
+      <apply>
+        <eq/>
+        <apply><minus/><apply><max/><ci>u</ci><cn cellml:units="dimensionless">2</cn></apply><ci>x1</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 22: rem(v, 3) = x2 -->
+      <!-- Cannot inverse remainder function -->
+      <apply>
+        <eq/>
+        <apply><rem/><ci>v</ci><cn cellml:units="dimensionless">3</cn></apply>
+        <ci>x2</ci>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>x1</ci><cn cellml:units="dimensionless">0.5</cn></apply>
+      <apply><eq/><ci>x2</ci><cn cellml:units="dimensionless">1.0</cn></apply>
+      <apply><eq/><ci>x3</ci><cn cellml:units="dimensionless">1.5</cn></apply>
+    </math>
+  </component>
+</model>

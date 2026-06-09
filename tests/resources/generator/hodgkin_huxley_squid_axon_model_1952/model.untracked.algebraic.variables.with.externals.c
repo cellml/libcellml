@@ -127,12 +127,12 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
-    double membrane_i_Stim = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     double leakage_current_i_L = constants[2]*(states[0]-computedConstants[0]);
     double potassium_channel_i_K = constants[4]*pow(states[3], 4.0)*(states[0]-computedConstants[2]);
     algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
-    rates[0] = -(-membrane_i_Stim+externalVariables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0];
+    double membrane_i_Stim = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
+    rates[0] = (membrane_i_Stim-externalVariables[0]-potassium_channel_i_K-leakage_current_i_L)/constants[0];
     double sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0);
     rates[2] = algebraicVariables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2];
     double sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0);

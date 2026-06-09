@@ -312,6 +312,19 @@ function(redhat_based _RESULT)
   set(${_RESULT} ${_REDHAT_BASED} PARENT_SCOPE)
 endfunction()
 
+function(apply_dependency_settings _TARGET)
+  if(HAVE_ZLIB_TARGET)
+    target_link_libraries(${_TARGET} PUBLIC zlib)
+  else()
+    target_link_libraries(${_TARGET} PUBLIC ${ZLIB_LIBRARIES})
+    target_include_directories(${_TARGET} PUBLIC ${ZLIB_INCLUDE_DIRS})
+  endif()
+
+  target_include_directories(${_TARGET} SYSTEM PUBLIC ${SYMENGINE_INCLUDE_DIRS}
+                                        PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/symengine>)
+  target_link_libraries(${_TARGET} PUBLIC ${LIBXML2_TARGET} ${SYMENGINE_LIBRARIES} ${ZLIB_TARGET})
+endfunction()
+
 function(get_runtime_dlls_from_target target target_property out_var)
   set(_result "")
   get_target_property(_items ${target} INTERFACE_LINK_LIBRARIES)

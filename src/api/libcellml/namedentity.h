@@ -54,7 +54,7 @@ public:
      *
      * @return @c std::string representation of the Entity name.
      */
-    std::string name() const;
+    const std::string &name() const;
 
     /**
      * @brief Remove the name of the Entity.

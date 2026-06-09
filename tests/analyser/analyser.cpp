@@ -273,11 +273,7 @@ TEST(Analyser, variableInitialisedUsingAnotherVariable)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'kStateStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
-        "Variable 'kNlaStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
-        "Variable 'xStateNlaAlgebraic' in component 'main' is initialised using variable 'kStateNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
-        "Variable 'xNlaNlaAlgebraic' in component 'main' is initialised using variable 'kNlaNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
         "Variable 'xStateAlgebraic' in component 'main' is initialised using variable 'kStateAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
-        "Variable 'xNlaAlgebraic' in component 'main' is initialised using variable 'kNlaAlgebraic', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -996,8 +992,6 @@ TEST(Analyser, overconstrainedNlaSystem)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'z' in component 'my_algebraic_system' is overconstrained.",
-        "Variable 'y' in component 'my_algebraic_system' is overconstrained.",
-        "Variable 'x' in component 'my_algebraic_system' is overconstrained.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -1022,34 +1016,21 @@ TEST(Analyser, unsuitablyConstrainedNlaSystem)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'z1' in component 'my_algebraic_system' is underconstrained.",
         "Variable 'y1' in component 'my_algebraic_system' is underconstrained.",
-        "Variable 'x1' in component 'my_algebraic_system' is underconstrained.",
         "Variable 'z2' in component 'my_algebraic_system' is overconstrained.",
-        "Variable 'y2' in component 'my_algebraic_system' is overconstrained.",
-        "Variable 'x2' in component 'my_algebraic_system' is overconstrained.",
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
     };
     const std::vector<std::string> expectedUrls = {
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
                                                                    expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),

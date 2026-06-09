@@ -67,7 +67,7 @@ configure_file(
   COPYONLY
 )
 
-add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
+add_library(test_utils ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
 target_link_libraries(test_utils PUBLIC cellml gtest)
 target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(test_utils PROPERTIES
@@ -84,7 +84,8 @@ include(test_resources.cmake)
 if(MSVC)
   get_runtime_dlls_from_target(${LIBXML2_TARGET} TARGET_FILE_DIR LIBXML2_FILE_DIRS)
   get_runtime_dlls_from_target(${ZLIB_TARGET} TARGET_FILE_DIR ZLIB_FILE_DIRS)
-  set(ALL_FILE_DIRS ${LIBXML2_FILE_DIRS} ${ZLIB_FILE_DIRS})
+  get_runtime_dlls_from_target(${SYMENGINE_TARGET} TARGET_FILE_DIR SYMENGINE_FILE_DIRS)
+  set(ALL_FILE_DIRS ${LIBXML2_FILE_DIRS} ${ZLIB_FILE_DIRS} ${SYMENGINE_FILE_DIRS})
   list(REMOVE_DUPLICATES ALL_FILE_DIRS)
   list(JOIN ALL_FILE_DIRS "\\;" ALL_FILE_DIRS_STRING)
   set(ALL_FILE_DIRS_STRING "\;${ALL_FILE_DIRS_STRING}")

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Differential variables -->
+    <variable name="t" units="dimensionless"/>
+    <variable initial_value="0" name="y" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="x" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: dy/dt + x = 0 -->
+      <!-- Test equation for differential -->
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <apply>
+            <diff/>
+            <bvar><ci>t</ci></bvar>
+            <ci>y</ci>
+          </apply>
+          <ci>x</ci>
+        </apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Initialise differential equation -->
+      <apply>
+        <eq/>
+        <apply><diff/><bvar><ci>t</ci></bvar><ci>y</ci></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+    </math>
+  </component>
+</model>

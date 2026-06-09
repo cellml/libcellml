@@ -16,6 +16,4 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
-const std::string TESTS_RESOURCE_LOCATION = "@TESTS_RESOURCE_LOCATION@";
+constexpr const char * const TESTS_RESOURCE_LOCATION = "@TESTS_RESOURCE_LOCATION@";

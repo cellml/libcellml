@@ -37,19 +37,19 @@ namespace libcellml {
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v->name() == name; });
+                        [&](const VariablePtr &v) -> bool { return v->name() == name; });
 }
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const VariablePtr &variable) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v->equals(variable); });
+                        [&](const VariablePtr &v) -> bool { return v->equals(variable); });
 }
 
 std::vector<ResetPtr>::const_iterator Component::ComponentImpl::findReset(const ResetPtr &reset) const
 {
     return std::find_if(mResets.begin(), mResets.end(),
-                        [=](const ResetPtr &r) -> bool { return r->equals(reset); });
+                        [&](const ResetPtr &r) -> bool { return r->equals(reset); });
 }
 
 bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
@@ -188,7 +188,7 @@ void Component::appendMath(const std::string &math)
     pFunc()->mMath.append(math);
 }
 
-std::string Component::math() const
+const std::string &Component::math() const
 {
     return pFunc()->mMath;
 }

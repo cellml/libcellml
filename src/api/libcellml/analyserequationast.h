@@ -190,7 +190,7 @@ public:
      *
      * @return The value.
      */
-    std::string value() const;
+    const std::string &value() const;
 
     /**
      * @brief Set the value for this @ref AnalyserEquationAst.
@@ -277,6 +277,17 @@ public:
      * of this @ref AnalyserEquationAst.
      */
     void setRightChild(const AnalyserEquationAstPtr &rightChild);
+
+    /**
+     * @brief Clone this @ref AnalyserEquationAst.
+     *
+     * Create a deep copy of this @ref AnalyserEquationAst, optionally assigning a new parent to the cloned root node.
+     *
+     * @param parentAst The optional parent for the cloned root node.
+     *
+     * @return The cloned @ref AnalyserEquationAst.
+     */
+    AnalyserEquationAstPtr clone(const AnalyserEquationAstPtr &parentAst = nullptr) const;
 
     /**
      * @brief Swap the left and right children of this @ref AnalyserEquationAst.

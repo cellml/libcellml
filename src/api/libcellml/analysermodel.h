@@ -137,7 +137,7 @@ public:
      *
      * @return The states as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> states() const;
+    const std::vector<AnalyserVariablePtr> &states() const;
 
     /**
      * @brief Get the state at @p index.
@@ -167,7 +167,7 @@ public:
      *
      * @return The constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> constants() const;
+    const std::vector<AnalyserVariablePtr> &constants() const;
 
     /**
      * @brief Get the constant at @p index.
@@ -197,7 +197,7 @@ public:
      *
      * @return The computed constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> computedConstants() const;
+    const std::vector<AnalyserVariablePtr> &computedConstants() const;
 
     /**
      * @brief Get the computed constant at @p index.
@@ -227,7 +227,7 @@ public:
      *
      * @return The algebraic variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> algebraicVariables() const;
+    const std::vector<AnalyserVariablePtr> &algebraicVariables() const;
 
     /**
      * @brief Get the algebraic variable at @p index.
@@ -257,7 +257,7 @@ public:
      *
      * @return The external variables as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> externalVariables() const;
+    const std::vector<AnalyserVariablePtr> &externalVariables() const;
 
     /**
      * @brief Get the external variable at @p index.
@@ -298,7 +298,7 @@ public:
      *
      * @return The analyser equations as a @c std::vector.
      */
-    std::vector<AnalyserEquationPtr> analyserEquations() const;
+    const std::vector<AnalyserEquationPtr> &analyserEquations() const;
 
     /**
      * @brief Get the analyser equation at @p index.
@@ -600,14 +600,13 @@ public:
      * Returns @c true if @p variable1 is equivalent to @p variable2 and
      * @c false otherwise.
      *
-     * To test for equivalence is time consuming, so caching is used to speed
-     * things up. During the analysis of a model, various tests are performed
-     * and their result cached. So, if you test two variables that were tested
-     * during the analysis then the cached result will be returned otherwise the
-     * two variables will be properly tested and their result cached. This works
-     * because an @ref AnalyserModel always refers to a static version of a
-     * @ref Model. However, this might break if a @ref Model is modified after it
-     * has been analysed.
+     * The function utilises caching which is constructed during the model
+     * analysis phase (@ref Analyser::analyseModel). The cache may become
+     * out of date if the model is changed after the model has been analysed.
+     *
+     * @note This function is primarily designed for use during model analysis
+     *       by the @ref Analyser. While external usage is not programmatically
+     *       restricted, it is not the primary intended use case.
      *
      * @param variable1 The @ref Variable to test if it is equivalent to
      * @p variable2.

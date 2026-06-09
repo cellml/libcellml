@@ -86,11 +86,11 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
-    membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_i_L = constants[2]*(states[0]-computed_constants[0])
     potassium_channel_i_K = constants[4]*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     sodium_channel_i_Na = constants[3]*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])
-    rates[0] = -(-membrane_i_Stim+sodium_channel_i_Na+potassium_channel_i_K+leakage_current_i_L)/constants[0]
+    membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    rates[0] = (membrane_i_Stim-sodium_channel_i_Na-potassium_channel_i_K-leakage_current_i_L)/constants[0]
     sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
     sodium_channel_m_gate_alpha_m = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     rates[2] = sodium_channel_m_gate_alpha_m*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]

@@ -85,7 +85,6 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_g_L = 0.3
     membrane_E_R = 0.0
     leakage_current_E_L = membrane_E_R-10.613
@@ -94,7 +93,8 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
     potassium_channel_i_K = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[0])
     algebraic_variables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
-    rates[0] = -(-membrane_i_Stim+external_variables[0]+potassium_channel_i_K+leakage_current_i_L)/constants[0]
+    membrane_i_Stim = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    rates[0] = (membrane_i_Stim-external_variables[0]-potassium_channel_i_K-leakage_current_i_L)/constants[0]
     sodium_channel_m_gate_beta_m = 4.0*exp(states[0]/18.0)
     rates[2] = algebraic_variables[0]*(1.0-states[2])-sodium_channel_m_gate_beta_m*states[2]
     sodium_channel_h_gate_beta_h = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
