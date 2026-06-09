@@ -205,7 +205,6 @@ bool isCellMLExponent(const std::string &candidate)
 std::vector<size_t> findOccurrences(const std::string &candidate, const std::string &sub)
 {
     std::vector<size_t> occurrences;
-
     size_t pos = candidate.find(sub, 0);
     while (pos != std::string::npos) {
         occurrences.push_back(pos);

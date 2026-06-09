@@ -245,6 +245,7 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                             auto testPair = it->second->variablePair();
                             auto compTest1 = owningComponent(testPair->variable1());
                             auto compTest2 = owningComponent(testPair->variable2());
+
                             if (((compTest1 == compEquiv) && (compTest2 == compVar))
                                 || ((compTest2 == compEquiv) && (compTest1 == compVar))) {
                                 found = true;
