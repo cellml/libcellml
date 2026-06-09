@@ -75,19 +75,19 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         run: |
           cd C:\
-          curl -L https://github.com/cellml/gha/releases/download/gha/libxml2-Windows.tar.gz -o libxml2.tar.gz -s
+          curl -L https://github.com/cellml/gha/releases/download/gha/libxml2-Windows-Intel.tar.gz -o libxml2.tar.gz -s
           tar -xzf libxml2.tar.gz
-          curl -L https://github.com/cellml/gha/releases/download/gha/symengine-Windows.tar.gz -o symengine.tar.gz -s
+          curl -L https://github.com/cellml/gha/releases/download/gha/symengine-Windows-Intel.tar.gz -o symengine.tar.gz -s
           tar -xzf symengine.tar.gz
-          curl -L https://github.com/cellml/gha/releases/download/gha/zlib-Windows.tar.gz -o zlib.tar.gz -s
+          curl -L https://github.com/cellml/gha/releases/download/gha/zlib-Windows-Intel.tar.gz -o zlib.tar.gz -s
           tar -xzf zlib.tar.gz
       - name: Install dependencies (Linux only)
         if: ${{ runner.os == 'Linux' }}
         run: |
           cd $HOME
-          wget https://github.com/cellml/gha/releases/download/gha/libxml2-Linux.tar.gz -O - | tar -xz
-          wget https://github.com/cellml/gha/releases/download/gha/symengine-Linux.tar.gz -O - | tar -xz
-          wget https://github.com/cellml/gha/releases/download/gha/zlib-Linux.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/libxml2-Linux-Intel.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/symengine-Linux-Intel.tar.gz -O - | tar -xz
+          wget https://github.com/cellml/gha/releases/download/gha/zlib-Linux-Intel.tar.gz -O - | tar -xz
       - name: Install dependencies (macOS only)
         if: ${{ runner.os == 'macOS' }}
         run: |
