@@ -110,13 +110,13 @@ jobs:
         with:
           client-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
+          owner: libcellml
           repositories: website-src
 
       - name: Checkout website-src repository
         uses: actions/checkout@v6
         with:
-          repository: ${{ github.repository_owner }}/website-src
+          repository: libcellml/website-src
           token: ${{ steps.app_token.outputs.token }}
           ref: production
           path: website-src
@@ -143,6 +143,7 @@ jobs:
           echo "Passed tests: $passed_tests"
 
       - name: Checkout documentation database repository
+        if: steps.extract_doc_metadata.outputs.database_sha != 'null'
         uses: actions/checkout@v6
         with:
           repository: ${{ steps.extract_doc_metadata.outputs.database_repo }}
@@ -168,13 +169,12 @@ jobs:
           mkdir -p $docs_dir
           echo "docs_dir=$docs_dir" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare documentation
+      - name: Prepare user documentation
+        if: steps.extract_doc_metadata.outputs.database_sha != 'null'
         run: |
           passed_tests=$(echo "${{ steps.extract_doc_metadata.outputs.passed_tests_b64 }}" | base64 -d)
           echo "Preparing documentation for release ${{ needs.determine_release.outputs.release_version }} with database at ${{ steps.extract_doc_metadata.outputs.database_sha }} and passed tests: $passed_tests"
-          echo "yes"
-          ls libcellml/.github/scripts
-          ls database
+
           mkdir docs
           echo "$passed_tests" | jq -r '.[]' | while read test; do
             echo -n "Processing test: $test"
@@ -188,7 +188,7 @@ jobs:
 
           ls docs
 
-      - name: Prepare libCellML documentation
+      - name: Prepare libCellML documentation targets
         run: |
           cmake -S libcellml -B build-libcellml-release -DBUILD_TYPE=Release -DBINDINGS_PYTHON=OFF -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=OFF
 
@@ -288,7 +288,7 @@ jobs:
         run: |
           cd website-src
           pr_url=$(gh pr create \
-            --repo ${{ github.repository_owner }}/website-src \
+            --repo libcellml/website-src \
             --head release_documentation_${{ needs.determine_release.outputs.release_version }} \
             --base production \
             --title "Add documentation for libCellML ${{ needs.determine_release.outputs.release_version }}" \
@@ -322,27 +322,68 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: libcellml
 
-      - name: Checkout repository
+      - name: Install Python
+        if: ${{ inputs.successful }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Checkout release changes
         uses: actions/checkout@v6
         with:
           ref: ${{ needs.determine_release.outputs.release_branch }}
-          token: ${{ steps.app_token.outputs.token }}
-          fetch-depth: 0
+          path: release-changes
 
-      - name: Merge into main
+      - name: Checkout return branch
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          token: ${{ steps.app_token.outputs.token }}
+          path: update
+
+      - name: Prepare to update main with release changes
         if: ${{ inputs.successful }}
         run: |
+
+          rsync -avW --delete --exclude='.git' release-changes/ update/
+
+          cd update
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git checkout main
-          git merge --no-ff ${{ needs.determine_release.outputs.release_branch }} -m "Merge release branch ${{ needs.determine_release.outputs.release_branch }} into main."
+          git add -A
+          git commit -m "Update main with release changes from ${{ needs.determine_release.outputs.release_branch }}."
+          git push origin main
+
+      - name: Install CMake and Ninja
+        if: ${{ inputs.successful }}
+        uses: lukka/get-cmake@latest
+
+      - name: Configure libCellML
+        if: ${{ inputs.successful }}
+        run: cmake -G Ninja -S update -B build -DBINDINGS_PYTHON=ON -DBUILD_SHARED=ON -DCOVERAGE=OFF -DLLVM_COVERAGE=OFF -DMEMCHECK=OFF -DUNIT_TESTS=ON
+
+      - name: Build libCellML
+        if: ${{ inputs.successful }}
+        run: cmake --build build
+
+      - name: Run unit tests
+        if: ${{ inputs.successful }}
+        run: cmake --build build --target test
+
+      - name: Push to main
+        if: ${{ inputs.successful }}
+        run: |
+          cd update
           git push origin main
 
       - name: Close PR and delete branch
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
+          cd update
+
           pr_number="${{ needs.determine_release.outputs.pr_number }}"
 
           echo "Closing PR #$pr_number and deleting branch"
