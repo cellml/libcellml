@@ -280,23 +280,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm, windows-2022, windows-11-arm]
+        os: [macos-15-intel, ubuntu-24.04, windows-2025]
         py: ['3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - name: 'Windows'
-            os: windows-2022
-          - name: 'Windows ARM'
-            os: windows-11-arm
+            os: windows-2025
           - name: 'Linux'
-            os: ubuntu-24.04-arm
-          - name: 'Linux ARM'
             os: ubuntu-24.04
           - name: 'macOS'
-            os: macos-15
+            os: macos-15-intel
         exclude:
           - os: ubuntu-24.04
-            py: '3.9'
-          - os: ubuntu-24.04-arm
             py: '3.9'
 
     steps:
@@ -319,14 +313,11 @@ jobs:
           echo "build=cp${v/./}-*" >> $GITHUB_OUTPUT
           if [[ "macOS" == "${{ matrix.name }}" ]]; then
             echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
-            echo "macos_archs=x86_64 arm64" >> $GITHUB_OUTPUT
-            echo "macos_deployment_target=14.0" >> $GITHUB_OUTPUT
-          elif [[ "Windows" == "${{ matrix.name }}" ]]; then
-            echo "Setting win_arch as: win_arch=amd64"
-            echo "win_arch=amd64" >> $GITHUB_OUTPUT
-          elif [[ "Windows ARM" == "${{ matrix.name }}" ]]; then
-            echo "Setting win_arch as: win_arch=arm64"
-            echo "win_arch=arm64" >> $GITHUB_OUTPUT
+            echo 'macos_archs=x86_64 arm64' >> $GITHUB_OUTPUT
+            echo "macos_deployment_target=15.0" >> $GITHUB_OUTPUT
+          else
+            echo "Setting macos_archs as: macos_archs='x86_64'"
+            echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
           fi
 
       - name: Configure MSVC (Windows)
@@ -348,12 +339,12 @@ jobs:
           CIBW_BUILD: ${{ steps.setup.outputs.build }}
           CIBW_TEST_SKIP: "*_arm64"
           CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
+          CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
           CIBW_ENVIRONMENT: >
             LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
             MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
-          CIBW_BEFORE_BUILD_WINDOWS: call "%VSINSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" ${{ steps.setup.outputs.win_arch }} && cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
         with:
           output-dir: wheelhouse
@@ -562,8 +553,8 @@ jobs:
         run: |
           cd yggdrasil
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "libcellml-release-app"
+          git config user.email "actions@github.com"
 
           git add L/libcellml/build_tarballs.jl
           git commit -m "libcellml ${{ github.event.release.tag_name }}"
