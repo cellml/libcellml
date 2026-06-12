@@ -45,26 +45,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.determine_release.outputs.release_branch }}
-          fetch-depth: 0
-          path: repo-staging
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          ref: release
-          fetch-depth: 0
-          path: repo-release
-
-      - name: Set GitHub Actions bot identity
-        run: |
-          cd repo-release
-
-          git config user.name "libcellml-release[bot]"
-          git config user.email "libcellml-release[bot]@users.noreply.github.com"
 
       - name: Generate GitHub App token
         id: app_token
@@ -75,12 +55,27 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: libcellml
 
-      - name: Configure git authentication
+      - name: Checkout repository - staging branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.determine_release.outputs.release_branch }}
+          fetch-depth: 0
+          path: repo-staging
+
+      - name: Checkout repository - release branch
+        uses: actions/checkout@v6
+        with:
+          ref: release
+          token: ${{ steps.app_token.outputs.token }}
+          fetch-depth: 0
+          path: repo-release
+
+      - name: Set GitHub Actions bot identity
         run: |
           cd repo-release
 
-          git remote set-url origin \
-            https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/${{ github.repository }}.git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update release branch
         run: |
