@@ -1,4 +1,4 @@
-libCellML v0.7.0-rc.2 Changelog
+libCellML v0.7.0-rc.3 Changelog
 ===============================
 
 Analyser
@@ -32,6 +32,10 @@ Generator
 Infrastructure
 --------------
 
+* Don't push changes to main too early in finalise workflow by `@hsorby <https://github.com/hsorby>`_ [`#1433 <https://github.com/cellml/libcellml/pull/1433>`_].
+* Reset working directory when ccloning passed documentation repositories by `@hsorby <https://github.com/hsorby>`_ [`#1432 <https://github.com/cellml/libcellml/pull/1432>`_].
+* Revert to windows-2022 to avoid issues with windows-2025 by `@hsorby <https://github.com/hsorby>`_ [`#1431 <https://github.com/cellml/libcellml/pull/1431>`_].
+* Try a different approach to setting permissions for make release workflow by `@hsorby <https://github.com/hsorby>`_ [`#1430 <https://github.com/cellml/libcellml/pull/1430>`_].
 * Re-instate final fixes to release process workflow overwritten during testing by `@hsorby <https://github.com/hsorby>`_ [`#1428 <https://github.com/cellml/libcellml/pull/1428>`_].
 * Perform final sanity check before pushing release changes to main by `@hsorby <https://github.com/hsorby>`_ [`#1427 <https://github.com/cellml/libcellml/pull/1427>`_].
 * Correct conditional syntax in finalise release workflow by `@hsorby <https://github.com/hsorby>`_ [`#1426 <https://github.com/cellml/libcellml/pull/1426>`_].
@@ -67,15 +71,15 @@ Miscellaneous
 Contributors
 ------------
 
-.. image:: https://avatars.githubusercontent.com/u/811244?v=4
-   :target: https://github.com/nickerso
-   :height: 32
-   :width: 32
 .. image:: https://avatars.githubusercontent.com/u/602265?v=4
    :target: https://github.com/agarny
    :height: 32
    :width: 32
 .. image:: https://avatars.githubusercontent.com/u/778048?v=4
    :target: https://github.com/hsorby
+   :height: 32
+   :width: 32
+.. image:: https://avatars.githubusercontent.com/u/811244?v=4
+   :target: https://github.com/nickerso
    :height: 32
    :width: 32
