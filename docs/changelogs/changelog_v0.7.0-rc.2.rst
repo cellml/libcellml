@@ -33,7 +33,7 @@ Infrastructure
 --------------
 
 * Re-instate final fixes to release process workflow overwritten during testing by `@hsorby <https://github.com/hsorby>`_ [`#1428 <https://github.com/cellml/libcellml/pull/1428>`_].
-* Perform finaly sanity check before pushing release changes to main by `@hsorby <https://github.com/hsorby>`_ [`#1427 <https://github.com/cellml/libcellml/pull/1427>`_].
+* Perform final sanity check before pushing release changes to main by `@hsorby <https://github.com/hsorby>`_ [`#1427 <https://github.com/cellml/libcellml/pull/1427>`_].
 * Correct conditional syntax in finalise release workflow by `@hsorby <https://github.com/hsorby>`_ [`#1426 <https://github.com/cellml/libcellml/pull/1426>`_].
 * Skip user documentation update if the documentation tests failed by `@hsorby <https://github.com/hsorby>`_ [`#1425 <https://github.com/cellml/libcellml/pull/1425>`_].
 * Fix more references to libcellml/website-src by `@hsorby <https://github.com/hsorby>`_ [`#1424 <https://github.com/cellml/libcellml/pull/1424>`_].
