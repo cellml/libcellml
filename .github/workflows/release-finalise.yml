@@ -355,7 +355,6 @@ jobs:
 
           git add -A
           git commit -m "Update main with release changes from ${{ needs.determine_release.outputs.release_branch }}."
-          git push origin main
 
       - name: Install CMake and Ninja
         if: ${{ inputs.successful }}
