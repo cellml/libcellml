@@ -184,6 +184,7 @@ jobs:
             git clone "$repo" "docs/$test"
             cd "docs/$test"
             git reset --hard "$branch"
+            cd ../..
           done
 
           ls docs
