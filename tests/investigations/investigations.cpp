@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "test_utils.h"
 
-const char* BENCHMARKING_MODEL_ROOT = std::getenv("BENCHMARKING_MODEL_ROOT");
+const char *BENCHMARKING_MODEL_ROOT = std::getenv("BENCHMARKING_MODEL_ROOT");
 
 TEST(Investigations, DISABLED_exponentialTimeConsumption11)
 {
@@ -35,7 +35,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption11)
     Debug() << modelPath;
     Debug() << parser->issue(0)->description();
     Debug() << originalModel->name();
-
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -62,7 +61,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption246)
     EXPECT_EQ(size_t(1), parser->issueCount());
     Debug() << parser->issue(0)->description();
     Debug() << originalModel->name();
-
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -91,7 +89,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption380)
     Debug() << parser->issue(0)->description();
     Debug() << originalModel->name();
 
-
     importer->resolveImports(originalModel, modelImportPath);
 
     EXPECT_EQ(size_t(3), importer->issueCount());
@@ -119,7 +116,6 @@ TEST(Investigations, exponentialTimeConsumption524)
     Debug() << parser->issue(0)->description();
     Debug() << originalModel->name();
 
-
     importer->resolveImports(originalModel, modelImportPath);
 
     EXPECT_EQ(size_t(3), importer->issueCount());
@@ -134,10 +130,9 @@ TEST(Investigations, exponentialTimeConsumption524)
     printIssues(analyser);
 }
 
-
 TEST(Investigations, DISABLED_exponentialTimeConsumptionOthers)
 {
-    const std::vector<int> vesselCounts = { 246, 380, 524 };
+    const std::vector<int> vesselCounts = {246, 380, 524};
 
     auto importer = libcellml::Importer::create(false);
     auto parser = libcellml::Parser::create(false);

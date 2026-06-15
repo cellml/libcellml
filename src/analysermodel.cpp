@@ -62,7 +62,7 @@ void exploreEquivalentVariables(const VariablePtr &variable, std::set<uintptr_t>
 void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache2()
 {
     std::set<uintptr_t> visited;
-    std::vector< std::set<uintptr_t> > equivalentVariableGroups;
+    std::vector<std::set<uintptr_t>> equivalentVariableGroups;
     mEquivalentVariableCache2.clear();
 
     for (size_t i = 0; i < mModel->componentCount(); ++i) {
@@ -591,10 +591,10 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // }
 
     return (mPimpl->mEquivalentVariableCache2.count(v1) > 0)
-        && (mPimpl->mEquivalentVariableCache2.count(v2) > 0)
-        && (mPimpl->mEquivalentVariableCache2[v1] == mPimpl->mEquivalentVariableCache2[v2]);
+           && (mPimpl->mEquivalentVariableCache2.count(v2) > 0)
+           && (mPimpl->mEquivalentVariableCache2[v1] == mPimpl->mEquivalentVariableCache2[v2]);
 
-    //return mPimpl->find(v1) == mPimpl->find(v2);
+    // return mPimpl->find(v1) == mPimpl->find(v2);
 }
 
 } // namespace libcellml

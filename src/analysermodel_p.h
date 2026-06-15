@@ -17,8 +17,8 @@ limitations under the License.
 #pragma once
 
 #include <cstdint>
-#include <unordered_map>
 #include <set>
+#include <unordered_map>
 
 #include "libcellml/analysermodel.h"
 

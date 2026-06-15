@@ -2777,13 +2777,11 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 auto equivParent = owningComponent(equiv);
                 if (equivParent != nullptr) {
                     // Normalize the key order (min pointer first, max pointer second)
-                    auto key = comp.get() < equivParent.get()
-                                   ? std::make_pair(comp.get(), equivParent.get())
-                                   : std::make_pair(equivParent.get(), comp.get());
+                    auto key = comp.get() < equivParent.get() ? std::make_pair(comp.get(), equivParent.get()) : std::make_pair(equivParent.get(), comp.get());
 
                     // If we haven't processed this component connection yet, do it once
                     if (connectionIds.find(key) == connectionIds.end()) {
-                        connectionIds[key] = ""; //Variable::equivalenceConnectionId(item, equiv);
+                        connectionIds[key] = ""; // Variable::equivalenceConnectionId(item, equiv);
                     }
                 }
             }
@@ -2900,9 +2898,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
-                auto key = component.get() < equivParent.get()
-                               ? std::make_pair(component.get(), equivParent.get())
-                               : std::make_pair(equivParent.get(), component.get());
+                auto key = component.get() < equivParent.get() ? std::make_pair(component.get(), equivParent.get()) : std::make_pair(equivParent.get(), component.get());
 
                 auto connectionId = connectionIds.at(key);
                 // auto connectionId = Variable::equivalenceConnectionId(item, equiv);

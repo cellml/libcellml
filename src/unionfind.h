@@ -17,9 +17,11 @@ limitations under the License.
 #include <unordered_map>
 
 template<typename T>
-class UnionFind {
+class UnionFind
+{
 public:
-    T find(const T& x) {
+    T find(const T &x)
+    {
         auto it = parent.find(x);
         if (it == parent.end()) {
             parent[x] = x;
@@ -33,11 +35,13 @@ public:
         return it->second;
     }
 
-    void unite(const T& a, const T& b) {
+    void unite(const T &a, const T &b)
+    {
         T rootA = find(a);
         T rootB = find(b);
 
-        if (rootA == rootB) return;
+        if (rootA == rootB)
+            return;
 
         // Union by rank
         if (rank[rootA] < rank[rootB]) {
@@ -50,7 +54,8 @@ public:
         }
     }
 
-    bool connected(const T& a, const T& b) {
+    bool connected(const T &a, const T &b)
+    {
         return find(a) == find(b);
     }
 
