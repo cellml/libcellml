@@ -202,7 +202,7 @@ else()
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
-apply_libxml2_settings(cellml)
+target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET} ${ZLIB_TARGET})
 
 # Use target compile features to propagate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_20)
@@ -238,7 +238,7 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
 
-apply_libxml2_settings(cellml_debug_utilities)
+target_link_libraries(cellml_debug_utilities PUBLIC ${LIBXML2_TARGET})
 
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -343,14 +343,14 @@ write_basic_package_version_file(
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_VERSION_FILE})
 
+set(RESOLVE_LIBXML2_FILE "${BUILD_TREE_CONFIG_DIR}/ResolveLibXml2.cmake")
+set(RESOLVE_ZLIB_FILE "${BUILD_TREE_CONFIG_DIR}/ResolveZLIB.cmake")
+configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveLibXml2.cmake" "${RESOLVE_LIBXML2_FILE}" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveZLIB.cmake" "${RESOLVE_ZLIB_FILE}" COPYONLY)
 set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
-list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
+list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE} ${RESOLVE_LIBXML2_FILE} ${RESOLVE_ZLIB_FILE})
 
-if(HAVE_LIBXML2_CONFIG)
-  file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
-  set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
-endif()
 set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
   ${LIBCELLML_CONFIG_CMAKE_FILE}
@@ -373,6 +373,8 @@ install(
   FILES
     ${LIBCELLML_CONFIG_CMAKE_FILE}
     ${LIBCELLML_CONFIG_VERSION_FILE}
+    ${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveLibXml2.cmake
+    ${PROJECT_SOURCE_DIR}/cmake/libcellml/ResolveZLIB.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT development
 )
