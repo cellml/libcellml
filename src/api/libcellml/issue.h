@@ -247,7 +247,7 @@ public:
      *
      * Return the string version of a @ref ReferenceRule.
      *
-     * @param rule The refererence rule for which we want the string version.
+     * @param rule The reference rule for which we want the string version.
      *
      * @return The string version of the @ref ReferenceRule.
      */
