@@ -55,7 +55,7 @@ else ()
   find_program(INSTALL_NAME_TOOL_EXE NAMES ${PREFERRED_INSTALL_NAME_TOOL_NAMES} install_name_tool)
 
   if(Python_Interpreter_FOUND)
-    if(NOT DEFINED TEST_COVERAGE_RESULT)
+    if(NOT DEFINED TEST_COVERAGE_RESULT OR NOT TEST_COVERAGE_RESULT EQUAL 0)
       set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
       message(STATUS "Performing Test HAVE_COVERAGE")
       get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
