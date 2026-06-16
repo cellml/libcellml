@@ -90,6 +90,16 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::WATT, "watt"},
     {Units::StandardUnit::WEBER, "weber"}};
 
+std::string Units::prefixAsString(Units::Prefix prefix)
+{
+    return prefixToString.at(prefix);
+}
+
+std::string Units::standardUnitAsString(Units::StandardUnit standardUnit)
+{
+    return standardUnitToString.at(standardUnit);
+}
+
 std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
 {
     return std::find_if(mUnitDefinitions.begin(), mUnitDefinitions.end(),

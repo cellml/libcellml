@@ -72,6 +72,22 @@ AnyCellmlElementPtr Issue::item() const
 }
 
 /**
+ * @brief Map Level to their string versions.
+ *
+ * An internal map used to convert a Issue::Level into its string version.
+ */
+static const std::map<Issue::Level, std::string> levelToString = {
+    {Issue::Level::ERROR, "error"},
+    {Issue::Level::MESSAGE, "message"},
+    {Issue::Level::WARNING, "warning"}
+};
+
+std::string Issue::levelAsString(Level level)
+{
+    return levelToString.at(level);
+}
+
+/**
  * @brief Map ReferenceRules to their section titles.
  *
  * An internal map used to convert a Issue::ReferenceRule into its heading string.
@@ -176,7 +192,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::MAP_VARIABLES_ELEMENT, {"MAP_VARIABLES_ELEMENT", "2.16", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1_ATTRIBUTE, {"MAP_VARIABLES_VARIABLE1_ATTRIBUTE", "2.16.1", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1_ATTRIBUTE_REFERENCE, {"MAP_VARIABLES_VARIABLE1_ATTRIBUTE_REFERENCE", "2.16.1.1", baseSpecificationUrl, "specB16"}},
-    {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE, {"MAP_VARIABLES_VARIABLE2", "2.16.2", baseSpecificationUrl, "specB16"}},
+    {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE, {"MAP_VARIABLES_VARIABLE2_ATTRIBUTE", "2.16.2", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE, {"MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE", "2.16.2.1", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_UNIQUE, {"MAP_VARIABLES_UNIQUE", "2.16.3", baseSpecificationUrl, "specB16"}},
 
@@ -223,7 +239,31 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE, {"ANNOTATOR_INCONSISTENT_TYPE", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANNOTATOR_NULL_MODEL, {"ANNOTATOR_NULL_MODEL", "", docsUrl, ""}},
 
+    // Generator issues:
+    {Issue::ReferenceRule::GENERATOR_NULL_MODEL, {"GENERATOR_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_NULL_VARIABLE, {"GENERATOR_NULL_VARIABLE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED, {"GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE, {"GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED, {"GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE, {"GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED, {"GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE, {"GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED, {"GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE, {"GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED, {"GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE, {"GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""}},
+
+    // Placeholder:
+    {Issue::ReferenceRule::UNSPECIFIED, {"UNSPECIFIED", "", "", ""}}
+
 };
+
+std::string Issue::referenceRuleAsString(ReferenceRule rule)
+{
+    std::string data = ruleToInformation.at(rule)[0];
+    std::transform(data.begin(), data.end(), data.begin(), [](unsigned char c){ return std::tolower(c); });
+    return data;
+}
 
 std::string Issue::referenceHeading() const
 {

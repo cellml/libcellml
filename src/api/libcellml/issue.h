@@ -61,6 +61,17 @@ public:
     };
 
     /**
+     * @brief Get the string version of a @ref Level.
+     *
+     * Return the string version of a @ref Level.
+     *
+     * @param level The level for which we want the string version.
+     *
+     * @return The string version of the @ref Level.
+     */
+    static std::string levelAsString(Level level);
+
+    /**
      * @brief The issue Reference enum class.
      *
      * Enum to describe the rule which the issue addresses.
@@ -230,6 +241,17 @@ public:
         // Placeholder for further references:
         UNSPECIFIED
     };
+
+    /**
+     * @brief Get the string version of a @ref ReferenceRule.
+     *
+     * Return the string version of a @ref ReferenceRule.
+     *
+     * @param rule The refererence rule for which we want the string version.
+     *
+     * @return The string version of the @ref ReferenceRule.
+     */
+    static std::string referenceRuleAsString(ReferenceRule rule);
 
     /**
      * @brief Get the description for this issue.
