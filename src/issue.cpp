@@ -79,8 +79,7 @@ AnyCellmlElementPtr Issue::item() const
 static const std::map<Issue::Level, std::string> levelToString = {
     {Issue::Level::ERROR, "error"},
     {Issue::Level::MESSAGE, "message"},
-    {Issue::Level::WARNING, "warning"}
-};
+    {Issue::Level::WARNING, "warning"}};
 
 std::string Issue::levelAsString(Level level)
 {
@@ -261,7 +260,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 std::string Issue::referenceRuleAsString(ReferenceRule rule)
 {
     std::string data = ruleToInformation.at(rule)[0];
-    std::transform(data.begin(), data.end(), data.begin(), [](unsigned char c){ return std::tolower(c); });
+    std::transform(data.begin(), data.end(), data.begin(), [](unsigned char c) { return std::tolower(c); });
     return data;
 }
 

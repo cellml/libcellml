@@ -234,4 +234,3 @@ TEST(AsString, variableInterfaceType)
     EXPECT_EQ("private", libcellml::Variable::interfaceTypeAsString(libcellml::Variable::InterfaceType::PRIVATE));
     EXPECT_EQ("public_and_private", libcellml::Variable::interfaceTypeAsString(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 }
-
