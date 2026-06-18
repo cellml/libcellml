@@ -370,7 +370,7 @@ jobs:
 
       - name: Run unit tests
         if: ${{ inputs.successful }}
-        run: cmake --build build --target test
+        run: ctest --test-dir build --output-on-failure
 
       - name: Push to main
         if: ${{ inputs.successful }}
