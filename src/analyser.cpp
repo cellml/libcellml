@@ -25,12 +25,13 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserexternalvariable.h"
-#include "libcellml/generatorprofile.h"
+#include "libcellml/analysermodel.h"
 #include "libcellml/validator.h"
 
 #include "analyser_p.h"
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
+#include "analysermodel_p.h"
 #include "analyservariable_p.h"
 #include "commonutils.h"
 #include "generator_p.h"

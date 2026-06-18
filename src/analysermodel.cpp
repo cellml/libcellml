@@ -16,9 +16,8 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
-#include "libcellml/analyservariable.h"
-
 #include "analysermodel_p.h"
+#include "analyservariable_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -551,8 +550,17 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // means that we can safely cache the result of a call to that utility. In
     // turn, this means that we can speed up any feature (e.g., code generation)
     // that also relies on that utility.
-    auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
-    auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
+
+    if ((variable1 == nullptr) || (variable2 == nullptr)) {
+        return false;
+    }
+
+    if (variable1 == variable2) {
+        return true;
+    }
+
+    const auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
+    const auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
     return (mPimpl->mEquivalentVariableCache.count(v1) > 0)
            && (mPimpl->mEquivalentVariableCache[v1] == mPimpl->mEquivalentVariableCache[v2]);

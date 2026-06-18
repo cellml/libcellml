@@ -44,6 +44,7 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraicVariables;
     std::vector<AnalyserVariablePtr> mExternalVariables;
+
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
     std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache;
