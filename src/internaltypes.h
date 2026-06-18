@@ -80,8 +80,8 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
 
-using ComponentRawPtrPair = std::pair<const libcellml::Component *, const libcellml::Component *>;
-using ConnectionIdMap = std::map<ComponentRawPtrPair, std::string>;
+using ComponentRawPtrPair = std::pair<const Component *, const Component *>; /**< Type definition for pair of raw component pointers. */
+using ConnectionIdMap = std::map<ComponentRawPtrPair, std::string>; /**< Type definition for map of pair of raw component pointers to connection ID. */
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.

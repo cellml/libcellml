@@ -46,11 +46,6 @@ namespace libcellml {
  */
 using IssuesList = std::vector<Strings>;
 
-/**
- * Type definition for a pair of raw variable pointers using standard library.
- */
-using RawComponentPtrPair = std::pair<Component*, Component*>;
-
 
 /**
  * @brief Validate that equivalent variable pairs in the @p model
@@ -2719,14 +2714,14 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     }
 
     struct PairHash {
-        size_t operator()(const RawComponentPtrPair& p) const {
-            return std::hash<Component*>()(p.first) ^
-                   (std::hash<Component*>()(p.second) << 1);
+        size_t operator()(const ComponentRawPtrPair& p) const {
+            return std::hash<const Component*>()(p.first) ^
+                   (std::hash<const Component*>()(p.second) << 1);
         }
     };
 
     ConnectionIdMap connectionIds;
-    std::unordered_set<RawComponentPtrPair, PairHash> visitedPairs;
+    std::unordered_set<ComponentRawPtrPair, PairHash> visitedPairs;
 
     for (const auto& comp : allComponents) {
         auto rawPtr = comp.get();
@@ -2738,7 +2733,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 auto equivParent = owningComponent(equiv);
                 if (equivParent != nullptr) {
                     auto equivRawPtr = equivParent.get();
-                    auto key = (rawPtr < equivRawPtr) ? RawComponentPtrPair{rawPtr, equivRawPtr} : RawComponentPtrPair{equivRawPtr, rawPtr};
+                    auto key = (rawPtr < equivRawPtr) ? ComponentRawPtrPair{rawPtr, equivRawPtr} : ComponentRawPtrPair{equivRawPtr, rawPtr};
                     if (!visitedPairs.insert(key).second) {
                         continue; // Skip if we've already processed this pair
                     }
@@ -2858,7 +2853,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
-                auto key = component.get() < equivParent.get() ? RawComponentPtrPair{component.get(), equivParent.get()} : RawComponentPtrPair{equivParent.get(), component.get()};
+                auto key = component.get() < equivParent.get() ? ComponentRawPtrPair{component.get(), equivParent.get()} : ComponentRawPtrPair{equivParent.get(), component.get()};
 
                 auto connectionId = connectionIds.at(key);
                 // auto connectionId = Variable::equivalenceConnectionId(item, equiv);
