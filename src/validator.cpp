@@ -2704,61 +2704,6 @@ void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &
 
 IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
 {
-    UnionFind<VariablePtr> uf;
-
-    // Traverse all components and variables
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        auto component = model->component(c);
-
-        for (size_t i = 0; i < component->variableCount(); ++i) {
-            auto v = component->variable(i);
-
-            for (size_t e = 0; e < v->equivalentVariableCount(); ++e) {
-                auto equiv = v->equivalentVariable(e);
-
-                if (equiv != nullptr) {
-                    uf.unite(v, equiv);
-                }
-            }
-        }
-    }
-
-    std::unordered_map<VariablePtr, std::vector<VariablePtr>> groups;
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        auto component = model->component(c);
-
-        for (size_t i = 0; i < component->variableCount(); ++i) {
-            auto v = component->variable(i);
-            auto root = uf.find(v);
-
-            groups[root].push_back(v);
-        }
-    }
-
-    std::unordered_map<ComponentPair, std::vector<VariablePair>, ComponentPairHash> connectionMap;
-    // using VarPair>, ComponentPairHash> connectionMap;
-
-    // for (auto& [root, vars] : groups) {
-    //     for (size_t i = 0; i < vars.size(); ++i) {
-    //         for (size_t j = i + 1; j < vars.size(); ++j) {
-    //             auto v1 = vars[i];
-    //             auto v2 = vars[j];
-
-    //             auto c1 = owningComponent(v1);
-    //             auto c2 = owningComponent(v2);
-
-    //             if (!c1 || !c2 || c1 == c2) continue;
-
-    //             // Normalize ordering
-    //             ComponentPair key = (c1 < c2)
-    //                                     ? ComponentPair{c1, c2}
-    //                                     : ComponentPair{c2, c1};
-
-    //             connectionMap[key].emplace_back(v1, v2);
-    //         }
-    //     }
-    // }
-
     IdMap idMap;
     std::string info;
     std::set<std::string> reportedConnections;
@@ -2768,21 +2713,33 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
         gatherComponents(model->component(c), allComponents);
     }
 
+    using Key = std::pair<Component*, Component*>;
+
+    struct PairHash {
+        size_t operator()(const Key& p) const {
+            return std::hash<Component*>()(p.first) ^
+                   (std::hash<Component*>()(p.second) << 1);
+        }
+    };
+
     ConnectionIdMap connectionIds;
-    for (const auto &comp : allComponents) {
-        for (size_t i = 0; i < comp->variableCount(); ++i) {
-            auto item = comp->variable(i);
-            for (size_t e = 0; e < item->equivalentVariableCount(); ++e) {
-                auto equiv = item->equivalentVariable(e);
+    std::unordered_set<Key, PairHash> visitedPairs;
+
+    for (const auto& comp : allComponents) {
+        auto rawPtr = comp.get();
+        const size_t varCount = comp->variableCount();
+        for (size_t i = 0; i < varCount; ++i) {
+            auto currentVariable = comp->variable(i);
+            for (size_t e = 0; e < currentVariable->equivalentVariableCount(); ++e) {
+                auto equiv = currentVariable->equivalentVariable(e);
                 auto equivParent = owningComponent(equiv);
                 if (equivParent != nullptr) {
-                    // Normalize the key order (min pointer first, max pointer second)
-                    auto key = comp.get() < equivParent.get() ? std::make_pair(comp.get(), equivParent.get()) : std::make_pair(equivParent.get(), comp.get());
-
-                    // If we haven't processed this component connection yet, do it once
-                    if (connectionIds.find(key) == connectionIds.end()) {
-                        connectionIds[key] = ""; // Variable::equivalenceConnectionId(item, equiv);
+                    auto equivRawPtr = equivParent.get();
+                    Key key = (rawPtr < equivRawPtr) ? Key{rawPtr, equivRawPtr} : Key{equivRawPtr, rawPtr};
+                    if (!visitedPairs.insert(key).second) {
+                        continue; // Skip if we've already processed this pair
                     }
+                    connectionIds[key] = Variable::equivalenceConnectionId(currentVariable, equiv, false);
                 }
             }
         }
