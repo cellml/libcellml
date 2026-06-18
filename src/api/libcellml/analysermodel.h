@@ -612,7 +612,7 @@ public:
      * @return @c true if @p variable1 is equivalent to @p variable2 and
      * @c false otherwise.
      */
-     bool areEquivalentVariables(const VariablePtr &variable1, const VariablePtr &variable2);
+    bool areEquivalentVariables(const VariablePtr &variable1, const VariablePtr &variable2);
 
 private:
     AnalyserModel(const ModelPtr &model); /**< Constructor, @private. */

@@ -184,7 +184,7 @@ public:
      * @param search Optional parameter to search the equivalence network for the connection identifier, true by default.
      * @return the @c std::string connection identifier.
      */
-    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool search=true);
+    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool search = true);
 
     /**
      * @brief Clear equivalent connection identifier for this equivalence.
