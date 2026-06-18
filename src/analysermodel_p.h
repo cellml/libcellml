@@ -46,30 +46,7 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mExternalVariables;
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
-    std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
-    std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache2;
-
-    uintptr_t find(uintptr_t x)
-    {
-        auto it = mEquivalentVariableCache.find(x);
-        if (it == mEquivalentVariableCache.end()) {
-            mEquivalentVariableCache[x] = x;
-            return x;
-        }
-        if (it->second != x) {
-            it->second = find(it->second);
-        }
-        return it->second;
-    }
-
-    void unite(uintptr_t x, uintptr_t y)
-    {
-        const uintptr_t &rootX = find(x);
-        const uintptr_t &rootY = find(y);
-        if (rootX != rootY) {
-            mEquivalentVariableCache[rootY] = rootX;
-        }
-    }
+    std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache;
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -101,10 +78,7 @@ struct AnalyserModel::AnalyserModelImpl
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 
     void buildEquivalentVariablesCache();
-    void buildEquivalentVariablesCache(const ComponentPtr &component);
-
-    void buildEquivalentVariablesCache2();
-    void buildEquivalentVariablesCache2(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups);
+    void buildEquivalentVariablesCache(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups);
 
     AnalyserModelImpl(const ModelPtr &model);
 };

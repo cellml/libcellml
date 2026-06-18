@@ -21,13 +21,17 @@ limitations under the License.
 #include "analysermodel_p.h"
 #include "utilities.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 AnalyserModelPtr AnalyserModel::AnalyserModelImpl::create(const ModelPtr &model)
 {
-    return std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+    auto res = std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
+
+    if (model) {
+        res->mPimpl->buildEquivalentVariablesCache();
+    }
+
+    return res;
 }
 
 AnalyserModel::AnalyserModelImpl::AnalyserModelImpl(const ModelPtr &model)
@@ -59,18 +63,18 @@ void exploreEquivalentVariables(const VariablePtr &variable, std::set<uintptr_t>
     }
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache2()
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
 {
     std::set<uintptr_t> visited;
     std::vector<std::set<uintptr_t>> equivalentVariableGroups;
-    mEquivalentVariableCache2.clear();
+    mEquivalentVariableCache.clear();
 
     for (size_t i = 0; i < mModel->componentCount(); ++i) {
-        buildEquivalentVariablesCache2(mModel->component(i), visited, equivalentVariableGroups);
+        buildEquivalentVariablesCache(mModel->component(i), visited, equivalentVariableGroups);
     }
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache2(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups)
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto variable = component->variable(i);
@@ -82,41 +86,14 @@ void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache2(const Comp
             size_t groupIndex = equivalentVariableGroups.size();
 
             for (uintptr_t v : equivalentGroup) {
-                mEquivalentVariableCache2[v] = groupIndex;
+                mEquivalentVariableCache[v] = groupIndex;
             }
             equivalentVariableGroups.push_back(equivalentGroup);
         }
     }
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        buildEquivalentVariablesCache2(component->component(i), visited, equivalentVariableGroups);
-    }
-}
-
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
-{
-    mEquivalentVariableCache.clear();
-    for (size_t i = 0; i < mModel->componentCount(); ++i) {
-        buildEquivalentVariablesCache(mModel->component(i));
-    }
-}
-
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component)
-{
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        auto variable = component->variable(i);
-        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
-            auto equivalentVariable = variable->equivalentVariable(j);
-            auto v1 = reinterpret_cast<uintptr_t>(variable.get());
-            auto v2 = reinterpret_cast<uintptr_t>(equivalentVariable.get());
-            if (v2 < v1) {
-                std::swap(v1, v2);
-            }
-            unite(v1, v2);
-        }
-    }
-    for (size_t i = 0; i < component->componentCount(); ++i) {
-        buildEquivalentVariablesCache(component->component(i));
+        buildEquivalentVariablesCache(component->component(i), visited, equivalentVariableGroups);
     }
 }
 
@@ -577,24 +554,8 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    // Debug() << "0000000";
-    // auto a = mPimpl->mEquivalentVariableCache2.count(v1);
-    // Debug() << a;
-    // auto b = mPimpl->mEquivalentVariableCache2.count(v2);
-    // Debug() << b;
-    // if (a > 0) {
-    //     Debug() << "v1: " << mPimpl->mEquivalentVariableCache2[v1];
-    // }
-    // if (b > 0) {
-    //     Debug() << "v2: " << mPimpl->mEquivalentVariableCache2[v2];
-
-    // }
-
-    return (mPimpl->mEquivalentVariableCache2.count(v1) > 0)
-           && (mPimpl->mEquivalentVariableCache2.count(v2) > 0)
-           && (mPimpl->mEquivalentVariableCache2[v1] == mPimpl->mEquivalentVariableCache2[v2]);
-
-    // return mPimpl->find(v1) == mPimpl->find(v2);
+    return (mPimpl->mEquivalentVariableCache.count(v1) > 0)
+           && (mPimpl->mEquivalentVariableCache[v1] == mPimpl->mEquivalentVariableCache[v2]);
 }
 
 } // namespace libcellml

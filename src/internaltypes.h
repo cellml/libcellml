@@ -83,25 +83,6 @@ using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a
 using ComponentRawPtrPair = std::pair<const libcellml::Component *, const libcellml::Component *>;
 using ConnectionIdMap = std::map<ComponentRawPtrPair, std::string>;
 
-struct ComponentPair
-{
-    bool operator==(const ComponentPair &other) const
-    {
-        return c1 == other.c1 && c2 == other.c2;
-    }
-
-    ComponentPtr c1;
-    ComponentPtr c2;
-};
-
-struct ComponentPairHash
-{
-    size_t operator()(const ComponentPair &p) const
-    {
-        return std::hash<ComponentPtr>()(p.c1) ^ std::hash<ComponentPtr>()(p.c2);
-    }
-};
-
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
  *

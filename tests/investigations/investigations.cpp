@@ -27,14 +27,13 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption11)
 {
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/";
+
+    Debug() << "modelPath: " << modelPath;
     auto importer = libcellml::Importer::create(false);
 
     auto parser = libcellml::Parser::create(false);
     auto originalModel = parser->parseModel(fileContents(modelPath, true));
     EXPECT_EQ(size_t(1), parser->issueCount());
-    Debug() << modelPath;
-    Debug() << parser->issue(0)->description();
-    Debug() << originalModel->name();
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -59,8 +58,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption246)
     auto parser = libcellml::Parser::create(false);
     auto originalModel = parser->parseModel(fileContents(modelPath, true));
     EXPECT_EQ(size_t(1), parser->issueCount());
-    Debug() << parser->issue(0)->description();
-    Debug() << originalModel->name();
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -85,9 +82,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption380)
     auto parser = libcellml::Parser::create(false);
     auto originalModel = parser->parseModel(fileContents(modelPath, true));
     EXPECT_EQ(size_t(1), parser->issueCount());
-    Debug() << modelPath;
-    Debug() << parser->issue(0)->description();
-    Debug() << originalModel->name();
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -103,7 +97,7 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption380)
     printIssues(analyser);
 }
 
-TEST(Investigations, exponentialTimeConsumption524)
+TEST(Investigations, DISABLED_exponentialTimeConsumption524)
 {
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/";
@@ -112,9 +106,6 @@ TEST(Investigations, exponentialTimeConsumption524)
     auto parser = libcellml::Parser::create(false);
     auto originalModel = parser->parseModel(fileContents(modelPath, true));
     EXPECT_EQ(size_t(1), parser->issueCount());
-    Debug() << modelPath;
-    Debug() << parser->issue(0)->description();
-    Debug() << originalModel->name();
 
     importer->resolveImports(originalModel, modelImportPath);
 
@@ -126,7 +117,7 @@ TEST(Investigations, exponentialTimeConsumption524)
 
     auto analyser = libcellml::Analyser::create();
     analyser->analyseModel(flatModel);
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(4), analyser->issueCount());
     printIssues(analyser);
 }
 

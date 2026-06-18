@@ -35,7 +35,6 @@ limitations under the License.
 #include "issue_p.h"
 #include "logger_p.h"
 #include "namespaces.h"
-#include "unionfind.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
@@ -46,6 +45,12 @@ namespace libcellml {
  * Type definition for a list of issue descriptions.
  */
 using IssuesList = std::vector<Strings>;
+
+/**
+ * Type definition for a pair of raw variable pointers using standard library.
+ */
+using RawComponentPtrPair = std::pair<Component*, Component*>;
+
 
 /**
  * @brief Validate that equivalent variable pairs in the @p model
@@ -2713,17 +2718,15 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
         gatherComponents(model->component(c), allComponents);
     }
 
-    using Key = std::pair<Component*, Component*>;
-
     struct PairHash {
-        size_t operator()(const Key& p) const {
+        size_t operator()(const RawComponentPtrPair& p) const {
             return std::hash<Component*>()(p.first) ^
                    (std::hash<Component*>()(p.second) << 1);
         }
     };
 
     ConnectionIdMap connectionIds;
-    std::unordered_set<Key, PairHash> visitedPairs;
+    std::unordered_set<RawComponentPtrPair, PairHash> visitedPairs;
 
     for (const auto& comp : allComponents) {
         auto rawPtr = comp.get();
@@ -2735,7 +2738,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 auto equivParent = owningComponent(equiv);
                 if (equivParent != nullptr) {
                     auto equivRawPtr = equivParent.get();
-                    Key key = (rawPtr < equivRawPtr) ? Key{rawPtr, equivRawPtr} : Key{equivRawPtr, rawPtr};
+                    auto key = (rawPtr < equivRawPtr) ? RawComponentPtrPair{rawPtr, equivRawPtr} : RawComponentPtrPair{equivRawPtr, rawPtr};
                     if (!visitedPairs.insert(key).second) {
                         continue; // Skip if we've already processed this pair
                     }
@@ -2855,7 +2858,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
-                auto key = component.get() < equivParent.get() ? std::make_pair(component.get(), equivParent.get()) : std::make_pair(equivParent.get(), component.get());
+                auto key = component.get() < equivParent.get() ? RawComponentPtrPair{component.get(), equivParent.get()} : RawComponentPtrPair{equivParent.get(), component.get()};
 
                 auto connectionId = connectionIds.at(key);
                 // auto connectionId = Variable::equivalenceConnectionId(item, equiv);

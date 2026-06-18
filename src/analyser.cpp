@@ -2331,9 +2331,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     mCiCnUnits.clear();
 
-    // mAnalyserModel->mPimpl->buildEquivalentVariablesCache();
-    mAnalyserModel->mPimpl->buildEquivalentVariablesCache2();
-
     // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.
 
