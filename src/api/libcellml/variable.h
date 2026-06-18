@@ -174,14 +174,17 @@ public:
      *
      * Get the connection identifier set for the equivalence defined with the given variables.
      * The variables are commutative.  If no connection identifier is set the empty string is returned.
+     * The optional parameter @p search will traverse the equivalence network to find the connection identifier for the
+     * equivalence defined by the two variables.  By default this is true.
      *
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
+     * @param search Optional parameter to search the equivalence network for the connection identifier, true by default.
      * @return the @c std::string connection identifier.
      */
-    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool search=true);
 
     /**
      * @brief Clear equivalent connection identifier for this equivalence.
@@ -464,6 +467,8 @@ public:
      * @return a new @c VariablePtr to the cloned variable.
      */
     VariablePtr clone() const;
+
+    std::string connectionIdMap() const; /**< Get the connection identifier map for this variable, @private. */
 
 private:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */

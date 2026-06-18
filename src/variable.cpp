@@ -432,18 +432,22 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
     return id;
 }
 
-std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
+std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool search)
 {
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
-        if (variable1->hasEquivalentVariable(variable2, true)) {
-            auto map = createConnectionMap(variable1, variable2);
-            for (auto &it : map) {
-                id = it.first->pFunc()->equivalentConnectionId(it.second);
+        if (search) {
+            if (variable1->hasEquivalentVariable(variable2, true)) {
+                auto map = createConnectionMap(variable1, variable2);
+                for (auto &it : map) {
+                    id = it.first->pFunc()->equivalentConnectionId(it.second);
+                }
+                if (id.empty()) {
+                    id = variable1->pFunc()->equivalentConnectionId(variable2);
+                }
             }
-            if (id.empty()) {
-                id = variable1->pFunc()->equivalentConnectionId(variable2);
-            }
+        } else {
+            id = variable1->pFunc()->equivalentConnectionId(variable2);
         }
     }
     return id;
