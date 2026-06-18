@@ -468,8 +468,6 @@ public:
      */
     VariablePtr clone() const;
 
-    std::string connectionIdMap() const; /**< Get the connection identifier map for this variable, @private. */
-
 private:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
