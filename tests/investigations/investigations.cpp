@@ -28,7 +28,6 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption11)
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_11_vessels/";
 
-    Debug() << "modelPath: " << modelPath;
     auto importer = libcellml::Importer::create(false);
 
     auto parser = libcellml::Parser::create(false);
