@@ -35,10 +35,10 @@ std::string resourcePath(const std::string &resourceRelativePath)
     return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
 }
 
-std::string fileContents(const std::string &fileName, bool absoulte)
+std::string fileContents(const std::string &fileName, bool absolute)
 {
     std::ifstream file;
-    if (absoulte) {
+    if (absolute) {
         file.open(fileName);
     } else {
         file.open(resourcePath(fileName));
