@@ -19,7 +19,7 @@ limitations under the License.
 #include "test_utils.h"
 #include <libcellml>
 
-TEST(Variable, addEquivalenceNullptrFirstParameter)
+TEST(Connection, addEquivalenceNullptrFirstParameter)
 {
     libcellml::VariablePtr v1 = nullptr;
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -28,7 +28,7 @@ TEST(Variable, addEquivalenceNullptrFirstParameter)
     EXPECT_FALSE(v2->hasEquivalentVariable(v1));
 }
 
-TEST(Variable, addEquivalenceNullptrSecondParameter)
+TEST(Connection, addEquivalenceNullptrSecondParameter)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = nullptr;
@@ -37,14 +37,14 @@ TEST(Variable, addEquivalenceNullptrSecondParameter)
     EXPECT_FALSE(v1->hasEquivalentVariable(v2));
 }
 
-TEST(Variable, addEquivalenceNullptrBothParameters)
+TEST(Connection, addEquivalenceNullptrBothParameters)
 {
     libcellml::VariablePtr v1 = nullptr;
     libcellml::VariablePtr v2 = nullptr;
     libcellml::Variable::addEquivalence(v1, v2);
 }
 
-TEST(Variable, addAndGetEquivalentVariable)
+TEST(Connection, addAndGetEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -52,7 +52,7 @@ TEST(Variable, addAndGetEquivalentVariable)
     EXPECT_EQ(v2, v1->equivalentVariable(0));
 }
 
-TEST(Variable, addAndGetEquivalentVariableReciprocal)
+TEST(Connection, addAndGetEquivalentVariableReciprocal)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -60,7 +60,7 @@ TEST(Variable, addAndGetEquivalentVariableReciprocal)
     EXPECT_EQ(v1, v2->equivalentVariable(0));
 }
 
-TEST(Variable, addTwoEquivalentVariablesAndCount)
+TEST(Connection, addTwoEquivalentVariablesAndCount)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -72,7 +72,7 @@ TEST(Variable, addTwoEquivalentVariablesAndCount)
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, addDuplicateEquivalentVariablesAndCount)
+TEST(Connection, addDuplicateEquivalentVariablesAndCount)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -85,7 +85,7 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount)
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, hasNoEquivalentVariable)
+TEST(Connection, hasNoEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -108,7 +108,7 @@ TEST(Variable, hasNoEquivalentVariable)
     EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
 }
 
-TEST(Variable, hasIndirectEquivalentVariable)
+TEST(Connection, hasIndirectEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -118,7 +118,7 @@ TEST(Variable, hasIndirectEquivalentVariable)
     EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 }
 
-TEST(Variable, connectionId)
+TEST(Connection, connectionId)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
@@ -1439,4 +1439,75 @@ TEST(Connection, repeatedMapVariables)
     };
 
     EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
+TEST(Connection, addEquivalenceReturnsFalseProperly)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    EXPECT_TRUE(m->addComponent(c1));
+    EXPECT_TRUE(m->addComponent(c2));
+    EXPECT_TRUE(c1->addVariable(v1));
+    EXPECT_TRUE(c2->addVariable(v2));
+
+    // Create a connection with self variable, expect no connections have been created.
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, v1));
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+
+    // Create a connection with one nullptr, expect no connections have been created.
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v2, nullptr));
+    EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
+}
+
+TEST(Connection, addEquivalenceConnectionIdPropagation)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+    auto v3 = libcellml::Variable::create("v3");
+    auto v4 = libcellml::Variable::create("v4");
+    auto v5 = libcellml::Variable::create("v5");
+    auto v6 = libcellml::Variable::create("v6");
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c1->addVariable(v3);
+    c2->addVariable(v4);
+    c1->addVariable(v5);
+    c2->addVariable(v6);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_01");
+    EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v3, v4));
+
+    libcellml::Variable::addEquivalence(v5, v6);
+    EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v5, v6));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v5, v6, false));
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v3, v4));
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v5, v6));
+}
+
+TEST(Connection, removeEquivalenceConnectionIdFromVariablesThatAreNotInComponents)
+{
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_01");
+    EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v1, v2));
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
