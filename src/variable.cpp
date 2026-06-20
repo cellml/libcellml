@@ -235,8 +235,7 @@ bool haveEquivalentVariables(const Variable *variable1,
 
     testedVariables.push_back(variable2);
 
-    const size_t variable2EquivalentVariableCount = variable2->equivalentVariableCount();
-    for (size_t i = 0; i < variable2EquivalentVariableCount; ++i) {
+    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
         Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
 
         if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
@@ -448,15 +447,19 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 {
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
+
         if (deepSearch) {
+
             if (variable1->hasEquivalentVariable(variable2, true)) {
                 auto map = createConnectionMap(variable1, variable2);
+
                 for (auto &it : map) {
                     id = it.first->pFunc()->equivalentConnectionId(it.second);
                     if (!id.empty()) {
                         return id;
                     }
                 }
+
                 id = variable1->pFunc()->equivalentConnectionId(variable2);
             }
         } else {
@@ -469,11 +472,14 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
+
         if (variable1->hasEquivalentVariable(variable2, true)) {
+
             for (auto &it : createConnectionMap(variable1, variable2)) {
                 it.first->pFunc()->setEquivalentConnectionId(it.second, "");
                 it.second->pFunc()->setEquivalentConnectionId(it.first, "");
             }
+
             variable1->pFunc()->setEquivalentConnectionId(variable2, "");
             variable2->pFunc()->setEquivalentConnectionId(variable1, "");
         }

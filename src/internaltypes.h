@@ -47,9 +47,9 @@ using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vecto
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 
 // ComponentMap
-using ComponentStdPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair using standard library.*/
-using ComponentMap = std::vector<ComponentStdPair>; /**< Type definition for vector of ComponentStdPair.*/
-using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentStdPair.*/
+using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair using standard library.*/
+using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
+using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 

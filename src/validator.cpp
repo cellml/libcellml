@@ -2696,22 +2696,14 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
 void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &allComponents)
 {
     allComponents.push_back(component);
+
     for (size_t c = 0; c < component->componentCount(); ++c) {
         gatherComponents(component->component(c), allComponents);
     }
 }
 
 IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
-{
-    IdMap idMap;
-    std::string info;
-    std::set<std::string> reportedConnections;
-
-    std::vector<ComponentPtr> allComponents;
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        gatherComponents(model->component(c), allComponents);
-    }
-
+{    
     struct PairHash
     {
         size_t operator()(const ComponentRawPtrPair &p) const
@@ -2720,20 +2712,33 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
         }
     };
 
+    IdMap idMap;
+    std::string info;
+    std::set<std::string> reportedConnections;
+    std::vector<ComponentPtr> allComponents;
+
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        gatherComponents(model->component(c), allComponents);
+    }
+
     ConnectionIdMap connectionIds;
     std::unordered_set<ComponentRawPtrPair, PairHash> visitedPairs;
 
     for (const auto &comp : allComponents) {
         auto rawPtr = comp.get();
         const size_t varCount = comp->variableCount();
+
         for (size_t i = 0; i < varCount; ++i) {
             auto currentVariable = comp->variable(i);
+
             for (size_t e = 0; e < currentVariable->equivalentVariableCount(); ++e) {
                 auto equiv = currentVariable->equivalentVariable(e);
                 auto equivParent = owningComponent(equiv);
+
                 if (equivParent != nullptr) {
                     auto equivRawPtr = equivParent.get();
                     auto key = (rawPtr < equivRawPtr) ? ComponentRawPtrPair {rawPtr, equivRawPtr} : ComponentRawPtrPair {equivRawPtr, rawPtr};
+
                     if (!visitedPairs.insert(key).second) {
                         continue; // Skip if we've already processed this pair
                     }
@@ -2854,10 +2859,9 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 }
                 // Connections.
                 auto key = component.get() < equivParent.get() ? ComponentRawPtrPair {component.get(), equivParent.get()} : ComponentRawPtrPair {equivParent.get(), component.get()};
-
                 auto connectionId = connectionIds.at(key);
-                // auto connectionId = Variable::equivalenceConnectionId(item, equiv);
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
+
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
                     std::string connectionDescription =
                         "between components '" + component->name() + "' and '" + equivParent->name()

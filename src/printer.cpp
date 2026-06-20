@@ -77,7 +77,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
     for (auto iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
         ComponentPtr currentComponent1 = iterPair->first;
         ComponentPtr currentComponent2 = iterPair->second;
-        ComponentStdPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
+        ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
         // Check whether this set of connections has already been serialised.
         bool pairFound = false;
         for (const auto &serialisedIterPair : serialisedComponentMap) {
@@ -178,7 +178,7 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
                 ComponentPtr component1 = owningComponent(variable);
                 ComponentPtr component2 = owningComponent(equivalentVariable);
                 // Also create a component map pair corresponding with the variable map pair.
-                ComponentStdPair componentPair = std::make_pair(component1, component2);
+                ComponentPair componentPair = std::make_pair(component1, component2);
                 componentMap.push_back(componentPair);
             }
         }

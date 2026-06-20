@@ -78,8 +78,8 @@ struct AnalyserModel::AnalyserModelImpl
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 
-    void buildEquivalentVariablesCache();
     void buildEquivalentVariablesCache(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups);
+    void buildEquivalentVariablesCache();
 
     AnalyserModelImpl(const ModelPtr &model);
 };
