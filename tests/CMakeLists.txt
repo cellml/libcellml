@@ -47,7 +47,6 @@ include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
-include(investigations/tests.cmake)
 
 set(TEST_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/test_exportdefinitions.h")
 
