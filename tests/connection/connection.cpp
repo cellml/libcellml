@@ -1494,9 +1494,9 @@ TEST(Connection, addEquivalenceConnectionIdPropagation)
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v5, v6, false));
 
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v3, v4));
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v5, v6));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v3, v4));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v5, v6));
 }
 
 TEST(Connection, removeEquivalenceConnectionIdFromVariablesThatAreNotInComponents)
@@ -1509,7 +1509,7 @@ TEST(Connection, removeEquivalenceConnectionIdFromVariablesThatAreNotInComponent
     EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v1, v2));
 
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
 
 TEST(Connection, addEquivalenceConnectionIdClearedAfterDisconnect)
@@ -1530,8 +1530,8 @@ TEST(Connection, addEquivalenceConnectionIdClearedAfterDisconnect)
     EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v1, v2));
 
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
 
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
