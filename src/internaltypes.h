@@ -42,7 +42,6 @@ using UniqueNames = std::set<std::string>; /**< Type definition for a set of uni
 using NodeAttributeNamespaceInfo = std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string>>; /**< Type definition for attribute namespace information. */
 
 // VariableMap
-using VariableStdPair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for Variable pointer pair using standard library. */
 using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 
