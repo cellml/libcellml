@@ -2703,7 +2703,7 @@ void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &
 }
 
 IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
-{    
+{
     struct PairHash
     {
         size_t operator()(const ComponentRawPtrPair &p) const

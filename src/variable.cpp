@@ -447,9 +447,7 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 {
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
-
         if (deepSearch) {
-
             if (variable1->hasEquivalentVariable(variable2, true)) {
                 auto map = createConnectionMap(variable1, variable2);
 
@@ -472,9 +470,7 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
-
         if (variable1->hasEquivalentVariable(variable2, true)) {
-
             for (auto &it : createConnectionMap(variable1, variable2)) {
                 it.first->pFunc()->setEquivalentConnectionId(it.second, "");
                 it.second->pFunc()->setEquivalentConnectionId(it.first, "");
