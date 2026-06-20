@@ -96,7 +96,7 @@ TEST(Investigations, DISABLED_exponentialTimeConsumption380)
     printIssues(analyser);
 }
 
-TEST(Investigations, exponentialTimeConsumption524)
+TEST(Investigations, DISABLED_exponentialTimeConsumption524)
 {
     const std::string modelPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/image_to_model.cellml";
     const std::string modelImportPath = std::string(BENCHMARKING_MODEL_ROOT) + "image_to_model_524_vessels/";

@@ -1511,3 +1511,27 @@ TEST(Connection, removeEquivalenceConnectionIdFromVariablesThatAreNotInComponent
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
     EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
+
+TEST(Connection, addEquivalenceConnectionIdClearedAfterDisconnect)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_01");
+    EXPECT_EQ("connection_01", libcellml::Variable::equivalenceConnectionId(v1, v2));
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    EXPECT_EQ("" , libcellml::Variable::equivalenceConnectionId(v1, v2));
+}
