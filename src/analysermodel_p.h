@@ -17,8 +17,8 @@ limitations under the License.
 #pragma once
 
 #include <cstdint>
-#include <set>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "libcellml/analysermodel.h"
 
@@ -78,7 +78,7 @@ struct AnalyserModel::AnalyserModelImpl
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 
-    void buildEquivalentVariablesCache(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups);
+    void buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, std::vector<std::unordered_set<uintptr_t>> &equivalentVariableGroups);
     void buildEquivalentVariablesCache();
 
     AnalyserModelImpl(const ModelPtr &model);

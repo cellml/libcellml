@@ -48,12 +48,11 @@ AnalyserModel::~AnalyserModel()
     delete mPimpl;
 }
 
-void exploreEquivalentVariables(const VariablePtr &variable, std::set<uintptr_t> &equivalentGroup, std::set<uintptr_t> &visited)
+void exploreEquivalentVariables(const VariablePtr &variable, std::unordered_set<uintptr_t> &equivalentGroup, std::unordered_set<uintptr_t> &visited)
 {
     auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
 
-    if (visited.count(rawPtr) == 0) {
-        visited.insert(rawPtr);
+    if (visited.insert(rawPtr).second) {
         equivalentGroup.insert(rawPtr);
 
         for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
@@ -64,8 +63,8 @@ void exploreEquivalentVariables(const VariablePtr &variable, std::set<uintptr_t>
 
 void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
 {
-    std::set<uintptr_t> visited;
-    std::vector<std::set<uintptr_t>> equivalentVariableGroups;
+    std::unordered_set<uintptr_t> visited;
+    std::vector<std::unordered_set<uintptr_t>> equivalentVariableGroups;
     mEquivalentVariableCache.clear();
 
     for (size_t i = 0; i < mModel->componentCount(); ++i) {
@@ -73,14 +72,14 @@ void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
     }
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::set<uintptr_t> &visited, std::vector<std::set<uintptr_t>> &equivalentVariableGroups)
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, std::vector<std::unordered_set<uintptr_t>> &equivalentVariableGroups)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto variable = component->variable(i);
         auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
 
         if (visited.count(rawPtr) == 0) {
-            std::set<uintptr_t> equivalentGroup;
+            std::unordered_set<uintptr_t> equivalentGroup;
             exploreEquivalentVariables(variable, equivalentGroup, visited);
             size_t groupIndex = equivalentVariableGroups.size();
 
