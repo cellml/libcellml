@@ -181,7 +181,7 @@ public:
      *
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
-     * @param deepSearch Optional parameter to deepSearch the equivalence network for the connection identifier, true by default.
+     * @param deepSearch Optional parameter to deep search the equivalence network for the connection identifier, true by default.
      * @return the @c std::string connection identifier.
      */
     static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool deepSearch = true);
