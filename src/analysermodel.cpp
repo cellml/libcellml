@@ -64,15 +64,15 @@ void exploreEquivalentVariables(const VariablePtr &variable, std::unordered_set<
 void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
 {
     std::unordered_set<uintptr_t> visited;
-    std::vector<std::unordered_set<uintptr_t>> equivalentVariableGroups;
+    size_t groupCount = 0;
     mEquivalentVariableCache.clear();
 
     for (size_t i = 0; i < mModel->componentCount(); ++i) {
-        buildEquivalentVariablesCache(mModel->component(i), visited, equivalentVariableGroups);
+        buildEquivalentVariablesCache(mModel->component(i), visited, groupCount);
     }
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, std::vector<std::unordered_set<uintptr_t>> &equivalentVariableGroups)
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, size_t &groupCount)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto variable = component->variable(i);
@@ -81,17 +81,17 @@ void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const Compo
         if (visited.count(rawPtr) == 0) {
             std::unordered_set<uintptr_t> equivalentGroup;
             exploreEquivalentVariables(variable, equivalentGroup, visited);
-            size_t groupIndex = equivalentVariableGroups.size();
 
             for (uintptr_t v : equivalentGroup) {
-                mEquivalentVariableCache[v] = groupIndex;
+                mEquivalentVariableCache[v] = groupCount;
             }
-            equivalentVariableGroups.push_back(equivalentGroup);
+
+            ++groupCount;
         }
     }
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        buildEquivalentVariablesCache(component->component(i), visited, equivalentVariableGroups);
+        buildEquivalentVariablesCache(component->component(i), visited, groupCount);
     }
 }
 
