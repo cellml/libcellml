@@ -113,20 +113,21 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
-static const std::map<AnalyserModel::Type, std::string> typeToString = {
-    {AnalyserModel::Type::UNKNOWN, "unknown"},
-    {AnalyserModel::Type::ODE, "ode"},
-    {AnalyserModel::Type::DAE, "dae"},
-    {AnalyserModel::Type::NLA, "nla"},
-    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
-    {AnalyserModel::Type::INVALID, "invalid"},
-    {AnalyserModel::Type::UNDERCONSTRAINED, "underconstrained"},
-    {AnalyserModel::Type::OVERCONSTRAINED, "overconstrained"},
-    {AnalyserModel::Type::UNSUITABLY_CONSTRAINED, "unsuitably_constrained"}};
-
 std::string AnalyserModel::typeAsString(Type type)
 {
-    return typeToString.at(type);
+    static constexpr const char *names[] = {
+        "unknown",
+        "algebraic",
+        "dae",
+        "invalid",
+        "nla",
+        "ode",
+        "overconstrained",
+        "underconstrained",
+        "unsuitably_constrained"
+    };
+
+    return names[static_cast<size_t>(type)];
 }
 
 bool AnalyserModel::hasExternalVariables() const
@@ -289,9 +290,37 @@ AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
         return {};
     }
 
-    for (const auto &analyserVariable : analyserVariables(shared_from_this())) {
-        if (areEquivalentVariables(variable, analyserVariable->variable())) {
-            return analyserVariable;
+    if (mPimpl->mVoi && areEquivalentVariables(variable, mPimpl->mVoi->variable())) {
+        return mPimpl->mVoi;
+    }
+
+    for (const auto &state : mPimpl->mStates) {
+        if (areEquivalentVariables(variable, state->variable())) {
+            return state;
+        }
+    }
+
+    for (const auto &constant : mPimpl->mConstants) {
+        if (areEquivalentVariables(variable, constant->variable())) {
+            return constant;
+        }
+    }
+
+    for (const auto &computedConstant : mPimpl->mComputedConstants) {
+        if (areEquivalentVariables(variable, computedConstant->variable())) {
+            return computedConstant;
+        }
+    }
+
+    for (const auto &algebraicVariable : mPimpl->mAlgebraicVariables) {
+        if (areEquivalentVariables(variable, algebraicVariable->variable())) {
+            return algebraicVariable;
+        }
+    }
+
+    for (const auto &externalVariable : mPimpl->mExternalVariables) {
+        if (areEquivalentVariables(variable, externalVariable->variable())) {
+            return externalVariable;
         }
     }
 
