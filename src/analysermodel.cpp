@@ -561,8 +561,19 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     const auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     const auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    return (mPimpl->mEquivalentVariableCache.count(v1) > 0)
-           && (mPimpl->mEquivalentVariableCache[v1] == mPimpl->mEquivalentVariableCache[v2]);
+    const auto it1 = mPimpl->mEquivalentVariableCache.find(v1);
+
+    if (it1 == mPimpl->mEquivalentVariableCache.end()) {
+        return false;
+    }
+
+    const auto it2 = mPimpl->mEquivalentVariableCache.find(v2);
+
+    if (it2 == mPimpl->mEquivalentVariableCache.end()) {
+        return false;
+    }
+
+    return it1->second == it2->second;
 }
 
 } // namespace libcellml
