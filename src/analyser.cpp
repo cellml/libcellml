@@ -404,8 +404,10 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // the given variable.
 
     auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
-    if (mInternalVariableMap.count(rawPtr) > 0) {
-        return mInternalVariableMap[rawPtr];
+    auto rawPtrIt = mInternalVariableMap.find(rawPtr);
+
+    if (rawPtrIt != mInternalVariableMap.end()) {
+        return rawPtrIt->second;
     }
 
     for (const auto &internalVariable : mInternalVariables) {
