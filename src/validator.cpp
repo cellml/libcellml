@@ -2739,11 +2739,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 if (equivParent != nullptr) {
                     auto equivRawPtr = equivParent.get();
                     auto key = (rawPtr < equivRawPtr) ? ComponentRawPtrPair {rawPtr, equivRawPtr} : ComponentRawPtrPair {equivRawPtr, rawPtr};
-                    auto [iter, inserted] = connectionIds.try_emplace(key, Variable::equivalenceConnectionId(currentVariable, equiv, false));
-
-                    if (!inserted) {
-                        continue; // Skip if we've already processed this pair
-                    }
+                    connectionIds.try_emplace(key, Variable::equivalenceConnectionId(currentVariable, equiv, false));
                 }
             }
         }
