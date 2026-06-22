@@ -127,6 +127,7 @@ bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr
             variable2->pFunc()->unsetEquivalentTo(variable1);
             variable1->pFunc()->unsafeResetEquivalenceIds(variable2);
             variable2->pFunc()->unsafeResetEquivalenceIds(variable1);
+
             return true;
         }
     }
@@ -453,6 +454,7 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 
                 for (auto &it : map) {
                     id = it.first->pFunc()->equivalentConnectionId(it.second);
+
                     if (!id.empty()) {
                         return id;
                     }
