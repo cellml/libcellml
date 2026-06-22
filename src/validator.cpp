@@ -2714,14 +2714,6 @@ void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &
 
 IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
 {
-    struct PairHash
-    {
-        size_t operator()(const ComponentRawPtrPair &p) const
-        {
-            return std::hash<const Component *>()(p.first) ^ (std::hash<const Component *>()(p.second) << 1);
-        }
-    };
-
     IdMap idMap;
     std::string info;
     std::set<std::string> reportedConnections;
@@ -2732,7 +2724,6 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     }
 
     ConnectionIdMap connectionIds;
-    std::unordered_set<ComponentRawPtrPair, PairHash> visitedPairs;
 
     for (const auto &comp : allComponents) {
         auto rawPtr = comp.get();
@@ -2748,11 +2739,11 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 if (equivParent != nullptr) {
                     auto equivRawPtr = equivParent.get();
                     auto key = (rawPtr < equivRawPtr) ? ComponentRawPtrPair {rawPtr, equivRawPtr} : ComponentRawPtrPair {equivRawPtr, rawPtr};
+                    auto [iter, inserted] = connectionIds.try_emplace(key, Variable::equivalenceConnectionId(currentVariable, equiv, false));
 
-                    if (!visitedPairs.insert(key).second) {
+                    if (!inserted) {
                         continue; // Skip if we've already processed this pair
                     }
-                    connectionIds[key] = Variable::equivalenceConnectionId(currentVariable, equiv, false);
                 }
             }
         }
