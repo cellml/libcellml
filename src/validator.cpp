@@ -2695,10 +2695,20 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
 
 void gatherComponents(const ComponentPtr &component, std::vector<ComponentPtr> &allComponents)
 {
-    allComponents.push_back(component);
+    std::vector<ComponentPtr> stack;
 
-    for (size_t c = 0; c < component->componentCount(); ++c) {
-        gatherComponents(component->component(c), allComponents);
+    stack.push_back(component);
+
+    while (!stack.empty()) {
+        allComponents.emplace_back(std::move(stack.back()));
+        stack.pop_back();
+
+        auto *current = allComponents.back().get();
+        const auto childCount = current->componentCount();
+
+        for (size_t i = 0; i < childCount; ++i) {
+            stack.emplace_back(current->component(i));
+        }
     }
 }
 
