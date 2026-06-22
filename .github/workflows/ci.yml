@@ -81,7 +81,7 @@ jobs:
       - name: Build libCellML
         run: cmake --build build
       - name: Unit testing
-        run: cmake --build build --target test
+        run: ctest --test-dir build --output-on-failure
   javascript:
     name: JavaScript
     runs-on: macos-latest
