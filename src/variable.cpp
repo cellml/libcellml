@@ -124,7 +124,11 @@ bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr
 {
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
         if (variable1->pFunc()->unsetEquivalentTo(variable2)) {
-            return variable2->pFunc()->unsetEquivalentTo(variable1);
+            variable2->pFunc()->unsetEquivalentTo(variable1);
+            variable1->pFunc()->unsafeResetEquivalenceIds(variable2);
+            variable2->pFunc()->unsafeResetEquivalenceIds(variable1);
+
+            return true;
         }
     }
 
@@ -140,7 +144,10 @@ void Variable::removeAllEquivalences()
             equivalentVariable->pFunc()->unsetEquivalentTo(thisVariable);
         }
     }
+
     pFunc()->mEquivalentVariables.clear();
+    pFunc()->mConnectionIdMap.clear();
+    pFunc()->mMappingIdMap.clear();
 }
 
 VariablePtr Variable::equivalentVariable(size_t index) const
@@ -179,6 +186,12 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 void Variable::VariableImpl::cleanExpiredVariables()
 {
     mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+}
+
+void Variable::VariableImpl::unsafeResetEquivalenceIds(const VariablePtr &equivalentVariable)
+{
+    setEquivalentMappingId(equivalentVariable, "");
+    setEquivalentConnectionId(equivalentVariable, "");
 }
 
 bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
@@ -431,18 +444,26 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
     return id;
 }
 
-std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
+std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, bool deepSearch)
 {
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
-        if (variable1->hasEquivalentVariable(variable2, true)) {
-            auto map = createConnectionMap(variable1, variable2);
-            for (auto &it : map) {
-                id = it.first->pFunc()->equivalentConnectionId(it.second);
-            }
-            if (id.empty()) {
+        if (deepSearch) {
+            if (variable1->hasEquivalentVariable(variable2, true)) {
+                auto map = createConnectionMap(variable1, variable2);
+
+                for (auto &it : map) {
+                    id = it.first->pFunc()->equivalentConnectionId(it.second);
+
+                    if (!id.empty()) {
+                        return id;
+                    }
+                }
+
                 id = variable1->pFunc()->equivalentConnectionId(variable2);
             }
+        } else {
+            id = variable1->pFunc()->equivalentConnectionId(variable2);
         }
     }
     return id;
@@ -452,6 +473,11 @@ void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const
 {
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
         if (variable1->hasEquivalentVariable(variable2, true)) {
+            for (auto &it : createConnectionMap(variable1, variable2)) {
+                it.first->pFunc()->setEquivalentConnectionId(it.second, "");
+                it.second->pFunc()->setEquivalentConnectionId(it.first, "");
+            }
+
             variable1->pFunc()->setEquivalentConnectionId(variable2, "");
             variable2->pFunc()->setEquivalentConnectionId(variable1, "");
         }
