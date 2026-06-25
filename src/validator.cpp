@@ -639,7 +639,7 @@ public:
      * @param component The component to check.
      * @param idMap The IdMap object to construct.
      * @param reportedConnections A set of connection identifiers to prevent duplicate reporting.
-     * @param connectionIds A map of connection identifiers to prevent duplicate reporting of connections.
+     * @param connectionIds A map to speed up lookups for component to component connection identifiers.
      */
     void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections, const ConnectionIdMap &connectionIds);
 
