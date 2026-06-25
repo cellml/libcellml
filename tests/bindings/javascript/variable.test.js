@@ -155,4 +155,7 @@ describe("Variable tests", () => {
         v1.delete()
         v2.delete()
     })
+    test('Checking variable interface type as string', () => {
+        expect(libcellml.Variable.interfaceTypeAsString(libcellml.Variable.InterfaceType.PUBLIC_AND_PRIVATE)).toBe("public_and_private")
+    })
 })
