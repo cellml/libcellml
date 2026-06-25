@@ -1754,3 +1754,29 @@ TEST(Generator, generateCodeUsingProfileEnum)
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.py", generator->implementationCode(analyserModel, libcellml::GeneratorProfile::Profile::PYTHON));
 }
+
+TEST(Generator, checkGeneratorReleasesAnalyserModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto algebraicModel = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(algebraicModel);
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(2, analyserModel.use_count());
+
+    EXPECT_EQ("x = a", libcellml::Generator::equationCode(analyserModel->analyserEquation(0)->ast()));
+
+    EXPECT_EQ(2, analyserModel.use_count());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.c", generator->implementationCode(analyserModel));
+    EXPECT_EQ(2, analyserModel.use_count());
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ(2, analyserModel.use_count());
+}
