@@ -403,8 +403,17 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
+    auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
+    auto rawPtrIt = mInternalVariableMap.find(rawPtr);
+
+    if (rawPtrIt != mInternalVariableMap.end()) {
+        return rawPtrIt->second;
+    }
+
     for (const auto &internalVariable : mInternalVariables) {
         if (mAnalyserModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
+            mInternalVariableMap[rawPtr] = internalVariable;
+
             return internalVariable;
         }
     }
@@ -415,6 +424,8 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     auto res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
+
+    mInternalVariableMap[rawPtr] = res;
 
     return res;
 }
@@ -2321,6 +2332,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     mAnalyserModel = AnalyserModel::AnalyserModelImpl::create(model);
 
     mInternalVariables.clear();
+    mInternalVariableMap.clear();
     mInternalEquations.clear();
 
     mCiCnUnits.clear();

@@ -602,6 +602,8 @@ TEST(Coverage, analyserAreEquivalentVariables)
     auto variable = model->component("membrane")->variable("V");
     EXPECT_FALSE(analyserModel->areEquivalentVariables(nullptr, variable));
     EXPECT_FALSE(analyserModel->areEquivalentVariables(variable, nullptr));
+    auto otherVariable = libcellml::Variable::create("other");
+    EXPECT_FALSE(analyserModel->areEquivalentVariables(variable, otherVariable));
 }
 
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
