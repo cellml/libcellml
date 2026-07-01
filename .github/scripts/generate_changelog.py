@@ -70,7 +70,7 @@ def find_previous_source_tag(end_tag):
         raise RuntimeError("No valid vX.Y.Z tags found")
 
     valid.sort(reverse=True)
-    previous_source_tag = f"source-{valid[0][1]}")
+    previous_source_tag = f"source-{valid[0][1]}"
     if not previous_source_tag in tags:
         raise RuntimeError(f"Previous source tag {previous_source_tag} for {valid[0][1]} not found in git tags")
 
