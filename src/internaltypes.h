@@ -46,7 +46,7 @@ using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vecto
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 
 // ComponentMap
-using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
+using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair using standard library.*/
 using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
 using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
@@ -78,6 +78,9 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
+
+using ComponentRawPtrPair = std::pair<const Component *, const Component *>; /**< Type definition for pair of raw component pointers. */
+using ConnectionIdMap = std::map<ComponentRawPtrPair, std::string>; /**< Type definition for map of pair of raw component pointers to connection ID. */
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.

@@ -14,7 +14,7 @@ HEADERS = {
     "Authorization": f"Bearer {os.environ['GH_TOKEN']}"
 }
 
-TAG_PATTERN = re.compile(r"^source-v(\d+\.\d+\.\d+)$")
+TAG_PATTERN = re.compile(r"^v(\d+\.\d+\.\d+)$")
 LABEL_PRIORITY = []
 
 
@@ -53,25 +53,29 @@ def find_previous_source_tag(end_tag):
     m = None if end_tag == "HEAD" else TAG_PATTERN.match(end_tag)
     end_version = semver.parse(m.group(1)) if m else None
 
-    print(f"Finding previous source tag before {end_tag} (version {end_version})")
+    print(f"Finding previous version tag before {end_tag} (version: {end_version})")
     for t in tags:
         m = TAG_PATTERN.match(t)
         if not m:
             continue
 
         v = semver.parse(m.group(1))
-        if end_version and v >= semver.parse(end_version):
+        if end_version and v >= end_version:
             continue
 
         valid.append((v, t))
 
     print(valid)
     if not valid:
-        raise RuntimeError("No valid source-vX.Y.Z tags found")
+        raise RuntimeError("No valid vX.Y.Z tags found")
 
     valid.sort(reverse=True)
-    print(f"Previous source tag found: {valid[0][1]} with version {valid[0][0]}")
-    return valid[0][1]
+    previous_source_tag = f"source-{valid[0][1]}"
+    if not previous_source_tag in tags:
+        raise RuntimeError(f"Previous source tag {previous_source_tag} for {valid[0][1]} not found in git tags")
+
+    print(f"Previous source tag found: {previous_source_tag} with version {valid[0][0]}")
+    return previous_source_tag
 
 
 def get_merge_commits(start, end="HEAD"):
@@ -184,7 +188,7 @@ def process_arguments():
 if __name__ == "__main__":
     args = process_arguments()
     previous_source_tag = find_previous_source_tag(args.tag_end) if args.tag_start == "PREV" else args.tag_start
-    messages = get_merge_commits(previous_source_tag, 'source-v' + args.tag_end if args.tag_end != "HEAD" else "HEAD")
+    messages = get_merge_commits(previous_source_tag, 'source-' + args.tag_end if args.tag_end != "HEAD" else "HEAD")
     print(f"Found {len(messages)} merge commits between {previous_source_tag} and {args.tag_end}.")
     pr_numbers = extract_pr_numbers(messages)
     print(f"Extracted {len(pr_numbers)} PR numbers from merge commits.")
@@ -203,6 +207,6 @@ if __name__ == "__main__":
     print(f"Extracted summaries for {len(sorted_summaries)} merged PRs.")
     print(sorted_summaries)
 
-    tag_end_label = "latest" if args.tag_end == "HEAD" else f"v{args.tag_end}"
+    tag_end_label = "latest" if args.tag_end == "HEAD" else f"{args.tag_end}"
     tag_end_label = tag_end_label if args.tag_end_display_name is None else args.tag_end_display_name
     write_out_to_changelog_file(sorted_summaries, tag_end=tag_end_label)
