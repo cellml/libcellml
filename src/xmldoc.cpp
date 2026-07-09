@@ -16,10 +16,10 @@ limitations under the License.
 
 #include "xmldoc.h"
 
+#include <algorithm>
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -44,9 +44,9 @@ namespace libcellml {
  */
 void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE error)
 {
-    static const std::regex newLineRegex("\\n");
-    // Swap libxml2 carriage return for a period.
-    std::string errorString = std::regex_replace(error->message, newLineRegex, ".");
+    // Swap libxml2 newlines for a period.
+    std::string errorString(error->message);
+    std::replace(errorString.begin(), errorString.end(), '\n', '.');
     auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
     auto doc = reinterpret_cast<XmlDoc *>(context->_private);
     doc->addXmlError(errorString);

@@ -289,7 +289,7 @@ public:
      *
      * @return The @c std::string of the encapsulation identifier.
      */
-    std::string encapsulationId() const;
+    const std::string &encapsulationId() const;
 
     /**
      * @brief Remove the encapsulation identifier for this entity.

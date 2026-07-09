@@ -56,7 +56,7 @@ void ImportedEntity::setImportSource(const ImportSourcePtr &importSource)
     mPimpl->mImportSource = importSource;
 }
 
-std::string ImportedEntity::importReference() const
+const std::string &ImportedEntity::importReference() const
 {
     return mPimpl->mImportReference;
 }

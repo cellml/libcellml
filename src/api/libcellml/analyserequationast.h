@@ -190,7 +190,7 @@ public:
      *
      * @return The value.
      */
-    std::string value() const;
+    const std::string &value() const;
 
     /**
      * @brief Set the value for this @ref AnalyserEquationAst.

@@ -170,7 +170,7 @@ void AnalyserEquationAst::setType(Type type)
     mPimpl->mType = type;
 }
 
-std::string AnalyserEquationAst::value() const
+const std::string &AnalyserEquationAst::value() const
 {
     return mPimpl->mValue;
 }

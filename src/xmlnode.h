@@ -289,18 +289,13 @@ public:
     std::string name() const;
 
     /**
-     * @brief Check if this @c XmlNode has the specified attribute.
+     * @brief Get the raw name of the XML element.
      *
-     * Checks whether this @c XmlNode has an attribute of the type
-     * specified by the argument @p attributeName. Returns @c true
-     * if so, and @c false otherwise.
+     * Get the raw name of the XML element as a C string pointer.
      *
-     * @param attributeName The @c char attribute type to check for.
-     *
-     * @return @c true if this @c XmlNode has an attribute of the type
-     * specified by the @p attributeName and @c false otherwise.
+     * @return A @c const @c char pointer to the XML element name.
      */
-    bool hasAttribute(const char *attributeName) const;
+    const char *rawName() const;
 
     /**
      * @brief Get the attribute of the specified type for this @c XmlNode

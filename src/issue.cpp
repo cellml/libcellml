@@ -51,7 +51,7 @@ Issue::~Issue()
     delete mPimpl;
 }
 
-std::string Issue::description() const
+const std::string &Issue::description() const
 {
     return mPimpl->mDescription;
 }

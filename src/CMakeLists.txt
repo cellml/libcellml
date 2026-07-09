@@ -281,8 +281,8 @@ function(append_target_property _TARGET _PROPERTY _VALUE)
 endfunction()
 
 if(LIBCELLML_COVERAGE)
-  append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  target_compile_options(cellml PRIVATE -fprofile-arcs -ftest-coverage)
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-arcs>)
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -299,8 +299,8 @@ if(LIBCELLML_COVERAGE)
 endif()
 
 if(LIBCELLML_LLVM_COVERAGE)
-  append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
-  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
+  target_compile_options(cellml PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+  target_link_options(cellml PUBLIC $<BUILD_INTERFACE:-fprofile-instr-generate>)
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets

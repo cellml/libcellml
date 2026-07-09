@@ -25,14 +25,16 @@ namespace libcellml {
 
 libcellml::ModelPtr owningModel(const libcellml::ParentedEntityConstPtr &entity)
 {
-    auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
-    auto component = owningComponent(entity);
-    while ((model == nullptr) && (component != nullptr)) {
-        model = std::dynamic_pointer_cast<libcellml::Model>(component->parent());
-        component = owningComponent(component);
+    auto parent = entity->parent();
+    while (parent != nullptr) {
+        auto model = std::dynamic_pointer_cast<libcellml::Model>(parent);
+        if (model != nullptr) {
+            return model;
+        }
+        parent = parent->parent();
     }
 
-    return model;
+    return nullptr;
 }
 
 libcellml::ComponentPtr owningComponent(const libcellml::ParentedEntityConstPtr &entity)

@@ -238,7 +238,7 @@ public:
      *
      * @return The @c std::string description of the issue.
      */
-    std::string description() const;
+    const std::string &description() const;
 
     /**
      * @brief Get the level of this issue.
