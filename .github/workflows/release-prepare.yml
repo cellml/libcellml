@@ -25,6 +25,11 @@ jobs:
           ref: release
           path: release-repo
 
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source_branch }}
+          path: source-repo
+
       - name: Detect active release staging branches (PR-backed)
         id: detect_branch
         env:
@@ -65,31 +70,30 @@ jobs:
           #branch="${active[0]}"
           #echo "release_branch=$branch" >> "$GITHUB_OUTPUT"
 
-      - name: Set GitHub Actions bot identity
+      - name: Set GitHub Actions bot identity (both repos)
         run: |
           cd release-repo
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ inputs.source_branch }}
-          path: source-repo
+          cd ../source-repo
 
-      - name: Create staging branch
-        run: |
-          cd release-repo
-          git checkout -b ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Tag source of release
         run: |
           cd source-repo
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "source-v${{ inputs.version }}" -m "Source tag for release v${{ inputs.version }}"
           git push origin "source-v${{ inputs.version }}"
+
+      - name: Create staging branch
+        run: |
+          cd release-repo
+
+          git checkout -b ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
       - name: Copy release changes to release repo
         run: |
@@ -105,6 +109,7 @@ jobs:
       - name: Push branch
         run: |
           cd release-repo
+
           git push origin ${{ vars.RELEASE_STAGING_BRANCH_STEM }}${{ inputs.version }}
 
   generate_changelog:

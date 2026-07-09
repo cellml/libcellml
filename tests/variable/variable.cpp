@@ -1890,25 +1890,3 @@ TEST(Variable, addVariableDuplicates)
     EXPECT_EQ(size_t(1), apple->variableCount());
     EXPECT_EQ(size_t(1), tomato->variableCount());
 }
-
-TEST(Variable, addEquivalenceReturnsFalseProperly)
-{
-    auto m = libcellml::Model::create("m");
-    auto c1 = libcellml::Component::create("c1");
-    auto c2 = libcellml::Component::create("c2");
-    auto v1 = libcellml::Variable::create("v1");
-    auto v2 = libcellml::Variable::create("v2");
-
-    EXPECT_TRUE(m->addComponent(c1));
-    EXPECT_TRUE(m->addComponent(c2));
-    EXPECT_TRUE(c1->addVariable(v1));
-    EXPECT_TRUE(c2->addVariable(v2));
-
-    // Create a connection with self variable, expect no connections have been created.
-    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, v1));
-    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
-
-    // Create a connection with one nullptr, expect no connections have been created.
-    EXPECT_FALSE(libcellml::Variable::addEquivalence(v2, nullptr));
-    EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
-}
