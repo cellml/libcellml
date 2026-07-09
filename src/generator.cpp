@@ -2282,6 +2282,8 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &analyserModel, cons
 
     pFunc()->addInterfaceComputeModelMethodsCode();
 
+    pFunc()->mAnalyserModel = nullptr;
+
     return pFunc()->mCode;
 }
 
@@ -2413,6 +2415,8 @@ std::string Generator::implementationCode(const AnalyserModelPtr &analyserModel,
     //       states/rates are up to date.
 
     pFunc()->addImplementationComputeVariablesMethodCode(remainingAnalyserEquations);
+
+    pFunc()->mAnalyserModel = nullptr;
 
     return pFunc()->mCode;
 }
