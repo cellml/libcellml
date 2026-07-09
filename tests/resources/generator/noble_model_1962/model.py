@@ -82,12 +82,12 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     algebraic_variables[0] = constants[2]*(states[0]-constants[1])
-    algebraic_variables[3] = pow(states[2], 3.0)*states[1]*constants[3]
-    algebraic_variables[2] = (algebraic_variables[3]+0.14)*(states[0]-constants[4])
     algebraic_variables[8] = 1.2*pow(states[3], 4.0)
     algebraic_variables[9] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
     algebraic_variables[1] = (algebraic_variables[9]+algebraic_variables[8])*(states[0]+100.0)
-    rates[0] = -(algebraic_variables[2]+algebraic_variables[1]+algebraic_variables[0])/constants[0]
+    algebraic_variables[3] = pow(states[2], 3.0)*states[1]*constants[3]
+    algebraic_variables[2] = (algebraic_variables[3]+0.14)*(states[0]-constants[4])
+    rates[0] = (-algebraic_variables[2]-algebraic_variables[1]-algebraic_variables[0])/constants[0]
     algebraic_variables[5] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
     algebraic_variables[4] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
     rates[2] = algebraic_variables[4]*(1.0-states[2])-algebraic_variables[5]*states[2]

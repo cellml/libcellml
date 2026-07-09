@@ -27,6 +27,14 @@ limitations under the License.
 #include "../src/commonutils.h"
 #undef TEST_UTILS
 
+#if defined(_WIN32)
+#    define OS_FILE_SUFFIX "_windows"
+#elif defined(__linux__)
+#    define OS_FILE_SUFFIX "_linux"
+#else
+#    define OS_FILE_SUFFIX "_macos"
+#endif
+
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 const std::string NON_EMPTY_MATH =

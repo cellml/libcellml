@@ -106,6 +106,12 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
         .function("setLeftChild", &libcellml::AnalyserEquationAst::setLeftChild)
         .function("rightChild", &libcellml::AnalyserEquationAst::rightChild)
         .function("setRightChild", &libcellml::AnalyserEquationAst::setRightChild)
+        .function("clone", emscripten::optional_override([](libcellml::AnalyserEquationAst &self) {
+            return self.clone();
+        }))
+        .function("clone", emscripten::optional_override([](libcellml::AnalyserEquationAst &self, const libcellml::AnalyserEquationAstPtr &parentAst) {
+            return self.clone(parentAst);
+        }))
         .function("swapLeftAndRightChildren", &libcellml::AnalyserEquationAst::swapLeftAndRightChildren)
     ;
 

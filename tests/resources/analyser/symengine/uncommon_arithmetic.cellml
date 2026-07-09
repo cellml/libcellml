@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <!-- Test equations for arithmetic operators that aren't covered in other test cases -->
+
+  <component name="my_component">
+    <!-- Precomputed constants -->
+    <variable name="w" units="dimensionless"/>
+    <variable name="x" units="dimensionless"/>
+    <variable name="y" units="dimensionless"/>
+    <variable name="z" units="dimensionless"/>
+
+    <!-- Unknowns to solve -->
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="d" units="dimensionless"/>
+    <variable name="e" units="dimensionless"/>
+    <variable name="f" units="dimensionless"/>
+    <variable name="g" units="dimensionless"/>
+    <variable name="h" units="dimensionless"/>
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Equation 1: a + sqrt(w) = 2 -->
+      <!-- Test equation for square root -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>a</ci><apply><root/><ci>w</ci></apply></apply>
+        <cn cellml:units="dimensionless">2</cn>
+      </apply>
+
+      <!-- Equation 2: b * 4th_root(w) = 1 -->
+      <apply>
+        <eq/>
+        <apply><times/><ci>b</ci><apply><root/><degree><cn cellml:units="dimensionless">4</cn></degree><ci>w</ci></apply></apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 3: c / abs(x - y) = 3 -->
+      <!-- Test equation for absolute value -->
+      <apply>
+        <eq/>
+        <apply><divide/><ci>c</ci><apply><abs/><apply><minus/><ci>x</ci><ci>y</ci></apply></apply></apply>
+        <cn cellml:units="dimensionless">3</cn>
+      </apply>
+
+      <!-- Equation 4: d + ceiling(x + 0.4) = w -->
+      <!-- Test equation for ceiling -->
+      <apply>
+        <eq/>
+        <apply>
+          <plus/>
+          <ci>d</ci>
+          <apply><ceiling/><apply><plus/><ci>x</ci><cn cellml:units="dimensionless">0.4</cn></apply></apply>
+        </apply>
+        <ci>w</ci>
+      </apply>
+
+      <!-- Equation 5: e - floor(z/2) = 1 -->
+      <!-- Test equation for floor -->
+      <apply>
+        <eq/>
+        <apply>
+          <minus/>
+          <ci>e</ci>
+          <apply><floor/><apply><divide/><ci>z</ci><cn cellml:units="dimensionless">2</cn></apply></apply>
+        </apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+
+      <!-- Equation 6: min(x, y) / f = 5 -->
+      <!-- Test equation for minimum -->
+      <apply>
+        <eq/>
+        <apply><divide/><apply><min/><ci>x</ci><ci>y</ci></apply><ci>f</ci></apply>
+        <cn cellml:units="dimensionless">5</cn>
+      </apply>
+
+      <!-- Equation 7: max(y, z) * g = w -->
+      <!-- Test equation for maximum -->
+      <apply>
+        <eq/>
+        <apply><times/><apply><max/><ci>y</ci><ci>z</ci></apply><ci>g</ci></apply>
+        <ci>w</ci>
+      </apply>
+
+      <!-- Equation 8: h + rem(z, w) = 0 -->
+      <!-- Test equation for remainder -->
+      <apply>
+        <eq/>
+        <apply><plus/><ci>h</ci><apply><rem/><ci>z</ci><ci>w</ci></apply></apply>
+        <cn cellml:units="dimensionless">0</cn>
+      </apply>
+
+      <!-- Initialise constants -->
+      <apply><eq/><ci>w</ci><cn cellml:units="dimensionless">2</cn></apply>
+      <apply><eq/><ci>x</ci><cn cellml:units="dimensionless">3</cn></apply>
+      <apply><eq/><ci>y</ci><cn cellml:units="dimensionless">4</cn></apply>
+      <apply><eq/><ci>z</ci><cn cellml:units="dimensionless">5</cn></apply>
+    </math>
+  </component>
+</model>

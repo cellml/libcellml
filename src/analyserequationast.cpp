@@ -170,7 +170,7 @@ void AnalyserEquationAst::setType(Type type)
     mPimpl->mType = type;
 }
 
-std::string AnalyserEquationAst::value() const
+const std::string &AnalyserEquationAst::value() const
 {
     return mPimpl->mValue;
 }
@@ -228,6 +228,26 @@ void AnalyserEquationAst::setRightChild(const AnalyserEquationAstPtr &rightChild
 {
     mPimpl->mOwnedRightChild = nullptr;
     mPimpl->mRightChild = rightChild;
+}
+
+AnalyserEquationAstPtr AnalyserEquationAst::clone(const AnalyserEquationAstPtr &parentAst) const
+{
+    auto res = AnalyserEquationAst::create();
+
+    res->setType(type());
+    res->setValue(value());
+    res->setVariable(variable());
+    res->setParent(parentAst);
+
+    if (leftChild() != nullptr) {
+        res->setLeftChild(leftChild()->clone(res));
+    }
+
+    if (rightChild() != nullptr) {
+        res->setRightChild(rightChild()->clone(res));
+    }
+
+    return res;
 }
 
 void AnalyserEquationAst::swapLeftAndRightChildren()

@@ -157,13 +157,14 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
 
 bool XmlNode::isElement(const char *name, const char *ns) const
 {
-    bool found = false;
-    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
-        && (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
-        && ((name == nullptr) || (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0))) {
-        found = true;
+    if (mPimpl->mXmlNodePtr->type != XML_ELEMENT_NODE) {
+        return false;
     }
-    return found;
+    if (mPimpl->mXmlNodePtr->ns == nullptr
+        || xmlStrcmp(mPimpl->mXmlNodePtr->ns->href, reinterpret_cast<const xmlChar *>(ns)) != 0) {
+        return false;
+    }
+    return (name == nullptr) || (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0);
 }
 
 bool XmlNode::isElement() const
@@ -227,33 +228,27 @@ std::string XmlNode::name() const
     return reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name);
 }
 
-bool XmlNode::hasAttribute(const char *attributeName) const
+const char *XmlNode::rawName() const
 {
-    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
-    return attribute != nullptr;
-}
-
-xmlNsPtr getAttributeNamespace(const xmlNodePtr &node, const char *attributeName)
-{
-    return xmlHasProp(node, reinterpret_cast<const xmlChar *>(attributeName))->ns;
+    return reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name);
 }
 
 std::string XmlNode::attribute(const char *attributeName) const
 {
-    std::string attributeValueString;
-    if (hasAttribute(attributeName)) {
-        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
-        attributeValueString = std::string(reinterpret_cast<const char *>(attributeValue));
+    xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
+    if (attributeValue != nullptr) {
+        std::string result(reinterpret_cast<const char *>(attributeValue));
         xmlFree(attributeValue);
+        return result;
     }
-    return attributeValueString;
+    return {};
 }
 
 void XmlNode::setAttribute(const char *attributeName, const char *attributeValue)
 {
-    if (hasAttribute(attributeName)) {
-        auto ns = getAttributeNamespace(mPimpl->mXmlNodePtr, attributeName);
-        xmlSetNsProp(mPimpl->mXmlNodePtr, ns, reinterpret_cast<const xmlChar *>(attributeName), reinterpret_cast<const xmlChar *>(attributeValue));
+    xmlAttrPtr attr = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
+    if (attr != nullptr) {
+        xmlSetNsProp(mPimpl->mXmlNodePtr, attr->ns, reinterpret_cast<const xmlChar *>(attributeName), reinterpret_cast<const xmlChar *>(attributeValue));
     }
 }
 
@@ -320,9 +315,27 @@ std::string XmlNode::convertToString() const
 
 std::string XmlNode::convertToStrippedString() const
 {
+    // For text nodes, use xmlNodeGetContent() directly instead of going through xmlNodeDump(). xmlNodeDump() serialises
+    // the node as XML (creating a buffer, dumping, converting to string, and freeing) which is expensive.
+    // xmlNodeGetContent() returns just the text content with no serialisation overhead.
+
+    if (isText()) {
+        auto *content = xmlNodeGetContent(mPimpl->mXmlNodePtr);
+        std::string contentString(reinterpret_cast<const char *>(content));
+
+        xmlFree(content);
+
+        contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
+        contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
+
+        return contentString;
+    }
+
     std::string contentString = convertToString();
+
     contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
     contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
+
     return contentString;
 }
 

@@ -31,7 +31,7 @@ std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVar
                                                                                                           const std::string &componentName,
                                                                                                           const std::string &variableName)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const auto &v) {
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [&](const auto &v) {
         return (owningModel(v) == model)
                && (owningComponent(v)->name() == componentName)
                && (v->name() == variableName);
@@ -40,7 +40,7 @@ std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVar
 
 std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const VariablePtr &variable)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const auto &v) {
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [&](const auto &v) {
         return v == variable;
     });
 }
@@ -155,7 +155,7 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
                nullptr;
 }
 
-std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
+const std::vector<VariablePtr> &AnalyserExternalVariable::dependencies() const
 {
     return mPimpl->mDependencies;
 }

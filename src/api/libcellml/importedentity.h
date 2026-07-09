@@ -79,7 +79,7 @@ public:
      * @return The reference to the entity in the imported model, the empty
      * string if it is not set.
      */
-    std::string importReference() const;
+    const std::string &importReference() const;
 
     /**
      * @brief Set the import reference.

@@ -56,7 +56,7 @@ public:
      *
      * @return The @c std::string document identifier for this entity.
      */
-    std::string id() const;
+    const std::string &id() const;
 
     /**
      * @brief Remove the identifier for this entity.

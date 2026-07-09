@@ -34,7 +34,7 @@ void Entity::setId(const std::string &id)
     pFunc()->mId = id;
 }
 
-std::string Entity::id() const
+const std::string &Entity::id() const
 {
     return pFunc()->mId;
 }

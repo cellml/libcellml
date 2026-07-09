@@ -69,13 +69,30 @@ std::string XmlAttribute::namespacePrefix() const
 
 bool XmlAttribute::inNamespaceUri(const char *ns) const
 {
-    return xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0;
+    if (mPimpl->mXmlAttributePtr->ns == nullptr) {
+        // Note: we would normally have
+        //         return (ns == nullptr) || (ns[0] == '\0');
+        //       but this is an internal function and we never pass in a null pointer or an empty string for the
+        //       namespace, so we can just return false here.
+        return false;
+    }
+    return xmlStrcmp(mPimpl->mXmlAttributePtr->ns->href, reinterpret_cast<const xmlChar *>(ns)) == 0;
 }
 
 bool XmlAttribute::isType(const char *name, const char *ns) const
 {
-    return (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
-           && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0);
+    if (mPimpl->mXmlAttributePtr->ns == nullptr) {
+        // Note: we would normally test for
+        //         (ns != nullptr) && (ns[0] != '\0')
+        //       but this is an internal function and we never pass in a null pointer for the namespace, so we can just
+        //       test for an empty string here.
+        if (ns[0] != '\0') {
+            return false;
+        }
+    } else if (xmlStrcmp(mPimpl->mXmlAttributePtr->ns->href, reinterpret_cast<const xmlChar *>(ns)) != 0) {
+        return false;
+    }
+    return xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0;
 }
 
 bool XmlAttribute::isCellmlType(const char *name) const

@@ -20,6 +20,7 @@ limitations under the License.
 #include <fstream>
 #include <libxml/uri.h>
 #include <sstream>
+#include <unordered_set>
 
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -116,7 +117,7 @@ Importer::~Importer()
 std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportSource(const ImportSourcePtr &importSource) const
 {
     return std::find_if(mImports.begin(), mImports.end(),
-                        [=](const ImportSourcePtr &importSrc) -> bool { return importSource->equals(importSrc); });
+                        [&](const ImportSourcePtr &importSrc) -> bool { return importSource->equals(importSrc); });
 }
 
 std::string Importer::ImporterImpl::modelUrl(const ModelPtr &model) const
@@ -332,12 +333,13 @@ std::string resolvePath(const std::string &filename, const std::string &base)
 bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile)
 {
     std::string url = normaliseDirectorySeparator(importSource->url());
-    if (mLibrary.count(url) == 0) {
+    if (mLibrary.find(url) == mLibrary.end()) {
         url = resolvePath(url, baseFile);
     }
 
     ModelPtr model;
-    if (mLibrary.count(url) == 0) {
+    auto libraryIt = mLibrary.find(url);
+    if (libraryIt == mLibrary.end()) {
         // If the URL has not ever been resolved into a model in this library, with or
         // without baseFile, parse it and save.
         std::ifstream file(url);
@@ -378,7 +380,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         }
         mLibrary.insert(std::make_pair(url, model));
     } else {
-        model = mLibrary[url];
+        model = libraryIt->second;
     }
     importSource->setModel(model);
     return true;
@@ -815,7 +817,8 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         // Clone import model to not affect origin import model units.
         auto clonedImportModel = importModel->clone();
 
-        NameList compNames = componentNames(model);
+        NameList compNamesList = componentNames(model);
+        std::unordered_set<std::string> compNames(compNamesList.begin(), compNamesList.end());
 
         // Determine the stack for the destination component.
         IndexStack destinationComponentBaseIndexStack = indexStackOf(component);
@@ -845,7 +848,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         StringStringMap aliasedUnitsNames;
         for (const auto &units : requiredUnits) {
             const auto iterator = std::find_if(uniqueRequiredUnits.begin(), uniqueRequiredUnits.end(),
-                                               [=](const UnitsPtr &u) -> bool { return Units::equivalent(u, units); });
+                                               [&](const UnitsPtr &u) -> bool { return Units::equivalent(u, units); });
             if (iterator == uniqueRequiredUnits.end()) {
                 uniqueRequiredUnits.push_back(units);
             } else if ((*iterator)->name() != units->name()) {
@@ -866,7 +869,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
             std::string originalName = entry.first;
             size_t count = 0;
             std::string newName = originalName;
-            while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
+            while (compNames.count(newName) != 0) {
                 newName = originalName + "_" + convertToString(++count);
             }
             if (originalName != newName) {
@@ -1003,8 +1006,9 @@ size_t Importer::libraryCount()
 ModelPtr Importer::library(const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (pFunc()->mLibrary.count(normalisedKey) != 0) {
-        return pFunc()->mLibrary[normalisedKey];
+    auto it = pFunc()->mLibrary.find(normalisedKey);
+    if (it != pFunc()->mLibrary.end()) {
+        return it->second;
     }
     return nullptr;
 }
@@ -1026,22 +1030,18 @@ ModelPtr Importer::library(const size_t &index)
 bool Importer::addModel(const ModelPtr &model, const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (pFunc()->mLibrary.count(normalisedKey) != 0) {
-        // If the key already exists in the library, do nothing.
-        return false;
-    }
-    pFunc()->mLibrary.insert(std::make_pair(normalisedKey, model));
-    return true;
+    return pFunc()->mLibrary.emplace(normalisedKey, model).second;
 }
 
 bool Importer::replaceModel(const ModelPtr &model, const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (pFunc()->mLibrary.count(normalisedKey) == 0) {
+    auto it = pFunc()->mLibrary.find(normalisedKey);
+    if (it == pFunc()->mLibrary.end()) {
         // If the key is not found, do nothing.
         return false;
     }
-    pFunc()->mLibrary[normalisedKey] = model;
+    it->second = model;
     return true;
 }
 
@@ -1077,7 +1077,7 @@ bool Importer::addImportSource(const ImportSourcePtr &importSource)
 
     // Prevent adding the same import source.
     if (std::find_if(pFunc()->mImports.begin(), pFunc()->mImports.end(),
-                     [=](const ImportSourcePtr &importSrc) -> bool { return importSource == importSrc; })
+                     [&](const ImportSourcePtr &importSrc) -> bool { return importSource == importSrc; })
         != pFunc()->mImports.end()) {
         return false;
     }

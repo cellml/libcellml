@@ -88,14 +88,14 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
     membrane_Cm = 1.0
-    algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     leakage_current_g_L = 0.3
     algebraic_variables[1] = leakage_current_g_L*(states[0]-computed_constants[0])
     potassium_channel_g_K = 36.0
     algebraic_variables[2] = potassium_channel_g_K*pow(states[3], 4.0)*(states[0]-computed_constants[2])
     sodium_channel_g_Na = 120.0
     algebraic_variables[3] = sodium_channel_g_Na*pow(states[2], 3.0)*states[1]*(states[0]-computed_constants[1])
-    rates[0] = -(-algebraic_variables[0]+algebraic_variables[3]+algebraic_variables[2]+algebraic_variables[1])/membrane_Cm
+    algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    rates[0] = (algebraic_variables[0]-algebraic_variables[3]-algebraic_variables[2]-algebraic_variables[1])/membrane_Cm
     algebraic_variables[5] = 4.0*exp(states[0]/18.0)
     algebraic_variables[4] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     rates[2] = algebraic_variables[4]*(1.0-states[2])-algebraic_variables[5]*states[2]

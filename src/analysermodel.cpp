@@ -157,10 +157,12 @@ size_t AnalyserModel::stateCount() const
     return mPimpl->mStates.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::states() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::states() const
 {
+    static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_VARIABLE;
     }
 
     return mPimpl->mStates;
@@ -185,10 +187,12 @@ size_t AnalyserModel::constantCount() const
     return mPimpl->mConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::constants() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::constants() const
 {
+    static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_VARIABLE;
     }
 
     return mPimpl->mConstants;
@@ -212,10 +216,12 @@ size_t AnalyserModel::computedConstantCount() const
     return mPimpl->mComputedConstants.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::computedConstants() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::computedConstants() const
 {
+    static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_VARIABLE;
     }
 
     return mPimpl->mComputedConstants;
@@ -239,10 +245,12 @@ size_t AnalyserModel::algebraicVariableCount() const
     return mPimpl->mAlgebraicVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::algebraicVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::algebraicVariables() const
 {
+    static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_VARIABLE;
     }
 
     return mPimpl->mAlgebraicVariables;
@@ -266,10 +274,12 @@ size_t AnalyserModel::externalVariableCount() const
     return mPimpl->mExternalVariables.size();
 }
 
-std::vector<AnalyserVariablePtr> AnalyserModel::externalVariables() const
+const std::vector<AnalyserVariablePtr> &AnalyserModel::externalVariables() const
 {
+    static const std::vector<AnalyserVariablePtr> NO_ANALYSER_VARIABLE;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_VARIABLE;
     }
 
     return mPimpl->mExternalVariables;
@@ -336,10 +346,12 @@ size_t AnalyserModel::analyserEquationCount() const
     return mPimpl->mAnalyserEquations.size();
 }
 
-std::vector<AnalyserEquationPtr> AnalyserModel::analyserEquations() const
+const std::vector<AnalyserEquationPtr> &AnalyserModel::analyserEquations() const
 {
+    static const std::vector<AnalyserEquationPtr> NO_ANALYSER_EQUATION;
+
     if (!isValid()) {
-        return {};
+        return NO_ANALYSER_EQUATION;
     }
 
     return mPimpl->mAnalyserEquations;

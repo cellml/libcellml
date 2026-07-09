@@ -1,0 +1,250 @@
+<!--
+  This CellML file was generated at 2026-04-15T23:34:07.540000+00:00
+
+  by [BG-Tools](https://github.com/CellDL/BG-Tools), version 0.10.2
+
+  from https://celldl.org/cellml/db_RRC.cellml
+-->
+<model xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" name="BG_db_RRC">
+  <units name="dim">
+    <unit units="dimensionless"/>
+  </units>
+  <units name="joule_per_coulomb">
+    <unit units="joule" exponent="1"/>
+    <unit units="coulomb" exponent="-1"/>
+  </units>
+  <units name="coulomb_per_second">
+    <unit units="coulomb" exponent="1"/>
+    <unit units="second" exponent="-1"/>
+  </units>
+  <units name="coulomb_squared_per_joule">
+    <unit units="coulomb" exponent="2"/>
+    <unit units="joule" exponent="-1"/>
+  </units>
+  <units name="joule_second_per_coulomb_squared">
+    <unit units="joule" exponent="1"/>
+    <unit units="second" exponent="1"/>
+    <unit units="coulomb" exponent="-2"/>
+  </units>
+  <component name="main">
+    <variable name="t" units="second"/>
+    <variable name="u_0" units="joule_per_coulomb"/>
+    <variable name="v_0" units="coulomb_per_second"/>
+    <variable name="v_1" units="coulomb_per_second"/>
+    <variable name="u_2" units="joule_per_coulomb"/>
+    <variable name="v_2" units="coulomb_per_second"/>
+    <variable name="u_3" units="joule_per_coulomb"/>
+    <variable name="v_3" units="coulomb_per_second"/>
+    <variable name="C_q_2" units="coulomb_squared_per_joule" initial_value="4.0"/>
+    <variable name="u_R_1" units="joule_per_coulomb"/>
+    <variable name="v_R_1" units="coulomb_per_second"/>
+    <variable name="u_R_3" units="joule_per_coulomb"/>
+    <variable name="v_R_3" units="coulomb_per_second"/>
+    <variable name="R_R_1" units="joule_second_per_coulomb_squared" initial_value="4.0"/>
+    <variable name="R_R_3" units="joule_second_per_coulomb_squared" initial_value="4.0"/>
+    <variable name="u_S_u" units="joule_per_coulomb" initial_value="12.0"/>
+    <variable name="v_S_u" units="coulomb_per_second"/>
+    <variable name="q_2" units="coulomb" initial_value="0.0"/>
+    <variable name="u_q_2" units="joule_per_coulomb"/>
+    <variable name="v_q_2" units="coulomb_per_second"/>
+    <variable name="time" units="second"/>
+    <variable name="x" units="dimensionless" initial_value="0.0"/>
+    <variable name="z_0" units="dimensionless"/>
+    <variable name="z_1" units="dimensionless"/>
+    <!-- Element ODEs-->
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>q_2</ci>
+        </apply>
+        <ci>v_q_2</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>x</ci>
+        </apply>
+        <apply>
+          <divide/>
+          <cn cellml:units="dimensionless">1</cn>
+          <cn cellml:units="second">1</cn>
+        </apply>
+      </apply>
+    </math>
+    <!-- Element algebraics-->
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>u_q_2</ci>
+        <apply>
+          <divide/>
+          <ci>q_2</ci>
+          <ci>C_q_2</ci>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_R_1</ci>
+        <apply>
+          <divide/>
+          <ci>u_R_1</ci>
+          <ci>R_R_1</ci>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_R_3</ci>
+        <apply>
+          <divide/>
+          <ci>u_R_3</ci>
+          <ci>R_R_3</ci>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_S_u</ci>
+        <apply>
+          <minus/>
+          <ci>v_0</ci>
+        </apply>
+      </apply>
+    </math>
+    <!-- Junction algebraics-->
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>u_0</ci>
+        <ci>u_S_u</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>u_R_1</ci>
+        <apply>
+          <minus/>
+          <ci>u_0</ci>
+          <ci>u_2</ci>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>u_R_3</ci>
+        <apply>
+          <minus/>
+          <ci>u_2</ci>
+          <ci>u_3</ci>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>u_q_2</ci>
+        <ci>u_3</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_1</ci>
+          <apply>
+            <divide/>
+            <ci>v_R_1</ci>
+            <ci>x</ci>
+          </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_1</ci>
+        <ci>v_0</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_2</ci>
+        <apply>
+          <times/>
+          <ci>v_q_2</ci>
+          <apply>
+            <divide/>
+            <ci>t</ci>
+            <ci>time</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_2</ci>
+        <ci>v_3</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_3</ci>
+        <ci>v_R_3</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>v_3</ci>
+        <ci>v_1</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>time</ci>
+        <ci>t</ci>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>z_0</ci>
+        <apply>
+          <power/>
+          <ci>z_1</ci>
+          <cn cellml:units="dimensionless">2</cn>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>z_1</ci>
+        <apply>
+          <minus/>
+          <ci>z_0</ci>
+          <cn cellml:units="dimensionless">1</cn>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>

@@ -1,23 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Underconstrained NLA system
-   x1: 1 -> 3
-   y1: 1 -> -2
-   z1: 1 -> 1
+   x1: -> 3
+   y1: -> -2
+   z1: -> 1
    x1 + y1 + z1 = 2
    6x1 - 4y1 + 5z1 = 31-->
     <!-- Overconstrained NLA system
-   x2: 1 -> 3
-   y2: 1 -> -2
-   z2: 1 -> 1
+   x2: -> 3
+   y2: -> -2
+   z2: -> 1
    x2 + y2 + z2 = 2
    6x2 - 4y2 + 5z2 = 31
    5x2 + 2y2 + 2z2 = 13
    -2x2 + y2 + 3z2 = -5-->
     <component name="my_algebraic_system">
-        <variable initial_value="1" name="x1" units="dimensionless"/>
-        <variable initial_value="1" name="y1" units="dimensionless"/>
-        <variable initial_value="1" name="z1" units="dimensionless"/>
+        <variable name="x1" units="dimensionless"/>
+        <variable name="y1" units="dimensionless"/>
+        <variable name="z1" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -52,9 +52,9 @@
                 <cn cellml:units="dimensionless">31</cn>
             </apply>
         </math>
-        <variable initial_value="1" name="x2" units="dimensionless"/>
-        <variable initial_value="1" name="y2" units="dimensionless"/>
-        <variable initial_value="1" name="z2" units="dimensionless"/>
+        <variable name="x2" units="dimensionless"/>
+        <variable name="y2" units="dimensionless"/>
+        <variable name="z2" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>

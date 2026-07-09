@@ -1,0 +1,461 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--#This model was automatically generated with the circulatory_autogen software-->
+<!--# https://github.com/FinbarArgus/circulatory_autogen -->
+<model name="CardiovascularSystem" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <import xlink:href="capillary_network_parameters.cellml">
+        <component component_ref="parameters" name="parameters"/>
+        <component component_ref="parameters_global" name="parameters_global"/>
+    </import>
+    <component name="environment">
+        <variable name="time" public_interface="out" units="second"/>
+    </component>
+    <!--#STARTGENBELOW-->
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;units&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<import xlink:href="capillary_network_units.cellml">
+    <units name="s2" units_ref="s2"/>
+    <units name="Hz" units_ref="Hz"/>
+    <units name="millis" units_ref="millis"/>
+    <units name="per_millis" units_ref="per_millis"/>
+    <units name="mm" units_ref="mm"/>
+    <units name="m2" units_ref="m2"/>
+    <units name="mm2" units_ref="mm2"/>
+    <units name="m3" units_ref="m3"/>
+    <units name="m4" units_ref="m4"/>
+    <units name="mm3" units_ref="mm3"/>
+    <units name="J_per_s" units_ref="J_per_s"/>
+    <units name="mol_per_s" units_ref="mol_per_s"/>
+    <units name="mmol_per_s" units_ref="mmol_per_s"/>
+    <units name="umol_per_s" units_ref="umol_per_s"/>
+    <units name="C_per_s" units_ref="C_per_s"/>
+    <units name="mC_per_s" units_ref="mC_per_s"/>
+    <units name="uC_per_s" units_ref="uC_per_s"/>
+    <units name="nC_per_s" units_ref="nC_per_s"/>
+    <units name="Cm_per_millis" units_ref="Cm_per_millis"/>
+    <units name="m_per_s" units_ref="m_per_s"/>
+    <units name="mm_per_s" units_ref="mm_per_s"/>
+    <units name="um_per_s" units_ref="um_per_s"/>
+    <units name="rad_per_s" units_ref="rad_per_s"/>
+    <units name="m3_per_s" units_ref="m3_per_s"/>
+    <units name="mL" units_ref="mL"/>
+    <units name="per_milliL_s" units_ref="per_milliL_s"/>
+    <units name="s_per_m3" units_ref="s_per_m3"/>
+    <units name="s_per_milliV" units_ref="s_per_milliV"/>
+    <units name="s_per_millis" units_ref="s_per_millis"/>
+    <units name="millis_per_s" units_ref="millis_per_s"/>
+    <units name="mm3_per_s" units_ref="mm3_per_s"/>
+    <units name="l_per_s" units_ref="l_per_s"/>
+    <units name="per_ml_s" units_ref="per_ml_s"/>
+    <units name="J_per_mol" units_ref="J_per_mol"/>
+    <units name="J_per_kmol_K" units_ref="J_per_kmol_K"/>
+    <units name="J_per_M" units_ref="J_per_M"/>
+    <units name="J_per_C" units_ref="J_per_C"/>
+    <units name="J_per_C_s" units_ref="J_per_C_s"/>
+    <units name="J_per_m" units_ref="J_per_m"/>
+    <units name="J_per_m3" units_ref="J_per_m3"/>
+    <units name="mmHg" units_ref="mmHg"/>
+    <units name="m3_per_J" units_ref="m3_per_J"/>
+    <units name="J_per_m3s" units_ref="J_per_m3s"/>
+    <units name="m3_per_Js" units_ref="m3_per_Js"/>
+    <units name="J2_per_m6" units_ref="J2_per_m6"/>
+    <units name="Js2_per_C2" units_ref="Js2_per_C2"/>
+    <units name="Js2_per_mol2" units_ref="Js2_per_mol2"/>
+    <units name="Js_per_mol2" units_ref="Js_per_mol2"/>
+    <units name="Js_per_C2" units_ref="Js_per_C2"/>
+    <units name="J_per_mol2" units_ref="J_per_mol2"/>
+    <units name="C2_per_J_s" units_ref="C2_per_J_s"/>
+    <units name="J_per_C2" units_ref="J_per_C2"/>
+    <units name="C2_per_J" units_ref="C2_per_J"/>
+    <units name="mol_per_m3" units_ref="mol_per_m3"/>
+    <units name="M" units_ref="M"/>
+    <units name="mM" units_ref="mM"/>
+    <units name="milliM" units_ref="milliM"/>
+    <units name="uM" units_ref="uM"/>
+    <units name="kg_per_m3" units_ref="kg_per_m3"/>
+    <units name="m3_per_kg" units_ref="m3_per_kg"/>
+    <units name="per_m3" units_ref="per_m3"/>
+    <units name="mol_per_m2_s" units_ref="mol_per_m2_s"/>
+    <units name="mM_m_per_s" units_ref="mM_m_per_s"/>
+    <units name="J_per_m2_s" units_ref="J_per_m2_s"/>
+    <units name="Js_per_m4" units_ref="Js_per_m4"/>
+    <units name="mM_per_s" units_ref="mM_per_s"/>
+    <units name="per_s" units_ref="per_s"/>
+    <units name="per_mM_s" units_ref="per_mM_s"/>
+    <units name="m6_per_mol2_s" units_ref="m6_per_mol2_s"/>
+    <units name="m3_per_mol" units_ref="m3_per_mol"/>
+    <units name="mol_per_m3_s" units_ref="mol_per_m3_s"/>
+    <units name="per_mol" units_ref="per_mol"/>
+    <units name="J_per_mol_K" units_ref="J_per_mol_K"/>
+    <units name="m2_per_s" units_ref="m2_per_s"/>
+    <units name="per_C" units_ref="per_C"/>
+    <units name="per_m" units_ref="per_m"/>
+    <units name="per_mM" units_ref="per_mM"/>
+    <units name="Js2_per_m2" units_ref="Js2_per_m2"/>
+    <units name="Js_per_m2" units_ref="Js_per_m2"/>
+    <units name="J_per_m2" units_ref="J_per_m2"/>
+    <units name="m_per_s2" units_ref="m_per_s2"/>
+    <units name="rad_per_s2" units_ref="rad_per_s2"/>
+    <units name="Js_per_m3" units_ref="Js_per_m3"/>
+    <units name="Js2_per_m5" units_ref="Js2_per_m5"/>
+    <units name="m5_per_Js2" units_ref="m5_per_Js2"/>
+    <units name="J_per_m6" units_ref="J_per_m6"/>
+    <units name="m6_per_J" units_ref="m6_per_J"/>
+    <units name="m6_per_Js" units_ref="m6_per_Js"/>
+    <units name="mm6_per_J" units_ref="mm6_per_J"/>
+    <units name="Js2_per_m9" units_ref="Js2_per_m9"/>
+    <units name="m6s_per_J" units_ref="m6s_per_J"/>
+    <units name="Js_per_m6" units_ref="Js_per_m6"/>
+    <units name="Js2_per_m6" units_ref="Js2_per_m6"/>
+    <units name="m3_per_s2" units_ref="m3_per_s2"/>
+    <units name="mm3_per_s2" units_ref="mm3_per_s2"/>
+    <units name="per_mm3" units_ref="per_mm3"/>
+    <units name="UnitValve" units_ref="UnitValve"/>
+    <units name="J_per_m9" units_ref="J_per_m9"/>
+    <units name="milliV" units_ref="milliV"/>
+    <units name="per_milliV" units_ref="per_milliV"/>
+    <units name="millis_per_milliV" units_ref="millis_per_milliV"/>
+    <units name="per_V" units_ref="per_V"/>
+    <units name="milliV_per_V" units_ref="milliV_per_V"/>
+    <units name="V_per_milliV" units_ref="V_per_milliV"/>
+    <units name="V_per_s" units_ref="V_per_s"/>
+    <units name="milliV_per_kiloV" units_ref="milliV_per_kiloV"/>
+    <units name="V2" units_ref="V2"/>
+    <units name="milliV2" units_ref="milliV2"/>
+    <units name="millimol" units_ref="millimol"/>
+    <units name="millimolar" units_ref="millimolar"/>
+    <units name="per_millimolar" units_ref="per_millimolar"/>
+    <units name="per_millimolar_s" units_ref="per_millimolar_s"/>
+    <units name="per_millimolar2_s" units_ref="per_millimolar2_s"/>
+    <units name="millimolar_per_s" units_ref="millimolar_per_s"/>
+    <units name="millimolar_per_megamolar" units_ref="millimolar_per_megamolar"/>
+    <units name="per_millimol_milliS" units_ref="per_millimol_milliS"/>
+    <units name="per_millimol_millis" units_ref="per_millimol_millis"/>
+    <units name="per_millimol_s" units_ref="per_millimol_s"/>
+    <units name="microm" units_ref="microm"/>
+    <units name="microS" units_ref="microS"/>
+    <units name="microm3" units_ref="microm3"/>
+    <units name="m3_per_microm3" units_ref="m3_per_microm3"/>
+    <units name="picoF" units_ref="picoF"/>
+    <units name="S_per_F" units_ref="S_per_F"/>
+    <units name="m3_per_Fs" units_ref="m3_per_Fs"/>
+    <units name="A_per_F" units_ref="A_per_F"/>
+    <units name="megaOhm" units_ref="megaOhm"/>
+    <units name="nanoA" units_ref="nanoA"/>
+    <units name="nanoA_per_milliA" units_ref="nanoA_per_milliA"/>
+    <units name="nanoA_per_A" units_ref="nanoA_per_A"/>
+    <units name="A_per_nanoA" units_ref="A_per_nanoA"/>
+    <units name="C_per_mol" units_ref="C_per_mol"/>
+    <units name="m3_per_J_millis" units_ref="m3_per_J_millis"/>
+    <units name="m3_per_mol_millis" units_ref="m3_per_mol_millis"/>
+    <units name="m3_per_millimol_s" units_ref="m3_per_millimol_s"/>
+    <units name="millimol_per_m3" units_ref="millimol_per_m3"/>
+    <units name="Hz2" units_ref="Hz2"/>
+    <units name="cm" units_ref="cm"/>
+    <units name="J_per_m4_s" units_ref="J_per_m4_s"/>
+    <units name="m3_per_mol_per_sec" units_ref="m3_per_mol_per_sec"/>
+    <units name="mol_per_m3_per_kPa" units_ref="mol_per_m3_per_kPa"/>
+    <units name="mol_per_m3_per_Pa" units_ref="mol_per_m3_per_Pa"/>
+    <units name="m3_per_mol_per_s" units_ref="m3_per_mol_per_s"/>
+    <units name="mol_per_m3_per_s" units_ref="mol_per_m3_per_s"/>
+    <units name="dim" units_ref="dim"/>
+    <units name="fmol" units_ref="fmol"/>
+    <units name="per_fmol" units_ref="per_fmol"/>
+    <units name="nJ_per_s" units_ref="nJ_per_s"/>
+    <units name="fmol_per_s" units_ref="fmol_per_s"/>
+    <units name="nC_per_fmol" units_ref="nC_per_fmol"/>
+    <units name="nC" units_ref="nC"/>
+    <units name="nJ_per_fmol" units_ref="nJ_per_fmol"/>
+    <units name="nJ_per_nC" units_ref="nJ_per_nC"/>
+    <units name="fC" units_ref="fC"/>
+    <units name="fF" units_ref="fF"/>
+    <units name="volt_per_sec" units_ref="volt_per_sec"/>
+    <units name="J_per_K_per_mol" units_ref="J_per_K_per_mol"/>
+    <units name="nS" units_ref="nS"/>
+    <units name="nSmV" units_ref="nSmV"/>
+    <units name="per_ms" units_ref="per_ms"/>
+    <units name="mM4" units_ref="mM4"/>
+    <units name="mM_per_ms" units_ref="mM_per_ms"/>
+    <units name="mMms" units_ref="mMms"/>
+    <units name="per_mMms" units_ref="per_mMms"/>
+    <units name="molar" units_ref="molar"/>
+    <units name="micromolar" units_ref="micromolar"/>
+    <units name="nanomolar" units_ref="nanomolar"/>
+    <units name="ms" units_ref="ms"/>
+    <units name="m_cubed" units_ref="m_cubed"/>
+    <units name="mV" units_ref="mV"/>
+    <units name="m_cubed_per_second" units_ref="m_cubed_per_second"/>
+    <units name="micromolar_m_cubed" units_ref="micromolar_m_cubed"/>
+    <units name="C" units_ref="C"/>
+    <units name="C_per_millimol" units_ref="C_per_millimol"/>
+    <units name="picoA" units_ref="picoA"/>
+    <units name="picoA_per_picoFarad" units_ref="picoA_per_picoFarad"/>
+    <units name="microL" units_ref="microL"/>
+    <units name="picoFarad" units_ref="picoFarad"/>
+    <units name="cm3_per_second" units_ref="cm3_per_second"/>
+    <units name="um3_per_second" units_ref="um3_per_second"/>
+    <units name="m3mM" units_ref="m3mM"/>
+    <units name="ms2" units_ref="ms2"/>
+    <units name="nM3_per_ps" units_ref="nM3_per_ps"/>
+    <units name="per_s_squared_m_cubed" units_ref="per_s_squared_m_cubed"/>
+    <units name="per_meters_cubed" units_ref="per_meters_cubed"/>
+    <units name="umeter3" units_ref="umeter3"/>
+    <units name="mill1" units_ref="mill1"/>
+    <units name="picoV" units_ref="picoV"/>
+    <units name="pic0" units_ref="pic0"/>
+    <units name="nanoV" units_ref="nanoV"/>
+    <units name="nan0" units_ref="nan0"/>
+</import>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;imports&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<import xlink:href="capillary_network_modules.cellml">
+    <component component_ref="vv_split_type" name="input_vessel_module"/>
+</import>
+<import xlink:href="capillary_network_modules.cellml">
+    <component component_ref="pv_constriction_type" name="pericyte_0_module"/>
+</import>
+<import xlink:href="capillary_network_modules.cellml">
+    <component component_ref="pv_constriction_type" name="pericyte_1_module"/>
+</import>
+<import xlink:href="capillary_network_modules.cellml">
+    <component component_ref="pv_split_capillary_type" name="capillary_0_module"/>
+</import>
+<import xlink:href="capillary_network_modules.cellml">
+    <component component_ref="pv_split_capillary_type" name="capillary_1_module"/>
+</import>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;vessel mappings&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<connection>
+   <map_components component_1="input_vessel_module" component_2="pericyte_0_module"/>
+   <map_variables variable_1="v_out_1" variable_2="v"/>
+   <map_variables variable_1="u_d" variable_2="u_in"/>
+</connection>
+<connection>
+   <map_components component_1="input_vessel_module" component_2="pericyte_1_module"/>
+   <map_variables variable_1="v_out_2" variable_2="v"/>
+   <map_variables variable_1="u_d" variable_2="u_in"/>
+</connection>
+<connection>
+   <map_components component_1="pericyte_0_module" component_2="capillary_0_module"/>
+   <map_variables variable_1="v_out" variable_2="v"/>
+   <map_variables variable_1="u" variable_2="u_in"/>
+</connection>
+<connection>
+   <map_components component_1="pericyte_1_module" component_2="capillary_1_module"/>
+   <map_variables variable_1="v_out" variable_2="v"/>
+   <map_variables variable_1="u" variable_2="u_in"/>
+</connection>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;terminal venous connection&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<component name="terminal_venous_connection">
+</component>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;access_variables&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<component name="input_vessel">
+   <variable name="u" public_interface="in" units="J_per_m3"/>
+   <variable name="u_d" public_interface="in" units="J_per_m3"/>
+   <variable name="v" public_interface="in" units="m3_per_s"/>
+   <variable name="E" public_interface="in" units="J_per_m3"/>
+   <variable name="theta" public_interface="in" units="dimensionless"/>
+   <variable name="u_ext" public_interface="in" units="J_per_m3"/>
+   <variable name="beta_g" public_interface="in" units="dimensionless"/>
+   <variable name="v_in" public_interface="in" units="m3_per_s"/>
+</component>
+<component name="pericyte_0">
+   <variable name="u" public_interface="in" units="J_per_m3"/>
+   <variable name="v" public_interface="in" units="m3_per_s"/>
+   <variable name="u_ext" public_interface="in" units="J_per_m3"/>
+   <variable name="R" public_interface="in" units="Js_per_m6"/>
+   <variable name="C" public_interface="in" units="m6_per_J"/>
+</component>
+<component name="pericyte_1">
+   <variable name="u" public_interface="in" units="J_per_m3"/>
+   <variable name="v" public_interface="in" units="m3_per_s"/>
+   <variable name="u_ext" public_interface="in" units="J_per_m3"/>
+   <variable name="R" public_interface="in" units="Js_per_m6"/>
+   <variable name="C" public_interface="in" units="m6_per_J"/>
+</component>
+<component name="capillary_0">
+   <variable name="u" public_interface="in" units="J_per_m3"/>
+   <variable name="v" public_interface="in" units="m3_per_s"/>
+   <variable name="q_C" public_interface="in" units="m3"/>
+   <variable name="q_C_init" public_interface="in" units="m3"/>
+   <variable name="E" public_interface="in" units="J_per_m3"/>
+   <variable name="v_out_1" public_interface="in" units="m3_per_s"/>
+   <variable name="v_out_2" public_interface="in" units="m3_per_s"/>
+   <variable name="v_out_total" public_interface="in" units="m3_per_s"/>
+   <variable name="u_ext" public_interface="in" units="J_per_m3"/>
+</component>
+<component name="capillary_1">
+   <variable name="u" public_interface="in" units="J_per_m3"/>
+   <variable name="v" public_interface="in" units="m3_per_s"/>
+   <variable name="q_C" public_interface="in" units="m3"/>
+   <variable name="q_C_init" public_interface="in" units="m3"/>
+   <variable name="E" public_interface="in" units="J_per_m3"/>
+   <variable name="v_out_1" public_interface="in" units="m3_per_s"/>
+   <variable name="v_out_2" public_interface="in" units="m3_per_s"/>
+   <variable name="v_out_total" public_interface="in" units="m3_per_s"/>
+   <variable name="u_ext" public_interface="in" units="J_per_m3"/>
+</component>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;global_parameters_access&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<component name="global">
+   <variable name="beta_g" public_interface="in" units="dimensionless"/>
+   <variable name="rho" public_interface="in" units="Js2_per_m5"/>
+   <variable name="mu" public_interface="in" units="Js_per_m3"/>
+   <variable name="g" public_interface="in" units="m_per_s2"/>
+   <variable name="a_vessel" public_interface="in" units="dimensionless"/>
+   <variable name="b_vessel" public_interface="in" units="per_m"/>
+   <variable name="c_vessel" public_interface="in" units="dimensionless"/>
+   <variable name="d_vessel" public_interface="in" units="per_m"/>
+</component>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;own vessel mappings&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<connection>
+   <map_components component_1="input_vessel" component_2="input_vessel_module"/>
+   <map_variables variable_1="u" variable_2="u"/>
+   <map_variables variable_1="u_d" variable_2="u_d"/>
+   <map_variables variable_1="v" variable_2="v"/>
+   <map_variables variable_1="E" variable_2="E"/>
+   <map_variables variable_1="theta" variable_2="theta"/>
+   <map_variables variable_1="u_ext" variable_2="u_ext"/>
+   <map_variables variable_1="beta_g" variable_2="beta_g"/>
+   <map_variables variable_1="v_in" variable_2="v_in"/>
+</connection>
+<connection>
+   <map_components component_1="pericyte_0" component_2="pericyte_0_module"/>
+   <map_variables variable_1="u" variable_2="u"/>
+   <map_variables variable_1="v" variable_2="v"/>
+   <map_variables variable_1="u_ext" variable_2="u_ext"/>
+   <map_variables variable_1="R" variable_2="R"/>
+   <map_variables variable_1="C" variable_2="C"/>
+</connection>
+<connection>
+   <map_components component_1="pericyte_1" component_2="pericyte_1_module"/>
+   <map_variables variable_1="u" variable_2="u"/>
+   <map_variables variable_1="v" variable_2="v"/>
+   <map_variables variable_1="u_ext" variable_2="u_ext"/>
+   <map_variables variable_1="R" variable_2="R"/>
+   <map_variables variable_1="C" variable_2="C"/>
+</connection>
+<connection>
+   <map_components component_1="capillary_0" component_2="capillary_0_module"/>
+   <map_variables variable_1="u" variable_2="u"/>
+   <map_variables variable_1="v" variable_2="v"/>
+   <map_variables variable_1="q_C" variable_2="q_C"/>
+   <map_variables variable_1="q_C_init" variable_2="q_C_init"/>
+   <map_variables variable_1="E" variable_2="E"/>
+   <map_variables variable_1="v_out_1" variable_2="v_out_1"/>
+   <map_variables variable_1="v_out_2" variable_2="v_out_2"/>
+   <map_variables variable_1="v_out_total" variable_2="v_out_total"/>
+   <map_variables variable_1="u_ext" variable_2="u_ext"/>
+</connection>
+<connection>
+   <map_components component_1="capillary_1" component_2="capillary_1_module"/>
+   <map_variables variable_1="u" variable_2="u"/>
+   <map_variables variable_1="v" variable_2="v"/>
+   <map_variables variable_1="q_C" variable_2="q_C"/>
+   <map_variables variable_1="q_C_init" variable_2="q_C_init"/>
+   <map_variables variable_1="E" variable_2="E"/>
+   <map_variables variable_1="v_out_1" variable_2="v_out_1"/>
+   <map_variables variable_1="v_out_2" variable_2="v_out_2"/>
+   <map_variables variable_1="v_out_total" variable_2="v_out_total"/>
+   <map_variables variable_1="u_ext" variable_2="u_ext"/>
+</connection>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;own global parameters mapping&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<connection>
+   <map_components component_1="global" component_2="parameters_global"/>
+   <map_variables variable_1="beta_g" variable_2="beta_g"/>
+   <map_variables variable_1="rho" variable_2="rho"/>
+   <map_variables variable_1="mu" variable_2="mu"/>
+   <map_variables variable_1="g" variable_2="g"/>
+   <map_variables variable_1="a_vessel" variable_2="a_vessel"/>
+   <map_variables variable_1="b_vessel" variable_2="b_vessel"/>
+   <map_variables variable_1="c_vessel" variable_2="c_vessel"/>
+   <map_variables variable_1="d_vessel" variable_2="d_vessel"/>
+</connection>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;parameters mapping to modules&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<connection>
+   <map_components component_1="parameters" component_2="input_vessel_module"/>
+   <map_variables variable_1="E_input_vessel" variable_2="E"/>
+   <map_variables variable_1="l_input_vessel" variable_2="l"/>
+   <map_variables variable_1="r_input_vessel" variable_2="r"/>
+   <map_variables variable_1="theta_input_vessel" variable_2="theta"/>
+   <map_variables variable_1="u_ext_input_vessel" variable_2="u_ext"/>
+   <map_variables variable_1="v_in_input_vessel" variable_2="v_in"/>
+</connection>
+<connection>
+   <map_components component_1="parameters_global" component_2="input_vessel_module"/>
+   <map_variables variable_1="beta_g" variable_2="beta_g"/>
+   <map_variables variable_1="rho" variable_2="rho"/>
+   <map_variables variable_1="mu" variable_2="mu"/>
+   <map_variables variable_1="g" variable_2="g"/>
+   <map_variables variable_1="a_vessel" variable_2="a_vessel"/>
+   <map_variables variable_1="b_vessel" variable_2="b_vessel"/>
+   <map_variables variable_1="c_vessel" variable_2="c_vessel"/>
+   <map_variables variable_1="d_vessel" variable_2="d_vessel"/>
+</connection>
+<connection>
+   <map_components component_1="parameters" component_2="pericyte_0_module"/>
+   <map_variables variable_1="u_ext_pericyte_0" variable_2="u_ext"/>
+   <map_variables variable_1="R_pericyte_0" variable_2="R"/>
+   <map_variables variable_1="C_pericyte_0" variable_2="C"/>
+</connection>
+<connection>
+   <map_components component_1="parameters" component_2="pericyte_1_module"/>
+   <map_variables variable_1="u_ext_pericyte_1" variable_2="u_ext"/>
+   <map_variables variable_1="R_pericyte_1" variable_2="R"/>
+   <map_variables variable_1="C_pericyte_1" variable_2="C"/>
+</connection>
+<connection>
+   <map_components component_1="parameters" component_2="capillary_0_module"/>
+   <map_variables variable_1="q_C_init_capillary_0" variable_2="q_C_init"/>
+   <map_variables variable_1="E_capillary_0" variable_2="E"/>
+   <map_variables variable_1="l_capillary_0" variable_2="l"/>
+   <map_variables variable_1="r_capillary_0" variable_2="r"/>
+   <map_variables variable_1="v_out_1_capillary_0" variable_2="v_out_1"/>
+   <map_variables variable_1="v_out_2_capillary_0" variable_2="v_out_2"/>
+   <map_variables variable_1="u_ext_capillary_0" variable_2="u_ext"/>
+</connection>
+<connection>
+   <map_components component_1="parameters_global" component_2="capillary_0_module"/>
+   <map_variables variable_1="rho" variable_2="rho"/>
+   <map_variables variable_1="mu" variable_2="mu"/>
+   <map_variables variable_1="a_vessel" variable_2="a_vessel"/>
+   <map_variables variable_1="b_vessel" variable_2="b_vessel"/>
+   <map_variables variable_1="c_vessel" variable_2="c_vessel"/>
+   <map_variables variable_1="d_vessel" variable_2="d_vessel"/>
+</connection>
+<connection>
+   <map_components component_1="parameters" component_2="capillary_1_module"/>
+   <map_variables variable_1="q_C_init_capillary_1" variable_2="q_C_init"/>
+   <map_variables variable_1="E_capillary_1" variable_2="E"/>
+   <map_variables variable_1="l_capillary_1" variable_2="l"/>
+   <map_variables variable_1="r_capillary_1" variable_2="r"/>
+   <map_variables variable_1="v_out_1_capillary_1" variable_2="v_out_1"/>
+   <map_variables variable_1="v_out_2_capillary_1" variable_2="v_out_2"/>
+   <map_variables variable_1="u_ext_capillary_1" variable_2="u_ext"/>
+</connection>
+<connection>
+   <map_components component_1="parameters_global" component_2="capillary_1_module"/>
+   <map_variables variable_1="rho" variable_2="rho"/>
+   <map_variables variable_1="mu" variable_2="mu"/>
+   <map_variables variable_1="a_vessel" variable_2="a_vessel"/>
+   <map_variables variable_1="b_vessel" variable_2="b_vessel"/>
+   <map_variables variable_1="c_vessel" variable_2="c_vessel"/>
+   <map_variables variable_1="d_vessel" variable_2="d_vessel"/>
+</connection>
+<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;time mapping&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;//-->
+<connection>
+   <map_components component_1="environment" component_2="input_vessel_module"/>
+   <map_variables variable_1="time" variable_2="t"/>
+</connection>
+<connection>
+   <map_components component_1="environment" component_2="pericyte_0_module"/>
+   <map_variables variable_1="time" variable_2="t"/>
+</connection>
+<connection>
+   <map_components component_1="environment" component_2="pericyte_1_module"/>
+   <map_variables variable_1="time" variable_2="t"/>
+</connection>
+<connection>
+   <map_components component_1="environment" component_2="capillary_0_module"/>
+   <map_variables variable_1="time" variable_2="t"/>
+</connection>
+<connection>
+   <map_components component_1="environment" component_2="capillary_1_module"/>
+   <map_variables variable_1="time" variable_2="t"/>
+</connection>
+</model>

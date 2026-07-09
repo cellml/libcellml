@@ -1083,6 +1083,11 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>u</ci>
+                <ci>z</ci>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnCoverage</ci>
                 <apply>
                     <times/>

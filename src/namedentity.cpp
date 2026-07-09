@@ -40,7 +40,7 @@ void NamedEntity::setName(const std::string &name)
     pFunc()->mName = name;
 }
 
-std::string NamedEntity::name() const
+const std::string &NamedEntity::name() const
 {
     return pFunc()->mName;
 }

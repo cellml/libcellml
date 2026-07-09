@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <variable name="t" units="dimensionless"/>
+    <variable name="v_y" units="dimensionless"/>
+    <variable name="v_z" units="dimensionless"/>
+    <variable name="q" units="dimensionless" initial_value="2.0"/>
+    <variable name="P_C" units="dimensionless"/>
+    <variable name="P_R_v" units="dimensionless"/>
+    <variable name="P_R" units="dimensionless"/>
+    <variable name="P_x" units="dimensionless"/>
+    <variable name="v_in" units="dimensionless"/>
+    <variable name="P_out" units="dimensionless"/>
+    <variable name="R" units="dimensionless"/>
+    <variable name="R_v" units="dimensionless"/>
+    <variable name="C" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Conservation Equations -->
+      <apply>
+        <eq/>
+        <ci>v_in</ci>
+        <apply>
+          <plus/>
+          <ci>v_y</ci>
+          <ci>v_z</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>P_x</ci>
+        <apply>
+          <plus/>
+          <ci>P_out</ci>
+          <ci>P_R</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>P_x</ci>
+        <apply>
+          <plus/>
+          <ci>P_R_v</ci>
+          <ci>P_C</ci>
+        </apply>
+      </apply>
+      <!-- Constitutive Equations -->
+      <apply>
+        <eq/>
+        <ci>P_R</ci>
+        <apply>
+          <times/>
+          <ci>v_z</ci>
+          <ci>R</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>P_R_v</ci>
+        <apply>
+          <times/>
+          <ci>v_y</ci>
+          <ci>R_v</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>q</ci>
+        </apply>
+        <ci>v_y</ci>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>P_C</ci>
+        <apply>
+          <divide/>
+          <ci>q</ci>
+          <ci>C</ci>
+        </apply>
+      </apply>
+      <!-- Input Variables and Constants -->
+      <apply>
+        <eq/>
+        <ci>v_in</ci>
+        <cn cellml:units="dimensionless">5.0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>P_out</ci>
+        <cn cellml:units="dimensionless">10.0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>R</ci>
+        <cn cellml:units="dimensionless">10.0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>R_v</ci>
+        <cn cellml:units="dimensionless">10.0</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>C</ci>
+        <cn cellml:units="dimensionless">10.0</cn>
+      </apply>
+    </math>
+  </component>
+</model>

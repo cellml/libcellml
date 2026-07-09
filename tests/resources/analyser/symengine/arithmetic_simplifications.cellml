@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  <component name="my_component">
+    <!-- Constant -->
+    <variable name="a" initial_value="1" units="dimensionless" />
+
+    <!-- plus -->
+
+    <variable name="plusEqn1" units="dimensionless" />
+    <variable name="plusEqn2" units="dimensionless" />
+    <variable name="plusEqn3" units="dimensionless" />
+    <variable name="plusEqn4" units="dimensionless" />
+    <variable name="plusEqn5" units="dimensionless" />
+    <variable name="plusEqn6" units="dimensionless" />
+    <variable name="plusEqn7" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>plusEqn1</ci><apply><plus/><ci>a</ci><ci>a</ci></apply></apply> <!-- a + a -->
+      <apply><eq/><ci>plusEqn2</ci><apply><plus/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- 1 + a -->
+      <apply><eq/><ci>plusEqn3</ci><apply><plus/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- a + 1 -->
+      <apply><eq/><ci>plusEqn4</ci><apply><plus/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- 1 + 1 -->
+      <apply><eq/><ci>plusEqn5</ci><apply><plus/><cn cellml:units="dimensionless">0</cn><ci>a</ci></apply></apply> <!-- 0 + a -->
+      <apply><eq/><ci>plusEqn6</ci><apply><plus/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply></apply> <!-- a + 0 -->
+      <apply><eq/><ci>plusEqn7</ci><apply><plus/><ci>a</ci></apply></apply> <!-- +a -->
+    </math>
+
+    <!-- minus -->
+
+    <variable name="minusEqn1" units="dimensionless" />
+    <variable name="minusEqn2" units="dimensionless" />
+    <variable name="minusEqn3" units="dimensionless" />
+    <variable name="minusEqn4" units="dimensionless" />
+    <variable name="minusEqn5" units="dimensionless" />
+    <variable name="minusEqn6" units="dimensionless" />
+    <variable name="minusEqn7" units="dimensionless" />
+    <variable name="minusEqn8" units="dimensionless" />
+    <variable name="minusEqn9" units="dimensionless" />
+    <variable name="minusEqn10" units="dimensionless" />
+    <variable name="minusEqn11" units="dimensionless" />
+    <variable name="minusEqn12" units="dimensionless" />
+    <variable name="minusEqn13" units="dimensionless" />
+    <variable name="minusEqn14" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>minusEqn1</ci><apply><minus/><ci>a</ci><ci>a</ci></apply></apply> <!-- a - a -->
+      <apply><eq/><ci>minusEqn2</ci><apply><minus/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- 1 - a -->
+      <apply><eq/><ci>minusEqn3</ci><apply><minus/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- a - 1 -->
+      <apply><eq/><ci>minusEqn4</ci><apply><minus/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- 1 - 1 -->
+      <apply><eq/><ci>minusEqn5</ci><apply><minus/><cn cellml:units="dimensionless">0</cn><ci>a</ci></apply></apply> <!-- 0 - a -->
+      <apply><eq/><ci>minusEqn6</ci><apply><minus/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply></apply> <!-- a - 0 -->
+      <apply><eq/><ci>minusEqn7</ci><apply><minus/><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- -1 -->
+      <apply><eq/><ci>minusEqn8</ci><apply><minus/><apply><minus/><ci>a</ci></apply></apply></apply> <!-- -(-a) -->
+      <apply><eq/><ci>minusEqn9</ci><apply><minus/><apply><plus/><ci>a</ci><ci>a</ci></apply></apply></apply> <!-- -(a + a) -->
+      <apply><eq/><ci>minusEqn10</ci><apply><minus/><apply><minus/><ci>a</ci><ci>a</ci></apply></apply></apply> <!-- -(a - a) -->
+      <apply><eq/><ci>minusEqn11</ci><apply><minus/><apply><times/><apply><plus/><ci>a</ci><ci>a</ci></apply><ci>a</ci></apply></apply></apply> <!-- -(a + a) * a -->
+      <apply><eq/><ci>minusEqn12</ci><apply><minus/><apply><times/><apply><minus/><ci>a</ci><ci>a</ci></apply><ci>a</ci></apply></apply></apply> <!-- -(a - a) * a -->
+      <apply><eq/><ci>minusEqn13</ci><apply><minus/><apply><divide/><apply><plus/><ci>a</ci><ci>a</ci></apply><ci>a</ci></apply></apply></apply> <!-- -(a + a) / a -->
+      <apply><eq/><ci>minusEqn14</ci><apply><minus/><apply><divide/><apply><minus/><ci>a</ci><ci>a</ci></apply><ci>a</ci></apply></apply></apply> <!-- -(a - a) / a -->
+    </math>
+
+    <!-- times -->
+
+    <variable name="timesEqn1" units="dimensionless" />
+    <variable name="timesEqn2" units="dimensionless" />
+    <variable name="timesEqn3" units="dimensionless" />
+    <variable name="timesEqn4" units="dimensionless" />
+    <variable name="timesEqn5" units="dimensionless" />
+    <variable name="timesEqn6" units="dimensionless" />
+    <variable name="timesEqn7" units="dimensionless" />
+    <variable name="timesEqn8" units="dimensionless" />
+    <variable name="timesEqn9" units="dimensionless" />
+    <variable name="timesEqn10" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>timesEqn1</ci><apply><times/><ci>a</ci><ci>a</ci></apply></apply> <!-- a * a -->
+      <apply><eq/><ci>timesEqn2</ci><apply><times/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- 1 * a -->
+      <apply><eq/><ci>timesEqn3</ci><apply><times/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- a * 1 -->
+      <apply><eq/><ci>timesEqn4</ci><apply><times/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- 1 * 1 -->
+      <apply><eq/><ci>timesEqn5</ci><apply><times/><cn cellml:units="dimensionless">0</cn><ci>a</ci></apply></apply> <!-- 0 * a -->
+      <apply><eq/><ci>timesEqn6</ci><apply><times/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply></apply> <!-- a * 0 -->
+      <apply><eq/><ci>timesEqn7</ci><apply><times/><cn cellml:units="dimensionless">-1</cn><ci>a</ci></apply></apply> <!-- -1 * a -->
+      <apply><eq/><ci>timesEqn8</ci><apply><times/><ci>a</ci><cn cellml:units="dimensionless">-1</cn></apply></apply> <!-- a * -1 -->
+      <apply><eq/><ci>timesEqn9</ci><apply><times/><apply><divide/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply><ci>a</ci></apply></apply> <!-- (1 / a) * a -->
+      <apply><eq/><ci>timesEqn10</ci><apply><times/><ci>a</ci><apply><divide/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply></apply> <!-- a * (1 / a) -->
+    </math>
+
+    <!-- divide -->
+
+    <variable name="divideEqn1" units="dimensionless" />
+    <variable name="divideEqn2" units="dimensionless" />
+    <variable name="divideEqn3" units="dimensionless" />
+    <variable name="divideEqn4" units="dimensionless" />
+    <variable name="divideEqn5" units="dimensionless" />
+    <variable name="divideEqn6" units="dimensionless" />
+    <variable name="divideEqn7" units="dimensionless" />
+    <variable name="divideEqn8" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>divideEqn1</ci><apply><divide/><ci>a</ci><ci>a</ci></apply></apply> <!-- a / a -->
+      <apply><eq/><ci>divideEqn2</ci><apply><divide/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- 1 / a -->
+      <apply><eq/><ci>divideEqn3</ci><apply><divide/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- a / 1 -->
+      <apply><eq/><ci>divideEqn4</ci><apply><divide/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- 1 / 1 -->
+      <apply><eq/><ci>divideEqn5</ci><apply><divide/><cn cellml:units="dimensionless">0</cn><ci>a</ci></apply></apply> <!-- 0 / a -->
+      <apply><eq/><ci>divideEqn6</ci><apply><divide/><ci>a</ci><cn cellml:units="dimensionless">-1</cn></apply></apply> <!-- a / -1 -->
+      <apply><eq/><ci>divideEqn7</ci><apply><divide/><cn cellml:units="dimensionless">1</cn><apply><divide/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply></apply> <!-- 1 / (1 / a) -->
+      <apply><eq/><ci>divideEqn8</ci><apply><divide/><cn cellml:units="dimensionless">1</cn><apply><divide/><cn cellml:units="dimensionless">2</cn><ci>a</ci></apply></apply></apply> <!-- 1 / (2 / a) -->
+    </math>
+
+    <!-- power -->
+
+    <variable name="powerEqn1" units="dimensionless" />
+    <variable name="powerEqn2" units="dimensionless" />
+    <variable name="powerEqn3" units="dimensionless" />
+    <variable name="powerEqn4" units="dimensionless" />
+    <variable name="powerEqn5" units="dimensionless" />
+    <variable name="powerEqn6" units="dimensionless" />
+    <variable name="powerEqn7" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>powerEqn1</ci><apply><power/><ci>a</ci><ci>a</ci></apply></apply> <!-- a ^ a -->
+      <apply><eq/><ci>powerEqn2</ci><apply><power/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- 1 ^ a -->
+      <apply><eq/><ci>powerEqn3</ci><apply><power/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- a ^ 1 -->
+      <apply><eq/><ci>powerEqn4</ci><apply><power/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- 1 ^ 1 -->
+      <apply><eq/><ci>powerEqn5</ci><apply><power/><ci>a</ci><cn cellml:units="dimensionless">0</cn></apply></apply> <!-- a ^ 0 -->
+      <apply><eq/><ci>powerEqn6</ci><apply><power/><cn cellml:units="dimensionless">0</cn><ci>a</ci></apply></apply> <!-- 0 ^ a -->
+      <apply><eq/><ci>powerEqn7</ci><apply><power/><ci>a</ci><cn cellml:units="dimensionless">-1</cn></apply></apply> <!-- a ^ -1 -->
+    </math>
+
+    <!-- root -->
+
+    <variable name="rootEqn1" units="dimensionless" />
+    <variable name="rootEqn2" units="dimensionless" />
+    <variable name="rootEqn3" units="dimensionless" />
+    <variable name="rootEqn4" units="dimensionless" />
+    <variable name="rootEqn5" units="dimensionless" />
+    <variable name="rootEqn6" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>rootEqn1</ci><apply><root/><degree><ci>a</ci></degree><ci>a</ci></apply></apply> <!-- root(a, a) -->
+      <apply><eq/><ci>rootEqn2</ci><apply><root/><degree><ci>a</ci></degree><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- root(1, a) -->
+      <apply><eq/><ci>rootEqn3</ci><apply><root/><degree><cn cellml:units="dimensionless">1</cn></degree><ci>a</ci></apply></apply> <!-- root(a, 1) -->
+      <apply><eq/><ci>rootEqn4</ci><apply><root/><degree><cn cellml:units="dimensionless">1</cn></degree><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- root(1, 1) -->
+      <apply><eq/><ci>rootEqn5</ci><apply><root/><ci>a</ci></apply></apply> <!-- sqrt(a) -->
+      <apply><eq/><ci>rootEqn6</ci><apply><root/><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- sqrt(1) -->
+    </math>
+
+    <!-- abs -->
+
+    <variable name="absEqn1" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>absEqn1</ci><apply><abs/><cn cellml:units="dimensionless">-1</cn></apply></apply> <!-- |-1| -->
+    </math>
+
+    <!-- exp -->
+
+    <variable name="expEqn1" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>expEqn1</ci><apply><exp/><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- exp(1) -->
+    </math>
+
+    <!-- ln -->
+
+    <variable name="lnEqn1" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>lnEqn1</ci><apply><ln/><cn cellml:units="dimensionless">2.7182818285</cn></apply></apply> <!-- ln(2.7182818285) -->
+    </math>
+
+    <!-- log -->
+
+    <variable name="logEqn1" units="dimensionless" />
+    <variable name="logEqn2" units="dimensionless" />
+    <variable name="logEqn3" units="dimensionless" />
+    <variable name="logEqn4" units="dimensionless" />
+    <variable name="logEqn5" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>logEqn1</ci><apply><log/><logbase><ci>a</ci></logbase><ci>a</ci></apply></apply> <!-- log(a, a) -->
+      <apply><eq/><ci>logEqn2</ci><apply><log/><logbase><cn cellml:units="dimensionless">1</cn></logbase><ci>a</ci></apply></apply> <!-- log(1, a) -->
+      <apply><eq/><ci>logEqn3</ci><apply><log/><logbase><ci>a</ci></logbase><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- log(a, 1) -->
+      <apply><eq/><ci>logEqn4</ci><apply><log/><logbase><cn cellml:units="dimensionless">2</cn></logbase><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- log(1, 2) -->
+      <apply><eq/><ci>logEqn5</ci><apply><log/><cn cellml:units="dimensionless">10</cn></apply></apply> <!-- log(10) -->
+    </math>
+
+    <!-- ceiling -->
+
+    <variable name="ceilingEqn1" units="dimensionless" />
+    <variable name="ceilingEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>ceilingEqn1</ci><apply><ceiling/><ci>a</ci></apply></apply> <!-- ceiling(a) -->
+      <apply><eq/><ci>ceilingEqn2</ci><apply><ceiling/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- ceiling(1.5) -->
+    </math>
+
+    <!-- floor -->
+
+    <variable name="floorEqn1" units="dimensionless" />
+    <variable name="floorEqn2" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>floorEqn1</ci><apply><floor/><ci>a</ci></apply></apply> <!-- floor(a) -->
+      <apply><eq/><ci>floorEqn2</ci><apply><floor/><cn cellml:units="dimensionless">1.5</cn></apply></apply> <!-- floor(1.5) -->
+    </math>
+
+    <!-- min -->
+
+    <variable name="minEqn1" units="dimensionless" />
+    <variable name="minEqn2" units="dimensionless" />
+    <variable name="minEqn3" units="dimensionless" />
+    <variable name="minEqn4" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>minEqn1</ci><apply><min/><ci>a</ci><ci>a</ci></apply></apply> <!-- min(a, a) -->
+      <apply><eq/><ci>minEqn2</ci><apply><min/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- min(1, a) -->
+      <apply><eq/><ci>minEqn3</ci><apply><min/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- min(a, 1) -->
+      <apply><eq/><ci>minEqn4</ci><apply><min/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- min(1, 1) -->
+    </math>
+
+    <!-- max -->
+
+    <variable name="maxEqn1" units="dimensionless" />
+    <variable name="maxEqn2" units="dimensionless" />
+    <variable name="maxEqn3" units="dimensionless" />
+    <variable name="maxEqn4" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>maxEqn1</ci><apply><max/><ci>a</ci><ci>a</ci></apply></apply> <!-- max(a, a) -->
+      <apply><eq/><ci>maxEqn2</ci><apply><max/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- max(1, a) -->
+      <apply><eq/><ci>maxEqn3</ci><apply><max/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- max(a, 1) -->
+      <apply><eq/><ci>maxEqn4</ci><apply><max/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- max(1, 1) -->
+    </math>
+
+    <!-- rem -->
+
+    <variable name="remEqn1" units="dimensionless" />
+    <variable name="remEqn2" units="dimensionless" />
+    <variable name="remEqn3" units="dimensionless" />
+    <variable name="remEqn4" units="dimensionless" />
+
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply><eq/><ci>remEqn1</ci><apply><rem/><ci>a</ci><ci>a</ci></apply></apply> <!-- rem(a, a) -->
+      <apply><eq/><ci>remEqn2</ci><apply><rem/><cn cellml:units="dimensionless">1</cn><ci>a</ci></apply></apply> <!-- rem(1, a) -->
+      <apply><eq/><ci>remEqn3</ci><apply><rem/><ci>a</ci><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- rem(a, 1) -->
+      <apply><eq/><ci>remEqn4</ci><apply><rem/><cn cellml:units="dimensionless">1</cn><cn cellml:units="dimensionless">1</cn></apply></apply> <!-- rem(1, 1) -->
+    </math>
+  </component>
+</model>

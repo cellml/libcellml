@@ -8,7 +8,7 @@
      • k3: 1e4
      • y1: 1
      • y2: 0
-     • y3: 0
+     • y3
     Equations:
      • dy1/dt = -k1*y1 + k3*y2*y3
      • dy2/dt = k1*y1 - k2*y2^2 - k3*y2*y3
@@ -22,7 +22,7 @@
         <variable initial_value="1e4" name="k3" units="dimensionless"/>
         <variable initial_value="1" name="y1" units="dimensionless"/>
         <variable initial_value="0" name="y2" units="dimensionless"/>
-        <variable initial_value="0" name="y3" units="dimensionless"/>
+        <variable name="y3" units="dimensionless"/>
         <variable name="y2_scaled" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>

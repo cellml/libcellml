@@ -347,7 +347,7 @@ TEST(Equality, unitsEqualPrecision1)
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
     u1->addUnit("second", 1.0);
-    u2->addUnit("second", 1.0 + std::numeric_limits<double>::epsilon());
+    u2->addUnit("second", 1.0 + 0.5 * epsilon());
 
     EXPECT_TRUE(u1->equals(u2));
     EXPECT_TRUE(u2->equals(u1));
@@ -359,7 +359,7 @@ TEST(Equality, unitsEqualPrecision2)
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
     u1->addUnit("second", 1.0);
-    u2->addUnit("second", 1.0 + 2 * std::numeric_limits<double>::epsilon());
+    u2->addUnit("second", 1.0 + 1.5 * epsilon());
 
     EXPECT_FALSE(u1->equals(u2));
     EXPECT_FALSE(u2->equals(u1));

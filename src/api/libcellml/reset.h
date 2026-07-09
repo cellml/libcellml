@@ -147,7 +147,7 @@ public:
      *
      * @return @c std::string test value for this reset.
      */
-    std::string testValue() const;
+    const std::string &testValue() const;
 
     /**
      * @brief Set the test value string for this reset.
@@ -194,7 +194,7 @@ public:
      *
      * @return @c std::string The identifier of the test value for this reset.
      */
-    std::string testValueId() const;
+    const std::string &testValueId() const;
 
     /**
      * @brief Append the argument to the reset value for this reset.
@@ -213,7 +213,7 @@ public:
      *
      * @return @c std::string reset value for this reset.
      */
-    std::string resetValue() const;
+    const std::string &resetValue() const;
 
     /**
      * @brief Set the reset value math for this reset.
@@ -259,7 +259,7 @@ public:
      *
      * @return @c std::string The identifier of the reset value for this reset.
      */
-    std::string resetValueId() const;
+    const std::string &resetValueId() const;
 
     /**
      * @brief Create a clone of this reset.

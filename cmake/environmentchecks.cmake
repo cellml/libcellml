@@ -114,6 +114,20 @@ resolve_zlib(${LIBXML2_TARGET} ZLIB_TARGET)
 get_target_property(ZLIB_TARGET_TYPE ${ZLIB_TARGET} TYPE)
 get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET} TYPE)
 
+# Set the minimum policy version to work around SymEngine's outdated CMake requirements.
+if(NOT DEFINED CMAKE_POLICY_VERSION_MINIMUM OR CMAKE_POLICY_VERSION_MINIMUM VERSION_LESS "3.10")
+  set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
+endif()
+
+# Find SymEngine.
+find_package(SymEngine REQUIRED CONFIG)
+if(TARGET symengine)
+  set(HAVE_SYMENGINE_TARGET TRUE)
+  set(SYMENGINE_TARGET symengine)
+  get_target_property(SYMENGINE_TARGET_TYPE symengine TYPE)
+  message(STATUS "Found SymEngine: ${SYMENGINE_LIBRARIES} (found version \"${SymEngine_VERSION}\").")
+endif()
+
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
   set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
 endif()
