@@ -173,6 +173,15 @@ public:
      */
     std::string equivalentConnectionId(const VariablePtr &equivalentVariable) const;
 
+    /**
+     * @brief Reset the connection and mapping ids associated with this variable and equivalent variable.
+     *
+     * This method will reset the connection id and the mapping id to empty.
+     * It will not check that the @p equivalentVariable is valid, this method expects the equivalent variable
+     * to be safe before using.
+     */
+    void unsafeResetEquivalenceIds(const VariablePtr &equivalentVariable);
+
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
 };

@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <cstdint>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "libcellml/analysermodel.h"
 
@@ -46,34 +47,7 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
-    std::unordered_map<uintptr_t, uintptr_t> mEquivalentVariableCache;
-
-    uintptr_t findVariableAddress(uintptr_t x)
-    {
-        auto it = mEquivalentVariableCache.find(x);
-
-        if (it == mEquivalentVariableCache.end()) {
-            mEquivalentVariableCache[x] = x;
-
-            return x;
-        }
-
-        if (it->second != x) {
-            it->second = findVariableAddress(it->second);
-        }
-
-        return it->second;
-    }
-
-    void uniteEquivalentVariableAddresses(uintptr_t x, uintptr_t y)
-    {
-        const uintptr_t &rootX = findVariableAddress(x);
-        const uintptr_t &rootY = findVariableAddress(y);
-
-        if (rootX != rootY) {
-            mEquivalentVariableCache[rootY] = rootX;
-        }
-    }
+    std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache;
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -104,7 +78,7 @@ struct AnalyserModel::AnalyserModelImpl
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 
-    void buildEquivalentVariablesCache(const ComponentPtr &component);
+    void buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, size_t &groupCount);
     void buildEquivalentVariablesCache();
 
     AnalyserModelImpl(const ModelPtr &model);

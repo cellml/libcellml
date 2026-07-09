@@ -48,35 +48,50 @@ AnalyserModel::~AnalyserModel()
     delete mPimpl;
 }
 
-void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component)
+void exploreEquivalentVariables(const VariablePtr &variable, std::unordered_set<uintptr_t> &equivalentGroup, std::unordered_set<uintptr_t> &visited)
 {
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        auto variable = component->variable(i);
+    auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
 
-        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
-            auto equivalentVariable = variable->equivalentVariable(j);
-            auto v1 = reinterpret_cast<uintptr_t>(variable.get());
-            auto v2 = reinterpret_cast<uintptr_t>(equivalentVariable.get());
+    if (visited.insert(rawPtr).second) {
+        equivalentGroup.insert(rawPtr);
 
-            if (v2 < v1) {
-                std::swap(v1, v2);
-            }
-
-            uniteEquivalentVariableAddresses(v1, v2);
+        for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+            exploreEquivalentVariables(variable->equivalentVariable(i), equivalentGroup, visited);
         }
-    }
-
-    for (size_t i = 0; i < component->componentCount(); ++i) {
-        buildEquivalentVariablesCache(component->component(i));
     }
 }
 
 void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache()
 {
+    std::unordered_set<uintptr_t> visited;
+    size_t groupCount = 0;
     mEquivalentVariableCache.clear();
 
     for (size_t i = 0; i < mModel->componentCount(); ++i) {
-        buildEquivalentVariablesCache(mModel->component(i));
+        buildEquivalentVariablesCache(mModel->component(i), visited, groupCount);
+    }
+}
+
+void AnalyserModel::AnalyserModelImpl::buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, size_t &groupCount)
+{
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto variable = component->variable(i);
+        auto rawPtr = reinterpret_cast<uintptr_t>(variable.get());
+
+        if (visited.count(rawPtr) == 0) {
+            std::unordered_set<uintptr_t> equivalentGroup;
+            exploreEquivalentVariables(variable, equivalentGroup, visited);
+
+            for (uintptr_t v : equivalentGroup) {
+                mEquivalentVariableCache[v] = groupCount;
+            }
+
+            ++groupCount;
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        buildEquivalentVariablesCache(component->component(i), visited, groupCount);
     }
 }
 
@@ -98,20 +113,21 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
-static const std::map<AnalyserModel::Type, std::string> typeToString = {
-    {AnalyserModel::Type::UNKNOWN, "unknown"},
-    {AnalyserModel::Type::ODE, "ode"},
-    {AnalyserModel::Type::DAE, "dae"},
-    {AnalyserModel::Type::NLA, "nla"},
-    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
-    {AnalyserModel::Type::INVALID, "invalid"},
-    {AnalyserModel::Type::UNDERCONSTRAINED, "underconstrained"},
-    {AnalyserModel::Type::OVERCONSTRAINED, "overconstrained"},
-    {AnalyserModel::Type::UNSUITABLY_CONSTRAINED, "unsuitably_constrained"}};
-
 std::string AnalyserModel::typeAsString(Type type)
 {
-    return typeToString.at(type);
+    static constexpr const char *names[] = {
+        "unknown",
+        "algebraic",
+        "dae",
+        "invalid",
+        "nla",
+        "ode",
+        "overconstrained",
+        "underconstrained",
+        "unsuitably_constrained",
+    };
+
+    return names[static_cast<size_t>(type)];
 }
 
 bool AnalyserModel::hasExternalVariables() const
@@ -274,9 +290,37 @@ AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
         return {};
     }
 
-    for (const auto &analyserVariable : analyserVariables(shared_from_this())) {
-        if (areEquivalentVariables(variable, analyserVariable->variable())) {
-            return analyserVariable;
+    if (mPimpl->mVoi && areEquivalentVariables(variable, mPimpl->mVoi->variable())) {
+        return mPimpl->mVoi;
+    }
+
+    for (const auto &state : mPimpl->mStates) {
+        if (areEquivalentVariables(variable, state->variable())) {
+            return state;
+        }
+    }
+
+    for (const auto &constant : mPimpl->mConstants) {
+        if (areEquivalentVariables(variable, constant->variable())) {
+            return constant;
+        }
+    }
+
+    for (const auto &computedConstant : mPimpl->mComputedConstants) {
+        if (areEquivalentVariables(variable, computedConstant->variable())) {
+            return computedConstant;
+        }
+    }
+
+    for (const auto &algebraicVariable : mPimpl->mAlgebraicVariables) {
+        if (areEquivalentVariables(variable, algebraicVariable->variable())) {
+            return algebraicVariable;
+        }
+    }
+
+    for (const auto &externalVariable : mPimpl->mExternalVariables) {
+        if (areEquivalentVariables(variable, externalVariable->variable())) {
+            return externalVariable;
         }
     }
 
@@ -546,7 +590,19 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     const auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
     const auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
-    return mPimpl->findVariableAddress(v1) == mPimpl->findVariableAddress(v2);
+    const auto it1 = mPimpl->mEquivalentVariableCache.find(v1);
+
+    if (it1 == mPimpl->mEquivalentVariableCache.end()) {
+        return false;
+    }
+
+    const auto it2 = mPimpl->mEquivalentVariableCache.find(v2);
+
+    if (it2 == mPimpl->mEquivalentVariableCache.end()) {
+        return false;
+    }
+
+    return it1->second == it2->second;
 }
 
 } // namespace libcellml

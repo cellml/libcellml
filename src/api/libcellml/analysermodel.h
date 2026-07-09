@@ -604,10 +604,6 @@ public:
      * analysis phase (@ref Analyser::analyseModel). The cache may become
      * out of date if the model is changed after the model has been analysed.
      *
-     * @note This function is primarily designed for use during model analysis
-     *       by the @ref Analyser. While external usage is not programmatically
-     *       restricted, it is not the primary intended use case.
-     *
      * @param variable1 The @ref Variable to test if it is equivalent to
      * @p variable2.
      * @param variable2 The @ref Variable that is potentially equivalent to
@@ -616,8 +612,7 @@ public:
      * @return @c true if @p variable1 is equivalent to @p variable2 and
      * @c false otherwise.
      */
-    bool areEquivalentVariables(const VariablePtr &variable1,
-                                const VariablePtr &variable2);
+    bool areEquivalentVariables(const VariablePtr &variable1, const VariablePtr &variable2);
 
 private:
     AnalyserModel(const ModelPtr &model); /**< Constructor, @private. */
