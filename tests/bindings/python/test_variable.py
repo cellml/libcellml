@@ -339,6 +339,13 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         self.assertEqual(v.interfaceType(), 'public_and_private')
 
+    def test_interface_type_as_string(self):
+        from libcellml import Variable
+        from libcellml.variable import Variable_interfaceTypeAsString
+
+        self.assertEqual("none", Variable.interfaceTypeAsString(Variable.InterfaceType.NONE))
+        self.assertEqual("private", Variable_interfaceTypeAsString(Variable.InterfaceType.PRIVATE))
+
     def test_minimum_interface_type(self):
         from libcellml import Variable
 

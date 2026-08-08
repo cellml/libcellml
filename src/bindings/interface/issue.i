@@ -31,6 +31,12 @@ Level::ERROR will be returned.";
 "Returns the CellML 2.0 Specification heading associated with the
 :class:`ReferenceRule` for this issue (empty string if not set).";
 
+%feature("docstring") libcellml::Issue::referenceRuleAsString
+"Get the string version of a :class:`ReferenceRule`.";
+
+%feature("docstring") libcellml::Issue::levelAsString
+"Get the string version of a :class:`Level`.";
+
 %{
 #include "libcellml/issue.h"
 %}

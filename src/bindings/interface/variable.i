@@ -99,6 +99,9 @@ not equivalent the connection identifier is not set.";
 %feature("docstring") libcellml::Variable::clone
 "Create a copy of this variable.";
 
+%feature("docstring") libcellml::Variable::interfaceTypeAsString
+"Get the string version of a :class:`InterfaceType`.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {

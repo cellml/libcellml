@@ -194,7 +194,7 @@ Provides support for shared pointers declared in types.h.
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast($type::UNDEFINED, int) || %static_cast($type::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, int) < val) {
+    if (val < %static_cast($type::UNDEFINED, int) || %static_cast($type::UNSPECIFIED, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val, $basetype);

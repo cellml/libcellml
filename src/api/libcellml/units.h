@@ -108,6 +108,18 @@ public:
     };
 
     /**
+     * @brief Get the string version of a @ref Prefix.
+     *
+     * Return the string version of a @ref Prefix.
+     *
+     * @param prefix The prefix for which we want the string version.
+     *
+     * @return The string version of the @ref Prefix.
+     */
+
+    static std::string prefixAsString(Prefix prefix);
+
+    /**
      * @brief The Standard Unit enum class.
      *
      * Standard units that are suitable for variable declarations
@@ -150,6 +162,18 @@ public:
         WATT, /**< Derived SI unit watt. */
         WEBER /**< Derived SI unit weber. */
     };
+
+    /**
+     * @brief Get the string version of a @ref StandardUnit.
+     *
+     * Return the string version of a @ref StandardUnit.
+     *
+     * @param unit The unit for which we want the string version.
+     *
+     * @return The string version of the @ref StandardUnit.
+     */
+
+    static std::string standardUnitAsString(StandardUnit unit);
 
     /**
      * @brief Test to determine if Units is a base unit.
