@@ -392,10 +392,8 @@ jobs:
           pip install twine
 
       - name: Publish Python wheels
-        env:
-          name: pypi
         run: |
-          twine upload --skip-existing --repository-url https://upload.pypi.org/legacy/ ./wheelhouse/*.whl
+          twine upload --verbose --skip-existing --repository-url https://upload.pypi.org/legacy/ ./wheelhouse/*.whl
 
   emscripten:
     needs: setup-jobs
