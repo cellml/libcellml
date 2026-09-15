@@ -259,7 +259,7 @@ jobs:
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         files: ${{ steps.package.outputs.files }}
         tag_name: ${{ github.event.release.tag_name }}
@@ -395,7 +395,7 @@ jobs:
         env:
           name: pypi
         run: |
-          twine upload --repository-url https://upload.pypi.org/legacy/ ./wheelhouse/*.whl
+          twine upload --skip-existing --repository-url https://upload.pypi.org/legacy/ ./wheelhouse/*.whl
 
   emscripten:
     needs: setup-jobs
@@ -600,5 +600,5 @@ jobs:
             --repo JuliaPackaging/Yggdrasil \
             --head "${{ github.repository_owner }}:$branch" \
             --base master \
-            --title "libcellml ${{ github.event.release.tag_name }}" \
+            --title "[libcellml] new version ${{ github.event.release.tag_name }}" \
             --body "Automated update for libCellML release ${{ github.event.release.tag_name }}."
