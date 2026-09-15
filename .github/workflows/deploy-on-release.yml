@@ -259,7 +259,7 @@ jobs:
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         files: ${{ steps.package.outputs.files }}
         tag_name: ${{ github.event.release.tag_name }}
@@ -382,18 +382,27 @@ jobs:
           pattern: '*-wheel'
           merge-multiple: true
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Twine
+        run: |
+          pip install twine
+
       - name: Publish Python wheels
         env:
           name: pypi
-          url: https://pypi.org/p/libcellml
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: ./wheelhouse/
+        run: |
+          twine upload --skip-existing --repository-url https://upload.pypi.org/legacy/ ./wheelhouse/*.whl
 
   emscripten:
     needs: setup-jobs
     if: needs.setup-jobs.outputs.allowed-jobs == 'Javascript' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: libcellml.js
+    permissions:
+      id-token: write
     runs-on: macos-15-intel
     steps:
       - name: Checkout libCellML
@@ -420,6 +429,12 @@ jobs:
         shell: bash
         run: |
           brew install emscripten
+
+      - name: Instal Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Build and install zlib
         shell: bash
@@ -464,10 +479,10 @@ jobs:
 
       - name: Publish libcellml.js
         if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: build-libcellml-release/src/bindings/javascript
+        run: |
+          cd build-libcellml-release/src/bindings/javascript
+
+          npm publish
 
   julia:
     needs: setup-jobs
@@ -585,5 +600,5 @@ jobs:
             --repo JuliaPackaging/Yggdrasil \
             --head "${{ github.repository_owner }}:$branch" \
             --base master \
-            --title "libcellml ${{ github.event.release.tag_name }}" \
+            --title "[libcellml] new version ${{ github.event.release.tag_name }}" \
             --body "Automated update for libCellML release ${{ github.event.release.tag_name }}."
