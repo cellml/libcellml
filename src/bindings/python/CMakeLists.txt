@@ -14,7 +14,6 @@
 
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
-message(STATUS "=============================================== I am here!!!! ============================================================")
 set(SWIG_INTERFACE_SRCS
     ../interface/analyser.i
     ../interface/analyserequation.i
