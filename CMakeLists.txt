@@ -20,7 +20,7 @@ endif()
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
-set(_PROJECT_VERSION 0.7.0)
+set(_PROJECT_VERSION 0.7.1)
 set(PROJECT_DEVELOPER_VERSION .post)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
