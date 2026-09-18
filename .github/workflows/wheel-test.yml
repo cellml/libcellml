@@ -1,0 +1,123 @@
+name: Test Wheels
+
+on: push
+
+
+env:
+  BUILD_TYPE: Release
+  ARTIFACT_RETENTION_DAYS: 7
+
+jobs:
+  setup-jobs:
+    runs-on: ubuntu-24.04
+    outputs:
+      allowed-jobs: ${{ steps.do-jobs.outputs.allowed-jobs }}
+    steps:
+
+    - name: Determine next jobs
+      id: do-jobs
+      shell: cmake -P {0}
+      run: |
+        set(_ALLOWED_JOBS Wheels)
+        message(STATUS "Setting allowed jobs to '${_ALLOWED_JOBS}'.")
+        file(APPEND $ENV{GITHUB_OUTPUT} "allowed-jobs=${_ALLOWED_JOBS}")
+
+  wheels:
+    needs: setup-jobs
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
+    name: ${{ matrix.name }} ${{ matrix.py }} wheel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm, windows-2025-vs2026, windows-11-arm]
+        py: ['3.10', '3.11']
+        include:
+          - name: 'Windows'
+            os: windows-2025-vs2026
+          - name: 'Windows ARM'
+            os: windows-11-arm
+          - name: 'Linux'
+            os: ubuntu-24.04-arm
+          - name: 'Linux ARM'
+            os: ubuntu-24.04
+          - name: 'macOS'
+            os: macos-15
+        exclude:
+          - os: ubuntu-24.04
+            py: '3.9'
+          - os: ubuntu-24.04-arm
+            py: '3.9'
+
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Setup for cibuildwheel
+        id: setup
+        shell: bash
+        run: |
+          GITHUB_REF_NAME_TMP=v0.7.1
+          VERSION="${GITHUB_REF_NAME_TMP#refs/tags/v}"
+          if [[ "$OSTYPE" == darwin* ]]; then
+            sed -i '' "s/__VERSION__/${VERSION}/" src/bindings/python/pyproject.toml
+          else
+            sed -i "s/__VERSION__/${VERSION}/" src/bindings/python/pyproject.toml
+          fi
+          grep '^version' src/bindings/python/pyproject.toml
+          # mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
+          v=${{ matrix.py }}
+          echo "Setting tag as: tag=${GITHUB_REF#refs/tags/}"
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "Setting build as: build=cp${v/./}-*"
+          echo "build=cp${v/./}-*" >> $GITHUB_OUTPUT
+          if [[ "macOS" == "${{ matrix.name }}" ]]; then
+            echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
+            echo "macos_archs=x86_64 arm64" >> $GITHUB_OUTPUT
+            echo "macos_deployment_target=14.0" >> $GITHUB_OUTPUT
+          elif [[ "Windows" == "${{ matrix.name }}" ]]; then
+            echo "Setting win_arch as: win_arch=amd64"
+            echo "win_arch=amd64" >> $GITHUB_OUTPUT
+          elif [[ "Windows ARM" == "${{ matrix.name }}" ]]; then
+            echo "Setting win_arch as: win_arch=arm64"
+            echo "win_arch=arm64" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: ${{ steps.setup.outputs.win_arch }}
+
+      - name: Install SWIG (macOS)
+        if: runner.os == 'macOS'
+        run: brew install swig
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.4
+        env:
+          #CIBW_BUILD_VERBOSITY: 1
+          CIBW_ARCHS: auto64
+          CIBW_ARCHS_MACOS: ${{ steps.setup.outputs.macos_archs }}
+          CIBW_BUILD: ${{ steps.setup.outputs.build }}
+          CIBW_TEST_SKIP: "*_arm64"
+          CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
+          CIBW_ENVIRONMENT: >
+            LIBCELLML_VERSION_TAG=v0.7.1
+            MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
+          CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
+          CIBW_BEFORE_BUILD_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
+        with:
+          output-dir: wheelhouse
+          package-dir: src/bindings/python/
+
+      - name: Upload Python wheels as artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./wheelhouse/*.whl
+          name: ${{ matrix.name }}-${{ matrix.py }}-wheel
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}

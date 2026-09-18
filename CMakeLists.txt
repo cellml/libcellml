@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+message(STATUS "=============================================== I am here, at the top-level CMakeLists.txt file!!!! ============================================================")
+
 cmake_minimum_required(VERSION 3.18.0)
 
 if(APPLE)
@@ -20,9 +22,14 @@ endif()
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
-set(_PROJECT_VERSION 0.7.0)
+set(_PROJECT_VERSION 0.7.1)
 set(PROJECT_DEVELOPER_VERSION .post)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
+
+message(STATUS "CMAKE_GENERATOR=${CMAKE_GENERATOR}")
+message(STATUS "CMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}")
+message(STATUS "CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 
 # Set policies that affect the build.
 set(NEW_POLICIES CMP0056 CMP0063 CMP0074 CMP0078 CMP0086 CMP0092)
