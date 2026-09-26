@@ -603,7 +603,6 @@ TEST(Units, cannotLinkUnitsNotAddedToModel)
 
     v1->setUnits(u1);
 
-    m->linkUnits();
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
@@ -1182,22 +1181,22 @@ TEST(Units, dimensionlessScalingFactor)
     auto u = libcellml::Units::create("u");
 
     auto u1 = libcellml::Units::create("u1");
-    u1->addUnit("u", "milli", 2.0, 1000.0);
+    u1->addUnit("u", "milli", 2.0, 1.0e6);
     u1->addUnit("dimensionless");
     auto u2 = libcellml::Units::create("u2");
-    u2->addUnit("u", "kilo", 2.0, 0.001);
+    u2->addUnit("u", "kilo", 2.0, 1.0e-6);
     u2->addUnit("dimensionless");
 
     auto u3 = libcellml::Units::create("u3");
-    u3->addUnit("u", "milli", 2.0, 1000.0);
+    u3->addUnit("u", "milli", 2.0, 1.0e6);
     auto u4 = libcellml::Units::create("u4");
-    u4->addUnit("u", "kilo", 2.0, 0.001);
+    u4->addUnit("u", "kilo", 2.0, 1.0e-6);
 
     auto u5 = libcellml::Units::create("u5");
-    u5->addUnit("u", "milli", 2.0, 1000.0);
+    u5->addUnit("u", "milli", 2.0, 1.0e6);
     u5->addUnit("dimensionless", 2.0);
     auto u6 = libcellml::Units::create("u6");
-    u6->addUnit("u", "kilo", 2.0, 0.001);
+    u6->addUnit("u", "kilo", 2.0, 1.0e-6);
     u6->addUnit("dimensionless", 2.0);
 
     m->addUnits(u);
@@ -1221,6 +1220,52 @@ TEST(Units, dimensionlessScalingFactor)
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u5));
 }
 
+TEST(Units, scalingFactorWithMinuteAndPerMinuteUnits)
+{
+    auto m = libcellml::Model::create("model");
+    auto minute = libcellml::Units::create("minute");
+
+    minute->addUnit("second", "", 1.0, 60.0);
+
+    auto perMinute = libcellml::Units::create("per_minute");
+
+    perMinute->addUnit("second", "", -1.0, 1.0 / 60.0);
+
+    auto perMinuteByReference = libcellml::Units::create("per_minute_by_reference");
+
+    perMinuteByReference->addUnit("minute", "", -1.0, 1.0);
+
+    m->addUnits(minute);
+    m->addUnits(perMinute);
+    m->addUnits(perMinuteByReference);
+
+    EXPECT_NEAR(1.0, libcellml::Units::scalingFactor(perMinute, perMinuteByReference), 1e-12);
+    EXPECT_NEAR(1.0, libcellml::Units::scalingFactor(perMinuteByReference, perMinute), 1e-12);
+}
+
+TEST(Units, scalingFactorWithCustomUnits)
+{
+    auto m = libcellml::Model::create("model");
+    auto b = libcellml::Units::create("b");
+
+    b->addUnit("metre");
+
+    auto a = libcellml::Units::create("a");
+
+    a->addUnit("b", "kilo", 2.0, 1.0);
+
+    auto c = libcellml::Units::create("c");
+
+    c->addUnit("metre", "kilo", 2.0, 1.0);
+
+    m->addUnits(b);
+    m->addUnits(a);
+    m->addUnits(c);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(a, c));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(c, a));
+}
+
 TEST(Units, customUnitsScalingFactorSimple)
 {
     auto m = libcellml::Model::create("model");
@@ -1229,8 +1274,6 @@ TEST(Units, customUnitsScalingFactorSimple)
     auto u2 = libcellml::Units::create("u2");
     u2->addUnit("u1");
     m->addUnits(u2);
-
-    m->linkUnits();
 
     EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
@@ -1254,8 +1297,6 @@ TEST(Units, customUnitsScalingFactorIncludingDimensionless)
 
     m->addUnits(u2);
 
-    m->linkUnits();
-
     EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
@@ -1269,15 +1310,15 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     u->setName("u");
 
     libcellml::UnitsPtr u1 = libcellml::Units::create("u1");
-    u1->addUnit("u", "milli", 2.0, 1000.0); // u1 = u^2
+    u1->addUnit("u", "milli", 2.0, 1.0e6); // u1 = u^2
     u1->addUnit("dimensionless");
 
     libcellml::UnitsPtr u2 = libcellml::Units::create("u2");
-    u2->addUnit("u", "kilo", 2.0, 0.001); // u2 = u^2
+    u2->addUnit("u", "kilo", 2.0, 1.0e-6); // u2 = u^2
     u2->addUnit("dimensionless");
 
     libcellml::UnitsPtr u3 = libcellml::Units::create("u3");
-    u3->addUnit("u", "kilo", 4.0, 0.001); // u3 = u^4
+    u3->addUnit("u", "kilo", 4.0, 1.0e-12); // u3 = u^4
 
     libcellml::UnitsPtr u4 = libcellml::Units::create("u4");
     u4->addUnit("u2", 2.0); // u4 = u^4

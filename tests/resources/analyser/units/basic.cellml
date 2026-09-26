@@ -91,7 +91,9 @@
         <unit exponent="-13" units="second_volt_frog"/>
     </units>
     <units name="nanosecond_volt_frog">
-        <unit prefix="nano" units="second_volt_frog"/>
+        <unit units="nanosecond"/>
+        <unit units="nanovolt"/>
+        <unit units="nanofrog"/>
     </units>
     <units name="nanosecond_volt_frog_13">
         <unit exponent="13" units="nanosecond_volt_frog"/>
@@ -100,9 +102,9 @@
         <unit exponent="-13" units="nanosecond_volt_frog"/>
     </units>
     <units name="other_nanosecond_volt_frog">
-        <unit prefix="milli" units="second_volt_frog"/>
-        <unit prefix="micro" units="second_volt_frog"/>
-        <unit exponent="-1" units="second_volt_frog"/>
+        <unit units="other_nanosecond"/>
+        <unit units="other_nanovolt"/>
+        <unit units="other_nanofrog"/>
     </units>
     <units name="other_nanosecond_volt_frog_13">
         <unit exponent="13" units="other_nanosecond_volt_frog"/>
