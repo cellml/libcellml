@@ -91,6 +91,7 @@ struct AnalyserInternalEquation
     Type mType = Type::UNKNOWN;
 
     VariablePtrs mDependencies;
+    VariablePtrs mRateDependencies;
 
     AnalyserEquationAstPtr mAst;
 

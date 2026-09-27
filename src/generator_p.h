@@ -127,10 +127,10 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     bool isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation);
     bool isSomeConstant(const AnalyserEquationPtr &analyserEquation,
                         bool includeComputedConstants) const;
-    void addRateAnalyserEquations(const AnalyserEquationAstPtr &ast,
-                                  std::vector<AnalyserEquationPtr> &rateAnalyserEquations) const;
-    void addRateAnalyserEquations(const AnalyserEquationPtr &analyserEquation,
-                                  std::vector<AnalyserEquationPtr> &rateAnalyserEquations);
+    void addRateDependencies(const AnalyserEquationPtr &analyserEquation,
+                             std::vector<AnalyserEquationPtr> &rateDependencies) const;
+    void addNlaRateDependencies(const AnalyserEquationPtr &analyserEquation,
+                                std::vector<AnalyserEquationPtr> &rateDependencies);
 
     enum class GenerateEquationCodeTarget
     {

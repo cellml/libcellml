@@ -10,8 +10,8 @@ const char LIBCELLML_VERSION[] = "0.7.1";
 
 const size_t STATE_COUNT = 2;
 const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_VARIABLE_COUNT = 1;
+const size_t COMPUTED_CONSTANT_COUNT = 1;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 2;
 
 const VariableInfo VOI_INFO = {"t", "dimensionless", "my_component"};
 
@@ -24,10 +24,12 @@ const VariableInfo CONSTANT_INFO[] = {
 };
 
 const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"a", "dimensionless", "my_component"}
 };
 
 const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
-    {"y", "dimensionless", "my_component"}
+    {"y", "dimensionless", "my_component"},
+    {"q", "dimensionless", "my_component"}
 };
 
 double * createStatesArray()
@@ -79,10 +81,50 @@ void deleteArray(double *array)
     free(array);
 }
 
+typedef struct {
+    double voi;
+    double *states;
+    double *rates;
+    double *constants;
+    double *computedConstants;
+    double *algebraicVariables;
+} RootFindingInfo;
+
+extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
+                     double *u, size_t n, void *data);
+
+void objectiveFunction0(double *u, double *f, void *data)
+{
+    double voi = ((RootFindingInfo *) data)->voi;
+    double *states = ((RootFindingInfo *) data)->states;
+    double *rates = ((RootFindingInfo *) data)->rates;
+    double *constants = ((RootFindingInfo *) data)->constants;
+    double *computedConstants = ((RootFindingInfo *) data)->computedConstants;
+    double *algebraicVariables = ((RootFindingInfo *) data)->algebraicVariables;
+
+    algebraicVariables[0] = u[0];
+
+    f[0] = algebraicVariables[0]+exp(algebraicVariables[0])-algebraicVariables[1];
+}
+
+void findRoot0(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+{
+    RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables };
+    double u[1];
+
+    u[0] = algebraicVariables[0];
+
+    nlaSolve(objectiveFunction0, u, 1, &rfi);
+
+    algebraicVariables[0] = u[0];
+}
+
 void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     states[0] = 0.0;
     states[1] = 1.0;
+    computedConstants[0] = 2.0;
+    algebraicVariables[0] = 0.0;
 }
 
 void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
@@ -92,11 +134,13 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     rates[1] = -states[1];
-    algebraicVariables[0] = rates[1];
+    algebraicVariables[1] = computedConstants[0]*rates[1]+states[1];
+    findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables);
     rates[0] = algebraicVariables[0];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    algebraicVariables[0] = rates[1];
+    algebraicVariables[1] = computedConstants[0]*rates[1]+states[1];
+    findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables);
 }

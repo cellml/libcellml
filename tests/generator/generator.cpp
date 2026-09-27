@@ -362,6 +362,63 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownAndDerivativeDependency)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownAndUntrackedDerivativeDependency)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("q")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}
+
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 {
     auto parser = libcellml::Parser::create();
@@ -416,6 +473,30 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicSystemWithDerivativeOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_derivative_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)

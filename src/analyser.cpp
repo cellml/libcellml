@@ -214,11 +214,18 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
     mComputedVariableBasedConstant = mComputedVariableBasedConstant && !hasNonConstantVariables();
 
     // Add, as a dependency, the variables used to compute the (new) known (state)
-    // variables.
+    // variables, and, as a rate dependency, the (new) known state variables
+    // which rate is used.
 
     for (const auto &variable : mVariables) {
         if (isKnownVariable(variable)) {
             mDependencies.push_back(variable->mVariable);
+        }
+    }
+
+    for (const auto &stateVariable : mStateVariables) {
+        if (isKnownStateVariable(stateVariable)) {
+            mRateDependencies.push_back(stateVariable->mVariable);
         }
     }
 
@@ -355,6 +362,8 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
         // its unknown variables. Either way, we must remove our "dependencies"
         // on our unknown variables or we will end up in a circular dependency.
+        // Note: we cannot have a rate dependency on the state of an ODE since
+        //       we only know about that state once we know about that ODE.
 
         for (const auto &unknownVariable : mUnknownVariables) {
             auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable->mVariable);
@@ -2260,14 +2269,25 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &analyse
 
     checkedEquations.push_back(analyserEquation);
 
-    for (const auto &dependency : analyserEquation->dependencies()) {
-        // A rate is computed either through an ODE equation or through an NLA
-        // equation in case the rate is not on its own on either the LHS or RHS
-        // of the equation.
+    // An analyser equation is state/rate based if it uses a state (which is
+    // not a dependency since states are known) or a rate, or if one of its
+    // dependencies is state/rate based.
+    // Note: mIsStateRateBased is initially set to whether the analyser equation
+    //       uses a state (see analyseModel()), and it is then set to its final
+    //       value once it has been determined. Either way, if it is true then
+    //       the analyser equation is state/rate based.
 
-        if ((dependency->type() == AnalyserEquation::Type::ODE)
-            || ((dependency->type() == AnalyserEquation::Type::NLA)
-                && (dependency->stateCount() == 1))
+    if (analyserEquation->mPimpl->mIsStateRateBased) {
+        return true;
+    }
+
+    for (const auto &dependency : analyserEquation->dependencies()) {
+        // A dependency that computes a state computes its rate (through an ODE
+        // equation or through an NLA equation, in case the rate is not on its
+        // own on either the LHS or RHS of the equation), which means that we
+        // use that rate.
+
+        if ((dependency->stateCount() != 0)
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -3069,10 +3089,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             break;
         }
 
-        // Determine the equation's dependencies, i.e. the equations for the
-        // variables on which this equation depends.
+        // Determine the equation's dependencies, i.e. the equations that compute
+        // the variables and rates that this equation uses, and that must
+        // therefore be computed first.
+        // Note: the use of a state is not a dependency since states are known.
+        //       Still, we keep track of it (see isStateRateBased()).
 
         VariablePtrs variableDependencies;
+        VariablePtrs rateDependencies;
 
         if (equationType == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
@@ -3082,27 +3106,40 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         } else {
             variableDependencies = internalEquation->mDependencies;
+            rateDependencies = internalEquation->mRateDependencies;
         }
 
         AnalyserEquationPtrs equationDependencies;
+        auto usesStates = false;
+        auto addEquationDependencies = [&equationDependencies](const AnalyserVariablePtr &analyserVariable) {
+            for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
+                if (std::find(equationDependencies.begin(), equationDependencies.end(), analyserEquation) == equationDependencies.end()) {
+                    if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
+                        // This is a constant, so keep track of it in case it is untracked and in case we need to
+                        // generate some code for it.
+
+                        analyserEquation->mPimpl->mConstant = analyserVariable;
+                    }
+
+                    equationDependencies.push_back(analyserEquation);
+                }
+            }
+        };
 
         for (const auto &variableDependency : variableDependencies) {
             auto analyserVariable = v2avMappings[variableDependency];
 
             if (analyserVariable != nullptr) {
-                for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
-                    if (std::find(equationDependencies.begin(), equationDependencies.end(), analyserEquation) == equationDependencies.end()) {
-                        if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
-                            // This is a constant, so keep track of it in case it is untracked and in case we need to
-                            // generate some code for it.
-
-                            analyserEquation->mPimpl->mConstant = analyserVariable;
-                        }
-
-                        equationDependencies.push_back(analyserEquation);
-                    }
+                if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
+                    usesStates = true;
+                } else {
+                    addEquationDependencies(analyserVariable);
                 }
             }
+        }
+
+        for (const auto &rateDependency : rateDependencies) {
+            addEquationDependencies(v2avMappings[rateDependency]);
         }
 
         // Determine the equation's NLA siblings, i.e. the equations that should
@@ -3124,6 +3161,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                      nullptr :
                                      internalEquation->mAst;
         equation->mPimpl->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
+        equation->mPimpl->mIsStateRateBased = usesStates;
 
         for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
             // Keep track of the variable that the equation computes.

@@ -458,9 +458,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
     find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_2(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_3(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_13(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_12(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_14(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     algebraic_variables[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
@@ -470,13 +467,13 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
     find_root_9(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_8(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_13(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_12(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_14(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     find_root_3(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_13(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_12(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
-    find_root_14(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_11(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     algebraic_variables[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
@@ -487,3 +484,6 @@ def compute_variables(voi, states, rates, constants, computed_constants, algebra
     find_root_8(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_9(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
     find_root_10(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_12(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_13(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
+    find_root_14(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables)
