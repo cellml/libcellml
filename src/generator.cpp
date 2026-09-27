@@ -1759,22 +1759,52 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &analyse
            || (!includeComputedConstants && (analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT));
 }
 
-bool Generator::GeneratorImpl::usesRate(const AnalyserEquationAstPtr &ast,
-                                        const AnalyserEquationPtr &analyserEquation) const
+void Generator::GeneratorImpl::addRateAnalyserEquations(const AnalyserEquationAstPtr &ast,
+                                                        std::vector<AnalyserEquationPtr> &rateAnalyserEquations) const
 {
-    // Check whether the given AST uses the rate of a state that is computed by the given analyser equation.
+    // Add, to the given list, the analyser equations that compute the rates used by the given AST.
+    // Note: the list may end up with duplicates, but this is fine since generateEquationCode() only generates an
+    //       analyser equation once.
 
     if (ast == nullptr) {
-        return false;
+        return;
     }
 
     if (ast->type() == AnalyserEquationAst::Type::DIFF) {
-        auto states = analyserEquation->states();
+        auto analyserEquations = mAnalyserModel->analyserVariable(ast->rightChild()->variable())->analyserEquations();
 
-        return std::find(states.begin(), states.end(), mAnalyserModel->analyserVariable(ast->rightChild()->variable())) != states.end();
+        rateAnalyserEquations.insert(rateAnalyserEquations.end(), analyserEquations.begin(), analyserEquations.end());
+
+        return;
     }
 
-    return usesRate(ast->leftChild(), analyserEquation) || usesRate(ast->rightChild(), analyserEquation);
+    addRateAnalyserEquations(ast->leftChild(), rateAnalyserEquations);
+    addRateAnalyserEquations(ast->rightChild(), rateAnalyserEquations);
+}
+
+void Generator::GeneratorImpl::addRateAnalyserEquations(const AnalyserEquationPtr &analyserEquation,
+                                                        std::vector<AnalyserEquationPtr> &rateAnalyserEquations)
+{
+    // Add, to the given list, the analyser equations that compute the rates used by the given analyser equation and
+    // its NLA siblings, if any, as well as by the untracked algebraic equations on which an NLA equation depends (since
+    // they are computed in the NLA equation's objective function).
+
+    auto analyserEquations = analyserEquation->nlaSiblings();
+
+    analyserEquations.insert(analyserEquations.begin(), analyserEquation);
+
+    for (const auto &equation : analyserEquations) {
+        addRateAnalyserEquations(equation->ast(), rateAnalyserEquations);
+
+        if (equation->type() == AnalyserEquation::Type::NLA) {
+            for (const auto &dependency : equation->dependencies()) {
+                if ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                    && isTrackedEquation(dependency, false)) {
+                    addRateAnalyserEquations(dependency->ast(), rateAnalyserEquations);
+                }
+            }
+        }
+    }
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &analyserVariable)
@@ -1846,10 +1876,22 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
         }
 
-        // Note: an ODE dependency is normally not a dependency that we need to generate since it is typically there
-        //       because the analyser equation uses the state that the ODE equation computes the rate of (and states
-        //       are known). However, when computing our rates, an analyser equation may use that rate (as opposed to
-        //       just the state), in which case the ODE equation must be generated first.
+        // When computing our rates, generate the analyser equations that compute the rates used by this analyser
+        // equation (see addRateAnalyserEquations()).
+        // Note: the analyser doesn't consider the use of a rate as a dependency. At most, the use of a state results in
+        //       a dependency on the ODE equation that computes its rate, but we don't generate it since states are
+        //       known. So, we need to find the rates that are used ourselves.
+
+        if (target == GenerateEquationCodeTarget::COMPUTE_RATES) {
+            std::vector<AnalyserEquationPtr> rateAnalyserEquations;
+
+            addRateAnalyserEquations(analyserEquation, rateAnalyserEquations);
+
+            for (const auto &rateAnalyserEquation : rateAnalyserEquations) {
+                res += generateEquationCode(rateAnalyserEquation, remainingAnalyserEquations, analyserEquationsForDependencies,
+                                            generatedConstantDependencies, includeComputedConstants, target);
+            }
+        }
 
         if (!isSomeConstant(analyserEquation, includeComputedConstants)) {
             for (const auto &dependency : analyserEquation->dependencies()) {
@@ -1862,9 +1904,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                              && ((dependency->type() != AnalyserEquation::Type::NLA)
                                  || isToBeComputedAgain(dependency)
                                  || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
-                        && ((dependency->type() != AnalyserEquation::Type::ODE)
-                            || ((target == GenerateEquationCodeTarget::COMPUTE_RATES)
-                                && usesRate(analyserEquation->ast(), dependency)))
+                        && (dependency->type() != AnalyserEquation::Type::ODE)
                         && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)

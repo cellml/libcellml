@@ -212,6 +212,30 @@ TEST(Generator, algebraicEqnDerivativeOnRhsUsedByOde)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_used_by_ode/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, algebraicEqnDerivativeOnlyOnRhsUsedByOde)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, algebraicEqnStateVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -592,6 +616,30 @@ TEST(Generator, odeConstantOnRhsOneComponent)
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, odeDerivativeOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_derivative_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, odeMultipleDependentOdes)
