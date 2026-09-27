@@ -1759,6 +1759,24 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &analyse
            || (!includeComputedConstants && (analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT));
 }
 
+bool Generator::GeneratorImpl::usesRate(const AnalyserEquationAstPtr &ast,
+                                        const AnalyserEquationPtr &analyserEquation) const
+{
+    // Check whether the given AST uses the rate of a state that is computed by the given analyser equation.
+
+    if (ast == nullptr) {
+        return false;
+    }
+
+    if (ast->type() == AnalyserEquationAst::Type::DIFF) {
+        auto states = analyserEquation->states();
+
+        return std::find(states.begin(), states.end(), mAnalyserModel->analyserVariable(ast->rightChild()->variable())) != states.end();
+    }
+
+    return usesRate(ast->leftChild(), analyserEquation) || usesRate(ast->rightChild(), analyserEquation);
+}
+
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &analyserVariable)
 {
     return mProfile->indentString()
@@ -1828,17 +1846,25 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
         }
 
+        // Note: an ODE dependency is normally not a dependency that we need to generate since it is typically there
+        //       because the analyser equation uses the state that the ODE equation computes the rate of (and states
+        //       are known). However, when computing our rates, an analyser equation may use that rate (as opposed to
+        //       just the state), in which case the ODE equation must be generated first.
+
         if (!isSomeConstant(analyserEquation, includeComputedConstants)) {
             for (const auto &dependency : analyserEquation->dependencies()) {
                 if (((analyserEquation->type() != AnalyserEquation::Type::NLA)
                      && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                      && isTrackedEquation(dependency, false))
                     || (((target == GenerateEquationCodeTarget::NORMAL)
+                         || (target == GenerateEquationCodeTarget::COMPUTE_RATES)
                          || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
                              && ((dependency->type() != AnalyserEquation::Type::NLA)
                                  || isToBeComputedAgain(dependency)
                                  || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
-                        && (dependency->type() != AnalyserEquation::Type::ODE)
+                        && ((dependency->type() != AnalyserEquation::Type::ODE)
+                            || ((target == GenerateEquationCodeTarget::COMPUTE_RATES)
+                                && usesRate(analyserEquation->ast(), dependency)))
                         && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
@@ -2148,6 +2174,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
     if (modelHasOdes(mAnalyserModel)
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
+        std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &analyserEquation : mAnalyserModel->analyserEquations()) {
@@ -2161,7 +2188,8 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
                 || ((analyserEquation->type() == AnalyserEquation::Type::NLA)
                     && (analyserVariables.size() == 1)
                     && (analyserVariables[0]->type() == AnalyserVariable::Type::STATE))) {
-                methodBody += generateEquationCode(analyserEquation, remainingAnalyserEquations, generatedConstantDependencies);
+                methodBody += generateEquationCode(analyserEquation, remainingAnalyserEquations, dummyAnalyserEquationsForDependencies,
+                                                   generatedConstantDependencies, true, GenerateEquationCodeTarget::COMPUTE_RATES);
             }
         }
 

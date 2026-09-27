@@ -127,11 +127,14 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     bool isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation);
     bool isSomeConstant(const AnalyserEquationPtr &analyserEquation,
                         bool includeComputedConstants) const;
+    bool usesRate(const AnalyserEquationAstPtr &ast,
+                  const AnalyserEquationPtr &analyserEquation) const;
 
     enum class GenerateEquationCodeTarget
     {
         NORMAL,
         OBJECTIVE_FUNCTION,
+        COMPUTE_RATES,
         COMPUTE_VARIABLES
     };
 
