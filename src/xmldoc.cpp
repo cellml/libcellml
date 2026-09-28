@@ -104,27 +104,54 @@ std::string decompressMathMLDTD()
     return std::string(mathmlDTD.begin(), mathmlDTD.end());
 }
 
-void XmlDoc::parseMathML(const std::string &input)
+/**
+ * @brief The parsed MathML DTD.
+ *
+ * Parsing the MathML DTD is expensive (it is about 390 KB long), so we parse it only once rather than every time that
+ * we validate some MathML. However, libxml2 builds (and caches) the content model of an element declaration the first
+ * time that it validates an element against it, i.e. validating against a DTD modifies it, so we have one parsed MathML
+ * DTD per thread.
+ */
+class MathmlDtd
 {
-    // Decompress the MathML DTD.
-    int sizeMathmlDTDUncompressed = MATHML_DTD_LEN;
+public:
+    MathmlDtd()
+    {
+        auto mathmlDTD = decompressMathMLDTD();
+        xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(mathmlDTD.c_str(), static_cast<int>(mathmlDTD.size()), XML_CHAR_ENCODING_ASCII);
 
-    static std::string mathMLDTD;
-
-    if (mathMLDTD.empty()) {
-        mathMLDTD = decompressMathMLDTD();
+        mDtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
     }
 
+    ~MathmlDtd()
+    {
+        xmlFreeDtd(mDtd);
+    }
+
+    MathmlDtd(const MathmlDtd &) = delete;
+    MathmlDtd &operator=(const MathmlDtd &) = delete;
+
+    xmlDtdPtr dtd() const
+    {
+        return mDtd;
+    }
+
+private:
+    xmlDtdPtr mDtd = nullptr;
+};
+
+void XmlDoc::parseMathML(const std::string &input)
+{
     xmlInitParser();
+
+    thread_local MathmlDtd mathmlDtd;
+
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
-    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathMLDTD.c_str()), sizeMathmlDTDUncompressed, XML_CHAR_ENCODING_ASCII);
-    xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
-    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
+    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, mathmlDtd.dtd());
 
-    xmlFreeDtd(dtd);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
