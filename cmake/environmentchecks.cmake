@@ -77,11 +77,11 @@ else ()
 
   set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
-  set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
-  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
+  set(CMAKE_REQUIRED_FLAGS "-fprofile-instr-generate -fprofile-update=atomic")
+  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping -fprofile-update=atomic" LLVM_COVERAGE_COMPILER_FLAGS_OK)
 
-  set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
-  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
+  set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage -fprofile-update=atomic")
+  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage -fprofile-update=atomic" GCC_COVERAGE_COMPILER_FLAGS_OK)
 
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
