@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="m">
+  <component name="c">
+    <variable name="t" units="dimensionless"/>
+    <variable name="x" units="dimensionless" initial_value="1"/>
+    <variable name="a" units="dimensionless" initial_value="2"/>
+    <variable name="b" units="dimensionless" initial_value="3"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>x</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <cn cellml:units="dimensionless">-1</cn>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>
+

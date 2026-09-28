@@ -1286,7 +1286,9 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
         || isLogicalOperator(astLeftChild)
         || isPlusOperator(astLeftChild)
         || isMinusOperator(astLeftChild)
-        || isPiecewiseStatement(astLeftChild)) {
+        || isNegativeNumber(astLeftChild)
+        || isPiecewiseStatement(astLeftChild)
+        || (code.rfind(mProfile->minusString(), 0) == 0)) {
         code = "(" + code + ")";
     }
 
