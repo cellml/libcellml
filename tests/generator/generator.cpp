@@ -951,6 +951,60 @@ TEST(Generator, odeMultipleOdesWithSameName)
     EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, odeStateVarOnLhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_state_var_on_lhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::NLA, analyserModel->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, odeStateVarOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_state_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ODE, analyserModel->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, odeUnknownVarOnRhs)
 {
     auto parser = libcellml::Parser::create();

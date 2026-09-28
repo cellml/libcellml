@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- ODE with its state variable on its own on its RHS, and ODE with the derivative of another state variable on its
+   own on its RHS.
+   d(x)/d(t) = x
+   d(y)/d(t) = d(x)/d(t)
+   x(0) = 1
+   y(0) = 0-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable initial_value="0" name="y" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>y</ci>
+                </apply>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

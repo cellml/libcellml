@@ -178,11 +178,19 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
 bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
                                                 const AnalyserEquationAstPtr &astChild)
 {
+    // Note: what we compute for a state variable is its rate, so a state variable is on its own on the LHS/RHS of an
+    //       equation if its rate is (e.g., d(x)/d(t) = x), while any other variable is on its own if it itself is.
+
+    auto isStateVariable = (variable->mType == AnalyserInternalVariable::Type::STATE)
+                           || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+
     switch (astChild->type()) {
     case AnalyserEquationAst::Type::CI:
-        return astChild->variable()->name() == variable->mVariable->name();
+        return !isStateVariable
+               && (astChild->variable()->name() == variable->mVariable->name());
     case AnalyserEquationAst::Type::DIFF:
-        return astChild->rightChild()->variable()->name() == variable->mVariable->name();
+        return isStateVariable
+               && (astChild->rightChild()->variable()->name() == variable->mVariable->name());
     default:
         return false;
     }
