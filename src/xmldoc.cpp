@@ -19,7 +19,6 @@ limitations under the License.
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
-#include <mutex>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -59,12 +58,19 @@ void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE er
  * Initialise libxml2 exactly once, no matter how many threads call this function and when. Before libxml2 2.14,
  * xmlInitParser() checks whether libxml2 is already initialised without any synchronisation, which is a data race
  * when it gets called from different threads at the same time.
+ *
+ * Note: we rely on the initialisation of a function-local static variable being thread-safe (since C++11) rather than
+ *       on std::call_once(), which may require linking against a thread library (e.g., pthreads with glibc < 2.34).
  */
 void initialiseLibxml2()
 {
-    static std::once_flag flag;
+    static const bool initialised = []() {
+        xmlInitParser();
 
-    std::call_once(flag, xmlInitParser);
+        return true;
+    }();
+
+    (void)initialised;
 }
 
 /**
