@@ -111,8 +111,11 @@ std::string decompressMathMLDTD()
  * time that it validates an element against it, i.e. validating against a DTD modifies it, so we have one parsed MathML
  * DTD per thread.
  *
- * Note: this is why we never call xmlCleanupParser(). It is a process-wide operation that must only be called once
- *       libxml2 is no longer used (typically when an application exits) while a cached DTD may outlive any given call.
+ * Note: this is why we never call xmlCleanupParser(). It is a process-wide operation after which no libxml2 call may be
+ *       made (from any thread), i.e. it should only be called right before a process exits, while a cached DTD
+ *       outlives any given call. Since libxml2 2.9.11, cleanup is performed automatically anyway. Also, the DTD is
+ *       detached from its (dictionary-less) document, so it only consists of heap memory, meaning that freeing it
+ *       when a thread exits does not rely on any global state that xmlCleanupParser() might have freed.
  */
 class MathmlDtd
 {
