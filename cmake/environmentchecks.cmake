@@ -55,13 +55,15 @@ else ()
   find_program(INSTALL_NAME_TOOL_EXE NAMES ${PREFERRED_INSTALL_NAME_TOOL_NAMES} install_name_tool)
 
   if(Python_Interpreter_FOUND)
-    if(NOT DEFINED TEST_COVERAGE_RESULT)
-      set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+    if(NOT DEFINED TEST_COVERAGE_RESULT OR NOT TEST_COVERAGE_RESULT STREQUAL "0")
+      set(TEST_COVERAGE_RESULT "-1" CACHE INTERNAL "Result of testing for Python coverage.")
       message(STATUS "Performing Test HAVE_COVERAGE")
       get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
       execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
         RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
-      if(TEST_COVERAGE_RESULT EQUAL 0)
+      # Update TEST_COVERATE_RESULT with test outcome.
+      set(TEST_COVERAGE_RESULT ${TEST_COVERAGE_RESULT} CACHE INTERNAL "Result of testing for Python coverage." FORCE)
+      if(TEST_COVERAGE_RESULT STREQUAL "0")
         set(HAVE_COVERAGE TRUE)
         message(STATUS "Performing Test HAVE_COVERAGE - Success")
       else()

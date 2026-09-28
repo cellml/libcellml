@@ -83,6 +83,18 @@ public:
     };
 
     /**
+     * @brief Get the string version of a @ref InterfaceType.
+     *
+     * Return the string version of a @ref InterfaceType.
+     *
+     * @param interfaceType The type for which we want the string version.
+     *
+     * @return The string version of the @ref InterfaceType.
+     */
+
+    static std::string interfaceTypeAsString(InterfaceType interfaceType);
+
+    /**
      * @brief Add each argument variable to the other's equivalent variable set.
      *
      * Add a copy of @p variable1 to the set of equivalent variables for
