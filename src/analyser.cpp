@@ -216,16 +216,20 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
     // Add, as a dependency, the variables used to compute the (new) known (state)
     // variables, and, as a rate dependency, the (new) known state variables
     // which rate is used.
+    // Note: we keep track of internal variables rather than of their variable
+    //       since the variable of an internal variable may change (e.g., when
+    //       a state variable is initialised in a component and its ODE is in
+    //       another component).
 
     for (const auto &variable : mVariables) {
         if (isKnownVariable(variable)) {
-            mDependencies.push_back(variable->mVariable);
+            mDependencies.push_back(variable);
         }
     }
 
     for (const auto &stateVariable : mStateVariables) {
         if (isKnownStateVariable(stateVariable)) {
-            mRateDependencies.push_back(stateVariable->mVariable);
+            mRateDependencies.push_back(stateVariable);
         }
     }
 
@@ -366,7 +370,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
         //       we only know about that state once we know about that ODE.
 
         for (const auto &unknownVariable : mUnknownVariables) {
-            auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable->mVariable);
+            auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable);
 
             if (it != mDependencies.end()) {
                 mDependencies.erase(it);
@@ -2402,7 +2406,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     internalVariable->mIsExternalVariable = true;
 
                     for (const auto &dependency : externalVariable->dependencies()) {
-                        internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
+                        internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency));
                     }
                 }
             }
@@ -2948,7 +2952,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make our internal variables available through our API.
 
     std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
-    std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
     auto stateIndex = MAX_SIZE_T;
     auto constantIndex = MAX_SIZE_T;
     auto computedConstantIndex = MAX_SIZE_T;
@@ -3031,7 +3034,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    internalVariable->mVariable, mAnalyserModel, equations);
 
         aiv2avMappings.emplace(internalVariable, variable);
-        v2avMappings.emplace(internalVariable->mVariable, variable);
 
         if (variableType == AnalyserVariable::Type::STATE) {
             mAnalyserModel->mPimpl->mStates.push_back(variable);
@@ -3095,8 +3097,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Note: the use of a state is not a dependency since states are known.
         //       Still, we keep track of it (see isStateRateBased()).
 
-        VariablePtrs variableDependencies;
-        VariablePtrs rateDependencies;
+        AnalyserInternalVariablePtrs variableDependencies;
+        AnalyserInternalVariablePtrs rateDependencies;
 
         if (equationType == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
@@ -3127,7 +3129,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         };
 
         for (const auto &variableDependency : variableDependencies) {
-            auto analyserVariable = v2avMappings[variableDependency];
+            auto analyserVariable = aiv2avMappings[variableDependency];
 
             if (analyserVariable != nullptr) {
                 if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
@@ -3139,7 +3141,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
 
         for (const auto &rateDependency : rateDependencies) {
-            addEquationDependencies(v2avMappings[rateDependency]);
+            addEquationDependencies(aiv2avMappings[rateDependency]);
         }
 
         // Determine the equation's NLA siblings, i.e. the equations that should

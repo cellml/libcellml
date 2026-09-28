@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- System of algebraic equations, whose solution is needed to compute the rate of a state variable, where the
+   first equation depends on a chain of computed constants and the second one on a chain of algebraic variables, the
+   last of which has a derivative on its RHS, while the derivative itself is computed by an ODE that comes after it.
+   There is also an algebraic variable that depends on the solution of the system and is needed to compute the rate
+   of another state variable.
+   d(z)/d(t) = y
+   d(v)/d(t) = a
+   a = 2*l+y
+   l = x+1
+   y+w = 3*x+kc2
+   y-w*exp(w) = q+x
+   q = r+1
+   r = 3*d(x)/d(t)+x
+   kc = 2*k
+   kc2 = 3*kc
+   d(x)/d(t) = -x-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="2" name="k" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable name="a" units="dimensionless"/>
+        <variable name="l" units="dimensionless"/>
+        <variable name="q" units="dimensionless"/>
+        <variable name="r" units="dimensionless"/>
+        <variable name="kc" units="dimensionless"/>
+        <variable name="kc2" units="dimensionless"/>
+        <variable initial_value="0" name="y" units="dimensionless"/>
+        <variable initial_value="0" name="w" units="dimensionless"/>
+        <variable initial_value="0" name="z" units="dimensionless"/>
+        <variable initial_value="0" name="v" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>y</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>v</ci>
+                </apply>
+                <ci>a</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <ci>l</ci>
+                    </apply>
+                    <ci>y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>l</ci>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>y</ci>
+                    <ci>w</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">3</cn>
+                        <ci>x</ci>
+                    </apply>
+                    <ci>kc2</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <minus/>
+                    <ci>y</ci>
+                    <apply>
+                        <times/>
+                        <ci>w</ci>
+                        <apply>
+                            <exp/>
+                            <ci>w</ci>
+                        </apply>
+                    </apply>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>q</ci>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>q</ci>
+                <apply>
+                    <plus/>
+                    <ci>r</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>r</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">3</cn>
+                        <apply>
+                            <diff/>
+                            <bvar>
+                                <ci>t</ci>
+                            </bvar>
+                            <ci>x</ci>
+                        </apply>
+                    </apply>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>kc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>kc2</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">3</cn>
+                    <ci>kc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

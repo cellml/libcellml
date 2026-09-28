@@ -64,7 +64,7 @@ struct AnalyserInternalVariable
 
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    VariablePtrs mDependencies;
+    AnalyserInternalVariablePtrs mDependencies;
 
     static AnalyserInternalVariablePtr create(const VariablePtr &variable);
 
@@ -90,8 +90,8 @@ struct AnalyserInternalEquation
 
     Type mType = Type::UNKNOWN;
 
-    VariablePtrs mDependencies;
-    VariablePtrs mRateDependencies;
+    AnalyserInternalVariablePtrs mDependencies;
+    AnalyserInternalVariablePtrs mRateDependencies;
 
     AnalyserEquationAstPtr mAst;
 
