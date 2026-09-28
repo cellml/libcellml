@@ -88,7 +88,6 @@ void XmlDoc::parse(const std::string &input)
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 }
 
 std::string decompressMathMLDTD()
@@ -111,6 +110,9 @@ std::string decompressMathMLDTD()
  * we validate some MathML. However, libxml2 builds (and caches) the content model of an element declaration the first
  * time that it validates an element against it, i.e. validating against a DTD modifies it, so we have one parsed MathML
  * DTD per thread.
+ *
+ * Note: this is why we never call xmlCleanupParser(). It is a process-wide operation that must only be called once
+ *       libxml2 is no longer used (typically when an application exits) while a cached DTD may outlive any given call.
  */
 class MathmlDtd
 {
@@ -154,7 +156,6 @@ void XmlDoc::parseMathML(const std::string &input)
 
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 }
 
 std::string XmlDoc::prettyPrint() const
