@@ -188,6 +188,54 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_one_component/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, algebraicEqnDerivativeOnRhsUsedByOde)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_used_by_ode/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_used_by_ode/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_used_by_ode/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_on_rhs_used_by_ode/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicEqnDerivativeOnlyOnRhsUsedByOde)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_derivative_only_on_rhs_used_by_ode/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, algebraicEqnStateVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -234,6 +282,60 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicEqnStateVarOnRhsInitialisedInAnotherComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_TRUE(analyserModel->analyserVariable(model->component("my_algebraic_eqn")->variable("xx"))->analyserEquation(0)->isStateRateBased());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.py", generator->implementationCode(analyserModel, profile));
+
+    // Make the algebraic variable an external variable that depends on the state variable.
+
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("xx"));
+
+    externalVariable->addDependency(model->component("my_algebraic_eqn")->variable("x"));
+
+    analyser->addExternalVariable(externalVariable);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    analyserModel = analyser->analyserModel();
+
+    EXPECT_TRUE(analyserModel->analyserVariable(model->component("my_ode")->variable("y"))->analyserEquation(0)->isStateRateBased());
+
+    profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.external.h", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.external.c", generator->implementationCode(analyserModel, profile));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_state_var_on_rhs_initialised_in_another_component/model.external.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, algebraicUnknownVarOnRhs)
@@ -314,6 +416,118 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownAndDerivativeDependency)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownAndUntrackedDerivativeDependency)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("q")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_derivative_dependency/model.untracked.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}
+
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownAndUntrackedDependencies)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+    auto component = model->component("my_component");
+
+    // Untrack the constant, which is used by both the NLA equation and its untracked dependency, as well as that
+    // untracked dependency, which depends on a tracked algebraic variable that has a derivative on its RHS.
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(component->variable("k")));
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(component->variable("p")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.k.p.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    // Also untrack the algebraic variable that has a derivative on its RHS.
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(component->variable("u")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.k.p.u.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.u.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.u.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_with_one_non_isolated_unknown_and_untracked_dependencies/model.untracked.k.p.u.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}
+
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 {
     auto parser = libcellml::Parser::create();
@@ -368,6 +582,77 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_three_linked_unknowns/model.external.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicSystemWithDerivativeOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_derivative_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_derivative_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, algebraicSystemWithUntrackedDependencies)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_untracked_dependencies/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.py", generator->implementationCode(analyserModel, profile));
+
+    // Untrack all the constants, computed constants, and algebraic variables, except the algebraic variable that is
+    // needed to compute the rate of a state variable.
+
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+    auto component = model->component("my_component");
+
+    for (const auto &name : {"k", "kc", "kc2", "q", "r", "l"}) {
+        generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(component->variable(name)));
+    }
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.untracked.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.untracked.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/algebraic_system_with_untracked_dependencies/model.untracked.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
@@ -570,6 +855,30 @@ TEST(Generator, odeConstantOnRhsOneComponent)
     EXPECT_EQ_FILE_CONTENTS("generator/ode_constant_on_rhs_one_component/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, odeDerivativeOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_derivative_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_derivative_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, odeMultipleDependentOdes)
 {
     auto parser = libcellml::Parser::create();
@@ -642,6 +951,60 @@ TEST(Generator, odeMultipleOdesWithSameName)
     EXPECT_EQ_FILE_CONTENTS("generator/ode_multiple_odes_with_same_name/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, odeStateVarOnLhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_state_var_on_lhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::NLA, analyserModel->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_lhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, odeStateVarOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_state_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ODE, analyserModel->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_state_var_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, odeUnknownVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -664,6 +1027,57 @@ TEST(Generator, odeUnknownVarOnRhs)
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, cellmlEquivalentVariablesInTheSameComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_equivalent_variables_in_the_same_component/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ODE, analyserModel->analyserVariable(model->component("my_component")->variable("xo"))->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, cellmlEquivalentVariablesWithDifferentNames)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_equivalent_variables_with_different_names/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.py", generator->implementationCode(analyserModel, profile));
 }
 
 TEST(Generator, cellmlMappingsAndEncapsulations)

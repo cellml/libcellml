@@ -175,28 +175,42 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
     return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mStateVariables);
 }
 
-bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
+bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserModelPtr &analyserModel,
+                                                const AnalyserInternalVariablePtr &variable,
                                                 const AnalyserEquationAstPtr &astChild)
 {
+    // Note #1: what we compute for a state variable is its rate, so a state variable is on its own on the LHS/RHS of
+    //          an equation if its rate is (e.g., d(x)/d(t) = x), while any other variable is on its own if it itself
+    //          is.
+    // Note #2: the variable of an internal variable may be any of its equivalent variables (e.g., the one of the
+    //          component where it was first found), so we compare variables for equivalence rather than by name.
+
+    auto isStateVariable = (variable->mType == AnalyserInternalVariable::Type::STATE)
+                           || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+
     switch (astChild->type()) {
     case AnalyserEquationAst::Type::CI:
-        return astChild->variable()->name() == variable->mVariable->name();
+        return !isStateVariable
+               && analyserModel->areEquivalentVariables(astChild->variable(), variable->mVariable);
     case AnalyserEquationAst::Type::DIFF:
-        return astChild->rightChild()->variable()->name() == variable->mVariable->name();
+        return isStateVariable
+               && analyserModel->areEquivalentVariables(astChild->rightChild()->variable(), variable->mVariable);
     default:
         return false;
     }
 }
 
-bool AnalyserInternalEquation::variableOnRhs(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::variableOnRhs(const AnalyserModelPtr &analyserModel,
+                                             const AnalyserInternalVariablePtr &variable)
 {
-    return variableOnLhsRhs(variable, mAst->rightChild());
+    return variableOnLhsRhs(analyserModel, variable, mAst->rightChild());
 }
 
-bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserModelPtr &analyserModel,
+                                                  const AnalyserInternalVariablePtr &variable)
 {
-    return variableOnLhsRhs(variable, mAst->leftChild())
-           || variableOnRhs(variable);
+    return variableOnLhsRhs(analyserModel, variable, mAst->leftChild())
+           || variableOnRhs(analyserModel, variable);
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems)
@@ -214,11 +228,22 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
     mComputedVariableBasedConstant = mComputedVariableBasedConstant && !hasNonConstantVariables();
 
     // Add, as a dependency, the variables used to compute the (new) known (state)
-    // variables.
+    // variables, and, as a rate dependency, the (new) known state variables
+    // which rate is used.
+    // Note: we keep track of internal variables rather than of their variable
+    //       since the variable of an internal variable may change (e.g., when
+    //       a state variable is initialised in a component and its ODE is in
+    //       another component).
 
     for (const auto &variable : mVariables) {
         if (isKnownVariable(variable)) {
-            mDependencies.push_back(variable->mVariable);
+            mDependencies.push_back(variable);
+        }
+    }
+
+    for (const auto &stateVariable : mStateVariables) {
+        if (isKnownStateVariable(stateVariable)) {
+            mRateDependencies.push_back(stateVariable);
         }
     }
 
@@ -280,7 +305,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
                                    nullptr;
 
     if (((unknownVariableLeft != nullptr)
-         && (checkNlaSystems || variableOnLhsOrRhs(unknownVariableLeft)))
+         && (checkNlaSystems || variableOnLhsOrRhs(analyserModel, unknownVariableLeft)))
         || !initialisedVariables.empty()) {
         auto variables = mVariables.empty() ?
                              mStateVariables.empty() ?
@@ -328,7 +353,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
         //       be solved as an NLA equation.
 
         if ((unknownVariableLeft == nullptr)
-            || !variableOnLhsOrRhs(unknownVariableLeft)) {
+            || !variableOnLhsOrRhs(analyserModel, unknownVariableLeft)) {
             mType = Type::NLA;
         } else {
             switch (unknownVariableLeft->mType) {
@@ -355,9 +380,11 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
         // its unknown variables. Either way, we must remove our "dependencies"
         // on our unknown variables or we will end up in a circular dependency.
+        // Note: we cannot have a rate dependency on the state of an ODE since
+        //       we only know about that state once we know about that ODE.
 
         for (const auto &unknownVariable : mUnknownVariables) {
-            auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable->mVariable);
+            auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable);
 
             if (it != mDependencies.end()) {
                 mDependencies.erase(it);
@@ -2260,14 +2287,25 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &analyse
 
     checkedEquations.push_back(analyserEquation);
 
-    for (const auto &dependency : analyserEquation->dependencies()) {
-        // A rate is computed either through an ODE equation or through an NLA
-        // equation in case the rate is not on its own on either the LHS or RHS
-        // of the equation.
+    // An analyser equation is state/rate based if it uses a state (which is
+    // not a dependency since states are known) or a rate, or if one of its
+    // dependencies is state/rate based.
+    // Note: mIsStateRateBased is initially set to whether the analyser equation
+    //       uses a state (see analyseModel()), and it is then set to its final
+    //       value once it has been determined. Either way, if it is true then
+    //       the analyser equation is state/rate based.
 
-        if ((dependency->type() == AnalyserEquation::Type::ODE)
-            || ((dependency->type() == AnalyserEquation::Type::NLA)
-                && (dependency->stateCount() == 1))
+    if (analyserEquation->mPimpl->mIsStateRateBased) {
+        return true;
+    }
+
+    for (const auto &dependency : analyserEquation->dependencies()) {
+        // A dependency that computes a state computes its rate (through an ODE
+        // equation or through an NLA equation, in case the rate is not on its
+        // own on either the LHS or RHS of the equation), which means that we
+        // use that rate.
+
+        if ((dependency->stateCount() != 0)
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -2382,7 +2420,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     internalVariable->mIsExternalVariable = true;
 
                     for (const auto &dependency : externalVariable->dependencies()) {
-                        internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
+                        internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency));
                     }
                 }
             }
@@ -2928,7 +2966,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make our internal variables available through our API.
 
     std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
-    std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
     auto stateIndex = MAX_SIZE_T;
     auto constantIndex = MAX_SIZE_T;
     auto computedConstantIndex = MAX_SIZE_T;
@@ -3011,7 +3048,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    internalVariable->mVariable, mAnalyserModel, equations);
 
         aiv2avMappings.emplace(internalVariable, variable);
-        v2avMappings.emplace(internalVariable->mVariable, variable);
 
         if (variableType == AnalyserVariable::Type::STATE) {
             mAnalyserModel->mPimpl->mStates.push_back(variable);
@@ -3062,17 +3098,21 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             // Swap the LHS and RHS of the equation if its unknown variable is
             // on its RHS.
 
-            if (internalEquation->variableOnRhs(internalEquation->mUnknownVariables.front())) {
+            if (internalEquation->variableOnRhs(mAnalyserModel, internalEquation->mUnknownVariables.front())) {
                 internalEquation->mAst->swapLeftAndRightChildren();
             }
 
             break;
         }
 
-        // Determine the equation's dependencies, i.e. the equations for the
-        // variables on which this equation depends.
+        // Determine the equation's dependencies, i.e. the equations that compute
+        // the variables and rates that this equation uses, and that must
+        // therefore be computed first.
+        // Note: the use of a state is not a dependency since states are known.
+        //       Still, we keep track of it (see isStateRateBased()).
 
-        VariablePtrs variableDependencies;
+        AnalyserInternalVariablePtrs variableDependencies;
+        AnalyserInternalVariablePtrs rateDependencies;
 
         if (equationType == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
@@ -3082,27 +3122,40 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         } else {
             variableDependencies = internalEquation->mDependencies;
+            rateDependencies = internalEquation->mRateDependencies;
         }
 
         AnalyserEquationPtrs equationDependencies;
+        auto usesStates = false;
+        auto addEquationDependencies = [&equationDependencies](const AnalyserVariablePtr &analyserVariable) {
+            for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
+                if (std::find(equationDependencies.begin(), equationDependencies.end(), analyserEquation) == equationDependencies.end()) {
+                    if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
+                        // This is a constant, so keep track of it in case it is untracked and in case we need to
+                        // generate some code for it.
 
-        for (const auto &variableDependency : variableDependencies) {
-            auto analyserVariable = v2avMappings[variableDependency];
-
-            if (analyserVariable != nullptr) {
-                for (const auto &analyserEquation : analyserVariable->analyserEquations()) {
-                    if (std::find(equationDependencies.begin(), equationDependencies.end(), analyserEquation) == equationDependencies.end()) {
-                        if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
-                            // This is a constant, so keep track of it in case it is untracked and in case we need to
-                            // generate some code for it.
-
-                            analyserEquation->mPimpl->mConstant = analyserVariable;
-                        }
-
-                        equationDependencies.push_back(analyserEquation);
+                        analyserEquation->mPimpl->mConstant = analyserVariable;
                     }
+
+                    equationDependencies.push_back(analyserEquation);
                 }
             }
+        };
+
+        for (const auto &variableDependency : variableDependencies) {
+            auto analyserVariable = aiv2avMappings[variableDependency];
+
+            if (analyserVariable != nullptr) {
+                if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
+                    usesStates = true;
+                } else {
+                    addEquationDependencies(analyserVariable);
+                }
+            }
+        }
+
+        for (const auto &rateDependency : rateDependencies) {
+            addEquationDependencies(aiv2avMappings[rateDependency]);
         }
 
         // Determine the equation's NLA siblings, i.e. the equations that should
@@ -3124,6 +3177,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                      nullptr :
                                      internalEquation->mAst;
         equation->mPimpl->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
+        equation->mPimpl->mIsStateRateBased = usesStates;
 
         for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
             // Keep track of the variable that the equation computes.

@@ -786,29 +786,35 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 }
 
                 //     b) Initialise any untracked constant, computed constant, or algebraic variable that is needed by
-                //        our NLA system.
+                //        our NLA system (see nlaSystemDependencies()).
+                //        Note: only an NLA system with one NLA equation can have constant dependencies since a constant
+                //              is initialised and would therefore be considered as an unknown of an NLA system with
+                //              several NLA equations. Also, we keep track of those constant dependencies so that they
+                //              don't get generated again for one of our untracked dependencies.
 
                 methodBody += "\n";
 
                 auto methodBodySize = methodBody.size();
+                std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
                 for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
                     if (isTrackedVariable(constantDependency, false)) {
                         methodBody += generateInitialisationCode(constantDependency, true);
+
+                        generatedConstantDependencies.push_back(constantDependency);
                     }
                 }
 
                 std::vector<AnalyserEquationPtr> dummyRemainingAnalyserEquations = mAnalyserModel->analyserEquations();
                 std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
-                std::vector<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
 
-                for (const auto &dependency : analyserEquation->dependencies()) {
+                for (const auto &dependency : nlaSystemDependencies(analyserEquation)) {
                     if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                          || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
                         && isTrackedEquation(dependency, false)) {
                         methodBody += generateEquationCode(dependency, dummyRemainingAnalyserEquations,
                                                            dummyAnalyserEquationsForDependencies,
-                                                           dummyGeneratedConstantDependencies, false,
+                                                           generatedConstantDependencies, false,
                                                            GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
                     }
                 }
@@ -1729,12 +1735,13 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation)
 {
     // NLA and algebraic equations that are state/rate-based and external equations are to be computed again (in the
-    // computeVariables() method) unless the variables they compute are not tracked.
+    // computeVariables() method) unless the variables they compute are not tracked or they compute a rate (rates are
+    // only computed in the computeRates() method, the computeVariables() method only uses them).
 
     switch (analyserEquation->type()) {
     case AnalyserEquation::Type::NLA:
     case AnalyserEquation::Type::ALGEBRAIC:
-        if (analyserEquation->isStateRateBased()) {
+        if (analyserEquation->isStateRateBased() && (analyserEquation->stateCount() == 0)) {
             for (const auto &analyserVariable : analyserVariables(analyserEquation)) {
                 if (isTrackedVariable(analyserVariable, true)) {
                     return true;
@@ -1757,6 +1764,38 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &analyse
 {
     return (analyserEquation->type() == AnalyserEquation::Type::CONSTANT)
            || (!includeComputedConstants && (analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT));
+}
+
+std::vector<AnalyserEquationPtr> Generator::GeneratorImpl::nlaSystemDependencies(const AnalyserEquationPtr &analyserEquation)
+{
+    // Return the dependencies of the NLA system of the given NLA equation, i.e. the dependencies of the given NLA
+    // equation and of its NLA siblings, as well as, recursively, the dependencies of the untracked computed constant
+    // and algebraic equations on which they depend (since those untracked equations are computed in the objective
+    // function of the NLA system).
+    // Note: an untracked equation cannot depend on the NLA system (otherwise it would be part of it), but it may
+    //       depend on another NLA system (e.g., an untracked computed constant may depend on an NLA system that only
+    //       depends on constants).
+
+    std::vector<AnalyserEquationPtr> res;
+    auto analyserEquations = analyserEquation->nlaSiblings();
+
+    analyserEquations.insert(analyserEquations.begin(), analyserEquation);
+
+    for (size_t i = 0; i < analyserEquations.size(); ++i) {
+        for (const auto &dependency : analyserEquations[i]->dependencies()) {
+            if (std::find(res.begin(), res.end(), dependency) == res.end()) {
+                res.push_back(dependency);
+
+                if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                     || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
+                    && isTrackedEquation(dependency, false)) {
+                    analyserEquations.push_back(dependency);
+                }
+            }
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &analyserVariable)
@@ -1828,22 +1867,41 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
         }
 
-        if (!isSomeConstant(analyserEquation, includeComputedConstants)) {
-            for (const auto &dependency : analyserEquation->dependencies()) {
+        // Note: the dependencies of an NLA equation are those of its NLA system (see nlaSystemDependencies()). Also, an
+        //       ODE dependency means that this analyser equation uses the rate computed by that ODE equation, so we
+        //       must generate that ODE equation first, but only when computing our rates (rates are never computed
+        //       anywhere else). Finally, an untracked dependency is a local variable, so it must be computed wherever
+        //       it is needed (e.g., in computeVariables() even if it was already computed in computeRates(), or in an
+        //       objective function), and so must its own untracked dependencies (even if it is a computed constant).
+
+        if (!isSomeConstant(analyserEquation, includeComputedConstants)
+            || ((analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                && isTrackedEquation(analyserEquation, false))) {
+            auto dependencies = (analyserEquation->type() == AnalyserEquation::Type::NLA) ?
+                                    nlaSystemDependencies(analyserEquation) :
+                                    analyserEquation->dependencies();
+
+            for (const auto &dependency : dependencies) {
                 if (((analyserEquation->type() != AnalyserEquation::Type::NLA)
-                     && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                     && ((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                         || ((target == GenerateEquationCodeTarget::OBJECTIVE_FUNCTION)
+                             && (dependency->type() == AnalyserEquation::Type::ALGEBRAIC)))
                      && isTrackedEquation(dependency, false))
                     || (((target == GenerateEquationCodeTarget::NORMAL)
+                         || (target == GenerateEquationCodeTarget::COMPUTE_RATES)
                          || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
                              && ((dependency->type() != AnalyserEquation::Type::NLA)
                                  || isToBeComputedAgain(dependency)
                                  || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
-                        && (dependency->type() != AnalyserEquation::Type::ODE)
+                        && ((dependency->type() != AnalyserEquation::Type::ODE)
+                            || (target == GenerateEquationCodeTarget::COMPUTE_RATES))
                         && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
                         && (analyserEquationsForDependencies.empty()
                             || isToBeComputedAgain(dependency)
+                            || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                                && isTrackedEquation(dependency, false))
                             || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end())))) {
                     res += generateEquationCode(dependency, remainingAnalyserEquations, analyserEquationsForDependencies,
                                                 generatedConstantDependencies, includeComputedConstants, target);
@@ -2148,6 +2206,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
     if (modelHasOdes(mAnalyserModel)
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
+        std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
         for (const auto &analyserEquation : mAnalyserModel->analyserEquations()) {
@@ -2161,7 +2220,8 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
                 || ((analyserEquation->type() == AnalyserEquation::Type::NLA)
                     && (analyserVariables.size() == 1)
                     && (analyserVariables[0]->type() == AnalyserVariable::Type::STATE))) {
-                methodBody += generateEquationCode(analyserEquation, remainingAnalyserEquations, generatedConstantDependencies);
+                methodBody += generateEquationCode(analyserEquation, remainingAnalyserEquations, dummyAnalyserEquationsForDependencies,
+                                                   generatedConstantDependencies, true, GenerateEquationCodeTarget::COMPUTE_RATES);
             }
         }
 

@@ -591,35 +591,31 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot16(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot5(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot1(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot16(voi, states, rates, constants, computedConstants, algebraicVariables);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot16(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables);
     findRoot5(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot1(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables);
+    findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables);
 }
