@@ -175,11 +175,15 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
     return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mStateVariables);
 }
 
-bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
+bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserModelPtr &analyserModel,
+                                                const AnalyserInternalVariablePtr &variable,
                                                 const AnalyserEquationAstPtr &astChild)
 {
-    // Note: what we compute for a state variable is its rate, so a state variable is on its own on the LHS/RHS of an
-    //       equation if its rate is (e.g., d(x)/d(t) = x), while any other variable is on its own if it itself is.
+    // Note #1: what we compute for a state variable is its rate, so a state variable is on its own on the LHS/RHS of
+    //          an equation if its rate is (e.g., d(x)/d(t) = x), while any other variable is on its own if it itself
+    //          is.
+    // Note #2: the variable of an internal variable may be any of its equivalent variables (e.g., the one of the
+    //          component where it was first found), so we compare variables for equivalence rather than by name.
 
     auto isStateVariable = (variable->mType == AnalyserInternalVariable::Type::STATE)
                            || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
@@ -187,24 +191,26 @@ bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePt
     switch (astChild->type()) {
     case AnalyserEquationAst::Type::CI:
         return !isStateVariable
-               && (astChild->variable()->name() == variable->mVariable->name());
+               && analyserModel->areEquivalentVariables(astChild->variable(), variable->mVariable);
     case AnalyserEquationAst::Type::DIFF:
         return isStateVariable
-               && (astChild->rightChild()->variable()->name() == variable->mVariable->name());
+               && analyserModel->areEquivalentVariables(astChild->rightChild()->variable(), variable->mVariable);
     default:
         return false;
     }
 }
 
-bool AnalyserInternalEquation::variableOnRhs(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::variableOnRhs(const AnalyserModelPtr &analyserModel,
+                                             const AnalyserInternalVariablePtr &variable)
 {
-    return variableOnLhsRhs(variable, mAst->rightChild());
+    return variableOnLhsRhs(analyserModel, variable, mAst->rightChild());
 }
 
-bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserModelPtr &analyserModel,
+                                                  const AnalyserInternalVariablePtr &variable)
 {
-    return variableOnLhsRhs(variable, mAst->leftChild())
-           || variableOnRhs(variable);
+    return variableOnLhsRhs(analyserModel, variable, mAst->leftChild())
+           || variableOnRhs(analyserModel, variable);
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems)
@@ -299,7 +305,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
                                    nullptr;
 
     if (((unknownVariableLeft != nullptr)
-         && (checkNlaSystems || variableOnLhsOrRhs(unknownVariableLeft)))
+         && (checkNlaSystems || variableOnLhsOrRhs(analyserModel, unknownVariableLeft)))
         || !initialisedVariables.empty()) {
         auto variables = mVariables.empty() ?
                              mStateVariables.empty() ?
@@ -347,7 +353,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &analyserModel, bool
         //       be solved as an NLA equation.
 
         if ((unknownVariableLeft == nullptr)
-            || !variableOnLhsOrRhs(unknownVariableLeft)) {
+            || !variableOnLhsOrRhs(analyserModel, unknownVariableLeft)) {
             mType = Type::NLA;
         } else {
             switch (unknownVariableLeft->mType) {
@@ -3092,7 +3098,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             // Swap the LHS and RHS of the equation if its unknown variable is
             // on its RHS.
 
-            if (internalEquation->variableOnRhs(internalEquation->mUnknownVariables.front())) {
+            if (internalEquation->variableOnRhs(mAnalyserModel, internalEquation->mUnknownVariables.front())) {
                 internalEquation->mAst->swapLeftAndRightChildren();
             }
 

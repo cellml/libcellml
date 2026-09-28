@@ -125,10 +125,13 @@ struct AnalyserInternalEquation
     static bool hasNonConstantVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasNonConstantVariables();
 
-    bool variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
+    bool variableOnLhsRhs(const AnalyserModelPtr &analyserModel,
+                          const AnalyserInternalVariablePtr &variable,
                           const AnalyserEquationAstPtr &astChild);
-    bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
-    bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
+    bool variableOnRhs(const AnalyserModelPtr &analyserModel,
+                       const AnalyserInternalVariablePtr &variable);
+    bool variableOnLhsOrRhs(const AnalyserModelPtr &analyserModel,
+                            const AnalyserInternalVariablePtr &variable);
 
     bool check(const AnalyserModelPtr &analyserModel, bool checkNlaSystems);
 };

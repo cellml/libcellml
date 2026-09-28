@@ -1029,6 +1029,57 @@ TEST(Generator, odeUnknownVarOnRhs)
     EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, cellmlEquivalentVariablesInTheSameComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_equivalent_variables_in_the_same_component/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ODE, analyserModel->analyserVariable(model->component("my_component")->variable("xo"))->analyserEquation(0)->type());
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_in_the_same_component/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, cellmlEquivalentVariablesWithDifferentNames)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_equivalent_variables_with_different_names/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/cellml_equivalent_variables_with_different_names/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, cellmlMappingsAndEncapsulations)
 {
     auto parser = libcellml::Parser::create();
