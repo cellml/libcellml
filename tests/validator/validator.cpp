@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <libcellml>
 
+#include <atomic>
 #include <thread>
 
 #include "test_utils.h"
@@ -4037,9 +4038,18 @@ TEST(Validator, validateMathmlConcurrently)
     auto modelContents = fileContents("invalidmathmlelementschildrenorsiblings.cellml");
     std::vector<std::vector<std::vector<std::string>>> issues(THREAD_COUNT, std::vector<std::vector<std::string>>(VALIDATION_COUNT));
     std::vector<std::thread> threads;
+    std::atomic<size_t> readyThreadCount(0);
 
     for (size_t i = 0; i < THREAD_COUNT; ++i) {
         threads.emplace_back([&, i]() {
+            // Wait for all the threads to be ready, so that they all validate the model at the same time.
+
+            ++readyThreadCount;
+
+            while (readyThreadCount < THREAD_COUNT) {
+                std::this_thread::yield();
+            }
+
             for (size_t j = 0; j < VALIDATION_COUNT; ++j) {
                 issues[i][j] = validate(modelContents);
             }

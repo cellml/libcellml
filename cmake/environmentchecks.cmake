@@ -78,10 +78,10 @@ else ()
   set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
   set(CMAKE_REQUIRED_FLAGS "-fprofile-instr-generate -fprofile-update=atomic")
-  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping -fprofile-update=atomic" LLVM_COVERAGE_COMPILER_FLAGS_OK)
+  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping -fprofile-update=atomic" LLVM_ATOMIC_COVERAGE_COMPILER_FLAGS_OK)
 
   set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage -fprofile-update=atomic")
-  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage -fprofile-update=atomic" GCC_COVERAGE_COMPILER_FLAGS_OK)
+  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage -fprofile-update=atomic" GCC_ATOMIC_COVERAGE_COMPILER_FLAGS_OK)
 
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
@@ -96,12 +96,12 @@ else ()
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
-    GCC_COVERAGE_COMPILER_FLAGS_OK
+    GCC_ATOMIC_COVERAGE_COMPILER_FLAGS_OK
     GCOV_EXE
     GIT_EXE
     INSTALL_NAME_TOOL_EXE
+    LLVM_ATOMIC_COVERAGE_COMPILER_FLAGS_OK
     LLVM_COV_EXE
-    LLVM_COVERAGE_COMPILER_FLAGS_OK
     LLVM_PROFDATA_EXE
     SWIG_EXECUTABLE
     VALGRIND_EXE
@@ -144,7 +144,7 @@ if(CLANG_TIDY_EXE)
   set(CLANG_TIDY_AVAILABLE TRUE CACHE INTERNAL "Executable required to perform static analysis is available.")
 endif()
 
-if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND AND GCC_COVERAGE_COMPILER_FLAGS_OK)
+if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND AND GCC_ATOMIC_COVERAGE_COMPILER_FLAGS_OK)
   set(COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the coverage testing are available.")
 endif()
 
@@ -160,7 +160,7 @@ if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executable required to run valgrind testing is available.")
 endif()
 
-if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
+if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_ATOMIC_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
 endif()
 
