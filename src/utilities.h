@@ -34,8 +34,8 @@ namespace libcellml {
 /**
  * Base URLs of sites from which Issue::url() strings will be constructed.
  */
-inline const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
-inline const std::string docsUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index";
+inline constexpr const char *baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+inline constexpr const char *docsUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index";
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
