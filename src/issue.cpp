@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 
-#include <algorithm>
 #include <iterator>
 
 #include "issue_p.h"
@@ -235,15 +234,44 @@ static constexpr RuleInformation ruleToInformation[] = {
     {Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE, "ANNOTATOR_INCONSISTENT_TYPE", "", docsUrl, ""},
     {Issue::ReferenceRule::ANNOTATOR_NULL_MODEL, "ANNOTATOR_NULL_MODEL", "", docsUrl, ""},
 
+    // Generator issues:
+    {Issue::ReferenceRule::GENERATOR_NULL_MODEL, "GENERATOR_NULL_MODEL", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_NULL_VARIABLE, "GENERATOR_NULL_VARIABLE", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED, "GENERATOR_VOI_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE, "GENERATOR_VOI_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED, "GENERATOR_STATE_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE, "GENERATOR_STATE_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED, "GENERATOR_EXTERNAL_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE, "GENERATOR_EXTERNAL_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED, "GENERATOR_NLA_BASED_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE, "GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED, "GENERATOR_EXTERNALLY_NEEDED_VARIABLE_ALWAYS_TRACKED", "", docsUrl, ""},
+    {Issue::ReferenceRule::GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE, "GENERATOR_EXTERNALLY_NEEDED_VARIABLE_NOT_UNTRACKABLE", "", docsUrl, ""},
+
+    // Placeholder for further references:
+    {Issue::ReferenceRule::UNSPECIFIED, "", "", "", ""},
 };
+
+static consteval bool hasInformationForAllRules()
+{
+    if (std::size(ruleToInformation) != static_cast<size_t>(Issue::ReferenceRule::UNSPECIFIED) + 1) {
+        return false;
+    }
+
+    for (size_t i = 0; i < std::size(ruleToInformation); ++i) {
+        if (ruleToInformation[i].rule != static_cast<Issue::ReferenceRule>(i)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static_assert(hasInformationForAllRules(), "ruleToInformation must have one entry for each Issue::ReferenceRule value, in declaration order.");
 
 static const RuleInformation &ruleInformation(Issue::ReferenceRule rule)
 {
-    // Note: every Issue::ReferenceRule value has an entry in ruleToInformation, so the search always succeeds.
-
-    return *std::find_if(std::begin(ruleToInformation), std::end(ruleToInformation), [rule](const RuleInformation &information) {
-        return information.rule == rule;
-    });
+    return ruleToInformation[static_cast<size_t>(rule)];
 }
 
 std::string Issue::referenceHeading() const
