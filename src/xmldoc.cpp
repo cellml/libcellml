@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <mutex>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -53,6 +54,20 @@ void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE er
 }
 
 /**
+ * @brief Initialise libxml2.
+ *
+ * Initialise libxml2 exactly once, no matter how many threads call this function and when. Before libxml2 2.14,
+ * xmlInitParser() checks whether libxml2 is already initialised without any synchronisation, which is a data race
+ * when it gets called from different threads at the same time.
+ */
+void initialiseLibxml2()
+{
+    static std::once_flag flag;
+
+    std::call_once(flag, xmlInitParser);
+}
+
+/**
  * @brief The XmlDoc::XmlDocImpl struct.
  *
  * This struct is the private implementation struct for the XmlDoc class.  Separating
@@ -81,7 +96,7 @@ XmlDoc::~XmlDoc()
 
 void XmlDoc::parse(const std::string &input)
 {
-    xmlInitParser();
+    initialiseLibxml2();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
@@ -147,7 +162,7 @@ private:
 
 void XmlDoc::parseMathML(const std::string &input)
 {
-    xmlInitParser();
+    initialiseLibxml2();
 
     thread_local MathmlDtd mathmlDtd;
 
