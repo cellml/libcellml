@@ -337,9 +337,12 @@ std::string XmlNode::convertToString() const
 
 std::string XmlNode::convertToStrippedString() const
 {
+    // isspace() needs the value of an unsigned char: a char with the top bit set (e.g., a byte of a UTF-8 encoded
+    // non-ASCII character) is negative, which is undefined behaviour (and an assertion in MSVC's debug runtime).
+    auto isSpace = [](unsigned char c) { return isspace(c) != 0; };
     std::string contentString = convertToString();
-    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
-    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
+    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), isSpace));
+    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), isSpace).base(), contentString.end());
     return contentString;
 }
 
