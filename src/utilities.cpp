@@ -24,6 +24,7 @@ limitations under the License.
 #include <numeric>
 #include <set>
 #include <sstream>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/analyserequation.h"
@@ -1015,6 +1016,30 @@ std::string makeUniqueId(IdList &idList)
     return id;
 }
 
+/**
+ * @brief Find the first variable of a component in a variable's equivalence set.
+ *
+ * Visits the equivalence set in the same order as equivalentVariables() (the variable itself, then depth first), but
+ * stops at the first variable owned by @p component, rather than collecting the whole set first.
+ */
+VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component,
+                                               std::unordered_set<const Variable *> &visited)
+{
+    for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
+        if (visited.insert(equivalentVariable.get()).second) {
+            if (owningComponent(equivalentVariable) == component) {
+                return equivalentVariable;
+            }
+            auto found = firstEquivalentVariableInComponent(equivalentVariable, component, visited);
+            if (found != nullptr) {
+                return found;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     ConnectionMap map;
@@ -1024,10 +1049,14 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     if ((component1 != nullptr) && (component2 != nullptr)) {
         for (size_t i = 0; i < component1->variableCount(); ++i) {
             auto v = component1->variable(i);
-            for (const auto &vEquiv : equivalentVariables(v)) {
-                if (owningComponent(vEquiv) == component2) {
-                    map.insert(std::make_pair(v, vEquiv));
-                }
+            // The map keeps the first equivalent variable in component2, in the order of equivalentVariables(v).
+            VariablePtr vEquiv = (component1 == component2) ? v : nullptr;
+            if (vEquiv == nullptr) {
+                std::unordered_set<const Variable *> visited = {v.get()};
+                vEquiv = firstEquivalentVariableInComponent(v, component2, visited);
+            }
+            if (vEquiv != nullptr) {
+                map.insert(std::make_pair(v, vEquiv));
             }
         }
     }
@@ -1035,24 +1064,27 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     return map;
 }
 
-void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables)
+void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables,
+                                  std::unordered_set<const Variable *> &visited)
 {
-    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        VariablePtr equivalentVariable = variable->equivalentVariable(i);
-
-        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+    for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
+        if (visited.insert(equivalentVariable.get()).second) {
             equivalentVariables.push_back(equivalentVariable);
 
-            recursiveEquivalentVariables(equivalentVariable, equivalentVariables);
+            recursiveEquivalentVariables(equivalentVariable, equivalentVariables, visited);
         }
     }
 }
 
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
 {
+    // The visited set gives constant-time membership tests, so collecting an equivalence set of size n is O(n), not
+    // O(n^2) (e.g., a time variable that is equivalent across every component of a large model). The order of the
+    // result is unchanged.
     std::vector<VariablePtr> res = {variable};
+    std::unordered_set<const Variable *> visited = {variable.get()};
 
-    recursiveEquivalentVariables(variable, res);
+    recursiveEquivalentVariables(variable, res, visited);
 
     return res;
 }

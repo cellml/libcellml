@@ -701,6 +701,18 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
 
 /**
+ * @brief The live equivalent variables of @p variable, in order, in one pass.
+ *
+ * Same as calling equivalentVariable(i) for i from 0 to equivalentVariableCount() - 1, but O(n) rather than O(n^2)
+ * in the number of equivalences.
+ *
+ * @param variable The variable.
+ *
+ * @return The equivalent variables.
+ */
+std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable);
+
+/**
  * @brief Test the given @p entities are equal to entities in @p owner.
  *
  * Test to see if all the entities given in @p entities are equal to

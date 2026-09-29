@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <map>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/units.h"
@@ -178,6 +179,23 @@ size_t Variable::equivalentVariableCount() const
     return count;
 }
 
+std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable)
+{
+    // The live equivalent variables in one pass, in the order of equivalentVariable(0), equivalentVariable(1), ...
+    // Iterating with equivalentVariableCount() and equivalentVariable(i) is O(n^2) in the number of equivalences, since
+    // both walk the list, which matters for variables equivalent to many others (e.g., a time variable or a global
+    // constant shared by every component of a large model).
+    std::vector<VariablePtr> res;
+    res.reserve(variable.pFunc()->mEquivalentVariables.size());
+    for (const auto &variableWeak : variable.pFunc()->mEquivalentVariables) {
+        auto equivalentVariable = variableWeak.lock();
+        if (equivalentVariable != nullptr) {
+            res.push_back(equivalentVariable);
+        }
+    }
+    return res;
+}
+
 bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
 {
     return pFunc()->hasEquivalentVariable(equivalentVariable, considerIndirectEquivalences);
@@ -218,13 +236,13 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
  *
  * @param variable1 The first variable to test.
  * @param variable2 The second variable to test.
- * @param testedVariables Vector of previously tested variables.
+ * @param testedVariables Set of previously tested variables.
  *
  * @return True if the two given variables are equivalent, false otherwise.
  */
 bool haveEquivalentVariables(const Variable *variable1,
                              const Variable *variable2,
-                             std::vector<const Variable *> &testedVariables)
+                             std::unordered_set<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -234,12 +252,12 @@ bool haveEquivalentVariables(const Variable *variable1,
         return false;
     }
 
-    testedVariables.push_back(variable2);
+    testedVariables.insert(variable2);
 
-    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
-        Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
+    for (const auto &equivalentVariable2Ptr : liveEquivalentVariables(*variable2)) {
+        Variable *equivalentVariable2 = equivalentVariable2Ptr.get();
 
-        if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
+        if ((testedVariables.count(equivalentVariable2) == 0)
             && haveEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
             return true;
         }
@@ -254,7 +272,7 @@ bool Variable::VariableImpl::hasIndirectEquivalentVariable(const VariablePtr &eq
         return false;
     }
 
-    std::vector<const Variable *> testedVariables;
+    std::unordered_set<const Variable *> testedVariables;
 
     return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
 }

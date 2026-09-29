@@ -410,11 +410,22 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
         return rawPtrIt->second;
     }
 
-    for (const auto &internalVariable : mInternalVariables) {
-        if (mAnalyserModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
-            mInternalVariableMap[rawPtr] = internalVariable;
+    // Two variables are equivalent if and only if they are in the same group of
+    // the analyser model's equivalent variables cache, so look the internal
+    // variable up by group, rather than testing every internal variable (which
+    // is quadratic in the number of variables). A variable that is not in the
+    // cache is only equivalent to itself.
 
-            return internalVariable;
+    const auto &groups = mAnalyserModel->mPimpl->mEquivalentVariableCache;
+    auto groupIt = groups.find(rawPtr);
+
+    if (groupIt != groups.end()) {
+        auto internalVariableIt = mInternalVariableGroupMap.find(groupIt->second);
+
+        if (internalVariableIt != mInternalVariableGroupMap.end()) {
+            mInternalVariableMap[rawPtr] = internalVariableIt->second;
+
+            return internalVariableIt->second;
         }
     }
 
@@ -426,6 +437,10 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     mInternalVariables.push_back(res);
 
     mInternalVariableMap[rawPtr] = res;
+
+    if (groupIt != groups.end()) {
+        mInternalVariableGroupMap[groupIt->second] = res;
+    }
 
     return res;
 }
@@ -2323,6 +2338,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     mInternalVariables.clear();
     mInternalVariableMap.clear();
+    mInternalVariableGroupMap.clear();
     mInternalEquations.clear();
 
     mCiCnUnits.clear();

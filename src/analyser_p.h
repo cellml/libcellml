@@ -162,6 +162,7 @@ public:
 
     AnalyserInternalVariablePtrs mInternalVariables;
     std::unordered_map<std::uintptr_t, AnalyserInternalVariablePtr> mInternalVariableMap;
+    std::unordered_map<size_t, AnalyserInternalVariablePtr> mInternalVariableGroupMap;
     AnalyserInternalEquationPtrs mInternalEquations;
 
     GeneratorProfilePtr mGeneratorProfile = GeneratorProfile::create();

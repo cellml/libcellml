@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
@@ -478,6 +479,10 @@ private:
 
     VariableImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     const VariableImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+
+#ifndef SWIG
+    friend std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable); /**< Internal traversal helper, @private. */
+#endif
 };
 
 } // namespace libcellml

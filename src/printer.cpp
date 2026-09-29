@@ -16,7 +16,9 @@ limitations under the License.
 
 #include "libcellml/printer.h"
 
+#include <map>
 #include <regex>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -71,42 +73,34 @@ std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idLis
 
 std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap, IdList &idList, bool autoIds)
 {
+    // Group the variable equivalence pairs by their pair of parent components, in order of first appearance, in a
+    // single pass (rather than rescanning the remaining pairs for each new component pair, which is quadratic in the
+    // number of pairs).
+    std::vector<std::vector<size_t>> groups;
+    std::map<std::pair<const Component *, const Component *>, size_t> groupIndex;
+    for (size_t index = 0; index < componentMap.size(); ++index) {
+        auto key = std::make_pair(componentMap[index].first.get(), componentMap[index].second.get());
+        auto found = groupIndex.find(key);
+        if (found == groupIndex.end()) {
+            groupIndex.emplace(key, groups.size());
+            groups.push_back({index});
+        } else {
+            groups[found->second].push_back(index);
+        }
+    }
+
     std::string connections;
-    ComponentMap serialisedComponentMap;
-    size_t componentMapIndex1 = 0;
-    for (auto iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
-        ComponentPtr currentComponent1 = iterPair->first;
-        ComponentPtr currentComponent2 = iterPair->second;
-        ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
-        // Check whether this set of connections has already been serialised.
-        bool pairFound = false;
-        for (const auto &serialisedIterPair : serialisedComponentMap) {
-            if (serialisedIterPair == currentComponentPair) {
-                pairFound = true;
-                break;
-            }
-        }
-        // Continue to the next component pair if the current pair has already been serialised.
-        if (pairFound) {
-            ++componentMapIndex1;
-            continue;
-        }
+    for (const auto &group : groups) {
+        ComponentPtr currentComponent1 = componentMap[group.front()].first;
+        ComponentPtr currentComponent2 = componentMap[group.front()].second;
         std::string mappingVariables;
-        const VariablePairPtr &variablePair = variableMap.at(componentMapIndex1);
-        std::string connectionId = Variable::equivalenceConnectionId(variablePair->variable1(), variablePair->variable2());
-        mappingVariables += printMapVariables(variablePair, idList, autoIds);
-        // Check for subsequent variable equivalence pairs with the same parent components.
-        size_t componentMapIndex2 = componentMapIndex1 + 1;
-        for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
-            ComponentPtr nextComponent1 = iterPair2->first;
-            ComponentPtr nextComponent2 = iterPair2->second;
-            const VariablePairPtr &variablePair2 = variableMap.at(componentMapIndex2);
-            if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
-                mappingVariables += printMapVariables(variablePair2, idList, autoIds);
-                connectionId = Variable::equivalenceConnectionId(variablePair2->variable1(), variablePair2->variable2());
-            }
-            ++componentMapIndex2;
+        for (size_t index : group) {
+            mappingVariables += printMapVariables(variableMap.at(index), idList, autoIds);
         }
+        // The connection takes its identifier from the last variable pair of the group (as it always has). Only that
+        // pair's identifier is used, so it is the only one that needs to be looked up.
+        const VariablePairPtr &lastVariablePair = variableMap.at(group.back());
+        std::string connectionId = Variable::equivalenceConnectionId(lastVariablePair->variable1(), lastVariablePair->variable2());
         // Serialise out the new connection.
         connections += "<connection component_1=\"" + currentComponent1->name() + "\"";
         if (currentComponent2 != nullptr) {
@@ -118,8 +112,6 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             connections += " id=\"" + makeUniqueId(idList) + "\"";
         }
         connections += ">" + mappingVariables + "</connection>";
-        serialisedComponentMap.push_back(currentComponentPair);
-        ++componentMapIndex1;
     }
 
     return connections;
@@ -160,18 +152,20 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     return "";
 }
 
-void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
+using VariablePairSet = std::set<std::pair<const Variable *, const Variable *>>;
+
+void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap,
+                                     VariablePairSet &addedPairs)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr variable = component->variable(i);
-        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
-            VariablePtr equivalentVariable = variable->equivalentVariable(j);
+        for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
             VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
-            auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
-                                          [variable, equivalentVariable](const VariablePairPtr &in) {
-                                              return (in->variable1() == equivalentVariable) && (in->variable2() == variable);
-                                          });
-            if (pairFound == variableMap.end()) {
+            // Skip the pair if its reverse is already in the VariableMap (a set lookup, rather than a linear search of
+            // the map, which is quadratic in the number of equivalences).
+            bool pairFound = addedPairs.count(std::make_pair(equivalentVariable.get(), variable.get())) != 0;
+            if (!pairFound) {
+                addedPairs.emplace(variable.get(), equivalentVariable.get());
                 // Add new unique variable equivalence pair to the VariableMap.
                 variableMap.push_back(variablePair);
                 // Get parent components.
@@ -185,13 +179,20 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
     }
 }
 
-void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap)
+void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap,
+               VariablePairSet &addedPairs)
 {
     for (size_t i = 0; i < componentEntity->componentCount(); ++i) {
         ComponentPtr component = componentEntity->component(i);
-        buildMapsForComponentsVariables(component, componentMap, variableMap);
-        buildMaps(component, componentMap, variableMap);
+        buildMapsForComponentsVariables(component, componentMap, variableMap, addedPairs);
+        buildMaps(component, componentMap, variableMap, addedPairs);
     }
+}
+
+void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap)
+{
+    VariablePairSet addedPairs;
+    buildMaps(componentEntity, componentMap, variableMap, addedPairs);
 }
 
 std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idList, bool autoIds)
