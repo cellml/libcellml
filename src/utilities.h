@@ -713,6 +713,19 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
 std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable);
 
 /**
+ * @brief The first variable of @p component in the equivalence set of @p variable.
+ *
+ * The equivalence set is visited in the order of equivalentVariables(@p variable), stopping at the first variable
+ * owned by @p component (@p variable itself if it is owned by @p component).
+ *
+ * @param variable The variable.
+ * @param component The component.
+ *
+ * @return The first equivalent variable owned by @p component, or @c nullptr if there is none.
+ */
+VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component);
+
+/**
  * @brief Test the given @p entities are equal to entities in @p owner.
  *
  * Test to see if all the entities given in @p entities are equal to

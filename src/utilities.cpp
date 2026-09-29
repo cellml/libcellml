@@ -1040,6 +1040,15 @@ VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, cons
     return nullptr;
 }
 
+VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component)
+{
+    if (owningComponent(variable) == component) {
+        return variable;
+    }
+    std::unordered_set<const Variable *> visited = {variable.get()};
+    return firstEquivalentVariableInComponent(variable, component, visited);
+}
+
 ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     ConnectionMap map;
@@ -1050,11 +1059,7 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
         for (size_t i = 0; i < component1->variableCount(); ++i) {
             auto v = component1->variable(i);
             // The map keeps the first equivalent variable in component2, in the order of equivalentVariables(v).
-            VariablePtr vEquiv = (component1 == component2) ? v : nullptr;
-            if (vEquiv == nullptr) {
-                std::unordered_set<const Variable *> visited = {v.get()};
-                vEquiv = firstEquivalentVariableInComponent(v, component2, visited);
-            }
+            VariablePtr vEquiv = firstEquivalentVariableInComponent(v, component2);
             if (vEquiv != nullptr) {
                 map.insert(std::make_pair(v, vEquiv));
             }

@@ -24,6 +24,7 @@ limitations under the License.
 
 #include "libcellml/units.h"
 
+#include "commonutils.h"
 #include "utilities.h"
 #include "variable_p.h"
 
@@ -467,14 +468,42 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
         if (deepSearch) {
-            if (variable1->hasEquivalentVariable(variable2, true)) {
-                auto map = createConnectionMap(variable1, variable2);
+            if (variable1->hasEquivalentVariable(variable2, false) || variable1->hasEquivalentVariable(variable2, true)) {
+                // Same result as looking the identifier up for every pair of createConnectionMap(variable1, variable2),
+                // in the map's order, but a variable of the first component can only give an identifier if it has
+                // stored a non-empty one for a variable of the second component, so only those variables are searched
+                // for their equivalent variable in the second component. Models rarely store connection identifiers,
+                // and searching every variable's equivalence set is quadratic in the size of large models.
+                ComponentPtr component1 = owningComponent(variable1);
+                ComponentPtr component2 = owningComponent(variable2);
+                if ((component1 != nullptr) && (component2 != nullptr)) {
+                    ConnectionMap candidates;
+                    for (size_t i = 0; i < component1->variableCount(); ++i) {
+                        auto v = component1->variable(i);
+                        bool candidate = false;
+                        for (const auto &entry : v->pFunc()->mConnectionIdMap) {
+                            if (!entry.second.empty()) {
+                                auto storedFor = entry.first.lock();
+                                if ((storedFor != nullptr) && (owningComponent(storedFor) == component2)) {
+                                    candidate = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (candidate) {
+                            auto vEquiv = firstEquivalentVariableInComponent(v, component2);
+                            if (vEquiv != nullptr) {
+                                candidates.emplace(v, vEquiv);
+                            }
+                        }
+                    }
 
-                for (auto &it : map) {
-                    id = it.first->pFunc()->equivalentConnectionId(it.second);
+                    for (auto &it : candidates) {
+                        id = it.first->pFunc()->equivalentConnectionId(it.second);
 
-                    if (!id.empty()) {
-                        return id;
+                        if (!id.empty()) {
+                            return id;
+                        }
                     }
                 }
 
