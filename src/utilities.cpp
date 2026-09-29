@@ -1026,7 +1026,8 @@ std::string makeUniqueId(IdList &idList)
 VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component,
                                                std::unordered_set<const Variable *> &visited)
 {
-    for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
+    for (size_t i = 0, n = variable->equivalentVariableCount(); i < n; ++i) {
+        auto equivalentVariable = variable->equivalentVariable(i);
         if (visited.insert(equivalentVariable.get()).second) {
             if (owningComponent(equivalentVariable) == component) {
                 return equivalentVariable;

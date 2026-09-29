@@ -159,7 +159,8 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr variable = component->variable(i);
-        for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
+        for (size_t j = 0, n = variable->equivalentVariableCount(); j < n; ++j) {
+            VariablePtr equivalentVariable = variable->equivalentVariable(j);
             VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
             // Skip the pair if its reverse is already in the VariableMap (a set lookup, rather than a linear search of
             // the map, which is quadratic in the number of equivalences).

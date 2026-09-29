@@ -180,15 +180,11 @@ size_t Variable::equivalentVariableCount() const
     return count;
 }
 
-std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable)
+std::vector<VariablePtr> Variable::VariableImpl::liveEquivalentVariables() const
 {
-    // The live equivalent variables in one pass, in the order of equivalentVariable(0), equivalentVariable(1), ...
-    // Iterating with equivalentVariableCount() and equivalentVariable(i) is O(n^2) in the number of equivalences, since
-    // both walk the list, which matters for variables equivalent to many others (e.g., a time variable or a global
-    // constant shared by every component of a large model).
     std::vector<VariablePtr> res;
-    res.reserve(variable.pFunc()->mEquivalentVariables.size());
-    for (const auto &variableWeak : variable.pFunc()->mEquivalentVariables) {
+    res.reserve(mEquivalentVariables.size());
+    for (const auto &variableWeak : mEquivalentVariables) {
         auto equivalentVariable = variableWeak.lock();
         if (equivalentVariable != nullptr) {
             res.push_back(equivalentVariable);
@@ -229,21 +225,9 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
     return equivalent;
 }
 
-/**
- * @brief Test if the two variables given are equivalent, directly or indirectly.
- *
- * Traverse the variable equivalence network to determine if the two given variables
- * are equivalent.  Returns true if they are equivalent and false otherwise.
- *
- * @param variable1 The first variable to test.
- * @param variable2 The second variable to test.
- * @param testedVariables Set of previously tested variables.
- *
- * @return True if the two given variables are equivalent, false otherwise.
- */
-bool haveEquivalentVariables(const Variable *variable1,
-                             const Variable *variable2,
-                             std::unordered_set<const Variable *> &testedVariables)
+bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
+                                                     const Variable *variable2,
+                                                     std::unordered_set<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -255,7 +239,7 @@ bool haveEquivalentVariables(const Variable *variable1,
 
     testedVariables.insert(variable2);
 
-    for (const auto &equivalentVariable2Ptr : liveEquivalentVariables(*variable2)) {
+    for (const auto &equivalentVariable2Ptr : variable2->pFunc()->liveEquivalentVariables()) {
         Variable *equivalentVariable2 = equivalentVariable2Ptr.get();
 
         if ((testedVariables.count(equivalentVariable2) == 0)
