@@ -310,6 +310,23 @@ XmlNodePtr XmlNode::parent() const
 
 std::string XmlNode::convertToString() const
 {
+    // Fast path for a text node whose content xmlNodeDump() would output unchanged: printable ASCII, tabs and new
+    // lines, with no characters that it escapes ('<', '>', '&' and carriage returns). This is the common case of the
+    // content of a ci or cn element, and it avoids a buffer allocation and a serialisation per call.
+    if ((mPimpl->mXmlNodePtr->type == XML_TEXT_NODE) && (mPimpl->mXmlNodePtr->content != nullptr)) {
+        const auto *content = reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->content);
+        bool plain = true;
+        for (const char *c = content; *c != '\0'; ++c) {
+            auto u = static_cast<unsigned char>(*c);
+            if (((u < 0x20) && (u != '\t') && (u != '\n')) || (u > 0x7e) || (u == '<') || (u == '>') || (u == '&')) {
+                plain = false;
+                break;
+            }
+        }
+        if (plain) {
+            return content;
+        }
+    }
     xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
