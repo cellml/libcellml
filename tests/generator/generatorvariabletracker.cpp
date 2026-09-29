@@ -40,6 +40,9 @@ TEST(GeneratorVariableTracker, noModelOrVariable)
 
     generatorVariableTracker->trackVariable(nullptr);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generatorVariableTracker);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(nullVariableIssue, std::vector<std::string>({""}),
+                                                 std::vector<std::string>({"https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=GENERATOR_NULL_VARIABLE"}),
+                                                 generatorVariableTracker);
 
     generatorVariableTracker->untrackVariable(nullptr);
     EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(nullVariableIssue, errorLevel, nullVariableReferenceRule, generatorVariableTracker);
