@@ -187,7 +187,7 @@ static constexpr RuleInformation ruleToInformation[] = {
     {Issue::ReferenceRule::MAP_VARIABLES_ELEMENT, "MAP_VARIABLES_ELEMENT", "2.16", baseSpecificationUrl, "specB16"},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1_ATTRIBUTE, "MAP_VARIABLES_VARIABLE1_ATTRIBUTE", "2.16.1", baseSpecificationUrl, "specB16"},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1_ATTRIBUTE_REFERENCE, "MAP_VARIABLES_VARIABLE1_ATTRIBUTE_REFERENCE", "2.16.1.1", baseSpecificationUrl, "specB16"},
-    {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE, "MAP_VARIABLES_VARIABLE2", "2.16.2", baseSpecificationUrl, "specB16"},
+    {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE, "MAP_VARIABLES_VARIABLE2_ATTRIBUTE", "2.16.2", baseSpecificationUrl, "specB16"},
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE, "MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE", "2.16.2.1", baseSpecificationUrl, "specB16"},
     {Issue::ReferenceRule::MAP_VARIABLES_UNIQUE, "MAP_VARIABLES_UNIQUE", "2.16.3", baseSpecificationUrl, "specB16"},
 
