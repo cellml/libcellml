@@ -689,18 +689,6 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
 ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2);
 
 /**
- * @brief Make a list of all variables equivalent to the given variable.
- *
- * Collect all the equivalent variables of the given @p variable and return
- * them as a list of @ref VariablePtr.
- *
- * @param variable The variable to find equivalent variables of.
- *
- * @return A @c std::vector of @ref VariablePtr.
- */
-std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
-
-/**
  * @brief The live equivalent variables of @p variable, in order, in one pass.
  *
  * Same as calling equivalentVariable(i) for i from 0 to equivalentVariableCount() - 1, but O(n) rather than O(n^2)
@@ -715,8 +703,8 @@ std::vector<VariablePtr> liveEquivalentVariables(const Variable &variable);
 /**
  * @brief The first variable of @p component in the equivalence set of @p variable.
  *
- * The equivalence set is visited in the order of equivalentVariables(@p variable), stopping at the first variable
- * owned by @p component (@p variable itself if it is owned by @p component).
+ * The equivalence set is visited from @p variable itself, then depth first in the order of each variable's equivalent
+ * variables, stopping at the first variable owned by @p component.
  *
  * @param variable The variable.
  * @param component The component.

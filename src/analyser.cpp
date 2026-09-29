@@ -411,22 +411,18 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     }
 
     // Two variables are equivalent if and only if they are in the same group of
-    // the analyser model's equivalent variables cache, so look the internal
-    // variable up by group, rather than testing every internal variable (which
-    // is quadratic in the number of variables). A variable that is not in the
-    // cache is only equivalent to itself.
+    // the analyser model's equivalent variables cache, which has every variable
+    // of the model, so look the internal variable up by group, rather than
+    // testing every internal variable (which is quadratic in the number of
+    // variables).
 
-    const auto &groups = mAnalyserModel->mPimpl->mEquivalentVariableCache;
-    auto groupIt = groups.find(rawPtr);
+    auto group = mAnalyserModel->mPimpl->mEquivalentVariableCache.at(rawPtr);
+    auto internalVariableIt = mInternalVariableGroupMap.find(group);
 
-    if (groupIt != groups.end()) {
-        auto internalVariableIt = mInternalVariableGroupMap.find(groupIt->second);
+    if (internalVariableIt != mInternalVariableGroupMap.end()) {
+        mInternalVariableMap[rawPtr] = internalVariableIt->second;
 
-        if (internalVariableIt != mInternalVariableGroupMap.end()) {
-            mInternalVariableMap[rawPtr] = internalVariableIt->second;
-
-            return internalVariableIt->second;
-        }
+        return internalVariableIt->second;
     }
 
     // No internal variable exists for the given variable, so create one, track
@@ -437,10 +433,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     mInternalVariables.push_back(res);
 
     mInternalVariableMap[rawPtr] = res;
-
-    if (groupIt != groups.end()) {
-        mInternalVariableGroupMap[groupIt->second] = res;
-    }
+    mInternalVariableGroupMap[group] = res;
 
     return res;
 }

@@ -313,7 +313,7 @@ std::string XmlNode::convertToString() const
     // Fast path for a text node whose content xmlNodeDump() would output unchanged: printable ASCII, tabs and new
     // lines, with no characters that it escapes ('<', '>', '&' and carriage returns). This is the common case of the
     // content of a ci or cn element, and it avoids a buffer allocation and a serialisation per call.
-    if ((mPimpl->mXmlNodePtr->type == XML_TEXT_NODE) && (mPimpl->mXmlNodePtr->content != nullptr)) {
+    if (mPimpl->mXmlNodePtr->type == XML_TEXT_NODE) {
         const auto *content = reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->content);
         bool plain = true;
         for (const char *c = content; *c != '\0'; ++c) {

@@ -1019,8 +1019,9 @@ std::string makeUniqueId(IdList &idList)
 /**
  * @brief Find the first variable of a component in a variable's equivalence set.
  *
- * Visits the equivalence set in the same order as equivalentVariables() (the variable itself, then depth first), but
- * stops at the first variable owned by @p component, rather than collecting the whole set first.
+ * Visits the equivalence set depth first, in the order of each variable's equivalent variables, and stops at the first
+ * variable owned by @p component. A visited set gives constant-time membership tests, so the search is O(n) in the size
+ * of the equivalence set (e.g., a time variable that is equivalent across every component of a large model).
  */
 VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component,
                                                std::unordered_set<const Variable *> &visited)
@@ -1058,7 +1059,7 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     if ((component1 != nullptr) && (component2 != nullptr)) {
         for (size_t i = 0; i < component1->variableCount(); ++i) {
             auto v = component1->variable(i);
-            // The map keeps the first equivalent variable in component2, in the order of equivalentVariables(v).
+            // The map keeps the first equivalent variable in component2 (v itself, then depth first).
             VariablePtr vEquiv = firstEquivalentVariableInComponent(v, component2);
             if (vEquiv != nullptr) {
                 map.insert(std::make_pair(v, vEquiv));
@@ -1067,31 +1068,6 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     }
 
     return map;
-}
-
-void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables,
-                                  std::unordered_set<const Variable *> &visited)
-{
-    for (const auto &equivalentVariable : liveEquivalentVariables(*variable)) {
-        if (visited.insert(equivalentVariable.get()).second) {
-            equivalentVariables.push_back(equivalentVariable);
-
-            recursiveEquivalentVariables(equivalentVariable, equivalentVariables, visited);
-        }
-    }
-}
-
-std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
-{
-    // The visited set gives constant-time membership tests, so collecting an equivalence set of size n is O(n), not
-    // O(n^2) (e.g., a time variable that is equivalent across every component of a large model). The order of the
-    // result is unchanged.
-    std::vector<VariablePtr> res = {variable};
-    std::unordered_set<const Variable *> visited = {variable.get()};
-
-    recursiveEquivalentVariables(variable, res, visited);
-
-    return res;
 }
 
 bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList)

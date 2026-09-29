@@ -1015,6 +1015,153 @@ TEST(Connection, nonUniqueWayOfGettingEquivalenceConnectionId)
     EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v4));
 }
 
+TEST(Connection, connectionIdWithinOneComponent)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+
+    component->addVariable(v1);
+    component->addVariable(v2);
+    model->addComponent(component);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v1));
+}
+
+TEST(Connection, connectionIdWithOneComponentlessVariable)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+
+    component->addVariable(v1);
+    model->addComponent(component);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v1, v2));
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v1));
+}
+
+TEST(Connection, connectionIdOfIndirectlyEquivalentVariables)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("component1");
+    auto c2 = libcellml::Component::create("component2");
+    auto c3 = libcellml::Component::create("component3");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+    auto v3 = libcellml::Variable::create("variable3");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v3));
+
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v1, v3));
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v3, v1));
+}
+
+TEST(Connection, connectionIdAfterItIsRemoved)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("component1");
+    auto c2 = libcellml::Component::create("component2");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+    auto v3 = libcellml::Variable::create("variable3");
+    auto v4 = libcellml::Variable::create("variable4");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+    c2->addVariable(v4);
+    model->addComponent(c1);
+    model->addComponent(c2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v4));
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v3);
+
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v2, v4));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v3));
+}
+
+TEST(Connection, connectionIdWithExpiredVariable)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("component1");
+    auto c2 = libcellml::Component::create("component2");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+    auto v3 = libcellml::Variable::create("variable3");
+    auto v4 = libcellml::Variable::create("variable4");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+    c2->addVariable(v4);
+    model->addComponent(c1);
+    model->addComponent(c2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    // variable1 keeps the identifier it stored for variable3 after variable3 is gone.
+    c2->removeVariable(v3);
+    v3 = nullptr;
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v4));
+}
+
+TEST(Connection, connectionIdStoredForAVariableThatIsNoLongerEquivalent)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("component1");
+    auto c2 = libcellml::Component::create("component2");
+    auto c3 = libcellml::Component::create("component3");
+    auto v1 = libcellml::Variable::create("variable1");
+    auto v2 = libcellml::Variable::create("variable2");
+    auto v3 = libcellml::Variable::create("variable3");
+    auto v4 = libcellml::Variable::create("variable4");
+    auto v5 = libcellml::Variable::create("variable5");
+
+    c1->addVariable(v1);
+    c1->addVariable(v4);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c3->addVariable(v5);
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    // variable1 keeps the identifier it stored for variable3, but is no longer equivalent to any variable of
+    // component3.
+    libcellml::Variable::removeEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v4, v5);
+
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v4, v5));
+}
+
 TEST(Connection, connectionIdFromReverseVariablesToThoseSet)
 {
     libcellml::ModelPtr m = libcellml::Model::create();

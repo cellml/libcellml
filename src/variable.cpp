@@ -491,10 +491,8 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
                             }
                         }
                         if (candidate) {
-                            auto vEquiv = firstEquivalentVariableInComponent(v, component2);
-                            if (vEquiv != nullptr) {
-                                candidates.emplace(v, vEquiv);
-                            }
+                            // Without an equivalent variable in component2 (nullptr), there's no identifier to find.
+                            candidates.emplace(v, firstEquivalentVariableInComponent(v, component2));
                         }
                     }
 
