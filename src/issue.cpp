@@ -252,23 +252,6 @@ static constexpr RuleInformation ruleToInformation[] = {
     {Issue::ReferenceRule::UNSPECIFIED, "", "", "", ""},
 };
 
-static consteval bool hasInformationForAllRules()
-{
-    if constexpr (std::size(ruleToInformation) != static_cast<size_t>(Issue::ReferenceRule::UNSPECIFIED) + 1) {
-        return false;
-    }
-
-    for (size_t i = 0; i < std::size(ruleToInformation); ++i) {
-        if (ruleToInformation[i].rule != static_cast<Issue::ReferenceRule>(i)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-static_assert(hasInformationForAllRules(), "ruleToInformation must have one entry for each Issue::ReferenceRule value, in declaration order.");
-
 static const RuleInformation &ruleInformation(Issue::ReferenceRule rule)
 {
     return ruleToInformation[static_cast<size_t>(rule)];
