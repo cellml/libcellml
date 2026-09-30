@@ -73,9 +73,7 @@ std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idLis
 
 std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap, IdList &idList, bool autoIds)
 {
-    // Group the variable equivalence pairs by their pair of parent components, in order of first appearance, in a
-    // single pass (rather than rescanning the remaining pairs for each new component pair, which is quadratic in the
-    // number of pairs).
+    // Group the variable equivalence pairs by their pair of parent components, in order of first appearance.
     std::vector<std::vector<size_t>> groups;
     std::map<std::pair<const Component *, const Component *>, size_t> groupIndex;
     for (size_t index = 0; index < componentMap.size(); ++index) {
@@ -97,8 +95,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         for (size_t index : group) {
             mappingVariables += printMapVariables(variableMap.at(index), idList, autoIds);
         }
-        // The connection takes its identifier from the last variable pair of the group (as it always has). Only that
-        // pair's identifier is used, so it is the only one that needs to be looked up.
+        // The connection takes its identifier from the last variable pair of the group.
         const VariablePairPtr &lastVariablePair = variableMap.at(group.back());
         std::string connectionId = Variable::equivalenceConnectionId(lastVariablePair->variable1(), lastVariablePair->variable2());
         // Serialise out the new connection.
@@ -162,8 +159,7 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
         for (size_t j = 0, n = variable->equivalentVariableCount(); j < n; ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
             VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
-            // Skip the pair if its reverse is already in the VariableMap (a set lookup, rather than a linear search of
-            // the map, which is quadratic in the number of equivalences).
+            // Skip the pair if its reverse is already in the VariableMap.
             bool pairFound = addedPairs.count(std::make_pair(equivalentVariable.get(), variable.get())) != 0;
             if (!pairFound) {
                 addedPairs.emplace(variable.get(), equivalentVariable.get());

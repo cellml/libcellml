@@ -117,10 +117,10 @@ public:
     bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
-     * @brief The live equivalent variables of this variable, in order, in one pass.
+     * @brief The live equivalent variables of this variable, in order.
      *
-     * Same as calling equivalentVariable(i) for i from 0 to equivalentVariableCount() - 1, but O(n) rather than
-     * O(n^2) in the number of equivalences, since both of those walk the whole list.
+     * The equivalent variables that equivalentVariable(i) gives for i from 0 to equivalentVariableCount() - 1,
+     * collected in one pass over the list.
      *
      * @return The equivalent variables.
      */
@@ -128,15 +128,6 @@ public:
 
     /**
      * @brief Test if the two variables given are equivalent, directly or indirectly.
-     *
-     * Traverse the variable equivalence network to determine if the two given variables
-     * are equivalent.
-     *
-     * @param variable1 The first variable to test.
-     * @param variable2 The second variable to test.
-     * @param testedVariables Set of previously tested variables.
-     *
-     * @return True if the two given variables are equivalent, false otherwise.
      */
     static bool haveEquivalentVariables(const Variable *variable1, const Variable *variable2,
                                         std::unordered_set<const Variable *> &testedVariables);

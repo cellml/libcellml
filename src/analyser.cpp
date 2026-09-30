@@ -412,9 +412,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
 
     // Two variables are equivalent if and only if they are in the same group of
     // the analyser model's equivalent variables cache, which has every variable
-    // of the model, so look the internal variable up by group, rather than
-    // testing every internal variable (which is quadratic in the number of
-    // variables).
+    // of the model, so an existing internal variable is found by its group.
 
     auto group = mAnalyserModel->mPimpl->mEquivalentVariableCache.at(rawPtr);
     auto internalVariableIt = mInternalVariableGroupMap.find(group);

@@ -225,6 +225,18 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
     return equivalent;
 }
 
+/**
+ * @brief Test if the two variables given are equivalent, directly or indirectly.
+ *
+ * Traverse the variable equivalence network to determine if the two given variables
+ * are equivalent.  Returns true if they are equivalent and false otherwise.
+ *
+ * @param variable1 The first variable to test.
+ * @param variable2 The second variable to test.
+ * @param testedVariables Set of previously tested variables.
+ *
+ * @return True if the two given variables are equivalent, false otherwise.
+ */
 bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
                                                      const Variable *variable2,
                                                      std::unordered_set<const Variable *> &testedVariables)
@@ -453,11 +465,10 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
         if (deepSearch) {
             if (variable1->hasEquivalentVariable(variable2, false) || variable1->hasEquivalentVariable(variable2, true)) {
-                // Same result as looking the identifier up for every pair of createConnectionMap(variable1, variable2),
-                // in the map's order, but a variable of the first component can only give an identifier if it has
-                // stored a non-empty one for a variable of the second component, so only those variables are searched
-                // for their equivalent variable in the second component. Models rarely store connection identifiers,
-                // and searching every variable's equivalence set is quadratic in the size of large models.
+                // Only a variable of the first component that has stored a non-empty identifier for a variable of the
+                // second component can give an identifier, so only those variables are searched for their first
+                // equivalent variable in the second component. The identifier is the first one found, in the order
+                // of the candidate variables.
                 ComponentPtr component1 = owningComponent(variable1);
                 ComponentPtr component2 = owningComponent(variable2);
                 if ((component1 != nullptr) && (component2 != nullptr)) {
