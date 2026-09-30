@@ -1732,33 +1732,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
-bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation)
-{
-    // NLA and algebraic equations that are state/rate-based and external equations are to be computed again (in the
-    // computeVariables() method) unless the variables they compute are not tracked or they compute a rate (rates are
-    // only computed in the computeRates() method, the computeVariables() method only uses them).
-
-    switch (analyserEquation->type()) {
-    case AnalyserEquation::Type::NLA:
-    case AnalyserEquation::Type::ALGEBRAIC:
-        if (analyserEquation->isStateRateBased() && (analyserEquation->stateCount() == 0)) {
-            for (const auto &analyserVariable : analyserVariables(analyserEquation)) {
-                if (isTrackedVariable(analyserVariable, true)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return false;
-    case AnalyserEquation::Type::EXTERNAL:
-        return isTrackedEquation(analyserEquation, true);
-    default:
-        return false;
-    }
-}
-
 bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &analyserEquation,
                                               bool includeComputedConstants) const
 {
@@ -1870,9 +1843,13 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         // Note: the dependencies of an NLA equation are those of its NLA system (see nlaSystemDependencies()). Also, an
         //       ODE dependency means that this analyser equation uses the rate computed by that ODE equation, so we
         //       must generate that ODE equation first, but only when computing our rates (rates are never computed
-        //       anywhere else). Finally, an untracked dependency is a local variable, so it must be computed wherever
-        //       it is needed (e.g., in computeVariables() even if it was already computed in computeRates(), or in an
-        //       objective function), and so must its own untracked dependencies (even if it is a computed constant).
+        //       anywhere else). Then, when computing our variables, we only generate the dependencies that are still
+        //       remaining (i.e. that have not been generated in computeRates() or in a previous method) since
+        //       computeRates() must have been called first, at the same point (see
+        //       addImplementationComputeVariablesMethodCode()). Finally, an untracked dependency is a local variable,
+        //       so it must be computed wherever it is needed (e.g., in computeVariables() even if it was already
+        //       computed in computeRates(), or in an objective function), and so must its own untracked dependencies
+        //       (even if it is a computed constant).
 
         if (!isSomeConstant(analyserEquation, includeComputedConstants)
             || ((analyserEquation->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
@@ -1887,19 +1864,13 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                          || ((target == GenerateEquationCodeTarget::OBJECTIVE_FUNCTION)
                              && (dependency->type() == AnalyserEquation::Type::ALGEBRAIC)))
                      && isTrackedEquation(dependency, false))
-                    || (((target == GenerateEquationCodeTarget::NORMAL)
-                         || (target == GenerateEquationCodeTarget::COMPUTE_RATES)
-                         || ((target == GenerateEquationCodeTarget::COMPUTE_VARIABLES)
-                             && ((dependency->type() != AnalyserEquation::Type::NLA)
-                                 || isToBeComputedAgain(dependency)
-                                 || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end()))))
+                    || ((target != GenerateEquationCodeTarget::OBJECTIVE_FUNCTION)
                         && ((dependency->type() != AnalyserEquation::Type::ODE)
                             || (target == GenerateEquationCodeTarget::COMPUTE_RATES))
                         && (isTrackedEquation(dependency, true)
                             || (analyserEquation->type() != AnalyserEquation::Type::NLA))
                         && !isSomeConstant(dependency, includeComputedConstants)
-                        && (analyserEquationsForDependencies.empty()
-                            || isToBeComputedAgain(dependency)
+                        && ((target != GenerateEquationCodeTarget::COMPUTE_VARIABLES)
                             || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
                                 && isTrackedEquation(dependency, false))
                             || (std::find(analyserEquationsForDependencies.begin(), analyserEquationsForDependencies.end(), dependency) != analyserEquationsForDependencies.end())))) {
@@ -2242,9 +2213,12 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         auto newRemainingAnalyserEquations = analyserEquations;
         std::vector<AnalyserVariablePtr> generatedConstantDependencies;
 
+        // Note: computeVariables() requires computeRates() to have been called first, at the same point (i.e. with the
+        //       same variable of integration and states). So, we only generate the (tracked) equations that are still
+        //       remaining, i.e. that have not been generated in computeRates() (or in a previous method).
+
         for (const auto &analyserEquation : analyserEquations) {
-            if (((std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end())
-                 || isToBeComputedAgain(analyserEquation))
+            if ((std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end())
                 && isTrackedEquation(analyserEquation, true)) {
                 methodBody += generateEquationCode(analyserEquation, newRemainingAnalyserEquations, remainingAnalyserEquations,
                                                    generatedConstantDependencies, false,

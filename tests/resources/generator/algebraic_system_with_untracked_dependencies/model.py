@@ -111,8 +111,4 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    algebraic_variables[5] = 3.0*rates[2]+states[2]
-    algebraic_variables[4] = algebraic_variables[5]+1.0
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
-    algebraic_variables[2] = states[2]+1.0
-    algebraic_variables[1] = 2.0*algebraic_variables[2]+algebraic_variables[0]
+    pass

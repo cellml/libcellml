@@ -145,7 +145,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     algebraicVariables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
     algebraicVariables[1] = constants[2]*(externalVariables[0]-computedConstants[0]);
     externalVariables[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 1);
     algebraicVariables[3] = constants[3]*pow(externalVariables[1], 3.0)*states[0]*(externalVariables[0]-computedConstants[1]);

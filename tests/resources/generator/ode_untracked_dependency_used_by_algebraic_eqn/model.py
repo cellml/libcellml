@@ -7,7 +7,7 @@ from math import *
 __version__ = "0.8.0"
 LIBCELLML_VERSION = "0.7.1"
 
-STATE_COUNT = 2
+STATE_COUNT = 1
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
 ALGEBRAIC_VARIABLE_COUNT = 1
@@ -15,7 +15,6 @@ ALGEBRAIC_VARIABLE_COUNT = 1
 VOI_INFO = {"name": "t", "units": "dimensionless", "component": "my_component"}
 
 STATE_INFO = [
-    {"name": "z", "units": "dimensionless", "component": "my_component"},
     {"name": "x", "units": "dimensionless", "component": "my_component"}
 ]
 
@@ -26,7 +25,7 @@ COMPUTED_CONSTANT_INFO = [
 ]
 
 ALGEBRAIC_VARIABLE_INFO = [
-    {"name": "y", "units": "dimensionless", "component": "my_component"}
+    {"name": "v", "units": "dimensionless", "component": "my_component"}
 ]
 
 
@@ -47,8 +46,7 @@ def create_algebraic_variables_array():
 
 
 def initialise_arrays(states, rates, constants, computed_constants, algebraic_variables):
-    states[0] = 0.0
-    states[1] = 1.0
+    states[0] = 1.0
 
 
 def compute_computed_constants(voi, states, rates, constants, computed_constants, algebraic_variables):
@@ -56,10 +54,10 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic_variables):
-    rates[1] = -states[1]
-    algebraic_variables[0] = rates[1]
-    rates[0] = algebraic_variables[0]
+    my_component_u = 2.0*states[0]
+    rates[0] = -my_component_u
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    pass
+    my_component_u = 2.0*states[0]
+    algebraic_variables[0] = my_component_u+1.0

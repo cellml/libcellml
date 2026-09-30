@@ -8,7 +8,7 @@
 const char VERSION[] = "0.8.0";
 const char LIBCELLML_VERSION[] = "0.7.1";
 
-const size_t STATE_COUNT = 2;
+const size_t STATE_COUNT = 1;
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_VARIABLE_COUNT = 1;
@@ -16,7 +16,6 @@ const size_t ALGEBRAIC_VARIABLE_COUNT = 1;
 const VariableInfo VOI_INFO = {"t", "dimensionless", "my_component"};
 
 const VariableInfo STATE_INFO[] = {
-    {"z", "dimensionless", "my_component"},
     {"x", "dimensionless", "my_component"}
 };
 
@@ -27,7 +26,7 @@ const VariableInfo COMPUTED_CONSTANT_INFO[] = {
 };
 
 const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
-    {"y", "dimensionless", "my_component"}
+    {"v", "dimensionless", "my_component"}
 };
 
 double * createStatesArray()
@@ -81,8 +80,7 @@ void deleteArray(double *array)
 
 void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    states[0] = 0.0;
-    states[1] = 1.0;
+    states[0] = 1.0;
 }
 
 void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
@@ -91,11 +89,12 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    rates[1] = -states[1];
-    algebraicVariables[0] = rates[1];
-    rates[0] = algebraicVariables[0];
+    double my_component_u = 2.0*states[0];
+    rates[0] = -my_component_u;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
+    double my_component_u = 2.0*states[0];
+    algebraicVariables[0] = my_component_u+1.0;
 }

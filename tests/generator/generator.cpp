@@ -1029,6 +1029,41 @@ TEST(Generator, odeUnknownVarOnRhs)
     EXPECT_EQ_FILE_CONTENTS("generator/ode_unknown_var_on_rhs/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, odeUntrackedDependencyUsedByAlgebraicEqn)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_untracked_dependency_used_by_algebraic_eqn/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+
+    // Untrack an algebraic variable that is needed to compute a rate, and which is therefore computed (as a local
+    // variable) in computeRates(), but which is also needed by an algebraic variable that is only computed in
+    // computeVariables(), which must therefore compute it again.
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("my_component")->variable("u")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    auto profile = libcellml::GeneratorProfile::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_untracked_dependency_used_by_algebraic_eqn/model.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_untracked_dependency_used_by_algebraic_eqn/model.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/ode_untracked_dependency_used_by_algebraic_eqn/model.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}
+
 TEST(Generator, cellmlEquivalentVariablesInTheSameComponent)
 {
     auto parser = libcellml::Parser::create();

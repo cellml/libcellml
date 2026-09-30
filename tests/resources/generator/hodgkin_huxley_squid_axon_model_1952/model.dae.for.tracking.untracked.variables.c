@@ -557,12 +557,4 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot5(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables);
-    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables);
 }
