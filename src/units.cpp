@@ -266,7 +266,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                     return false;
                 }
                 // Make the direction positive on all branches, direction is only applied at the end.
-                localMultiplier += mult + branchMult * exp + prefixMult;
+                localMultiplier += mult + (branchMult + prefixMult) * exp;
             }
         }
         multiplier += localMultiplier * direction;

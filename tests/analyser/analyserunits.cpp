@@ -95,7 +95,7 @@ TEST(AnalyserUnits, ci)
         "The units in 'b = bCst' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'bCst' is in 'second'.",
         "The units in 'c = cCst' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = dCst' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'dCst' is in 'frog'.",
-        "The units in 'e = eCst' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'e = eCst' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -116,11 +116,11 @@ TEST(AnalyserUnits, cn)
         "The units in 'b = 3.0' in component 'main' are not equivalent. 'b' is 'dimensionless' while '3.0' is in 'second'.",
         "The units in 'c = 5.0' in component 'main' are not equivalent. 'c' is 'dimensionless' while '5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = 7.0' in component 'main' are not equivalent. 'd' is 'dimensionless' while '7.0' is in 'frog'.",
-        "The units in 'e = 9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while '9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'e = 9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while '9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The units in 'g = 13.0e3' in component 'main' are not equivalent. 'g' is 'dimensionless' while '13.0e3' is in 'second'.",
         "The units in 'h = 15.0e5' in component 'main' are not equivalent. 'h' is 'dimensionless' while '15.0e5' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'i = 17.0e7' in component 'main' are not equivalent. 'i' is 'dimensionless' while '17.0e7' is in 'frog'.",
-        "The units in 'j = 19.0e9' in component 'main' are not equivalent. 'j' is 'dimensionless' while '19.0e9' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'j = 19.0e9' in component 'main' are not equivalent. 'j' is 'dimensionless' while '19.0e9' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -141,8 +141,8 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'b > 9.0' in '(b > 9.0)?7.0' in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. 'b' is 'dimensionless' while '9.0' is in 'second'.",
         "The units in 'c > 15.0' in '(c > 15.0)?13.0' in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. 'c' is 'dimensionless' while '15.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd > 21.0' in '(d > 21.0)?19.0' in '(d > 21.0)?19.0:23.0' in equation 'd = (d > 21.0)?19.0:23.0' in component 'main' are not equivalent. 'd' is 'dimensionless' while '21.0' is in 'frog'.",
-        "The units in 'e > 27.0' in '(e > 27.0)?25.0' in '(e > 27.0)?25.0:29.0' in equation 'e = (e > 27.0)?25.0:29.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while '27.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-        "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'imaginary' (i.e. 'second', 'ampere^-1 x kilogram x metre^2 x second^-3', 'frog' and '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'e > 27.0' in '(e > 27.0)?25.0' in '(e > 27.0)?25.0:29.0' in equation 'e = (e > 27.0)?25.0:29.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while '27.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'imaginary' (i.e. 'second', 'ampere^-1 x kilogram x metre^2 x second^-3', 'frog' and '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The unit of '55.0' in '(55.0)?53.0' in '(55.0)?53.0:57.0' in equation 'g = (55.0)?53.0:57.0' in component 'main' is not dimensionless. '55.0' is in 'second'.",
     };
 
@@ -174,8 +174,8 @@ TEST(AnalyserUnits, eq)
             "The units in 'bCst " + op.second + " 3.0' in equation 'b = bCst " + op.second + " 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
             "The units in 'cCst " + op.second + " 5.0' in equation 'c = cCst " + op.second + " 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '5.0' is 'dimensionless'.",
             "The units in 'dCst " + op.second + " 7.0' in equation 'd = dCst " + op.second + " 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-            "The units in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
-            "The units in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The units in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
+            "The units in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -203,8 +203,8 @@ TEST(AnalyserUnits, andOrOperators)
             "The unit of 'bCst' in 'bCst " + op.second + " 3.0' in equation 'b = bCst " + op.second + " 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
             "The unit of 'cCst' in 'cCst " + op.second + " 5.0' in equation 'c = cCst " + op.second + " 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
             "The unit of 'dCst' in 'dCst " + op.second + " 7.0' in equation 'd = dCst " + op.second + " 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-            "The unit of 'eCst' in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-            "The units of 'fCst' and '11.0' in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The unit of 'eCst' in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The units of 'fCst' and '11.0' in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -226,8 +226,8 @@ TEST(AnalyserUnits, xorOp)
         "The unit of 'bCst' in 'xor(bCst, 3.0)' in equation 'b = xor(bCst, 3.0)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'xor(cCst, 5.0)' in equation 'c = xor(cCst, 5.0)' in component 'main' is not dimensionless. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of 'dCst' in 'xor(dCst, 7.0)' in equation 'd = xor(dCst, 7.0)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-        "The units of 'fCst' and '11.0' in 'xor(fCst, 11.0)' in equation 'f = xor(fCst, 11.0)' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of 'eCst' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units of 'fCst' and '11.0' in 'xor(fCst, 11.0)' in equation 'f = xor(fCst, 11.0)' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -248,7 +248,7 @@ TEST(AnalyserUnits, notOp)
         "The unit of 'bCst' in '!bCst' in equation 'b = !bCst' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in '!cCst' in equation 'c = !cCst' in component 'main' is not dimensionless. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of 'dCst' in '!dCst' in equation 'd = !dCst' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in '!eCst' in equation 'e = !eCst' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of 'eCst' in '!eCst' in equation 'e = !eCst' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -269,8 +269,8 @@ TEST(AnalyserUnits, plus)
         "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
         "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '5.0' is 'dimensionless'.",
         "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
-        "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
+        "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -291,12 +291,12 @@ TEST(AnalyserUnits, minus)
         "The units in 'b = -bCst' in component 'main' are not equivalent. 'b' is 'dimensionless' while '-bCst' is in 'second'.",
         "The units in 'c = -cCst' in component 'main' are not equivalent. 'c' is 'dimensionless' while '-cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = -dCst' in component 'main' are not equivalent. 'd' is 'dimensionless' while '-dCst' is in 'frog'.",
-        "The units in 'e = -eCst' in component 'main' are not equivalent. 'e' is 'dimensionless' while '-eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'e = -eCst' in component 'main' are not equivalent. 'e' is 'dimensionless' while '-eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The units in 'gCst-3.0' in equation 'g = gCst-3.0' in component 'main' are not equivalent. 'gCst' is in 'second' while '3.0' is 'dimensionless'.",
         "The units in 'hCst-5.0' in equation 'h = hCst-5.0' in component 'main' are not equivalent. 'hCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '5.0' is 'dimensionless'.",
         "The units in 'iCst-7.0' in equation 'i = iCst-7.0' in component 'main' are not equivalent. 'iCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not equivalent. 'jCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
-        "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not equivalent. 'kCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not equivalent. 'jCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
+        "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not equivalent. 'kCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -317,12 +317,12 @@ TEST(AnalyserUnits, times)
         "The units in 'b = bCst*3.0' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'bCst*3.0' is in 'second'.",
         "The units in 'c = cCst*5.0' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'cCst*5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = dCst*7.0' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'dCst*7.0' is in 'frog'.",
-        "The units in 'e = eCst*9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst*9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-        "The units in 'f = fCst*11.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while 'fCst*11.0' is in 'imaginary x second' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-15').",
+        "The units in 'e = eCst*9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst*9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'f = fCst*11.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while 'fCst*11.0' is in 'imaginary x second' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-15').",
         "The units in 'g = gCst*13.0' in component 'main' are not equivalent. 'g' is in 'second_by_volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-2') while 'gCst*13.0' is in 'second'.",
         "The units in 'h = hCst*15.0' in component 'main' are not equivalent. 'h' is in 'volt_by_volt' (i.e. 'ampere^-2 x kilogram^2 x metre^4 x second^-6') while 'hCst*15.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'i = iCst*17.0' in component 'main' are not equivalent. 'i' is in 'frog_by_volt' (i.e. 'ampere^-1 x frog x kilogram x metre^2 x second^-3') while 'iCst*17.0' is in 'frog'.",
-        "The units in 'j = jCst*19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_by_volt' (i.e. '10^-30 x ampere^-7 x frog^10 x kilogram^7 x metre^14 x second^-19') while 'jCst*19.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'j = jCst*19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_by_volt' (i.e. '10^-66 x ampere^-7 x frog^10 x kilogram^7 x metre^14 x second^-19') while 'jCst*19.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -343,12 +343,12 @@ TEST(AnalyserUnits, divide)
         "The units in 'b = bCst/3.0' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'bCst/3.0' is in 'second'.",
         "The units in 'c = cCst/5.0' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'cCst/5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = dCst/7.0' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'dCst/7.0' is in 'frog'.",
-        "The units in 'e = eCst/9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst/9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-        "The units in 'f = fCst/11.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while 'fCst/11.0' is in 'imaginary^-1 x second' (i.e. '10^30 x ampere^6 x frog^-10 x kilogram^-6 x metre^-12 x second^17').",
+        "The units in 'e = eCst/9.0' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst/9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'f = fCst/11.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while 'fCst/11.0' is in 'imaginary^-1 x second' (i.e. '10^66 x ampere^6 x frog^-10 x kilogram^-6 x metre^-12 x second^17').",
         "The units in 'g = gCst/13.0' in component 'main' are not equivalent. 'g' is in 'second_per_volt' (i.e. 'ampere x kilogram^-1 x metre^-2 x second^4') while 'gCst/13.0' is in 'second'.",
         "The units in 'h = hCst/15.0' in component 'main' are not equivalent. 'h' is in 'volt_per_volt' while 'hCst/15.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'i = iCst/17.0' in component 'main' are not equivalent. 'i' is in 'frog_per_volt' (i.e. 'ampere x frog x kilogram^-1 x metre^-2 x second^3') while 'iCst/17.0' is in 'frog'.",
-        "The units in 'j = jCst/19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_per_volt' (i.e. '10^-30 x ampere^-5 x frog^10 x kilogram^5 x metre^10 x second^-13') while 'jCst/19.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'j = jCst/19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_per_volt' (i.e. '10^-66 x ampere^-5 x frog^10 x kilogram^5 x metre^10 x second^-13') while 'jCst/19.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -369,11 +369,11 @@ TEST(AnalyserUnits, power)
         "The unit of '3.0' in 'pow(bCst, 3.0)' in equation 'b = pow(bCst, 3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'pow(cCst, 5.0)' in equation 'c = pow(cCst, 5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of '7.0' in 'pow(dCst, 7.0)' in equation 'd = pow(dCst, 7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The units in 'f = pow(fCst, 11.0)' in component 'main' are not equivalent. 'f' is 'dimensionless' while 'pow(fCst, 11.0)' is in 'second^11'.",
         "The units in 'g = pow(gCst, 13.0)' in component 'main' are not equivalent. 'g' is 'dimensionless' while 'pow(gCst, 13.0)' is in 'volt^13' (i.e. 'ampere^-13 x kilogram^13 x metre^26 x second^-39').",
         "The units in 'h = pow(hCst, 15.0)' in component 'main' are not equivalent. 'h' is 'dimensionless' while 'pow(hCst, 15.0)' is in 'frog^15'.",
-        "The units in 'i = pow(iCst, 17.0)' in component 'main' are not equivalent. 'i' is 'dimensionless' while 'pow(iCst, 17.0)' is in 'imaginary^17' (i.e. '10^-510 x ampere^-102 x frog^170 x kilogram^102 x metre^204 x second^-272').",
+        "The units in 'i = pow(iCst, 17.0)' in component 'main' are not equivalent. 'i' is 'dimensionless' while 'pow(iCst, 17.0)' is in 'imaginary^17' (i.e. '10^-1122 x ampere^-102 x frog^170 x kilogram^102 x metre^204 x second^-272').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -394,15 +394,15 @@ TEST(AnalyserUnits, root)
         "The units in 'b = sqrt(bCst)' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'sqrt(bCst)' is in 'second^0.5'.",
         "The units in 'c = sqrt(cCst)' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'sqrt(cCst)' is in 'volt^0.5' (i.e. 'ampere^-0.5 x kilogram^0.5 x metre x second^-1.5').",
         "The units in 'd = sqrt(dCst)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'sqrt(dCst)' is in 'frog^0.5'.",
-        "The units in 'e = sqrt(eCst)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'sqrt(eCst)' is in 'imaginary^0.5' (i.e. '10^-15 x ampere^-3 x frog^5 x kilogram^3 x metre^6 x second^-8').",
+        "The units in 'e = sqrt(eCst)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'sqrt(eCst)' is in 'imaginary^0.5' (i.e. '10^-33 x ampere^-3 x frog^5 x kilogram^3 x metre^6 x second^-8').",
         "The unit of '3.0' in 'pow(kCst, 1.0/3.0)' in equation 'k = pow(kCst, 1.0/3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'pow(lCst, 1.0/5.0)' in equation 'l = pow(lCst, 1.0/5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of '7.0' in 'pow(mCst, 1.0/7.0)' in equation 'm = pow(mCst, 1.0/7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'pow(nCst, 1.0/9.0)' in equation 'n = pow(nCst, 1.0/9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of '9.0' in 'pow(nCst, 1.0/9.0)' in equation 'n = pow(nCst, 1.0/9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The units in 'o = pow(oCst, 1.0/11.0)' in component 'main' are not equivalent. 'o' is 'dimensionless' while 'pow(oCst, 1.0/11.0)' is in 'second^0.0909091'.",
         "The units in 'p = pow(pCst, 1.0/13.0)' in component 'main' are not equivalent. 'p' is 'dimensionless' while 'pow(pCst, 1.0/13.0)' is in 'volt^0.0769231' (i.e. 'ampere^-0.0769231 x kilogram^0.0769231 x metre^0.153846 x second^-0.230769').",
         "The units in 'q = pow(qCst, 1.0/15.0)' in component 'main' are not equivalent. 'q' is 'dimensionless' while 'pow(qCst, 1.0/15.0)' is in 'frog^0.0666667'.",
-        "The units in 'r = pow(rCst, 1.0/17.0)' in component 'main' are not equivalent. 'r' is 'dimensionless' while 'pow(rCst, 1.0/17.0)' is in 'imaginary^0.0588235' (i.e. '10^-1.76471 x ampere^-0.352941 x frog^0.588235 x kilogram^0.352941 x metre^0.705882 x second^-0.941176').",
+        "The units in 'r = pow(rCst, 1.0/17.0)' in component 'main' are not equivalent. 'r' is 'dimensionless' while 'pow(rCst, 1.0/17.0)' is in 'imaginary^0.0588235' (i.e. '10^-3.88235 x ampere^-0.352941 x frog^0.588235 x kilogram^0.352941 x metre^0.705882 x second^-0.941176').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -423,7 +423,7 @@ TEST(AnalyserUnits, abs)
         "The units in 'b = abs(3.0)' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'abs(3.0)' is in 'second'.",
         "The units in 'c = abs(5.0)' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'abs(5.0)' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'd = abs(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'abs(7.0)' is in 'frog'.",
-        "The units in 'e = abs(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'abs(9.0)' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'e = abs(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'abs(9.0)' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -447,7 +447,7 @@ TEST(AnalyserUnits, expLnOperators)
             "The unit of 'bCst' in '" + op + "(bCst)' in equation 'b = " + op + "(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
             "The unit of 'cCst' in '" + op + "(cCst)' in equation 'c = " + op + "(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
             "The unit of 'dCst' in '" + op + "(dCst)' in equation 'd = " + op + "(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-            "The unit of 'eCst' in '" + op + "(eCst)' in equation 'e = " + op + "(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The unit of 'eCst' in '" + op + "(eCst)' in equation 'e = " + op + "(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -469,15 +469,15 @@ TEST(AnalyserUnits, log)
         "The unit of 'bCst' in 'log(bCst)' in equation 'b = log(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'log(cCst)' in equation 'c = log(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of 'dCst' in 'log(dCst)' in equation 'd = log(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'log(eCst)' in equation 'e = log(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of 'eCst' in 'log(eCst)' in equation 'e = log(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The units of '3.0' and 'gCst' in 'ln(gCst)/ln(3.0)' in equation 'g = ln(gCst)/ln(3.0)' in component 'main' are not dimensionless. '3.0' is in 'second' while 'gCst' is in 'second'.",
         "The units of '5.0' and 'hCst' in 'ln(hCst)/ln(5.0)' in equation 'h = ln(hCst)/ln(5.0)' in component 'main' are not dimensionless. '5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while 'hCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units of '7.0' and 'iCst' in 'ln(iCst)/ln(7.0)' in equation 'i = ln(iCst)/ln(7.0)' in component 'main' are not dimensionless. '7.0' is in 'frog' while 'iCst' is in 'frog'.",
-        "The units of '9.0' and 'jCst' in 'ln(jCst)/ln(9.0)' in equation 'j = ln(jCst)/ln(9.0)' in component 'main' are not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while 'jCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units of '9.0' and 'jCst' in 'ln(jCst)/ln(9.0)' in equation 'j = ln(jCst)/ln(9.0)' in component 'main' are not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while 'jCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         "The unit of '13.0' in 'ln(lCst)/ln(13.0)' in equation 'l = ln(lCst)/ln(13.0)' in component 'main' is not dimensionless. '13.0' is in 'second'.",
         "The unit of '15.0' in 'ln(mCst)/ln(15.0)' in equation 'm = ln(mCst)/ln(15.0)' in component 'main' is not dimensionless. '15.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The unit of '17.0' in 'ln(nCst)/ln(17.0)' in equation 'n = ln(nCst)/ln(17.0)' in component 'main' is not dimensionless. '17.0' is in 'frog'.",
-        "The unit of '19.0' in 'ln(oCst)/ln(19.0)' in equation 'o = ln(oCst)/ln(19.0)' in component 'main' is not dimensionless. '19.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The unit of '19.0' in 'ln(oCst)/ln(19.0)' in equation 'o = ln(oCst)/ln(19.0)' in component 'main' is not dimensionless. '19.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -504,7 +504,7 @@ TEST(AnalyserUnits, floorCeilingOperators)
             "The units in 'b = " + op.second + "(3.0)' in component 'main' are not equivalent. 'b' is 'dimensionless' while '" + op.second + "(3.0)' is in 'second'.",
             "The units in 'c = " + op.second + "(5.0)' in component 'main' are not equivalent. 'c' is 'dimensionless' while '" + op.second + "(5.0)' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
             "The units in 'd = " + op.second + "(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while '" + op.second + "(7.0)' is in 'frog'.",
-            "The units in 'e = " + op.second + "(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while '" + op.second + "(9.0)' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The units in 'e = " + op.second + "(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while '" + op.second + "(9.0)' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -529,9 +529,9 @@ TEST(AnalyserUnits, minMaxOperators)
             "The units in '" + op + "(bCst, 3.0)' in equation 'b = " + op + "(bCst, 3.0)' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
             "The units in '" + op + "(cCst, 5.0)' in equation 'c = " + op + "(cCst, 5.0)' in component 'main' are not equivalent. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '5.0' is 'dimensionless'.",
             "The units in '" + op + "(dCst, 7.0)' in equation 'd = " + op + "(dCst, 7.0)' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-            "The units in '" + op + "(eCst, 9.0)' in equation 'e = " + op + "(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
-            "The units in '" + op + "(fCst, 11.0)' in equation 'f = " + op + "(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
-            "The units in '" + op + "(13.0, 15.0)' in '" + op + "(gCst, " + op + "(13.0, 15.0))' in equation 'g = " + op + "(gCst, " + op + "(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The units in '" + op + "(eCst, 9.0)' in equation 'e = " + op + "(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
+            "The units in '" + op + "(fCst, 11.0)' in equation 'f = " + op + "(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The units in '" + op + "(13.0, 15.0)' in '" + op + "(gCst, " + op + "(13.0, 15.0))' in equation 'g = " + op + "(gCst, " + op + "(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -553,8 +553,8 @@ TEST(AnalyserUnits, rem)
         "The units in 'rem(bCst, 3.0)' in equation 'b = rem(bCst, 3.0)' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
         "The units in 'rem(cCst, 5.0)' in equation 'c = rem(cCst, 5.0)' in component 'main' are not equivalent. 'cCst' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '5.0' is 'dimensionless'.",
         "The units in 'rem(dCst, 7.0)' in equation 'd = rem(dCst, 7.0)' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'rem(eCst, 9.0)' in equation 'e = rem(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
-        "The units in 'rem(fCst, 11.0)' in equation 'f = rem(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'rem(eCst, 9.0)' in equation 'e = rem(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '9.0' is 'dimensionless'.",
+        "The units in 'rem(fCst, 11.0)' in equation 'f = rem(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -578,7 +578,7 @@ TEST(AnalyserUnits, trigonometricOperators)
             "The unit of '3.0' in '" + op + "(3.0)' in equation 'b = " + op + "(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
             "The unit of '5.0' in '" + op + "(5.0)' in equation 'c = " + op + "(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
             "The unit of '7.0' in '" + op + "(7.0)' in equation 'd = " + op + "(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-            "The unit of '9.0' in '" + op + "(9.0)' in equation 'e = " + op + "(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+            "The unit of '9.0' in '" + op + "(9.0)' in equation 'e = " + op + "(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
         };
 
         auto analyser = libcellml::Analyser::create();
@@ -623,7 +623,7 @@ TEST(AnalyserUnits, multipliers)
         "The units in 'a = 1.0' in component 'main' are not equivalent. 'a' is in 'second' while '1.0' is in 'millisecond' (i.e. '10^-3 x second').",
         "The units in 'b = 3.0' in component 'main' are not equivalent. 'b' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3') while '3.0' is in 'millivolt' (i.e. '10^-3 x ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in 'c = 5.0' in component 'main' are not equivalent. 'c' is in 'frog' while '5.0' is in 'millifrog' (i.e. '10^-3 x frog').",
-        "The units in 'd = 7.0' in component 'main' are not equivalent. 'd' is in 'imaginary' (i.e. '10^-30 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '7.0' is in 'milliimaginary' (i.e. '10^-48 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
+        "The units in 'd = 7.0' in component 'main' are not equivalent. 'd' is in 'imaginary' (i.e. '10^-66 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16') while '7.0' is in 'milliimaginary' (i.e. '10^-69 x ampere^-6 x frog^10 x kilogram^6 x metre^12 x second^-16').",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -631,6 +631,168 @@ TEST(AnalyserUnits, multipliers)
     analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
+TEST(AnalyserUnits, scalingFactorWithMinuteAndPerMinuteUnits)
+{
+    auto m = libcellml::Model::create("per_minute");
+    auto c = libcellml::Component::create("main");
+    auto minute = libcellml::Units::create("minute");
+
+    minute->addUnit("second", "", 1.0, 60.0);
+
+    auto perMinute = libcellml::Units::create("per_minute");
+
+    perMinute->addUnit("second", "", -1.0, 1.0 / 60.0);
+
+    auto t = libcellml::Variable::create("t");
+
+    t->setUnits(minute);
+
+    auto x = libcellml::Variable::create("x");
+
+    x->setUnits("mole");
+    x->setInitialValue(1.0);
+
+    auto k = libcellml::Variable::create("k");
+
+    k->setUnits(perMinute);
+    k->setInitialValue(0.1);
+
+    c->addVariable(t);
+    c->addVariable(x);
+    c->addVariable(k);
+
+    m->addUnits(minute);
+    m->addUnits(perMinute);
+
+    m->addComponent(c);
+
+    c->setMath(
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "  <apply>"
+        "    <eq/>"
+        "    <apply>"
+        "      <diff/>"
+        "      <bvar><ci>t</ci></bvar>"
+        "      <ci>x</ci>"
+        "    </apply>"
+        "    <apply>"
+        "      <times/>"
+        "      <ci>k</ci>"
+        "      <ci>x</ci>"
+        "    </apply>"
+        "  </apply>"
+        "</math>");
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(m);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+}
+
+TEST(AnalyserUnits, scalingFactorWithCustomUnits)
+{
+    auto m = libcellml::Model::create("prefix");
+    auto c = libcellml::Component::create("main");
+    auto b = libcellml::Units::create("b");
+
+    b->addUnit("metre");
+
+    auto a = libcellml::Units::create("a");
+
+    a->addUnit("b", "kilo", 2.0, 1.0);
+
+    auto cUnits = libcellml::Units::create("c");
+
+    cUnits->addUnit("metre", "kilo", 2.0, 1.0);
+
+    auto xa = libcellml::Variable::create("xa");
+
+    xa->setUnits(a);
+    xa->setInitialValue(1.0);
+
+    auto xc = libcellml::Variable::create("xc");
+
+    xc->setUnits(cUnits);
+
+    c->addVariable(xa);
+    c->addVariable(xc);
+
+    m->addUnits(b);
+    m->addUnits(a);
+    m->addUnits(cUnits);
+
+    m->addComponent(c);
+
+    c->setMath(
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "  <apply>"
+        "    <eq/>"
+        "    <ci>xa</ci>"
+        "    <ci>xc</ci>"
+        "  </apply>"
+        "</math>");
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(m);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+}
+
+TEST(AnalyserUnits, inheritedMultiplierAppliedOncePerBranch)
+{
+    auto m = libcellml::Model::create("per_branch");
+    auto c = libcellml::Component::create("main");
+    auto b = libcellml::Units::create("b");
+
+    b->addUnit("second");
+    b->addUnit("metre");
+
+    auto a = libcellml::Units::create("a");
+
+    a->addUnit("b", "kilo", 2.0, 1.0);
+
+    auto cUnits = libcellml::Units::create("c");
+
+    cUnits->addUnit("second", "", 2.0, 1.0);
+    cUnits->addUnit("metre", "", 2.0, 1.0);
+    cUnits->addUnit("dimensionless", "", 1.0, 1.0e6);
+
+    auto xa = libcellml::Variable::create("xa");
+
+    xa->setUnits(a);
+    xa->setInitialValue(1.0);
+
+    auto xc = libcellml::Variable::create("xc");
+
+    xc->setUnits(cUnits);
+
+    c->addVariable(xa);
+    c->addVariable(xc);
+
+    m->addUnits(b);
+    m->addUnits(a);
+    m->addUnits(cUnits);
+
+    m->addComponent(c);
+
+    c->setMath(
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "  <apply>"
+        "    <eq/>"
+        "    <ci>xa</ci>"
+        "    <ci>xc</ci>"
+        "  </apply>"
+        "</math>");
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(m);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 }
 
 TEST(AnalyserUnits, rhs)
@@ -764,10 +926,11 @@ TEST(AnalyserUnits, complexUnits)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'a = 1.0' in component 'main' are not equivalent. 'a' is in 'apple' (i.e. '10^-27 x second^3') while '1.0' is in 'orange' (i.e. '10^-9 x second^7').",
-        "The units in 'b = 1.0/1.0' in component 'main' are not equivalent. 'b' is in 'apple' (i.e. '10^-27 x second^3') while '1.0/1.0' is in 'orange x second_2^-1' (i.e. '10^-9 x second^5').",
-        "The units in 'c = 1.0/(1.0/1.0)' in component 'main' are not equivalent. 'c' is in 'apple' (i.e. '10^-27 x second^3') while '1.0/(1.0/1.0)' is in 'atto_second x orange x second_2^-1' (i.e. '10^-27 x second^6').",
-        "The units in 'd = 1.0/(1.0/1.0)/1.0' in component 'main' are not equivalent. 'd' is in 'apple' (i.e. '10^-27 x second^3') while '1.0/(1.0/1.0)/1.0' is in 'atto_second x orange x second_2^-2' (i.e. '10^-27 x second^4').",
+        "The units in 'a = 1.0' in component 'main' are not equivalent. 'a' is in 'apple' (i.e. '10^-21 x second^3') while '1.0' is in 'orange' (i.e. '10^-9 x second^7').",
+        "The units in 'b = 1.0/1.0' in component 'main' are not equivalent. 'b' is in 'apple' (i.e. '10^-21 x second^3') while '1.0/1.0' is in 'orange x second_2^-1' (i.e. '10^-9 x second^5').",
+        "The units in 'c = 1.0/(1.0/1.0)' in component 'main' are not equivalent. 'c' is in 'apple' (i.e. '10^-21 x second^3') while '1.0/(1.0/1.0)' is in 'atto_second x orange x second_2^-1' (i.e. '10^-27 x second^6').",
+        "The units in 'd = 1.0/(1.0/1.0)/1.0' in component 'main' are not equivalent. 'd' is in 'apple' (i.e. '10^-21 x second^3') while '1.0/(1.0/1.0)/1.0' is in 'atto_second x orange x second_2^-2' (i.e. '10^-27 x second^4').",
+        "The units in 'e = 1.0/(1.0/1.0)/pow(1.0, 3.0/2.0)' in component 'main' are not equivalent. 'e' is in 'apple' (i.e. '10^-21 x second^3') while '1.0/(1.0/1.0)/pow(1.0, 3.0/2.0)' is in 'atto_second x orange x second_2^-2.5' (i.e. '10^-27 x second^3').",
     };
 
     auto analyser = libcellml::Analyser::create();
