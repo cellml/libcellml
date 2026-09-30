@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Algebraic equation with only a derivative on its RHS (i.e. without the corresponding state), which is needed to
+   compute the rate of another state variable, while the derivative itself is computed by an ODE that comes after it
+   d(z)/d(t) = y
+   y = d(x)/d(t)
+   d(x)/d(t) = -x-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <variable initial_value="0" name="z" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>y</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

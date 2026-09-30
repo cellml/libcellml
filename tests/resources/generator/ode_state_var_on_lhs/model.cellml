@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- ODE with its state variable on its own on its LHS, but not its derivative on its RHS, so it needs to be solved
+   as an NLA equation.
+   x = 2*d(x)/d(t)
+   x(0) = 1-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>x</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

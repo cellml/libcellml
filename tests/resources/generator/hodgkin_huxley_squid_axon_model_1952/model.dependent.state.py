@@ -113,7 +113,6 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
     algebraic_variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
     algebraic_variables[1] = constants[2]*(external_variables[0]-computed_constants[0])
     external_variables[1] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 1)
     algebraic_variables[3] = constants[3]*pow(external_variables[1], 3.0)*states[0]*(external_variables[0]-computed_constants[1])

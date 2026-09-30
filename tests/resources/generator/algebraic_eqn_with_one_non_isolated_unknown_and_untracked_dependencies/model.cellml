@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Algebraic equation with one non-isolated unknown, whose solution is needed to compute the rate of a state
+   variable, and which depends on a constant and on an algebraic variable that also depends on that constant and on an
+   algebraic variable that has a derivative on its RHS, while the derivative itself is computed by an ODE that comes
+   after it.
+   d(z)/d(t) = y
+   y+exp(y) = p+k
+   p = 2*u+k
+   u = d(x)/d(t)+x
+   d(x)/d(t) = -x-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="2" name="k" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable name="p" units="dimensionless"/>
+        <variable name="u" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <variable initial_value="0" name="z" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>y</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>y</ci>
+                    <apply>
+                        <exp/>
+                        <ci>y</ci>
+                    </apply>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>p</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>p</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <ci>u</ci>
+                    </apply>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>u</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

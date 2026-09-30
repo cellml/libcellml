@@ -552,11 +552,9 @@ void computeVariables(double voi, double *states, double *rates, double *constan
 {
     findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    externalVariables[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 1);
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    externalVariables[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 2);
     externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
 }

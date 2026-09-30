@@ -124,14 +124,15 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast);
 
-    bool isToBeComputedAgain(const AnalyserEquationPtr &analyserEquation);
     bool isSomeConstant(const AnalyserEquationPtr &analyserEquation,
                         bool includeComputedConstants) const;
+    std::vector<AnalyserEquationPtr> nlaSystemDependencies(const AnalyserEquationPtr &analyserEquation);
 
     enum class GenerateEquationCodeTarget
     {
         NORMAL,
         OBJECTIVE_FUNCTION,
+        COMPUTE_RATES,
         COMPUTE_VARIABLES
     };
 
