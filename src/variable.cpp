@@ -225,18 +225,6 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
     return equivalent;
 }
 
-/**
- * @brief Test if the two variables given are equivalent, directly or indirectly.
- *
- * Traverse the variable equivalence network to determine if the two given variables
- * are equivalent.  Returns true if they are equivalent and false otherwise.
- *
- * @param variable1 The first variable to test.
- * @param variable2 The second variable to test.
- * @param testedVariables Set of previously tested variables.
- *
- * @return True if the two given variables are equivalent, false otherwise.
- */
 bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
                                                      const Variable *variable2,
                                                      std::unordered_set<const Variable *> &testedVariables)
