@@ -1620,11 +1620,8 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         return 1.0;
     case AnalyserEquationAst::Type::FALSE:
         return 0.0;
-    case AnalyserEquationAst::Type::E: {
-        static const double E = exp(1.0);
-
-        return E;
-    }
+    case AnalyserEquationAst::Type::E:
+        return M_E;
     case AnalyserEquationAst::Type::PI:
         return M_PI;
     case AnalyserEquationAst::Type::INF: {

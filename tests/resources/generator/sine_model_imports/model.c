@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.8.0";
+const char VERSION[] = "0.8.1";
 const char LIBCELLML_VERSION[] = "0.7.1";
 
 const size_t STATE_COUNT = 1;
@@ -92,11 +92,11 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     constants[0] = 0.0;
     states[0] = constants[0];
     constants[1] = 0.75;
-    computedConstants[0] = 2.0/3.14159265358979;
-    computedConstants[1] = 2.0*3.14159265358979;
-    computedConstants[2] = 3.14159265358979/2.0;
-    computedConstants[3] = 3.14159265358979;
-    computedConstants[4] = 3.0*3.14159265358979/2.0;
+    computedConstants[0] = 2.0/3.1415926535897932;
+    computedConstants[1] = 2.0*3.1415926535897932;
+    computedConstants[2] = 3.1415926535897932/2.0;
+    computedConstants[3] = 3.1415926535897932;
+    computedConstants[4] = 3.0*3.1415926535897932/2.0;
 }
 
 void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
@@ -111,6 +111,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
     algebraicVariables[0] = sin(voi);
-    algebraicVariables[2] = (voi < computedConstants[2])?voi*computedConstants[0]-0.5:(voi < computedConstants[3])?(3.14159265358979-voi)*computedConstants[0]-0.5:(voi < computedConstants[4])?(voi-3.14159265358979)*computedConstants[0]-0.5:(computedConstants[1]-voi)*computedConstants[0]-0.5;
+    algebraicVariables[2] = (voi < computedConstants[2])?voi*computedConstants[0]-0.5:(voi < computedConstants[3])?(3.1415926535897932-voi)*computedConstants[0]-0.5:(voi < computedConstants[4])?(voi-3.1415926535897932)*computedConstants[0]-0.5:(computedConstants[1]-voi)*computedConstants[0]-0.5;
     algebraicVariables[1] = (voi < computedConstants[2])?-algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2]:(voi < computedConstants[3])?-algebraicVariables[2]*algebraicVariables[2]+constants[1]+algebraicVariables[2]:(voi < computedConstants[4])?algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2]:algebraicVariables[2]*algebraicVariables[2]-constants[1]-algebraicVariables[2];
 }

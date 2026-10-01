@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.8.0.post0";
+const char VERSION[] = "0.8.1.post0";
 const char LIBCELLML_VERSION[] = "0.7.1";
 
 const size_t STATE_COUNT = 1;
@@ -442,8 +442,8 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     computedConstants[179] = 123.456789e99;
     computedConstants[181] = 1.0;
     computedConstants[182] = 0.0;
-    computedConstants[183] = 2.71828182845905;
-    computedConstants[184] = 3.14159265358979;
+    computedConstants[183] = 2.7182818284590452;
+    computedConstants[184] = 3.1415926535897932;
     computedConstants[185] = INFINITY;
     computedConstants[186] = NAN;
     computedConstants[198] = 1.0;
