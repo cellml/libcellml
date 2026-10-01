@@ -491,7 +491,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('2.71828182845905', g.eString())
+        self.assertEqual('2.7182818284590452', g.eString())
         g.setEString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.eString())
 
@@ -949,7 +949,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char VERSION[] = "0.8.0";\n', g.implementationVersionString())
+        self.assertEqual('const char VERSION[] = "0.8.1";\n', g.implementationVersionString())
         g.setImplementationVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVersionString())
 
@@ -1432,7 +1432,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('3.14159265358979', g.piString())
+        self.assertEqual('3.1415926535897932', g.piString())
         g.setPiString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.piString())
 

@@ -143,8 +143,8 @@ TEST(GeneratorProfile, defaultConstantValues)
 
     EXPECT_EQ("1.0", generatorProfile->trueString());
     EXPECT_EQ("0.0", generatorProfile->falseString());
-    EXPECT_EQ(convertToString(exp(1.0)), generatorProfile->eString());
-    EXPECT_EQ(convertToString(M_PI), generatorProfile->piString());
+    EXPECT_EQ("2.7182818284590452", generatorProfile->eString());
+    EXPECT_EQ("3.1415926535897932", generatorProfile->piString());
     EXPECT_EQ("INFINITY", generatorProfile->infString());
     EXPECT_EQ("NAN", generatorProfile->nanString());
 }
@@ -271,7 +271,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.8.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.8.1\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
