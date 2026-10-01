@@ -858,6 +858,43 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
+TEST(Validator, invalidMathMLVariablesWithEscapedOrNonAsciiCharacters)
+{
+    // Identifiers with a carriage return, a non-ASCII character, '<', '>' or '&' are reported as they are serialised
+    // (escaped where needed), not as their raw text.
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply><eq/><ci>x</ci><ci>a&#13;b</ci></apply>\n"
+        "      <apply><eq/><ci>x</ci><ci>c\xc3\xa9</ci></apply>\n"
+        "      <apply><eq/><ci>x</ci><ci>d&lt;e</ci></apply>\n"
+        "      <apply><eq/><ci>x</ci><ci>f&gt;g</ci></apply>\n"
+        "      <apply><eq/><ci>x</ci><ci>h&amp;i</ci></apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedIssues = {
+        "MathML ci element has the child text 'a&#13;b' which does not correspond with any variable names present in component 'component'.",
+        "MathML ci element has the child text 'c\xc3\xa9' which does not correspond with any variable names present in component 'component'.",
+        "MathML ci element has the child text 'd&lt;e' which does not correspond with any variable names present in component 'component'.",
+        "MathML ci element has the child text 'f&gt;g' which does not correspond with any variable names present in component 'component'.",
+        "MathML ci element has the child text 'h&amp;i' which does not correspond with any variable names present in component 'component'.",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto validator = libcellml::Validator::create();
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
 TEST(Validator, invalidMathmlCellMLNsOnNode)
 {
     const std::string math =

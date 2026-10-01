@@ -24,6 +24,7 @@ limitations under the License.
 #include <numeric>
 #include <set>
 #include <sstream>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/analyserequation.h"
@@ -1015,6 +1016,41 @@ std::string makeUniqueId(IdList &idList)
     return id;
 }
 
+/**
+ * @brief Find the first variable of a component in a variable's equivalence set.
+ *
+ * Visits the equivalence set depth first, in the order of each variable's equivalent variables, and stops at the first
+ * variable owned by @p component. A visited set gives constant-time membership tests, so the search is O(n) in the size
+ * of the equivalence set (e.g., a time variable that is equivalent across every component of a large model).
+ */
+VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component,
+                                               std::unordered_set<const Variable *> &visited)
+{
+    for (size_t i = 0, n = variable->equivalentVariableCount(); i < n; ++i) {
+        auto equivalentVariable = variable->equivalentVariable(i);
+        if (visited.insert(equivalentVariable.get()).second) {
+            if (owningComponent(equivalentVariable) == component) {
+                return equivalentVariable;
+            }
+            auto found = firstEquivalentVariableInComponent(equivalentVariable, component, visited);
+            if (found != nullptr) {
+                return found;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+VariablePtr firstEquivalentVariableInComponent(const VariablePtr &variable, const ComponentPtr &component)
+{
+    if (owningComponent(variable) == component) {
+        return variable;
+    }
+    std::unordered_set<const Variable *> visited = {variable.get()};
+    return firstEquivalentVariableInComponent(variable, component, visited);
+}
+
 ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     ConnectionMap map;
@@ -1024,37 +1060,15 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
     if ((component1 != nullptr) && (component2 != nullptr)) {
         for (size_t i = 0; i < component1->variableCount(); ++i) {
             auto v = component1->variable(i);
-            for (const auto &vEquiv : equivalentVariables(v)) {
-                if (owningComponent(vEquiv) == component2) {
-                    map.insert(std::make_pair(v, vEquiv));
-                }
+            // The map keeps the first equivalent variable in component2 (v itself, then depth first).
+            VariablePtr vEquiv = firstEquivalentVariableInComponent(v, component2);
+            if (vEquiv != nullptr) {
+                map.insert(std::make_pair(v, vEquiv));
             }
         }
     }
 
     return map;
-}
-
-void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables)
-{
-    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        VariablePtr equivalentVariable = variable->equivalentVariable(i);
-
-        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
-            equivalentVariables.push_back(equivalentVariable);
-
-            recursiveEquivalentVariables(equivalentVariable, equivalentVariables);
-        }
-    }
-}
-
-std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
-{
-    std::vector<VariablePtr> res = {variable};
-
-    recursiveEquivalentVariables(variable, res);
-
-    return res;
 }
 
 bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList)
