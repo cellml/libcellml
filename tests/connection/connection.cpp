@@ -1682,3 +1682,32 @@ TEST(Connection, addEquivalenceConnectionIdClearedAfterDisconnect)
     libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
+
+TEST(Connection, equivalentVariablesBeforeAndAfterDeletingAnEquivalentVariable)
+{
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+    auto v3 = libcellml::Variable::create("v3");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
+
+    EXPECT_EQ(size_t(2), v1->equivalentVariableCount());
+    EXPECT_EQ(v2, v1->equivalentVariable(0));
+    EXPECT_EQ(v3, v1->equivalentVariable(1));
+    EXPECT_EQ(nullptr, v1->equivalentVariable(2));
+
+    v2.reset();
+
+    EXPECT_EQ(size_t(1), v1->equivalentVariableCount());
+    EXPECT_EQ(v3, v1->equivalentVariable(0));
+    EXPECT_EQ(nullptr, v1->equivalentVariable(1));
+
+    auto v4 = libcellml::Variable::create("v4");
+    libcellml::Variable::addEquivalence(v1, v4);
+
+    EXPECT_EQ(size_t(2), v1->equivalentVariableCount());
+    EXPECT_EQ(v3, v1->equivalentVariable(0));
+    EXPECT_EQ(v4, v1->equivalentVariable(1));
+    EXPECT_EQ(nullptr, v1->equivalentVariable(2));
+}

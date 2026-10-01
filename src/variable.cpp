@@ -67,6 +67,14 @@ Variable::Variable(const std::string &name)
 
 Variable::~Variable()
 {
+    // An equivalence is held by both of its variables, so this tells every variable left holding an expired
+    // reference to this one.
+    for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
+        auto equivalentVariable = variableWeak.lock();
+        if (equivalentVariable != nullptr) {
+            equivalentVariable->pFunc()->mMayHaveExpiredEquivalentVariables = true;
+        }
+    }
     delete pFunc();
 }
 
@@ -154,6 +162,10 @@ void Variable::removeAllEquivalences()
 
 VariablePtr Variable::equivalentVariable(size_t index) const
 {
+    if (!pFunc()->mMayHaveExpiredEquivalentVariables) {
+        return (index < pFunc()->mEquivalentVariables.size()) ? pFunc()->mEquivalentVariables[index].lock() : nullptr;
+    }
+
     size_t count = 0;
     for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
         auto variable = variableWeak.lock();
@@ -170,6 +182,10 @@ VariablePtr Variable::equivalentVariable(size_t index) const
 
 size_t Variable::equivalentVariableCount() const
 {
+    if (!pFunc()->mMayHaveExpiredEquivalentVariables) {
+        return pFunc()->mEquivalentVariables.size();
+    }
+
     size_t count = 0;
     for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
         auto variable = variableWeak.lock();
@@ -201,6 +217,7 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 void Variable::VariableImpl::cleanExpiredVariables()
 {
     mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+    mMayHaveExpiredEquivalentVariables = false;
 }
 
 void Variable::VariableImpl::unsafeResetEquivalenceIds(const VariablePtr &equivalentVariable)

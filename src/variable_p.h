@@ -37,6 +37,7 @@ class Variable::VariableImpl: public NamedEntityImpl
 public:
     Variable *mVariable = nullptr;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable. */
+    bool mMayHaveExpiredEquivalentVariables = false; /**< Whether an equivalent variable may have been deleted since the list was last cleaned. */
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifier map for equivalent variable. */
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection identifier map for equivalent variable. */
     std::string mInitialValue; /**< Initial value for this Variable. */
@@ -128,12 +129,15 @@ public:
 
     /**
      * @brief Test if the two variables given are equivalent, directly or indirectly.
-     *      * Traverse the variable equivalence network to determine if the two given variables
+     *
+     * Traverse the variable equivalence network to determine if the two given variables
      * are equivalent.  Returns true if they are equivalent and false otherwise.
-     *      * @param variable1 The first variable to test.
+     *
+     * @param variable1 The first variable to test.
      * @param variable2 The second variable to test.
      * @param testedVariables Set of previously tested variables.
-     *      * @return True if the two given variables are equivalent, false otherwise.
+     *
+     * @return True if the two given variables are equivalent, false otherwise.
      */
     static bool haveEquivalentVariables(const Variable *variable1, const Variable *variable2,
                                         std::unordered_set<const Variable *> &testedVariables);
