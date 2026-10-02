@@ -59,7 +59,7 @@ CMake
 
 :cmake:`CMake<>` is the cross-platform family of tools designed to build, test and package software.
 CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and to generate native makefiles and workspaces that can be used in the compiler environment of your choice.
-Note that CMake version 3.2 or later is required to configure libCellML.
+Note that CMake version 3.26 or later is required to configure libCellML.
 
 Again, installation of CMake is particular to each operating system.
 

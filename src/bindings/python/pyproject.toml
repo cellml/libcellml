@@ -34,6 +34,7 @@ cmake.source-dir = "../../.."
 cmake.version = ">=3.26.1"
 install.targets = ["install-wheel"]
 ninja.version = ">=1.11"
+wheel.py-api = "cp310"
 
 [[tool.scikit-build.overrides]]
 if.platform-system = "^win32"

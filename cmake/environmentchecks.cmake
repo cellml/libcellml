@@ -35,7 +35,16 @@ else ()
 
   test_undefined_symbols_allowed()
 
-  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development.SABIModule Development.Module)
+
+  if (TARGET Python::SABIModule)
+    set(_PYTHON_LINK_TARGET Python::SABIModule)
+  elseif (TARGET Python::Module)
+    message(STATUS "Using backup Python::Module target for linking.")
+    set(_PYTHON_LINK_TARGET Python::Module)
+  else()
+    message(STATUS "Could not find Python::SABIModule or Python::Module target.")
+  endif()
 
   find_program(BUILDCACHE_EXE buildcache)
   if(NOT BUILDCACHE_EXE)
@@ -152,7 +161,7 @@ if(SWIG_EXECUTABLE)
   set(BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Executable required to generate bindings is available.")
 endif()
 
-if(BINDINGS_AVAILABLE AND (Python_Development.Module_FOUND OR Python_Development_FOUND))
+if(BINDINGS_AVAILABLE AND (Python_Development.SABIModule_FOUND OR Python_Development.Module_FOUND))
   set(PYTHON_BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Requirements for creating Python bindings are available.")
 endif()
 
