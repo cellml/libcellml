@@ -834,30 +834,37 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 auto methodBodySize = methodBody.size();
 
+                //        Note: this must be done for all the NLA equations of our NLA system since they don't
+                //              necessarily have the same dependencies.
+
                 std::vector<AnalyserEquationPtr> dummyRemainingAnalyserEquations = mAnalyserModel->analyserEquations();
                 std::vector<AnalyserEquationPtr> dummyAnalyserEquationsForDependencies;
                 std::vector<AnalyserVariablePtr> dummyGeneratedConstantDependencies;
 
-                for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
-                    if (isTrackedVariable(constantDependency, false)
-                        && (std::find(dummyGeneratedConstantDependencies.begin(), dummyGeneratedConstantDependencies.end(), constantDependency) == dummyGeneratedConstantDependencies.end())) {
-                        methodBody += generateInitialisationCode(constantDependency,
-                                                                 dummyRemainingAnalyserEquations, dummyAnalyserEquationsForDependencies,
-                                                                 dummyGeneratedConstantDependencies, false,
-                                                                 GenerateEquationCodeTarget::OBJECTIVE_FUNCTION, true);
+                for (const auto &nlaSystemEquation : nlaSystemEquations) {
+                    for (const auto &constantDependency : nlaSystemEquation->mPimpl->mConstantDependencies) {
+                        if (isTrackedVariable(constantDependency, false)
+                            && (std::find(dummyGeneratedConstantDependencies.begin(), dummyGeneratedConstantDependencies.end(), constantDependency) == dummyGeneratedConstantDependencies.end())) {
+                            methodBody += generateInitialisationCode(constantDependency,
+                                                                     dummyRemainingAnalyserEquations, dummyAnalyserEquationsForDependencies,
+                                                                     dummyGeneratedConstantDependencies, false,
+                                                                     GenerateEquationCodeTarget::OBJECTIVE_FUNCTION, true);
 
-                        dummyGeneratedConstantDependencies.push_back(constantDependency);
+                            dummyGeneratedConstantDependencies.push_back(constantDependency);
+                        }
                     }
                 }
 
-                for (const auto &dependency : analyserEquation->dependencies()) {
-                    if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
-                         || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
-                        && isTrackedEquation(dependency, false)) {
-                        methodBody += generateEquationCode(dependency, dummyRemainingAnalyserEquations,
-                                                           dummyAnalyserEquationsForDependencies,
-                                                           dummyGeneratedConstantDependencies, false,
-                                                           GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
+                for (const auto &nlaSystemEquation : nlaSystemEquations) {
+                    for (const auto &dependency : nlaSystemEquation->dependencies()) {
+                        if (((dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
+                             || (dependency->type() == AnalyserEquation::Type::ALGEBRAIC))
+                            && isTrackedEquation(dependency, false)) {
+                            methodBody += generateEquationCode(dependency, dummyRemainingAnalyserEquations,
+                                                               dummyAnalyserEquationsForDependencies,
+                                                               dummyGeneratedConstantDependencies, false,
+                                                               GenerateEquationCodeTarget::OBJECTIVE_FUNCTION);
+                        }
                     }
                 }
 
@@ -1860,11 +1867,15 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         //       calls, something that would happen if we were to do this at the
         //       end of this if statement.
 
-        for (const auto &nlaSystemEquation : nlaSystemEquations(analyserEquation)) {
+        auto nlaSystemEquations = this->nlaSystemEquations(analyserEquation);
+
+        for (const auto &nlaSystemEquation : nlaSystemEquations) {
             remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), nlaSystemEquation));
         }
 
         // Generate any dependency that this analyser equation may have.
+        // Note: for an NLA equation, this means generating any dependency that the NLA equations of its NLA system may
+        //       have since they get computed together.
 
         for (const auto &constantDependency : analyserEquation->mPimpl->mConstantDependencies) {
             if ((analyserEquation->type() != AnalyserEquation::Type::NLA)
@@ -1878,8 +1889,18 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             }
         }
 
+        std::vector<AnalyserEquationPtr> dependencies;
+
+        for (const auto &nlaSystemEquation : nlaSystemEquations) {
+            for (const auto &dependency : nlaSystemEquation->dependencies()) {
+                if (std::find(dependencies.begin(), dependencies.end(), dependency) == dependencies.end()) {
+                    dependencies.push_back(dependency);
+                }
+            }
+        }
+
         if (!isSomeConstant(analyserEquation, includeComputedConstants)) {
-            for (const auto &dependency : analyserEquation->dependencies()) {
+            for (const auto &dependency : dependencies) {
                 if (((analyserEquation->type() != AnalyserEquation::Type::NLA)
                      && (dependency->type() == AnalyserEquation::Type::COMPUTED_CONSTANT)
                      && isTrackedEquation(dependency, false))

@@ -1724,6 +1724,83 @@ TEST(Generator, nlaSystemWithDifferentUnknownVariables)
     EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_unknown_variables/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, nlaSystemWithDifferentUnknownVariablesAndExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/nla_system_with_different_unknown_variables/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("main")->variable("a")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_unknown_variables/model.external.h", generator->interfaceCode(analyserModel, profile));
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_unknown_variables/model.external.c", generator->implementationCode(analyserModel, profile));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_unknown_variables/model.external.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, nlaSystemWithDifferentDependencies)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/nla_system_with_different_dependencies/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, bridgedNlaSystemWithStateBasedVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/bridged_nla_system_with_state_based_variable/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/bridged_nla_system_with_state_based_variable/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/bridged_nla_system_with_state_based_variable/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/bridged_nla_system_with_state_based_variable/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, bridgedNlaSystem)
 {
     auto parser = libcellml::Parser::create();

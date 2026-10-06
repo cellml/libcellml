@@ -1129,6 +1129,43 @@ TEST(Analyser, overconstrainedBridgedNlaSystem)
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, structurallySingularNlaSystem)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/structurally_singular_nla_system.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'a' in component 'main' is overconstrained.",
+        "Variable 'c' in component 'main' is underconstrained.",
+        "Variable 'b' in component 'main' is underconstrained.",
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules,
+                                                                   expectedUrls,
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
+}
+
 TEST(Analyser, unsuitablyConstrainedNlaSystem)
 {
     auto parser = libcellml::Parser::create();

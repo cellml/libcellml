@@ -153,7 +153,7 @@ void findRoot0(double voi, double *states, double *rates, double *constants, dou
     algebraicVariables[0] = u[0];
 }
 
-void objectiveFunction2(double *u, double *f, void *data)
+void objectiveFunction1(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -168,19 +168,19 @@ void objectiveFunction2(double *u, double *f, void *data)
     f[0] = algebraicVariables[3]-(constants[1]-10.613)-0.0;
 }
 
-void findRoot2(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot1(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[3];
 
-    nlaSolve(objectiveFunction2, u, 1, &rfi);
+    nlaSolve(objectiveFunction1, u, 1, &rfi);
 
     algebraicVariables[3] = u[0];
 }
 
-void objectiveFunction3(double *u, double *f, void *data)
+void objectiveFunction2(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -195,19 +195,19 @@ void objectiveFunction3(double *u, double *f, void *data)
     f[0] = algebraicVariables[1]-constants[2]*(externalVariables[1]-algebraicVariables[3])-0.0;
 }
 
-void findRoot3(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot2(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[1];
 
-    nlaSolve(objectiveFunction3, u, 1, &rfi);
+    nlaSolve(objectiveFunction2, u, 1, &rfi);
 
     algebraicVariables[1] = u[0];
 }
 
-void objectiveFunction4(double *u, double *f, void *data)
+void objectiveFunction3(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -222,19 +222,19 @@ void objectiveFunction4(double *u, double *f, void *data)
     f[0] = algebraicVariables[4]-(constants[1]-115.0)-0.0;
 }
 
-void findRoot4(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot3(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[4];
 
-    nlaSolve(objectiveFunction4, u, 1, &rfi);
+    nlaSolve(objectiveFunction3, u, 1, &rfi);
 
     algebraicVariables[4] = u[0];
 }
 
-void objectiveFunction6(double *u, double *f, void *data)
+void objectiveFunction4(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -249,19 +249,19 @@ void objectiveFunction6(double *u, double *f, void *data)
     f[0] = algebraicVariables[5]-0.1*(externalVariables[1]+25.0)/(exp((externalVariables[1]+25.0)/10.0)-1.0)-0.0;
 }
 
-void findRoot6(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot4(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[5];
 
-    nlaSolve(objectiveFunction6, u, 1, &rfi);
+    nlaSolve(objectiveFunction4, u, 1, &rfi);
 
     algebraicVariables[5] = u[0];
 }
 
-void objectiveFunction7(double *u, double *f, void *data)
+void objectiveFunction5(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -276,19 +276,19 @@ void objectiveFunction7(double *u, double *f, void *data)
     f[0] = algebraicVariables[6]-4.0*exp(externalVariables[1]/18.0)-0.0;
 }
 
-void findRoot7(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot5(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[6];
 
-    nlaSolve(objectiveFunction7, u, 1, &rfi);
+    nlaSolve(objectiveFunction5, u, 1, &rfi);
 
     algebraicVariables[6] = u[0];
 }
 
-void objectiveFunction8(double *u, double *f, void *data)
+void objectiveFunction6(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -303,19 +303,19 @@ void objectiveFunction8(double *u, double *f, void *data)
     f[0] = rates[1]-(algebraicVariables[5]*(1.0-states[1])-algebraicVariables[6]*states[1])-0.0;
 }
 
-void findRoot8(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot6(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = rates[1];
 
-    nlaSolve(objectiveFunction8, u, 1, &rfi);
+    nlaSolve(objectiveFunction6, u, 1, &rfi);
 
     rates[1] = u[0];
 }
 
-void objectiveFunction9(double *u, double *f, void *data)
+void objectiveFunction7(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -330,19 +330,19 @@ void objectiveFunction9(double *u, double *f, void *data)
     f[0] = algebraicVariables[7]-0.07*exp(externalVariables[1]/20.0)-0.0;
 }
 
-void findRoot9(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot7(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[7];
 
-    nlaSolve(objectiveFunction9, u, 1, &rfi);
+    nlaSolve(objectiveFunction7, u, 1, &rfi);
 
     algebraicVariables[7] = u[0];
 }
 
-void objectiveFunction10(double *u, double *f, void *data)
+void objectiveFunction8(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -357,19 +357,19 @@ void objectiveFunction10(double *u, double *f, void *data)
     f[0] = algebraicVariables[8]-1.0/(exp((externalVariables[1]+30.0)/10.0)+1.0)-0.0;
 }
 
-void findRoot10(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot8(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[8];
 
-    nlaSolve(objectiveFunction10, u, 1, &rfi);
+    nlaSolve(objectiveFunction8, u, 1, &rfi);
 
     algebraicVariables[8] = u[0];
 }
 
-void objectiveFunction11(double *u, double *f, void *data)
+void objectiveFunction9(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -384,19 +384,19 @@ void objectiveFunction11(double *u, double *f, void *data)
     f[0] = rates[0]-(algebraicVariables[7]*(1.0-states[0])-algebraicVariables[8]*states[0])-0.0;
 }
 
-void findRoot11(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot9(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = rates[0];
 
-    nlaSolve(objectiveFunction11, u, 1, &rfi);
+    nlaSolve(objectiveFunction9, u, 1, &rfi);
 
     rates[0] = u[0];
 }
 
-void objectiveFunction12(double *u, double *f, void *data)
+void objectiveFunction10(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -411,19 +411,19 @@ void objectiveFunction12(double *u, double *f, void *data)
     f[0] = algebraicVariables[9]-(constants[1]+12.0)-0.0;
 }
 
-void findRoot12(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot10(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[9];
 
-    nlaSolve(objectiveFunction12, u, 1, &rfi);
+    nlaSolve(objectiveFunction10, u, 1, &rfi);
 
     algebraicVariables[9] = u[0];
 }
 
-void objectiveFunction13(double *u, double *f, void *data)
+void objectiveFunction11(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -438,19 +438,19 @@ void objectiveFunction13(double *u, double *f, void *data)
     f[0] = algebraicVariables[2]-constants[4]*pow(states[2], 4.0)*(externalVariables[1]-algebraicVariables[9])-0.0;
 }
 
-void findRoot13(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot11(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[2];
 
-    nlaSolve(objectiveFunction13, u, 1, &rfi);
+    nlaSolve(objectiveFunction11, u, 1, &rfi);
 
     algebraicVariables[2] = u[0];
 }
 
-void objectiveFunction15(double *u, double *f, void *data)
+void objectiveFunction12(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -465,19 +465,19 @@ void objectiveFunction15(double *u, double *f, void *data)
     f[0] = algebraicVariables[10]-0.125*exp(externalVariables[1]/80.0)-0.0;
 }
 
-void findRoot15(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot12(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = algebraicVariables[10];
 
-    nlaSolve(objectiveFunction15, u, 1, &rfi);
+    nlaSolve(objectiveFunction12, u, 1, &rfi);
 
     algebraicVariables[10] = u[0];
 }
 
-void objectiveFunction16(double *u, double *f, void *data)
+void objectiveFunction13(double *u, double *f, void *data)
 {
     double voi = ((RootFindingInfo *) data)->voi;
     double *states = ((RootFindingInfo *) data)->states;
@@ -492,14 +492,14 @@ void objectiveFunction16(double *u, double *f, void *data)
     f[0] = rates[2]-(externalVariables[2]*(1.0-states[2])-algebraicVariables[10]*states[2])-0.0;
 }
 
-void findRoot16(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
+void findRoot13(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables)
 {
     RootFindingInfo rfi = { voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables };
     double u[1];
 
     u[0] = rates[2];
 
-    nlaSolve(objectiveFunction16, u, 1, &rfi);
+    nlaSolve(objectiveFunction13, u, 1, &rfi);
 
     rates[2] = u[0];
 }
@@ -537,26 +537,26 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     externalVariables[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 1);
-    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot5(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot15(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     externalVariables[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 2);
-    findRoot16(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot1(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     externalVariables[1] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 1);
+    findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     externalVariables[2] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 2);
     externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
 }

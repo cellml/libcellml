@@ -262,6 +262,15 @@ public:
                                  const AnalyserInternalVariablePtr &otherInternalVariable,
                                  AnalyserInternalVariablePtrs &checkedInternalVariables);
 
+    static bool matchNlaEquation(size_t nlaEquation,
+                                 const std::vector<std::vector<size_t>> &nlaEquationUnknownVariables,
+                                 std::vector<size_t> &nlaUnknownVariableEquations,
+                                 std::vector<bool> &visitedNlaUnknownVariables);
+    static void nlaSystemConstrainedVariables(const AnalyserInternalEquationPtrs &nlaEquations,
+                                              const AnalyserInternalVariablePtrs &nlaUnknownVariables,
+                                              AnalyserInternalVariablePtrs &nlaUnderconstrainedVariables,
+                                              AnalyserInternalVariablePtrs &nlaOverconstrainedVariables);
+
     void analyseModel(const ModelPtr &model);
 
     AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const VariablePtr &variable) const;

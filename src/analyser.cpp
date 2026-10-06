@@ -2260,7 +2260,25 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &analyse
 
     checkedEquations.push_back(analyserEquation);
 
-    for (const auto &dependency : analyserEquation->dependencies()) {
+    // Retrieve the dependencies of the equation and, if it is an NLA equation, those of the other NLA equations of its
+    // NLA system since they all get computed together.
+
+    AnalyserEquationPtrs dependencies;
+
+    for (const auto &equation : mAnalyserModel->mPimpl->mAnalyserEquations) {
+        if ((equation == analyserEquation)
+            || ((analyserEquation->type() == AnalyserEquation::Type::NLA)
+                && (equation->type() == AnalyserEquation::Type::NLA)
+                && (equation->nlaSystemIndex() == analyserEquation->nlaSystemIndex()))) {
+            for (const auto &dependency : equation->dependencies()) {
+                if (std::find(dependencies.begin(), dependencies.end(), dependency) == dependencies.end()) {
+                    dependencies.push_back(dependency);
+                }
+            }
+        }
+    }
+
+    for (const auto &dependency : dependencies) {
         // A rate is computed either through an ODE equation or through an NLA
         // equation in case the rate is not on its own on either the LHS or RHS
         // of the equation.
@@ -2361,6 +2379,153 @@ bool Analyser::AnalyserImpl::initialisationDependsOn(const AnalyserInternalVaria
     }
 
     return false;
+}
+
+bool Analyser::AnalyserImpl::matchNlaEquation(size_t nlaEquation,
+                                              const std::vector<std::vector<size_t>> &nlaEquationUnknownVariables,
+                                              std::vector<size_t> &nlaUnknownVariableEquations,
+                                              std::vector<bool> &visitedNlaUnknownVariables)
+{
+    // Try to match the given NLA equation with one of its unknown variables, if needed by rematching the NLA equation
+    // that is currently matched with that unknown variable (i.e. look for an augmenting path).
+
+    for (const auto &nlaUnknownVariable : nlaEquationUnknownVariables[nlaEquation]) {
+        if (!visitedNlaUnknownVariables[nlaUnknownVariable]) {
+            visitedNlaUnknownVariables[nlaUnknownVariable] = true;
+
+            if ((nlaUnknownVariableEquations[nlaUnknownVariable] == MAX_SIZE_T)
+                || matchNlaEquation(nlaUnknownVariableEquations[nlaUnknownVariable], nlaEquationUnknownVariables,
+                                    nlaUnknownVariableEquations, visitedNlaUnknownVariables)) {
+                nlaUnknownVariableEquations[nlaUnknownVariable] = nlaEquation;
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void Analyser::AnalyserImpl::nlaSystemConstrainedVariables(const AnalyserInternalEquationPtrs &nlaEquations,
+                                                           const AnalyserInternalVariablePtrs &nlaUnknownVariables,
+                                                           AnalyserInternalVariablePtrs &nlaUnderconstrainedVariables,
+                                                           AnalyserInternalVariablePtrs &nlaOverconstrainedVariables)
+{
+    // Determine the unknown variables of the given NLA system that are underconstrained or overconstrained.
+    // Note: we do this by matching each NLA equation with one of its unknown variables (using a maximum bipartite
+    //       matching). If all the NLA equations and all the unknown variables can be matched, then the NLA system is
+    //       structurally well posed. Otherwise, we use the Dulmage-Mendelsohn decomposition of the NLA system:
+    //        - the unknown variables that can be reached through an alternating path from an unmatched NLA equation
+    //          are overconstrained; and
+    //        - the unknown variables that can be reached through an alternating path from an unmatched unknown
+    //          variable (including that unknown variable itself) are underconstrained.
+
+    auto nlaEquationCount = nlaEquations.size();
+    auto nlaUnknownVariableCount = nlaUnknownVariables.size();
+    std::vector<std::vector<size_t>> nlaEquationUnknownVariables(nlaEquationCount);
+    std::vector<std::vector<size_t>> nlaUnknownVariableEquationsList(nlaUnknownVariableCount);
+
+    for (size_t i = 0; i < nlaEquationCount; ++i) {
+        for (const auto &unknownVariable : nlaEquations[i]->mUnknownVariables) {
+            auto j = static_cast<size_t>(std::find(nlaUnknownVariables.begin(), nlaUnknownVariables.end(), unknownVariable) - nlaUnknownVariables.begin());
+
+            nlaEquationUnknownVariables[i].push_back(j);
+            nlaUnknownVariableEquationsList[j].push_back(i);
+        }
+    }
+
+    // Match our NLA equations with our unknown variables.
+
+    std::vector<size_t> nlaUnknownVariableEquations(nlaUnknownVariableCount, MAX_SIZE_T);
+    std::vector<size_t> nlaEquationUnknownVariable(nlaEquationCount, MAX_SIZE_T);
+
+    for (size_t i = 0; i < nlaEquationCount; ++i) {
+        std::vector<bool> visitedNlaUnknownVariables(nlaUnknownVariableCount, false);
+
+        matchNlaEquation(i, nlaEquationUnknownVariables, nlaUnknownVariableEquations, visitedNlaUnknownVariables);
+    }
+
+    for (size_t j = 0; j < nlaUnknownVariableCount; ++j) {
+        if (nlaUnknownVariableEquations[j] != MAX_SIZE_T) {
+            nlaEquationUnknownVariable[nlaUnknownVariableEquations[j]] = j;
+        }
+    }
+
+    // Determine our overconstrained unknown variables, i.e. those that can be reached from an unmatched NLA equation.
+
+    std::vector<bool> overconstrained(nlaUnknownVariableCount, false);
+    std::vector<size_t> nlaEquationsToVisit;
+
+    for (size_t i = 0; i < nlaEquationCount; ++i) {
+        if (nlaEquationUnknownVariable[i] == MAX_SIZE_T) {
+            nlaEquationsToVisit.push_back(i);
+        }
+    }
+
+    while (!nlaEquationsToVisit.empty()) {
+        auto i = nlaEquationsToVisit.back();
+
+        nlaEquationsToVisit.pop_back();
+
+        for (const auto &j : nlaEquationUnknownVariables[i]) {
+            if (!overconstrained[j]) {
+                overconstrained[j] = true;
+
+                // Visit the NLA equation matched with j.
+                // Note: j is necessarily matched since we have a maximum matching. Also, its matched NLA equation
+                //       cannot have already been visited since a matched NLA equation can only be reached through its
+                //       matched unknown variable.
+
+                nlaEquationsToVisit.push_back(nlaUnknownVariableEquations[j]);
+            }
+        }
+    }
+
+    // Determine our underconstrained unknown variables, i.e. those that can be reached from an unmatched unknown
+    // variable.
+
+    std::vector<bool> underconstrained(nlaUnknownVariableCount, false);
+    std::vector<bool> visitedNlaEquations(nlaEquationCount, false);
+    std::vector<size_t> nlaUnknownVariablesToVisit;
+
+    for (size_t j = 0; j < nlaUnknownVariableCount; ++j) {
+        if (nlaUnknownVariableEquations[j] == MAX_SIZE_T) {
+            underconstrained[j] = true;
+
+            nlaUnknownVariablesToVisit.push_back(j);
+        }
+    }
+
+    while (!nlaUnknownVariablesToVisit.empty()) {
+        auto j = nlaUnknownVariablesToVisit.back();
+
+        nlaUnknownVariablesToVisit.pop_back();
+
+        for (const auto &i : nlaUnknownVariableEquationsList[j]) {
+            if (!visitedNlaEquations[i]) {
+                visitedNlaEquations[i] = true;
+
+                // Visit the unknown variable matched with i.
+                // Note: i is necessarily matched since we have a maximum matching. Also, its matched unknown variable
+                //       cannot have already been visited since a matched unknown variable can only be reached through
+                //       its matched NLA equation.
+
+                auto k = nlaEquationUnknownVariable[i];
+
+                underconstrained[k] = true;
+
+                nlaUnknownVariablesToVisit.push_back(k);
+            }
+        }
+    }
+
+    for (size_t j = 0; j < nlaUnknownVariableCount; ++j) {
+        if (underconstrained[j]) {
+            nlaUnderconstrainedVariables.push_back(nlaUnknownVariables[j]);
+        } else if (overconstrained[j]) {
+            nlaOverconstrainedVariables.push_back(nlaUnknownVariables[j]);
+        }
+    }
 }
 
 void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
@@ -2677,10 +2842,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                if (unknownVariable->mIsExternalVariable
-                    && (std::find(addedExternalVariables.begin(), addedExternalVariables.end(), unknownVariable) == addedExternalVariables.end())) {
-                    addedExternalVariables.push_back(unknownVariable);
-                    addedInternalEquations.push_back(AnalyserInternalEquation::create(unknownVariable));
+                if (unknownVariable->mIsExternalVariable) {
+                    if (std::find(addedExternalVariables.begin(), addedExternalVariables.end(), unknownVariable) == addedExternalVariables.end()) {
+                        addedExternalVariables.push_back(unknownVariable);
+                        addedInternalEquations.push_back(AnalyserInternalEquation::create(unknownVariable));
+                    }
+
+                    // The external variable was removed from mDependencies when it was found to be an unknown variable
+                    // of the NLA equation (see AnalyserInternalEquation::check()), so add it back so that the NLA
+                    // equation can be computed after the external variable.
+
+                    internalEquation->mDependencies.push_back(unknownVariable->mVariable);
                 }
             }
 
@@ -2729,10 +2901,22 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    // Add/remove some internal equations.
+
+    for (const auto &addedInternalEquation : addedInternalEquations) {
+        mInternalEquations.push_back(addedInternalEquation);
+    }
+
+    for (const auto &removedInternalEquation : removedInternalEquations) {
+        mInternalEquations.erase(std::find(mInternalEquations.begin(), mInternalEquations.end(), removedInternalEquation));
+    }
+
     // Assign an index to each of our NLA systems, i.e. to each set of NLA equations that are, directly or indirectly,
     // NLA siblings of one another.
     // Note: we cannot assign those indices while determining the NLA siblings since two sets of NLA equations may only
-    //       be found to belong to the same NLA system once we come across an NLA equation that bridges them.
+    //       be found to belong to the same NLA system once we come across an NLA equation that bridges them. We also
+    //       need to do this after having removed the internal equations that have no unknown variables left, so that
+    //       our NLA system indices are contiguous.
 
     for (const auto &internalEquation : mInternalEquations) {
         if ((internalEquation->mType == AnalyserInternalEquation::Type::NLA)
@@ -2755,16 +2939,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Add/remove some internal equations.
-
-    for (const auto &addedInternalEquation : addedInternalEquations) {
-        mInternalEquations.push_back(addedInternalEquation);
-    }
-
-    for (const auto &removedInternalEquation : removedInternalEquations) {
-        mInternalEquations.erase(std::find(mInternalEquations.begin(), mInternalEquations.end(), removedInternalEquation));
-    }
-
     // Confirm that equations that compute a variable-based constant are still
     // of that type.
     // Note: indeed, when originally qualifying such an equation, all we know
@@ -2774,14 +2948,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     //       equation should now be considered as an algebraic equation and the
     //       variable it computes an algebraic variable.
 
-    // Confirm that the variables in an NLA system are not overconstrained.
-    // Note: this may happen if an NLA system contains too many NLA equations
-    //       to compute its unknown variables and/or if some internal equations
-    //       were removed (as a result of some variables in an NLA equation
-    //       having been marked as external).
+    // Confirm that the variables in an NLA system are neither underconstrained nor overconstrained.
+    // Note: this may happen if an NLA system contains too few or too many NLA equations to compute its unknown
+    //       variables, if some of its unknown variables are constrained by too few NLA equations while others are
+    //       constrained by too many of them, and/or if some internal equations were removed (as a result of some
+    //       variables in an NLA equation having been marked as external).
 
     AnalyserInternalVariablePtrs underconstrainedVariables;
     AnalyserInternalVariablePtrs overconstrainedVariables;
+    std::vector<size_t> checkedNlaSystemIndices;
 
     for (const auto &internalEquation : mInternalEquations) {
         switch (internalEquation->mType) {
@@ -2807,18 +2982,26 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         } break;
         case AnalyserInternalEquation::Type::NLA: {
-            // Determine the number of NLA equations and the unknown variables of the NLA system as a whole.
+            // Check the NLA system of the NLA equation, unless we have already done so.
+
+            if (std::find(checkedNlaSystemIndices.begin(), checkedNlaSystemIndices.end(), internalEquation->mNlaSystemIndex) != checkedNlaSystemIndices.end()) {
+                break;
+            }
+
+            checkedNlaSystemIndices.push_back(internalEquation->mNlaSystemIndex);
+
+            // Determine the NLA equations and the unknown variables of the NLA system as a whole.
             // Note: the unknown variables of an NLA equation are not necessarily the same as those of its NLA siblings
             //       (e.g., x and y for one NLA equation, and x and z for its NLA sibling, i.e. two NLA equations for
             //       three unknown variables), so checking an NLA equation on its own is not enough.
 
-            size_t nlaEquationCount = 0;
+            AnalyserInternalEquationPtrs nlaEquations;
             AnalyserInternalVariablePtrs nlaUnknownVariables;
 
             for (const auto &otherInternalEquation : mInternalEquations) {
                 if ((otherInternalEquation->mType == AnalyserInternalEquation::Type::NLA)
                     && (otherInternalEquation->mNlaSystemIndex == internalEquation->mNlaSystemIndex)) {
-                    ++nlaEquationCount;
+                    nlaEquations.push_back(otherInternalEquation);
 
                     for (const auto &unknownVariable : otherInternalEquation->mUnknownVariables) {
                         if (std::find(nlaUnknownVariables.begin(), nlaUnknownVariables.end(), unknownVariable) == nlaUnknownVariables.end()) {
@@ -2828,31 +3011,47 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 }
             }
 
-            if (nlaEquationCount < nlaUnknownVariables.size()) {
+            // Determine which unknown variables, if any, are underconstrained or overconstrained.
+
+            AnalyserInternalVariablePtrs nlaUnderconstrainedVariables;
+            AnalyserInternalVariablePtrs nlaOverconstrainedVariables;
+
+            if (nlaEquations.size() < nlaUnknownVariables.size()) {
                 // There are fewer NLA equations than unknown variables, so all the unknown variables involved in the
                 // NLA system should be considered as underconstrained.
 
-                for (const auto &nlaUnknownVariable : nlaUnknownVariables) {
-                    if (std::find(underconstrainedVariables.begin(), underconstrainedVariables.end(), nlaUnknownVariable) == underconstrainedVariables.end()) {
-                        nlaUnknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
-
-                        addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
-
-                        underconstrainedVariables.push_back(nlaUnknownVariable);
-                    }
-                }
-            } else if (nlaEquationCount > nlaUnknownVariables.size()) {
+                nlaUnderconstrainedVariables = nlaUnknownVariables;
+            } else if (nlaEquations.size() > nlaUnknownVariables.size()) {
                 // There are more NLA equations than unknown variables, so all the unknown variables involved in the NLA
                 // system should be considered as overconstrained.
 
-                for (const auto &nlaUnknownVariable : nlaUnknownVariables) {
-                    if (std::find(overconstrainedVariables.begin(), overconstrainedVariables.end(), nlaUnknownVariable) == overconstrainedVariables.end()) {
-                        nlaUnknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+                nlaOverconstrainedVariables = nlaUnknownVariables;
+            } else {
+                // There are as many NLA equations as unknown variables, but this doesn't mean that the NLA system is
+                // well posed. Indeed, some unknown variables may be constrained by too many NLA equations while others
+                // are constrained by too few of them (e.g., two NLA equations for a, and one NLA equation for a, b,
+                // and c), making the NLA system structurally singular.
 
-                        addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
+                nlaSystemConstrainedVariables(nlaEquations, nlaUnknownVariables,
+                                              nlaUnderconstrainedVariables, nlaOverconstrainedVariables);
+            }
 
-                        overconstrainedVariables.push_back(nlaUnknownVariable);
-                    }
+            // Note: an unknown variable belongs to one NLA system only and each NLA system is checked only once, so an
+            //       unknown variable cannot be flagged more than once.
+
+            for (const auto &nlaUnknownVariable : nlaUnknownVariables) {
+                if (std::find(nlaUnderconstrainedVariables.begin(), nlaUnderconstrainedVariables.end(), nlaUnknownVariable) != nlaUnderconstrainedVariables.end()) {
+                    nlaUnknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+
+                    addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
+
+                    underconstrainedVariables.push_back(nlaUnknownVariable);
+                } else if (std::find(nlaOverconstrainedVariables.begin(), nlaOverconstrainedVariables.end(), nlaUnknownVariable) != nlaOverconstrainedVariables.end()) {
+                    nlaUnknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+
+                    addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
+
+                    overconstrainedVariables.push_back(nlaUnknownVariable);
                 }
             }
         } break;

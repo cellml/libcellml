@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define an NLA system which NLA equations don't have the same dependencies, i.e. {x} for sin(a) = x and {y, k} for
+a*b = y+k, with 'y' an algebraic variable which equation is defined after the NLA equations and 'k' a computed
+constant. The NLA system can only be solved once 'y' and 'k' have been computed, and if 'y' and/or 'k' are
+untracked, then they must be computed in the objective function of the NLA system. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="1" name="b" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <variable name="k" units="dimensionless"/>
+        <variable initial_value="2" name="c" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>a</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>y</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>k</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">3</cn>
+                    <ci>c</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

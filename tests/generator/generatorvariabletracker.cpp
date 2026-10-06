@@ -756,3 +756,38 @@ TEST(GeneratorVariableTracker, variableInitialisedUsingUntrackedVariable)
 
     EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_untracked_variable/model.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
 }
+
+TEST(GeneratorVariableTracker, nlaSystemWithDifferentUntrackedDependencies)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/nla_system_with_different_dependencies/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("main")->variable("y")));
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("main")->variable("k")));
+    generatorVariableTracker->untrackVariable(analyserModel->analyserVariable(model->component("main")->variable("c")));
+
+    EXPECT_EQ(size_t(0), generatorVariableTracker->issueCount());
+
+    auto generator = libcellml::Generator::create();
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setInterfaceFileNameString("model.untracked.h");
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.untracked.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.untracked.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_system_with_different_dependencies/model.untracked.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}

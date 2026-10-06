@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define an NLA system which NLA equations have the following unknown variables: {a}, {a, b}, and {b, c}. Only sin(a)
+= x depends on a state variable, i.e. 'x', but the whole NLA system is state based since its NLA equations are
+solved together. So, 'z', which only depends on 'c', is state based and must be computed again in
+computeVariables(). -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable initial_value="0" name="y" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="1" name="b" units="dimensionless"/>
+        <variable initial_value="1" name="c" units="dimensionless"/>
+        <variable name="z" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>y</ci>
+                </apply>
+                <ci>z</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>a</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <apply>
+                        <power/>
+                        <ci>b</ci>
+                        <cn cellml:units="dimensionless">3</cn>
+                    </apply>
+                </apply>
+                <cn cellml:units="dimensionless">2</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <ci>b</ci>
+                        <ci>c</ci>
+                    </apply>
+                    <apply>
+                        <power/>
+                        <ci>c</ci>
+                        <cn cellml:units="dimensionless">3</cn>
+                    </apply>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>z</ci>
+                <apply>
+                    <plus/>
+                    <ci>c</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
