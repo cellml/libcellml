@@ -109,6 +109,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     void addRootFindingInfoObjectCode();
     void addExternNlaSolveMethodCode();
+    std::vector<AnalyserEquationPtr> nlaSystemEquations(const AnalyserEquationPtr &analyserEquation) const;
+    std::vector<AnalyserVariablePtr> nlaSystemUnknownVariables(const std::vector<AnalyserEquationPtr> &nlaSystemEquations) const;
     void addNlaSystemsCode();
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;

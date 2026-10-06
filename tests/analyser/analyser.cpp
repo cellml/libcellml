@@ -1110,8 +1110,9 @@ TEST(Analyser, overconstrainedBridgedNlaSystem)
         "Variable 'b' in component 'main' is overconstrained.",
         "Variable 'a' in component 'main' is overconstrained.",
         "Variable 'c' in component 'main' is overconstrained.",
-        "Variable 'f' in component 'main' is overconstrained.",
         "Variable 'e' in component 'main' is overconstrained.",
+        "Variable 'd' in component 'main' is overconstrained.",
+        "Variable 'f' in component 'main' is overconstrained.",
     };
 
     auto analyser = libcellml::Analyser::create();

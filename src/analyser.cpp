@@ -2841,17 +2841,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         underconstrainedVariables.push_back(nlaUnknownVariable);
                     }
                 }
-            } else if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
+            } else if (nlaEquationCount > nlaUnknownVariables.size()) {
                 // There are more NLA equations than unknown variables, so all the unknown variables involved in the NLA
                 // system should be considered as overconstrained.
 
-                for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                    if (std::find(overconstrainedVariables.begin(), overconstrainedVariables.end(), unknownVariable) == overconstrainedVariables.end()) {
-                        unknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+                for (const auto &nlaUnknownVariable : nlaUnknownVariables) {
+                    if (std::find(overconstrainedVariables.begin(), overconstrainedVariables.end(), nlaUnknownVariable) == overconstrainedVariables.end()) {
+                        nlaUnknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
 
-                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
+                        addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED);
 
-                        overconstrainedVariables.push_back(unknownVariable);
+                        overconstrainedVariables.push_back(nlaUnknownVariable);
                     }
                 }
             }

@@ -754,6 +754,46 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
     }
 }
 
+std::vector<AnalyserEquationPtr> Generator::GeneratorImpl::nlaSystemEquations(const AnalyserEquationPtr &analyserEquation) const
+{
+    // Return the NLA equations of the NLA system of the given NLA equation, i.e. the given NLA equation and, directly
+    // or indirectly, its NLA siblings.
+    // Note: an NLA sibling only shares some unknown variables with a given NLA equation, so the NLA siblings of an NLA
+    //       sibling are not necessarily NLA siblings of the given NLA equation (e.g., an NLA equation that is used to
+    //       compute a, another one to compute a and b, and a third one to compute b).
+
+    std::vector<AnalyserEquationPtr> res = {analyserEquation};
+
+    for (size_t i = 0; i < res.size(); ++i) {
+        for (const auto &nlaSibling : res[i]->nlaSiblings()) {
+            if (std::find(res.begin(), res.end(), nlaSibling) == res.end()) {
+                res.push_back(nlaSibling);
+            }
+        }
+    }
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> Generator::GeneratorImpl::nlaSystemUnknownVariables(const std::vector<AnalyserEquationPtr> &nlaSystemEquations) const
+{
+    // Return the unknown variables of the NLA system made of the given NLA equations.
+    // Note: the NLA equations of an NLA system don't necessarily have the same unknown variables (e.g., a for one NLA
+    //       equation, and a and b for another one), hence we need to account for all of them.
+
+    std::vector<AnalyserVariablePtr> res;
+
+    for (const auto &nlaSystemEquation : nlaSystemEquations) {
+        for (const auto &analyserVariable : analyserVariables(nlaSystemEquation)) {
+            if (std::find(res.begin(), res.end(), analyserVariable) == res.end()) {
+                res.push_back(analyserVariable);
+            }
+        }
+    }
+
+    return res;
+}
+
 void Generator::GeneratorImpl::addNlaSystemsCode()
 {
     if (!mProfile->objectiveFunctionMethodString(modelHasOdes(mAnalyserModel), mAnalyserModel->hasExternalVariables()).empty()
@@ -772,7 +812,8 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
-                auto analyserVariables = libcellml::analyserVariables(analyserEquation);
+                auto nlaSystemEquations = this->nlaSystemEquations(analyserEquation);
+                auto analyserVariables = nlaSystemUnknownVariables(nlaSystemEquations);
 
                 for (const auto &analyserVariable : analyserVariables) {
                     auto arrayString = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
@@ -826,22 +867,14 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 i = MAX_SIZE_T;
 
-                methodBody += mProfile->indentString()
-                              + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
-                              + mProfile->equalityString()
-                              + generateCode(analyserEquation->ast())
-                              + mProfile->commandSeparatorString() + "\n";
-
-                handledNlaAnalyserEquations.push_back(analyserEquation);
-
-                for (const auto &nlaSibling : analyserEquation->nlaSiblings()) {
+                for (const auto &nlaSystemEquation : nlaSystemEquations) {
                     methodBody += mProfile->indentString()
                                   + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + generateCode(nlaSibling->ast())
+                                  + generateCode(nlaSystemEquation->ast())
                                   + mProfile->commandSeparatorString() + "\n";
 
-                    handledNlaAnalyserEquations.push_back(nlaSibling);
+                    handledNlaAnalyserEquations.push_back(nlaSystemEquation);
                 }
 
                 mCode += newLineIfNeeded()
@@ -1822,15 +1855,13 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
     std::string res;
 
     if (std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation) != remainingAnalyserEquations.end()) {
-        // Stop tracking the analyser equation and its NLA siblings, if any.
+        // Stop tracking the analyser equation and, if it is an NLA equation, the other NLA equations of its NLA system.
         // Note: we need to do this as soon as possible to avoid recursive
         //       calls, something that would happen if we were to do this at the
         //       end of this if statement.
 
-        remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), analyserEquation));
-
-        for (const auto &nlaSibling : analyserEquation->nlaSiblings()) {
-            remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), nlaSibling));
+        for (const auto &nlaSystemEquation : nlaSystemEquations(analyserEquation)) {
+            remainingAnalyserEquations.erase(std::find(remainingAnalyserEquations.begin(), remainingAnalyserEquations.end(), nlaSystemEquation));
         }
 
         // Generate any dependency that this analyser equation may have.

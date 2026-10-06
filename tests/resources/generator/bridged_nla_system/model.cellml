@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define an NLA system which NLA equations have, in that order, the following unknown variables: {a}, {a, b}, and
+{b, c}. {a} and {b, c} are not NLA siblings of one another, but they are both NLA siblings of {a, b}, so they all belong
+to the same NLA system. That NLA system consists of three NLA equations for three unknown variables, i.e. it is neither
+overconstrained nor underconstrained, and its objective function must solve for 'a', 'b', and 'c'. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="1" name="b" units="dimensionless"/>
+        <variable initial_value="1" name="c" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>a</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">2</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>b</ci>
+                    <ci>c</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
