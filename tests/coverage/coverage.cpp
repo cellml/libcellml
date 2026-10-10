@@ -604,6 +604,7 @@ TEST(Coverage, analyserAreEquivalentVariables)
     EXPECT_FALSE(analyserModel->areEquivalentVariables(variable, nullptr));
     auto otherVariable = libcellml::Variable::create("other");
     EXPECT_FALSE(analyserModel->areEquivalentVariables(variable, otherVariable));
+    EXPECT_FALSE(analyserModel->areEquivalentVariables(otherVariable, variable));
 }
 
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)

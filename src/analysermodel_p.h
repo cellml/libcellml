@@ -49,6 +49,10 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache;
 
+    std::unordered_map<size_t, AnalyserVariablePtr> mAnalyserVariableByGroup; /**< Analyser variable of each equivalence group of mEquivalentVariableCache. */
+
+    void buildAnalyserVariableByGroup();
+
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
     bool mNeedLtFunction = false;

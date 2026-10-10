@@ -2935,6 +2935,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     auto algebraicVariableIndex = MAX_SIZE_T;
     auto externalVariableIndex = MAX_SIZE_T;
 
+    // Retrieve the equations used to compute each variable, in equation order.
+
+    std::unordered_map<AnalyserInternalVariable *, std::vector<AnalyserInternalEquationPtr>> equationsOfVariable;
+
+    for (const auto &internalEquation : mInternalEquations) {
+        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            equationsOfVariable[unknownVariable.get()].push_back(internalEquation);
+        }
+    }
+
     for (const auto &internalVariable : mInternalVariables) {
         // Determine the type of the variable.
 
@@ -2974,8 +2984,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         AnalyserEquationPtrs equations;
         auto isNlaEquation = false;
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
+        auto computing = equationsOfVariable.find(internalVariable.get());
+
+        if (computing != equationsOfVariable.end()) {
+            for (const auto &internalEquation : computing->second) {
                 equations.push_back(aie2aeMappings[internalEquation]);
 
                 if ((aie2aetMappings.find(internalEquation) != aie2aetMappings.end())
@@ -3167,6 +3179,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         analyserEquation->mPimpl->mIsStateRateBased = isStateRateBased(analyserEquation, checkedEquations);
     }
+
+    mAnalyserModel->mPimpl->buildAnalyserVariableByGroup();
 }
 
 AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable) const
