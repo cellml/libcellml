@@ -609,7 +609,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     } else if (units->isImport()) {
         auto importSource = units->importSource();
         auto importedUnits = importSource->model()->units(units->importReference());
-        updateUnitsMap(importedUnits, unitsMap);
+        updateUnitsMap(importedUnits, unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
