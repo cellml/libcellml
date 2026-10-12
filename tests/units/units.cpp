@@ -1893,6 +1893,37 @@ TEST(Units, isCompatibleBothUnitsImported)
     EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
+TEST(Units, isCompatibleUnitReferencingImportedUnitsWithExponent)
+{
+    libcellml::ModelPtr sourceModel = libcellml::Model::create("source");
+    libcellml::UnitsPtr concentration = libcellml::Units::create("mol_per_m3");
+    concentration->addUnit(libcellml::Units::StandardUnit::MOLE);
+    concentration->addUnit(libcellml::Units::StandardUnit::METRE, -3.0);
+    sourceModel->addUnits(concentration);
+
+    libcellml::ModelPtr model = libcellml::Model::create("model");
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setModel(sourceModel);
+    libcellml::UnitsPtr importedConcentration = libcellml::Units::create("mol_per_m3");
+    importedConcentration->setImportSource(import);
+    importedConcentration->setImportReference("mol_per_m3");
+    model->addUnits(importedConcentration);
+
+    libcellml::UnitsPtr perConcentration = libcellml::Units::create("per_mol_per_m3");
+    perConcentration->addUnit("mol_per_m3", -1.0);
+    model->addUnits(perConcentration);
+
+    libcellml::UnitsPtr concentrationSquared = libcellml::Units::create("mol_per_m3_squared");
+    concentrationSquared->addUnit("mol_per_m3", 2.0);
+    model->addUnits(concentrationSquared);
+
+    EXPECT_FALSE(libcellml::Units::compatible(concentration, perConcentration));
+    EXPECT_FALSE(libcellml::Units::compatible(concentration, concentrationSquared));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(concentration, perConcentration));
+    EXPECT_FALSE(libcellml::Units::equivalent(concentration, perConcentration));
+    EXPECT_TRUE(libcellml::Units::equivalent(concentration, importedConcentration));
+}
+
 TEST(Units, isCompatibleBaseUnitImported)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
