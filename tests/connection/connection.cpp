@@ -1535,3 +1535,55 @@ TEST(Connection, addEquivalenceConnectionIdClearedAfterDisconnect)
     libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
 }
+
+TEST(Connection, twoWayConnectionFromCellML1)
+{
+    auto p = libcellml::Parser::create(false);
+    auto m = p->parseModel(fileContents("cellml1X/connections.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+}
+
+TEST(Connection, sameNamedVariablesInDifferentComponents)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1c1 = libcellml::Variable::create("v1");
+    auto v2c1 = libcellml::Variable::create("v2");
+    auto v1c2 = libcellml::Variable::create("v1");
+    auto v2c2 = libcellml::Variable::create("v2");
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+
+    c1->addVariable(v1c1);
+    c1->addVariable(v2c1);
+    c2->addVariable(v1c2);
+    c2->addVariable(v2c2);
+
+    v1c1->setUnits("dimensionless");
+    v2c1->setUnits("dimensionless");
+    v1c2->setUnits("dimensionless");
+    v2c2->setUnits("dimensionless");
+
+    libcellml::Variable::addEquivalence(v1c1, v2c2);
+    libcellml::Variable::addEquivalence(v2c1, v1c2);
+
+    auto v = libcellml::Validator::create();
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(0), v->issueCount());
+
+    auto printer = libcellml::Printer::create();
+
+    auto modelString = printer->printModel(m);
+
+    Debug() << modelString;
+
+    auto p = libcellml::Parser::create();
+    p->parseModel(modelString);
+
+    printIssues(p);
+    EXPECT_EQ(size_t(0), p->issueCount());
+}

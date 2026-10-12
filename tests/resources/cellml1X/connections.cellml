@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<model xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" cmeta:id="MainDVad" name="MainDVad">
+
+  <units name="UnitP">
+    <unit multiplier="133" units="pascal"/>
+  </units>
+
+  <units name="UnitQ">
+    <unit units="UnitV"/>
+    <unit exponent="-1" units="second"/>
+  </units>
+
+  <component name="environment">
+    <variable cmeta:id="environment_t" name="t" public_interface="out" units="second"/>
+  </component>
+
+  <component name="Vessel">
+    <variable name="Pi" private_interface="in" public_interface="out" units="UnitP"/>
+    <variable name="Po" private_interface="out" public_interface="in" units="UnitP"/>
+    <variable name="Qi" private_interface="out" public_interface="in" units="UnitQ"/>
+    <variable name="Qm" private_interface="out" public_interface="in" units="UnitQ"/>
+    <variable name="Qo" private_interface="in" public_interface="out" units="UnitQ"/>
+    <variable name="t" private_interface="out" public_interface="in" units="second"/>
+    <variable name="Pm" private_interface="in" public_interface="out" units="UnitP"/>
+  </component>
+
+  <component name="LHeart">
+    <variable name="Pi" private_interface="in" public_interface="out" units="UnitP"/>
+    <variable name="Po" private_interface="out" public_interface="in" units="UnitP"/>
+    <variable name="Qi" private_interface="out" public_interface="in" units="UnitQ"/>
+    <variable name="Qm" private_interface="out" public_interface="in" units="UnitQ"/>
+    <variable name="Qo" private_interface="in" public_interface="out" units="UnitQ"/>
+    <variable name="t" private_interface="out" public_interface="in" units="second"/>
+    <variable name="Pm" private_interface="in" public_interface="out" units="UnitP"/>
+  </component>
+
+  <connection>
+    <map_components component_1="environment" component_2="LHeart"/>
+    <map_variables variable_1="t" variable_2="t"/>
+  </connection>
+
+
+  <connection>
+    <map_components component_1="environment" component_2="Vessel"/>
+    <map_variables variable_1="t" variable_2="t"/>
+  </connection>
+
+  <connection>
+    <map_components component_1="LHeart" component_2="Vessel"/>
+    <map_variables variable_1="Po" variable_2="Pi"/>
+    <map_variables variable_1="Qo" variable_2="Qi"/>
+    <map_variables variable_1="Pi" variable_2="Po"/>
+    <map_variables variable_1="Qi" variable_2="Qo"/>
+  </connection>
+
+</model>
