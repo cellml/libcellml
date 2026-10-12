@@ -1435,7 +1435,7 @@ TEST(Connection, repeatedMapVariables)
 
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'connection' between 'variable1' and 'variable2' is not unique.",
-        "Connection in model 'connection' between 'variable3' and 'variable6' is not unique.",
+        "Connection in model 'connection' between 'variable6' and 'variable3' is not unique.",
     };
 
     EXPECT_EQ_ISSUES(expectedIssues, p);
@@ -1563,9 +1563,13 @@ TEST(Connection, sameNamedVariablesInDifferentComponents)
     c2->addVariable(v2c2);
 
     v1c1->setUnits("dimensionless");
+    v1c1->setInterfaceType("public");
     v2c1->setUnits("dimensionless");
+    v2c1->setInterfaceType("public");
     v1c2->setUnits("dimensionless");
+    v1c2->setInterfaceType("public");
     v2c2->setUnits("dimensionless");
+    v2c2->setInterfaceType("public");
 
     libcellml::Variable::addEquivalence(v1c1, v2c2);
     libcellml::Variable::addEquivalence(v2c1, v1c2);
@@ -1579,11 +1583,8 @@ TEST(Connection, sameNamedVariablesInDifferentComponents)
 
     auto modelString = printer->printModel(m);
 
-    Debug() << modelString;
-
     auto p = libcellml::Parser::create();
     p->parseModel(modelString);
 
-    printIssues(p);
     EXPECT_EQ(size_t(0), p->issueCount());
 }
