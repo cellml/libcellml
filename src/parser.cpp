@@ -1240,7 +1240,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             mapVariablesFound = true;
 
             if (!variable1Missing && !variable2Missing) {
-
                 auto variableNamePair = std::make_pair(variable1Name, variable2Name);
 
                 NamePairList::const_iterator it = std::find_if(usedMapVariables.begin(), usedMapVariables.end(),
