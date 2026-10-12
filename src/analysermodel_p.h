@@ -51,6 +51,13 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::unordered_map<size_t, AnalyserVariablePtr> mAnalyserVariableByGroup; /**< Analyser variable of each equivalence group of mEquivalentVariableCache. */
 
+    /**
+     * @brief Build the analyser variable of each equivalence group.
+     *
+     * Fill @c mAnalyserVariableByGroup from @c mEquivalentVariableCache. A group keeps its first analyser variable, in
+     * the order: variable of integration, states, constants, computed constants, algebraic variables, external
+     * variables.
+     */
     void buildAnalyserVariableByGroup();
 
     bool mNeedEqFunction = false;

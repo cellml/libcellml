@@ -286,9 +286,6 @@ AnalyserVariablePtr AnalyserModel::externalVariable(size_t index) const
 
 void AnalyserModel::AnalyserModelImpl::buildAnalyserVariableByGroup()
 {
-    // A group keeps its first analyser variable, in the order: variable of integration, states, constants, computed
-    // constants, algebraic variables, external variables.
-
     auto add = [this](const AnalyserVariablePtr &analyserVariable) {
         mAnalyserVariableByGroup.emplace(mEquivalentVariableCache.at(reinterpret_cast<uintptr_t>(analyserVariable->variable().get())), analyserVariable);
     };
