@@ -27,7 +27,7 @@ TEST(AsString, issueLevel)
 
 TEST(AsString, issueReferenceRule)
 {
-    EXPECT_EQ("", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNDEFINED));
+    EXPECT_EQ("undefined", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNDEFINED));
     EXPECT_EQ("xml", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::XML));
     EXPECT_EQ("xml_unexpected_element", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT));
     EXPECT_EQ("xml_unexpected_character", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER));
