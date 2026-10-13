@@ -44,7 +44,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     GeneratorProfilePtr mProfile;
     GeneratorVariableTrackerPtr mVariableTracker;
 
-    std::unordered_map<const AnalyserVariable *, size_t> mTrackedIndexCache; /**< Index of a variable among the tracked variables of its list, for the code being generated. */
+    std::unordered_map<const AnalyserVariable *, size_t> mTrackedIndexCache;
 
     void reset();
 

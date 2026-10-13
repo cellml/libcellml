@@ -2925,16 +2925,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         aie2aetMappings.emplace(internalEquation, type);
     }
 
-    // Make our internal variables available through our API.
-
-    std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
-    std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
-    auto stateIndex = MAX_SIZE_T;
-    auto constantIndex = MAX_SIZE_T;
-    auto computedConstantIndex = MAX_SIZE_T;
-    auto algebraicVariableIndex = MAX_SIZE_T;
-    auto externalVariableIndex = MAX_SIZE_T;
-
     // Retrieve the equations used to compute each variable, in equation order.
 
     std::unordered_map<AnalyserInternalVariable *, std::vector<AnalyserInternalEquationPtr>> equationsOfVariable;
@@ -2944,6 +2934,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             equationsOfVariable[unknownVariable.get()].push_back(internalEquation);
         }
     }
+
+    // Make our internal variables available through our API.
+
+    std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
+    std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
+    auto stateIndex = MAX_SIZE_T;
+    auto constantIndex = MAX_SIZE_T;
+    auto computedConstantIndex = MAX_SIZE_T;
+    auto algebraicVariableIndex = MAX_SIZE_T;
+    auto externalVariableIndex = MAX_SIZE_T;
 
     for (const auto &internalVariable : mInternalVariables) {
         // Determine the type of the variable.
@@ -2983,7 +2983,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         AnalyserEquationPtrs equations;
         auto isNlaEquation = false;
-
         auto computing = equationsOfVariable.find(internalVariable.get());
 
         if (computing != equationsOfVariable.end()) {

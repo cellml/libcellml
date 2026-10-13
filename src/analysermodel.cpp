@@ -293,18 +293,23 @@ void AnalyserModel::AnalyserModelImpl::buildAnalyserVariableByGroup()
     if (mVoi != nullptr) {
         add(mVoi);
     }
+
     for (const auto &state : mStates) {
         add(state);
     }
+
     for (const auto &constant : mConstants) {
         add(constant);
     }
+
     for (const auto &computedConstant : mComputedConstants) {
         add(computedConstant);
     }
+
     for (const auto &algebraicVariable : mAlgebraicVariables) {
         add(algebraicVariable);
     }
+
     for (const auto &externalVariable : mExternalVariables) {
         add(externalVariable);
     }

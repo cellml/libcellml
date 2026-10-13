@@ -48,17 +48,7 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserEquationPtr> mAnalyserEquations;
 
     std::unordered_map<uintptr_t, size_t> mEquivalentVariableCache;
-
-    std::unordered_map<size_t, AnalyserVariablePtr> mAnalyserVariableByGroup; /**< Analyser variable of each equivalence group of mEquivalentVariableCache. */
-
-    /**
-     * @brief Build the analyser variable of each equivalence group.
-     *
-     * Fill @c mAnalyserVariableByGroup from @c mEquivalentVariableCache. A group keeps its first analyser variable, in
-     * the order: variable of integration, states, constants, computed constants, algebraic variables, external
-     * variables.
-     */
-    void buildAnalyserVariableByGroup();
+    std::unordered_map<size_t, AnalyserVariablePtr> mAnalyserVariableByGroup;
 
     bool mNeedEqFunction = false;
     bool mNeedNeqFunction = false;
@@ -91,6 +81,8 @@ struct AnalyserModel::AnalyserModelImpl
 
     void buildEquivalentVariablesCache(const ComponentPtr &component, std::unordered_set<uintptr_t> &visited, size_t &groupCount);
     void buildEquivalentVariablesCache();
+
+    void buildAnalyserVariableByGroup();
 
     AnalyserModelImpl(const ModelPtr &model);
 };
