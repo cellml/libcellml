@@ -61,7 +61,7 @@ else ()
       get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
       execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
         RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
-      # Update TEST_COVERATE_RESULT with test outcome.
+      # Update TEST_COVERAGE_RESULT with test outcome.
       set(TEST_COVERAGE_RESULT ${TEST_COVERAGE_RESULT} CACHE INTERNAL "Result of testing for Python coverage." FORCE)
       if(TEST_COVERAGE_RESULT STREQUAL "0")
         set(HAVE_COVERAGE TRUE)
