@@ -276,7 +276,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                     return false;
                 }
                 // Make the direction positive on all branches, direction is only applied at the end.
-                localMultiplier += mult + branchMult * exp + prefixMult;
+                localMultiplier += mult + (branchMult + prefixMult) * exp;
             }
         }
         multiplier += localMultiplier * direction;
@@ -619,7 +619,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     } else if (units->isImport()) {
         auto importSource = units->importSource();
         auto importedUnits = importSource->model()->units(units->importReference());
-        updateUnitsMap(importedUnits, unitsMap);
+        updateUnitsMap(importedUnits, unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
