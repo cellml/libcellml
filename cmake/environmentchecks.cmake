@@ -26,13 +26,6 @@ if (EMSCRIPTEN)
     find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
     find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
 else ()
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development.Module)
-    set(FIND_PYTHON_DEVELOPMENT_MODULE TRUE)
-  else()
-    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development)
-  endif()
-
   test_undefined_symbols_allowed()
 
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development.SABIModule Development.Module)
