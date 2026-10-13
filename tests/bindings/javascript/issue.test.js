@@ -17,7 +17,7 @@ limitations under the License.
 const loadLibCellML = require('libcellml.js/libcellml.common')
 let libcellml = null
 
-describe("Variable tests", () => {
+describe("Issue tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
     })
