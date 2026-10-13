@@ -60,6 +60,7 @@ TEST(AsString, issueReferenceRule)
     EXPECT_EQ("import_component_component_reference_target", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE_TARGET));
     EXPECT_EQ("units_element", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_ELEMENT));
     EXPECT_EQ("units_name", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_NAME));
+    EXPECT_EQ("units_name_unique", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_NAME_UNIQUE));
     EXPECT_EQ("units_name_value", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_NAME_VALUE));
     EXPECT_EQ("units_standard", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_STANDARD));
     EXPECT_EQ("units_child", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::UNITS_CHILD));
