@@ -1113,45 +1113,197 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     analyseEquationAst(ast->mPimpl->mOwnedRightChild);
 }
 
-void Analyser::AnalyserImpl::updateUnitsMapItem(UnitsMap &unitsMap, const std::string &unitsName, double unitsExponent)
+static const double UNITS_EXPONENT_EPSILON = std::numeric_limits<double>::epsilon();
+static const double UNITS_EXPONENT_MAX_EXACT_INTEGER = std::ldexp(1.0, std::numeric_limits<double>::digits);
+static const double UNITS_EXPONENT_SAFETY_FACTOR = 8.0;
+static const double LN_10 = std::log(10.0);
+
+static bool isExactInteger(double value)
+{
+    return (std::fabs(value) <= UNITS_EXPONENT_MAX_EXACT_INTEGER) && (std::trunc(value) == value);
+}
+
+static double valueError(double value)
+{
+    // Return the error that the given value, which comes from outside of our units exponent arithmetic (e.g., a CellML
+    // file or a power value), may carry. An integer (up to 2^53) is represented exactly, so it carries no error.
+    // Anything else may carry a representation error (e.g., 0.1) or a rounding error (e.g., 1/3), so we assume that it
+    // carries an error of one machine epsilon relative to its value. As for a non-finite value (e.g., infinity), it
+    // carries no meaningful error (and an infinite error would otherwise yield a NaN error, e.g., 0*inf for 1/infinity).
+    // Note: we only get the value, not the string it was parsed from, so we cannot tell an integer from a decimal with 16
+    //       or more significant digits that gets rounded to an integer (e.g., 1.00000000000000001, which is parsed as
+    //       1). Such a decimal is therefore considered as exact, so it may not cancel an exponent with which it would
+    //       mathematically cancel (e.g., 1+1e-17).
+
+    return (!std::isfinite(value) || isExactInteger(value)) ? 0.0 : UNITS_EXPONENT_EPSILON * std::fabs(value);
+}
+
+static double functionError(double derivative, double operandError)
+{
+    // Return the error that the value of a function inherits from one of its operands, which carries the given error.
+    // The error is propagated to first order, i.e. using the given (partial) derivative of the function with respect to
+    // that operand.
+    // Note: we only account for a derivative and an error that are both non-zero since the other one may not be finite
+    //       (e.g., ln'(0) or the error of 1e308*10) and we would otherwise end up with a NaN error (e.g., 0*inf).
+
+    return ((derivative != 0.0) && (operandError != 0.0)) ? std::fabs(derivative) * operandError : 0.0;
+}
+
+static double twoSum(double firstValue, double secondValue, double &roundingError)
+{
+    // Return the sum of the given values and, through roundingError, the exact rounding error of that sum, i.e. the sum
+    // of the given values is exactly equal to the returned value plus roundingError. The rounding error is computed
+    // using the TwoSum algorithm, unless the sum overflows, in which case the rounding error is meaningless (and would
+    // otherwise be NaN), so we set it to zero.
+
+    auto sum = firstValue + secondValue;
+
+    if (std::isfinite(sum)) {
+        auto virtualSecondValue = sum - firstValue;
+
+        roundingError = (firstValue - (sum - virtualSecondValue)) + (secondValue - virtualSecondValue);
+    } else {
+        roundingError = 0.0;
+    }
+
+    return sum;
+}
+
+static UnitsExponent normalisedUnitsExponent(double value, double compensation, double error)
+{
+    // Return a units exponent which value is the given value and compensation added together, and which compensation
+    // is the exact rounding error of that addition (see twoSum()). If the given value is not finite (e.g., following an
+    // overflow), then the given compensation is meaningless (and may be NaN, e.g., 0*inf), so we ignore it.
+
+    UnitsExponent res;
+
+    if (std::isfinite(value)) {
+        res.value = twoSum(value, compensation, res.compensation);
+    } else {
+        res.value = value;
+    }
+
+    res.error = error;
+
+    return res;
+}
+
+static UnitsExponent addUnitsExponents(const UnitsExponent &firstUnitsExponent,
+                                       const UnitsExponent &secondUnitsExponent)
+{
+    // Add the given units exponents together. The rounding error of the sum is computed exactly (see twoSum()) and is
+    // kept as part of the compensation of the sum rather than added to its error. This means that an exact sum (e.g.,
+    // of integer exponents) adds no error and that a tiny exponent (e.g., 1e-16) survives being added to and then
+    // subtracted from a much larger exponent (e.g., 1e-16+1-1 is 1e-16 rather than 0), whatever the order of the
+    // operations. Only the compensations get rounded when added together, and that (tiny) rounding error is accounted
+    // for in the error of the sum.
+
+    double roundingError;
+    auto value = twoSum(firstUnitsExponent.value, secondUnitsExponent.value, roundingError);
+    auto compensation = firstUnitsExponent.compensation + secondUnitsExponent.compensation + roundingError;
+
+    return normalisedUnitsExponent(value, compensation,
+                                   firstUnitsExponent.error + secondUnitsExponent.error
+                                       + UNITS_EXPONENT_EPSILON * (std::fabs(firstUnitsExponent.compensation) + std::fabs(secondUnitsExponent.compensation) + std::fabs(roundingError)));
+}
+
+static UnitsExponent scaleUnitsExponent(const UnitsExponent &unitsExponent, double factor, double factorError)
+{
+    // Scale the given units exponent by the given factor, which carries the given error. The rounding error of the
+    // product is computed exactly using a fused multiply-add operation (FMA) and, like in addUnitsExponents(), it is
+    // kept as part of the compensation of the product rather than added to its error. This means that an exact product
+    // (e.g., of integers) adds no error, but the factor may itself carry an error.
+    // Note: the error of the product is propagated using functionError() since the factor may not be finite (e.g., 1/0)
+    //       while the units exponent carries no error, and the value of the units exponent may be close to the largest
+    //       double (e.g., 1.7976931348623157e308) while the factor carries no error, either of which would otherwise
+    //       yield a NaN error (0*inf). For the same reason, we account for the error that the factor carries relative
+    //       to the value of the units exponent separately from the rest.
+
+    auto value = unitsExponent.value * factor;
+    auto roundingError = std::isfinite(value) ? std::fma(unitsExponent.value, factor, -value) : 0.0;
+    auto compensation = std::fma(unitsExponent.compensation, factor, roundingError);
+
+    return normalisedUnitsExponent(value, compensation,
+                                   functionError(factor, unitsExponent.error)
+                                       + functionError(unitsExponent.value, factorError)
+                                       + functionError(std::fabs(unitsExponent.compensation) + unitsExponent.error, factorError)
+                                       + UNITS_EXPONENT_EPSILON * std::fabs(compensation));
+}
+
+static UnitsExponent scaleUnitsExponent(const UnitsExponent &unitsExponent, double factor)
+{
+    // Scale the given units exponent by the given factor, which comes from outside of our units exponent arithmetic
+    // (e.g., a CellML file), so it may carry an error (see valueError()).
+
+    return scaleUnitsExponent(unitsExponent, factor, valueError(factor));
+}
+
+static bool isNegligibleUnitsExponent(const UnitsExponent &unitsExponent)
+{
+    // Return whether the given units exponent is negligible, i.e. whether it is finite and indistinguishable from zero
+    // given the error that it has accumulated. This means that:
+    //  - an exponent that is exactly zero is always negligible;
+    //  - a tiny exponent (e.g., 1e-16) is genuine, unless it results from cancelling exponents (e.g., 2.3-2.2-0.1);
+    //  - a non-zero sum of integer exponents is never negligible (e.g., 1e15-999999999999999 is exactly 1); and
+    //  - an infinite exponent (e.g., 1e308+1e308) is never negligible.
+    // Note: the error of an exponent is an upper bound that does not track which operands it comes from, so a tiny
+    //       exponent may or may not survive cancelling non-integer exponents depending on the order of the operations
+    //       (e.g., with A in metre^2.3 and T in metre^1e-16, T*(A/A) is in metre^1e-16 since A/A cancels exactly, but
+    //       T*A/A is dimensionless since 1e-16 is within the error that T*A carries). This only matters for exponents
+    //       that are as tiny as, or tinier than, the error carried by the non-integer exponents that cancel each other.
+
+    // Note #1: we explicitly check for an exponent that is exactly zero since its error may be NaN (e.g., 0*inf).
+    // Note #2: an exponent which error is not finite (e.g., following an overflow while computing its error) is never
+    //          negligible since we would otherwise consider any finite exponent (e.g., 1e200) as negligible.
+
+    return (unitsExponent.value == 0.0)
+           || (std::isfinite(unitsExponent.value)
+               && std::isfinite(unitsExponent.error)
+               && (std::fabs(unitsExponent.value) <= UNITS_EXPONENT_SAFETY_FACTOR * unitsExponent.error));
+}
+
+static bool areSameUnitsExponents(const UnitsExponent &firstUnitsExponent, const UnitsExponent &secondUnitsExponent)
+{
+    // Return whether the given units exponents are the same, i.e. whether they cancel each other (see
+    // isNegligibleUnitsExponent()).
+    // Note: two units exponents that are equally infinite (e.g., following an overflow) are the same, even though their
+    //       difference is NaN.
+
+    return (std::isinf(firstUnitsExponent.value) && (firstUnitsExponent.value == secondUnitsExponent.value))
+           || isNegligibleUnitsExponent(addUnitsExponents(firstUnitsExponent, scaleUnitsExponent(secondUnitsExponent, -1.0)));
+}
+
+void Analyser::AnalyserImpl::updateUnitsMapItem(UnitsMap &unitsMap, const std::string &unitsName,
+                                                const UnitsExponent &unitsExponent)
 {
     // Add the given exponent to the given units in the given units map. If the units are not yet tracked, then we
-    // track them with the given exponent, unless it is zero. Otherwise, we add the given exponent to the existing one
-    // and, if the units now cancel each other dimensionally (e.g., volt.mV^-1), we stop tracking them, as we would
+    // track them with the given exponent, unless it is negligible. Otherwise, we add the given exponent to the existing
+    // one and, if the units now cancel each other dimensionally (e.g., volt.mV^-1), we stop tracking them, as we would
     // otherwise think that the units map is not dimensionless when it actually is.
-    // Note: the units cancel each other if the resulting exponent is finite and negligible compared to the exponents
-    //       that we add together. We cannot simply check whether the resulting exponent is nearly zero since a tiny
-    //       exponent (e.g., 1e-16) may be genuine and still be amplified later on (e.g., by a power operation). As for
-    //       an infinite exponent (e.g., 1e308+1e308), it would otherwise be considered negligible compared to itself.
-
-    static const double CANCELLATION_TOLERANCE = 8.0 * std::numeric_limits<double>::epsilon();
 
     auto iter = unitsMap.find(unitsName);
 
     if (iter == unitsMap.end()) {
-        if (unitsExponent != 0.0) {
+        if (!isNegligibleUnitsExponent(unitsExponent)) {
             unitsMap.emplace(unitsName, unitsExponent);
         }
     } else {
-        auto exponent = iter->second + unitsExponent;
+        iter->second = addUnitsExponents(iter->second, unitsExponent);
 
-        if (std::isfinite(exponent)
-            && (std::fabs(exponent) <= CANCELLATION_TOLERANCE * std::max(std::fabs(iter->second), std::fabs(unitsExponent)))) {
+        if (isNegligibleUnitsExponent(iter->second)) {
             unitsMap.erase(iter);
-        } else {
-            iter->second = exponent;
         }
     }
 }
 
 void Analyser::AnalyserImpl::updateUnitsMapWithStandardUnit(const std::string &unitsName,
                                                             UnitsMap &unitsMap,
-                                                            double unitsExponent)
+                                                            const UnitsExponent &unitsExponent)
 {
     // Update the given units map using the given standard unit.
 
     for (const auto &iter : standardUnitsList.at(unitsName)) {
-        updateUnitsMapItem(unitsMap, iter.first, iter.second * unitsExponent);
+        updateUnitsMapItem(unitsMap, iter.first, scaleUnitsExponent(unitsExponent, iter.second));
     }
 }
 
@@ -1159,8 +1311,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                                             const std::string &unitsName,
                                             UnitsMap &unitsMap,
                                             bool userUnitsMap,
-                                            double unitsExponent,
-                                            double unitsMultiplier)
+                                            const UnitsExponent &unitsExponent)
 {
     // Update the given units map using the given information.
 
@@ -1187,11 +1338,10 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
                     if (isStandardUnitName(reference)) {
-                        updateUnitsMapWithStandardUnit(reference, unitsMap, exponent * unitsExponent);
+                        updateUnitsMapWithStandardUnit(reference, unitsMap, scaleUnitsExponent(unitsExponent, exponent));
                     } else {
                         updateUnitsMap(model, reference, unitsMap, userUnitsMap,
-                                       exponent * unitsExponent,
-                                       unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
+                                       scaleUnitsExponent(unitsExponent, exponent));
                     }
                 }
             }
@@ -1210,7 +1360,7 @@ UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUn
     auto sign = multiply ? 1.0 : -1.0;
 
     for (const auto &units : secondUnitsMap) {
-        updateUnitsMapItem(res, units.first, sign * units.second);
+        updateUnitsMapItem(res, units.first, scaleUnitsExponent(units.second, sign));
     }
 
     return res;
@@ -1234,33 +1384,64 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &first
     return res;
 }
 
-UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
-                                                          double factor,
-                                                          bool multiply)
+static double realFactor(double factor, double factorError, bool multiply, double &realFactorError)
 {
-    // Multiply/divide the given units maps by the given factor, following a
-    // multiplication (multiply = true) or a division (multiply = false).
+    // Return the factor by which to scale units exponents/multipliers, i.e. the given factor (multiply = true) or its
+    // inverse (multiply = false), and, through realFactorError, the error that it carries.
+    // Note #1: the given factor error is the error that the factor has inherited from its operands, if any (see
+    //          powerValue()), so we add to it the error that the factor may itself carry (see valueError()).
+    // Note #2: inverting the factor preserves its relative error, which we use rather than error/factor^2 since
+    //          factor^2 may underflow (e.g., 1e-200^2) and yield an infinite error.
 
-    auto res = unitsMaps;
-    auto realFactor = multiply ? factor : 1.0 / factor;
+    auto res = multiply ? factor : 1.0 / factor;
 
-    for (auto &unitsMap : res) {
-        for (auto &unitsItem : unitsMap) {
-            unitsItem.second *= realFactor;
-        }
+    realFactorError = factorError + valueError(factor);
+
+    if (!multiply) {
+        realFactorError = ((realFactorError != 0.0) ? (realFactorError / std::fabs(factor)) * std::fabs(res) : 0.0)
+                          + valueError(res);
     }
 
     return res;
 }
 
-double Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
-                                                              double secondUnitsMultiplier,
-                                                              bool multiply)
+UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
+                                                          double factor,
+                                                          double factorError,
+                                                          bool multiply)
+{
+    // Multiply/divide the given units maps by the given factor, which carries the given error, following a
+    // multiplication (multiply = true) or a division (multiply = false).
+    // Note: the units in a units map may become negligible (e.g., when raising them to the power of zero), in which
+    //       case we stop tracking them (see updateUnitsMapItem()).
+
+    UnitsMaps res;
+    double realFactorError;
+    auto factorToApply = realFactor(factor, factorError, multiply, realFactorError);
+
+    for (const auto &unitsMap : unitsMaps) {
+        UnitsMap newUnitsMap;
+
+        for (const auto &unitsItem : unitsMap) {
+            updateUnitsMapItem(newUnitsMap, unitsItem.first, scaleUnitsExponent(unitsItem.second, factorToApply, realFactorError));
+        }
+
+        res.push_back(newUnitsMap);
+    }
+
+    return res;
+}
+
+UnitsExponent Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const UnitsExponent &firstUnitsMultiplier,
+                                                                     const UnitsExponent &secondUnitsMultiplier,
+                                                                     bool multiply)
 {
     // Multiply/divide the given units multipliers together, following a
     // multiplication (multiply = true) or a division (multiply = false).
+    // Note: a units multiplier is the exponent of a power of 10, so it is
+    //       handled like a units exponent (see addUnitsExponents()).
 
-    return firstUnitsMultiplier + (multiply ? 1.0 : -1.0) * secondUnitsMultiplier;
+    return addUnitsExponents(firstUnitsMultiplier, scaleUnitsExponent(secondUnitsMultiplier, multiply ? 1.0 : -1.0));
 }
 
 UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
@@ -1283,7 +1464,7 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const Un
     return res;
 }
 
-UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const UnitsExponent &firstUnitsMultiplier,
                                                                         const UnitsMultipliers &secondUnitsMultipliers,
                                                                         bool multiply)
 {
@@ -1303,16 +1484,24 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double f
 
 UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
                                                                    double factor,
+                                                                   double factorError,
                                                                    bool power)
 {
-    // Power/root the given units multipliers to the given factor, following a
-    // power (power = true) or a root (power = false) operation.
+    // Power/root the given units multipliers to the given factor, which carries the given error, following a power
+    // (power = true) or a root (power = false) operation.
+    // Note: a negligible units multiplier (e.g., of zero for metre or of nearly zero for units with reciprocal
+    //       multipliers, see isNegligibleUnitsExponent()) remains negligible whatever the factor, so we must not multiply
+    //       it by a factor that is not finite (e.g., 1/0) since it would otherwise yield a NaN units multiplier (0*inf)
+    //       or an infinite one (e.g., 1e-17*inf).
 
     UnitsMultipliers res;
-    auto realFactor = power ? factor : 1.0 / factor;
+    double realFactorError;
+    auto factorToApply = realFactor(factor, factorError, power, realFactorError);
 
     for (const auto &unitsMultiplier : unitsMultipliers) {
-        res.push_back(realFactor * unitsMultiplier);
+        res.push_back((isNegligibleUnitsExponent(unitsMultiplier) && !std::isfinite(factorToApply)) ?
+                          unitsMultiplier :
+                          scaleUnitsExponent(unitsMultiplier, factorToApply, realFactorError));
     }
 
     return res;
@@ -1321,27 +1510,26 @@ UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMu
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                                               const UnitsMaps &secondUnitsMaps)
 {
-    // Check whether the given units maps are the same by checking their exponents, i.e. by dividing one units map by
-    // the other and checking that all the units cancel each other (using the same criterion as updateUnitsMapItem()).
+    // Check whether the given units maps are the same by checking their exponents (see areSameUnitsExponents()).
+    // Note: a units map never tracks a negligible exponent (see updateUnitsMapItem()), so units that are tracked by only
+    //       one of the units maps mean that the units maps are not the same.
 
     for (const auto &firstUnitsMap : firstUnitsMaps) {
         for (const auto &secondUnitsMap : secondUnitsMaps) {
-            UnitsMap unitsMap;
-
             for (const auto &units : firstUnitsMap) {
                 if (units.first != "dimensionless") {
-                    updateUnitsMapItem(unitsMap, units.first, units.second);
+                    auto iter = secondUnitsMap.find(units.first);
+
+                    if ((iter == secondUnitsMap.end()) || !areSameUnitsExponents(units.second, iter->second)) {
+                        return false;
+                    }
                 }
             }
 
             for (const auto &units : secondUnitsMap) {
-                if (units.first != "dimensionless") {
-                    updateUnitsMapItem(unitsMap, units.first, -units.second);
+                if ((units.first != "dimensionless") && (firstUnitsMap.find(units.first) == firstUnitsMap.end())) {
+                    return false;
                 }
-            }
-
-            if (!unitsMap.empty()) {
-                return false;
             }
         }
     }
@@ -1367,11 +1555,11 @@ bool Analyser::AnalyserImpl::isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps
 bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
                                                      const UnitsMultipliers &secondUnitsMultipliers)
 {
-    // Return whether the units multipliers are equals.
+    // Return whether the units multipliers are equal (see areSameUnitsExponents()).
 
     for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
         for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
-            if (!areNearlyEqual(firstUnitsMultiplier, secondUnitsMultiplier)) {
+            if (!areSameUnitsExponents(firstUnitsMultiplier, secondUnitsMultiplier)) {
                 return false;
             }
         }
@@ -1382,13 +1570,15 @@ bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &fir
 
 void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
                                                    const std::string &unitsName,
-                                                   double &newUnitsMultiplier,
-                                                   double unitsExponent)
+                                                   UnitsExponent &newUnitsMultiplier,
+                                                   const UnitsExponent &unitsExponent)
 {
     // Update the given units multiplier using the given information.
+    // Note: a unit with a multiplier, a prefix, and an exponent contributes multiplier*(10^prefix*units)^exponent, i.e.
+    //       log10(multiplier)+prefix*exponent to the units multiplier, before taking into account the units exponent.
 
     if (isStandardUnitName(unitsName)) {
-        newUnitsMultiplier += standardMultiplierList.at(unitsName) * unitsExponent;
+        newUnitsMultiplier = addUnitsExponents(newUnitsMultiplier, scaleUnitsExponent(unitsExponent, standardMultiplierList.at(unitsName)));
     } else {
         auto units = model->units(unitsName);
         std::string reference;
@@ -1400,9 +1590,21 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
         for (size_t i = 0; i < units->unitCount(); ++i) {
             units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
-            newUnitsMultiplier += (std::log10(multiplier) + convertPrefixToInt(prefix) * exponent) * unitsExponent;
+            // Note: the multiplier may carry a representation error (see valueError()), which log10() turns into an
+            //       absolute error of about 1e-16, whatever the multiplier. So, we must account for it in addition to the
+            //       error that log10(multiplier) may itself carry since the latter is negligible for a multiplier that is
+            //       close to 1 (e.g., 1.0000001 and 0.9999999000000099 must cancel each other).
 
-            updateUnitsMultiplier(model, reference, newUnitsMultiplier, exponent * unitsExponent);
+            auto referenceUnitsExponent = scaleUnitsExponent(unitsExponent, exponent);
+            auto log10Multiplier = std::log10(multiplier);
+
+            newUnitsMultiplier = addUnitsExponents(newUnitsMultiplier,
+                                                   scaleUnitsExponent(unitsExponent, log10Multiplier,
+                                                                      functionError(1.0 / (multiplier * LN_10), valueError(multiplier))
+                                                                          + valueError(log10Multiplier)));
+            newUnitsMultiplier = addUnitsExponents(newUnitsMultiplier, scaleUnitsExponent(referenceUnitsExponent, convertPrefixToInt(prefix)));
+
+            updateUnitsMultiplier(model, reference, newUnitsMultiplier, referenceUnitsExponent);
         }
     }
 }
@@ -1432,9 +1634,63 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
     return res;
 }
 
-double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
-                                          PowerData &powerData)
+static double minMaxError(double lhs, double lhsError, double rhs, double rhsError, bool lhsSelected)
 {
+    // Return the error that min()/max() inherits from its operands, which carry the given errors, knowing whether lhs
+    // or rhs was selected as the minimum/maximum. If the operands are further apart than their errors combined, then
+    // the selected operand is certainly the minimum/maximum, so we only use its error (e.g., min(1e308*10, 0.1) must
+    // not inherit the huge error of 1e308*10). Otherwise, the other operand may actually be the minimum/maximum, so we
+    // use the largest of their errors.
+    // Note: an operand may be NaN (e.g., sin(1e308*10)), in which case its error is also NaN. We use std::fmax() since
+    //       it ignores a NaN error, so the result does not depend on the order of the operands (unlike std::max(), which
+    //       returns its first argument if either of them is NaN).
+
+    if (std::fabs(lhs - rhs) > lhsError + rhsError) {
+        return lhsSelected ? lhsError : rhsError;
+    }
+
+    return std::fmax(lhsError, rhsError);
+}
+
+static double powerError(double base, double baseError, double exponent, double exponentError, double power)
+{
+    // Return the error that the given power, i.e. base^exponent, inherits from its base and exponent, which carry the
+    // given errors. The error is propagated to first order, i.e. using the partial derivatives of base^exponent with
+    // respect to its base (i.e. exponent*base^(exponent-1)) and its exponent (i.e. base^exponent*ln(base)).
+    // Note #1: a partial derivative may not be finite (e.g., 0^-1 or ln(0)), but functionError() only accounts for a
+    //          non-zero error. A partial derivative that is mathematically zero may also be computed as a NaN (e.g.,
+    //          0*0^-1 for 0^0 or 0*ln(0) for 0^0.1), so we explicitly set it to zero in those cases.
+    // Note #2: for a non-zero base, we compute the partial derivative with respect to the base as
+    //          exponent*base^exponent/base and use the relative error of the base since base^(exponent-1) may overflow
+    //          even though base^exponent does not (e.g., 0.5^-1024 vs. 0.5^-1023).
+    // Note #3: the power may be finite even though its base or exponent is NaN (i.e. 1^NaN and NaN^0 are both equal to
+    //          1), so we only account for the error that the power inherits from its base if that error is non-zero and
+    //          the exponent is non-zero (since the partial derivative with respect to the base would otherwise be NaN,
+    //          e.g., 0*NaN for 1^NaN).
+
+    auto baseDerivativeError = ((baseError == 0.0) || (exponent == 0.0)) ?
+                                   0.0 :
+                                   ((base != 0.0) ?
+                                        functionError(power, (baseError / std::fabs(base)) * std::fabs(exponent)) :
+                                        functionError(exponent * std::pow(base, exponent - 1.0), baseError));
+    auto exponentDerivativeError = functionError((power != 0.0) ? power * std::log(std::fabs(base)) : 0.0, exponentError);
+
+    return baseDerivativeError + exponentDerivativeError;
+}
+
+double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
+                                          PowerData &powerData,
+                                          double &error)
+{
+    // Note: error is set to the error that the power value inherits from its operands (e.g., 2.3-2.2 inherits the
+    //       errors of 2.3 and 2.2, which are amplified relative to their difference, and sin(2.3-2.2) inherits that
+    //       amplified error in turn). It does not include the error that the power value may itself carry (see
+    //       valueError()), which is accounted for by the caller. Relational and logical operators, as well as the
+    //       floor() and ceiling() functions, yield an exact value (or, near a discontinuity, a value that no
+    //       first-order error can account for), so they do not propagate the error of their operands.
+
+    error = 0.0;
+
     // Make sure that we have an AST to process.
 
     static const double NAN = std::numeric_limits<double>::quiet_NaN();
@@ -1445,17 +1701,22 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
 
     // Retrieve the power value of the LHS and RHS of the given AST.
 
-    auto lhs = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
+    double lhsError;
+    auto lhs = powerValue(ast->mPimpl->mOwnedLeftChild, powerData, lhsError);
 
     if (!powerData.mExponentValueAvailable) {
         return lhs;
     }
 
-    auto rhs = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
+    double rhsError;
+    auto rhs = powerValue(ast->mPimpl->mOwnedRightChild, powerData, rhsError);
 
     if (!powerData.mExponentValueAvailable) {
         return rhs;
     }
+
+    auto lhsTotalError = lhsError + valueError(lhs);
+    auto rhsTotalError = rhsError + valueError(rhs);
 
     // Return the power value for the given AST.
 
@@ -1487,113 +1748,258 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
 
     case AnalyserEquationAst::Type::PLUS:
         if (ast->mPimpl->mOwnedRightChild != nullptr) {
+            error = lhsTotalError + rhsTotalError;
+
             return lhs + rhs;
         }
+
+        error = lhsError;
 
         return lhs;
     case AnalyserEquationAst::Type::MINUS:
         if (ast->mPimpl->mOwnedRightChild != nullptr) {
+            error = lhsTotalError + rhsTotalError;
+
             return lhs - rhs;
         }
 
+        error = lhsError;
+
         return -lhs;
     case AnalyserEquationAst::Type::TIMES:
+        // Note: we use functionError() to compute the products of a value and an error since one of them may be zero
+        //       while the other one is not finite (e.g., 0*(1e308*10)), which would otherwise yield a NaN error.
+
+        error = functionError(rhs, lhsTotalError) + functionError(lhs, rhsTotalError)
+                + functionError(lhsTotalError, rhsTotalError);
+
         return lhs * rhs;
-    case AnalyserEquationAst::Type::DIVIDE:
+    case AnalyserEquationAst::Type::DIVIDE: {
+        // Note: an exact division by zero (e.g., 1/0) carries no error, so we must not divide a zero error by zero
+        //       since it would otherwise yield a NaN error.
+
+        auto errorNumerator = lhsTotalError + functionError(lhs / rhs, rhsTotalError);
+
+        error = (errorNumerator != 0.0) ? errorNumerator / std::fabs(rhs) : 0.0;
+
         return lhs / rhs;
-    case AnalyserEquationAst::Type::POWER:
-        return std::pow(lhs, rhs);
-    case AnalyserEquationAst::Type::ROOT:
-        if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
-            return std::pow(rhs, 1.0 / lhs);
-        }
+    }
+    case AnalyserEquationAst::Type::POWER: {
+        auto power = std::pow(lhs, rhs);
 
-        return std::pow(lhs, 1.0 / 2.0);
+        error = powerError(lhs, lhsTotalError, rhs, rhsTotalError, power);
+
+        return power;
+    }
+    case AnalyserEquationAst::Type::ROOT: {
+        // Note: the error of the exponent, i.e. 1/degree, is the error that it inherits from the degree (unless it is
+        //       zero since the degree may be zero, e.g., 0/0) plus the error that it may itself carry (see valueError()).
+        //       Inverting the degree preserves its relative error, which we use rather than error/degree^2 since
+        //       degree^2 may underflow (e.g., 1e-200^2) and yield an infinite error.
+
+        auto hasDegree = ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE;
+        auto base = hasDegree ? rhs : lhs;
+        auto baseError = hasDegree ? rhsTotalError : lhsTotalError;
+        auto exponent = hasDegree ? 1.0 / lhs : 1.0 / 2.0;
+        auto exponentError = hasDegree ?
+                                 ((lhsTotalError != 0.0) ? (lhsTotalError / std::fabs(lhs)) * std::fabs(exponent) : 0.0) + valueError(exponent) :
+                                 0.0;
+        auto power = std::pow(base, exponent);
+
+        error = powerError(base, baseError, exponent, exponentError, power);
+
+        return power;
+    }
     case AnalyserEquationAst::Type::ABS:
+        error = lhsError;
+
         return std::abs(lhs);
-    case AnalyserEquationAst::Type::EXP:
-        return std::exp(lhs);
+    case AnalyserEquationAst::Type::EXP: {
+        auto res = std::exp(lhs);
+
+        error = functionError(res, lhsTotalError);
+
+        return res;
+    }
     case AnalyserEquationAst::Type::LN:
+        error = functionError(1.0 / lhs, lhsTotalError);
+
         return std::log(lhs);
-    case AnalyserEquationAst::Type::LOG:
+    case AnalyserEquationAst::Type::LOG: {
         if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::LOGBASE) {
+            // Note: log_b(x) is ln(x)/ln(b), so its partial derivatives with respect to x and b are 1/(x*ln(b)) and
+            //       -log_b(x)/(b*ln(b)), respectively.
+
             auto logBase = lhs;
+            auto lnLogBase = std::log(logBase);
+            auto res = areNearlyEqual(logBase, 10.0) ?
+                           std::log10(rhs) :
+                           std::log(rhs) / lnLogBase;
 
-            if (areNearlyEqual(logBase, 10.0)) {
-                return std::log10(rhs);
-            }
+            error = functionError(1.0 / (rhs * lnLogBase), rhsTotalError)
+                    + functionError(res / (logBase * lnLogBase), lhsTotalError);
 
-            return std::log(rhs) / std::log(logBase);
+            return res;
         }
+
+        error = functionError(1.0 / (lhs * LN_10), lhsTotalError);
 
         return std::log10(lhs);
+    }
     case AnalyserEquationAst::Type::CEILING:
         return std::ceil(lhs);
     case AnalyserEquationAst::Type::FLOOR:
         return std::floor(lhs);
-    case AnalyserEquationAst::Type::MIN:
-        return (lhs < rhs) ? lhs : rhs;
-    case AnalyserEquationAst::Type::MAX:
-        return (lhs > rhs) ? lhs : rhs;
+    case AnalyserEquationAst::Type::MIN: {
+        auto lhsSelected = lhs < rhs;
+
+        error = minMaxError(lhs, lhsTotalError, rhs, rhsTotalError, lhsSelected);
+
+        return lhsSelected ? lhs : rhs;
+    }
+    case AnalyserEquationAst::Type::MAX: {
+        auto lhsSelected = lhs > rhs;
+
+        error = minMaxError(lhs, lhsTotalError, rhs, rhsTotalError, lhsSelected);
+
+        return lhsSelected ? lhs : rhs;
+    }
     case AnalyserEquationAst::Type::REM:
+        // Note: rem(lhs, rhs) is lhs-n*rhs, with n=trunc(lhs/rhs), so its partial derivatives with respect to lhs and
+        //       rhs are 1 and -n, respectively.
+
+        error = lhsTotalError + functionError(std::trunc(lhs / rhs), rhsTotalError);
+
         return std::fmod(lhs, rhs);
 
         // Trigonometric operators.
 
     case AnalyserEquationAst::Type::SIN:
+        error = functionError(std::cos(lhs), lhsTotalError);
+
         return std::sin(lhs);
     case AnalyserEquationAst::Type::COS:
+        error = functionError(std::sin(lhs), lhsTotalError);
+
         return std::cos(lhs);
-    case AnalyserEquationAst::Type::TAN:
-        return std::tan(lhs);
-    case AnalyserEquationAst::Type::SEC:
-        return 1.0 / std::cos(lhs);
-    case AnalyserEquationAst::Type::CSC:
-        return 1.0 / std::sin(lhs);
-    case AnalyserEquationAst::Type::COT:
-        return 1.0 / std::tan(lhs);
+    case AnalyserEquationAst::Type::TAN: {
+        auto res = std::tan(lhs);
+
+        error = functionError(1.0 + res * res, lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::SEC: {
+        auto res = 1.0 / std::cos(lhs);
+
+        error = functionError(res * std::tan(lhs), lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::CSC: {
+        auto res = 1.0 / std::sin(lhs);
+
+        error = functionError(res / std::tan(lhs), lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::COT: {
+        auto res = 1.0 / std::tan(lhs);
+
+        error = functionError(1.0 + res * res, lhsTotalError);
+
+        return res;
+    }
     case AnalyserEquationAst::Type::SINH:
+        error = functionError(std::cosh(lhs), lhsTotalError);
+
         return std::sinh(lhs);
     case AnalyserEquationAst::Type::COSH:
+        error = functionError(std::sinh(lhs), lhsTotalError);
+
         return std::cosh(lhs);
-    case AnalyserEquationAst::Type::TANH:
-        return std::tanh(lhs);
-    case AnalyserEquationAst::Type::SECH:
-        return 1.0 / std::cosh(lhs);
-    case AnalyserEquationAst::Type::CSCH:
-        return 1.0 / std::sinh(lhs);
-    case AnalyserEquationAst::Type::COTH:
-        return 1.0 / std::tanh(lhs);
+    case AnalyserEquationAst::Type::TANH: {
+        auto res = std::tanh(lhs);
+
+        error = functionError(1.0 - res * res, lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::SECH: {
+        auto res = 1.0 / std::cosh(lhs);
+
+        error = functionError(res * std::tanh(lhs), lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::CSCH: {
+        auto res = 1.0 / std::sinh(lhs);
+
+        error = functionError(res / std::tanh(lhs), lhsTotalError);
+
+        return res;
+    }
+    case AnalyserEquationAst::Type::COTH: {
+        auto res = 1.0 / std::tanh(lhs);
+
+        error = functionError(1.0 - res * res, lhsTotalError);
+
+        return res;
+    }
     case AnalyserEquationAst::Type::ASIN:
+        error = functionError(1.0 / std::sqrt(1.0 - lhs * lhs), lhsTotalError);
+
         return std::asin(lhs);
     case AnalyserEquationAst::Type::ACOS:
+        error = functionError(1.0 / std::sqrt(1.0 - lhs * lhs), lhsTotalError);
+
         return std::acos(lhs);
     case AnalyserEquationAst::Type::ATAN:
+        error = functionError(1.0 / (1.0 + lhs * lhs), lhsTotalError);
+
         return std::atan(lhs);
     case AnalyserEquationAst::Type::ASEC:
+        error = functionError(1.0 / (lhs * std::sqrt(lhs * lhs - 1.0)), lhsTotalError);
+
         return std::acos(1.0 / lhs);
     case AnalyserEquationAst::Type::ACSC:
+        error = functionError(1.0 / (lhs * std::sqrt(lhs * lhs - 1.0)), lhsTotalError);
+
         return std::asin(1.0 / lhs);
     case AnalyserEquationAst::Type::ACOT:
+        error = functionError(1.0 / (1.0 + lhs * lhs), lhsTotalError);
+
         return std::atan(1.0 / lhs);
     case AnalyserEquationAst::Type::ASINH:
+        error = functionError(1.0 / std::sqrt(lhs * lhs + 1.0), lhsTotalError);
+
         return std::asinh(lhs);
     case AnalyserEquationAst::Type::ACOSH:
+        error = functionError(1.0 / std::sqrt(lhs * lhs - 1.0), lhsTotalError);
+
         return std::acosh(lhs);
     case AnalyserEquationAst::Type::ATANH:
+        error = functionError(1.0 / (1.0 - lhs * lhs), lhsTotalError);
+
         return std::atanh(lhs);
     case AnalyserEquationAst::Type::ASECH: {
         auto xInv = 1.0 / lhs;
+
+        error = functionError(1.0 / (lhs * std::sqrt(1.0 - lhs * lhs)), lhsTotalError);
 
         return std::log(xInv + std::sqrt(xInv * xInv - 1.0));
     }
     case AnalyserEquationAst::Type::ACSCH: {
         auto xInv = 1.0 / lhs;
 
+        error = functionError(1.0 / (lhs * std::sqrt(1.0 + lhs * lhs)), lhsTotalError);
+
         return std::log(xInv + std::sqrt(xInv * xInv + 1.0));
     }
     case AnalyserEquationAst::Type::ACOTH: {
         auto xInv = 1.0 / lhs;
+
+        error = functionError(1.0 / (1.0 - lhs * lhs), lhsTotalError);
 
         return 0.5 * std::log((1.0 + xInv) / (1.0 - xInv));
     }
@@ -1601,9 +2007,12 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         // Token elements.
 
     case AnalyserEquationAst::Type::CI: {
+        // Note: the initial value may be empty or be the name of another variable, in which case we do not have a
+        //       constant (power) value. Otherwise, it is a CellML real, which may be out of range (see the CN case).
+
         auto initialValue = ast->variable()->initialValue();
 
-        if (initialValue.empty()) {
+        if (!isCellMLReal(initialValue)) {
             powerData.mExponentValueAvailable = false;
 
             return NAN;
@@ -1611,15 +2020,21 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
 
         powerData.mExponentValueChangeable = true;
 
-        return std::stod(initialValue);
+        return std::strtod(initialValue.c_str(), nullptr);
     }
     case AnalyserEquationAst::Type::CN:
-        return std::stod(ast->value());
+        // Note: the model is valid, so the value is a CellML real, but it may be out of range (e.g., 1e400 or 1e-320),
+        //       in which case std::stod() would throw an exception while std::strtod() returns the closest
+        //       representable value (e.g., infinity or a subnormal value), as would the generated code.
+
+        return std::strtod(ast->value().c_str(), nullptr);
 
         // Qualifier elements.
 
     case AnalyserEquationAst::Type::DEGREE:
     case AnalyserEquationAst::Type::LOGBASE:
+        error = lhsError;
+
         return lhs;
 
         // Constants.
@@ -1698,29 +2113,37 @@ std::string Analyser::AnalyserImpl::expressionUnits(const UnitsMaps &unitsMaps,
         auto unitsMap = unitsMaps[i];
         std::string unit;
 
-        if (!unitsMultipliers.empty()) {
-            auto intExponent = int(unitsMultipliers[i]);
-            auto exponent = areNearlyEqual(unitsMultipliers[i], intExponent) ?
-                                convertToString(intExponent) :
-                                convertToString(unitsMultipliers[i], false);
+        if (!unitsMultipliers.empty() && !isNegligibleUnitsExponent(unitsMultipliers[i])) {
+            // Note: a units multiplier is only omitted if it is negligible (see isNegligibleUnitsExponent()), so, like
+            //       a units exponent, we never round a non-negligible units multiplier to zero. Also, a units
+            //       multiplier may not be finite (e.g., 10^inf for km^inf) or fit in an int, in which case we must not
+            //       convert it to an int.
 
-            if (exponent != "0") {
-                unit += "10^" + exponent;
-            }
+            auto unitsMultiplier = unitsMultipliers[i].value;
+            auto intExponent = std::round(unitsMultiplier);
+            auto exponent = ((intExponent != 0.0)
+                             && (std::fabs(intExponent) <= std::numeric_limits<int>::max())
+                             && areNearlyEqual(unitsMultiplier, intExponent)) ?
+                                convertToString(int(intExponent)) :
+                                convertToString(unitsMultiplier, false);
+
+            unit += "10^" + exponent;
         }
 
         for (const auto &unitsItem : unitsMap) {
-            // Note: a tiny exponent (e.g., 1e-16) is genuine (see updateUnitsMapItem()), so we only skip an exponent
-            //       that is exactly zero and never round a non-zero exponent to zero.
+            // Note: a units map never tracks an exponent that is exactly zero (see updateUnitsMapItem()) and a tiny
+            //       exponent (e.g., 1e-16) is genuine (see isNegligibleUnitsExponent()), so we never round a non-zero
+            //       exponent to zero.
 
-            if ((unitsItem.first != "dimensionless")
-                && (unitsItem.second != 0.0)) {
-                auto intExponent = std::trunc(unitsItem.second);
+            auto unitsExponent = unitsItem.second.value;
+
+            if (unitsItem.first != "dimensionless") {
+                auto intExponent = std::round(unitsExponent);
                 auto exponent = ((intExponent != 0.0)
                                  && (std::fabs(intExponent) <= std::numeric_limits<int>::max())
-                                 && areNearlyEqual(unitsItem.second, intExponent)) ?
+                                 && areNearlyEqual(unitsExponent, intExponent)) ?
                                     convertToString(int(intExponent)) :
-                                    convertToString(unitsItem.second, false);
+                                    convertToString(unitsExponent, false);
 
                 if (!unit.empty()) {
                     unit += " x ";
@@ -1769,7 +2192,9 @@ std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr
     } else {
         res += "in " + userUnitsString;
 
-        if (!unitsString.empty() && (unitsString != userUnitsString)) {
+        if (unitsString.empty()) {
+            res += " (i.e. 'dimensionless')";
+        } else if (unitsString != userUnitsString) {
             res += " (i.e. " + unitsString + ")";
         }
     }
@@ -1785,7 +2210,7 @@ void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps
 
     unitsMaps = {UnitsMap()};
     userUnitsMaps = {UnitsMap()};
-    unitsMultipliers = {0.0};
+    unitsMultipliers = {UnitsExponent()};
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -2075,26 +2500,27 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (isDimensionlessExponent) {
             if (isPower) {
-                powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
+                powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedRightChild, powerData, powerData.mExponentError);
             } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
                     unitsMultipliers = rightUnitsMultipliers;
 
-                    powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
+                    powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedLeftChild, powerData, powerData.mExponentError);
                 } else {
                     // No DEGREE element, which means that we are dealing with a
                     // square root.
 
                     powerData.mExponentValue = 2.0;
+                    powerData.mExponentError = 0.0;
                 }
             }
 
             if (powerData.mExponentValueAvailable) {
-                unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerData.mExponentValue, isPower);
-                userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerData.mExponentValue, isPower);
-                unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerData.mExponentValue, isPower);
+                unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerData.mExponentValue, powerData.mExponentError, isPower);
+                userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerData.mExponentValue, powerData.mExponentError, isPower);
+                unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerData.mExponentValue, powerData.mExponentError, isPower);
             }
         }
     } break;
@@ -2137,17 +2563,17 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::BVAR:
         for (auto &unitsMap : unitsMaps) {
             for (auto &unitsItem : unitsMap) {
-                unitsItem.second *= -1.0;
+                unitsItem.second = scaleUnitsExponent(unitsItem.second, -1.0);
             }
         }
 
         for (auto &userUnitsMap : userUnitsMaps) {
             for (auto &userUnits : userUnitsMap) {
-                userUnits.second *= -1.0;
+                userUnits.second = scaleUnitsExponent(userUnits.second, -1.0);
             }
         }
 
-        unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, false);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(UnitsExponent(), unitsMultipliers, false);
 
         break;
     case AnalyserEquationAst::Type::TRUE:

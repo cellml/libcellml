@@ -133,13 +133,27 @@ struct AnalyserInternalEquation
 };
 
 /**
+ * @brief The UnitsExponent struct.
+ *
+ * A units exponent, i.e. its value, the exact rounding error of its value (i.e. value plus compensation is the exponent
+ * computed with nearly twice the working precision), and an upper bound on the absolute error that it carries (from the
+ * representation of its operands). It is also used for a units multiplier, which is the exponent of a power of 10.
+ */
+struct UnitsExponent
+{
+    double value = 0.0;
+    double compensation = 0.0;
+    double error = 0.0;
+};
+
+/**
  * @brief The Analyser::AnalyserImpl class.
  *
  * The private implementation for the Analyser class.
  */
-using UnitsMap = std::map<std::string, double>;
+using UnitsMap = std::map<std::string, UnitsExponent>;
 using UnitsMaps = std::vector<UnitsMap>;
-using UnitsMultipliers = std::vector<double>;
+using UnitsMultipliers = std::vector<UnitsExponent>;
 
 class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
@@ -151,6 +165,7 @@ public:
         bool mExponentValueAvailable = true;
         bool mExponentValueChangeable = false;
         double mExponentValue;
+        double mExponentError = 0.0;
         AnalyserEquationAstPtr mExponentAst;
     };
 
@@ -189,14 +204,13 @@ public:
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
-    void updateUnitsMapItem(UnitsMap &unitsMap, const std::string &unitsName, double unitsExponent);
+    void updateUnitsMapItem(UnitsMap &unitsMap, const std::string &unitsName, const UnitsExponent &unitsExponent);
     void updateUnitsMapWithStandardUnit(const std::string &unitsName,
                                         UnitsMap &unitsMap,
-                                        double unitsExponent);
+                                        const UnitsExponent &unitsExponent);
     void updateUnitsMap(const ModelPtr &model, const std::string &unitsName,
                         UnitsMap &unitsMap, bool userUnitsMap = false,
-                        double unitsExponent = 1.0,
-                        double unitsMultiplier = 0.0);
+                        const UnitsExponent &unitsExponent = {1.0, 0.0, 0.0});
     UnitsMap multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
                                      const UnitsMap &secondUnitsMap,
                                      bool multiply);
@@ -204,18 +218,20 @@ public:
                                       const UnitsMaps &secondUnitsMaps,
                                       bool multiply = true);
     UnitsMaps multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
-                                      double factor, bool multiply);
-    double multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
-                                          double secondUnitsMultiplier,
-                                          bool multiply);
+                                      double factor, double factorError,
+                                      bool multiply);
+    UnitsExponent multiplyDivideUnitsMultipliers(const UnitsExponent &firstUnitsMultiplier,
+                                                 const UnitsExponent &secondUnitsMultiplier,
+                                                 bool multiply);
     UnitsMultipliers multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
                                                     const UnitsMultipliers &secondUnitsMultipliers,
                                                     bool multiply = true);
-    UnitsMultipliers multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+    UnitsMultipliers multiplyDivideUnitsMultipliers(const UnitsExponent &firstUnitsMultiplier,
                                                     const UnitsMultipliers &secondUnitsMultipliers,
                                                     bool multiply);
     UnitsMultipliers powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
-                                               double factor, bool power);
+                                               double factor, double factorError,
+                                               bool power);
     bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                           const UnitsMaps &secondUnitsMaps);
     bool isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps);
@@ -223,10 +239,11 @@ public:
                                  const UnitsMultipliers &secondUnitsMultipliers);
     void updateUnitsMultiplier(const ModelPtr &model,
                                const std::string &unitsName,
-                               double &newUnitsMultiplier,
-                               double unitsExponent = 1.0);
+                               UnitsExponent &newUnitsMultiplier,
+                               const UnitsExponent &unitsExponent = {1.0, 0.0, 0.0});
     std::string componentName(const AnalyserEquationAstPtr &ast);
-    double powerValue(const AnalyserEquationAstPtr &ast, PowerData &powerData);
+    double powerValue(const AnalyserEquationAstPtr &ast, PowerData &powerData,
+                      double &error);
     std::string expression(const AnalyserEquationAstPtr &ast,
                            bool includeHierarchy = true);
     std::string expressionUnits(const UnitsMaps &unitsMaps,
