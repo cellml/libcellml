@@ -168,6 +168,8 @@ class IssueTestCase(unittest.TestCase):
 
         self.assertEqual("unit_attribute_exponent_value", Issue.referenceRuleAsString(Issue.ReferenceRule.UNIT_ATTRIBUTE_EXPONENT_VALUE))
         self.assertEqual("xml_unexpected_element", Issue_referenceRuleAsString(Issue.ReferenceRule.XML_UNEXPECTED_ELEMENT))
+        self.assertEqual("generator_null_model", Issue_referenceRuleAsString(Issue.ReferenceRule.GENERATOR_NULL_MODEL))
+        self.assertEqual("xml", Issue_referenceRuleAsString(Issue.ReferenceRule.XML))
 
     def test_coverage(self):
         from libcellml import Issue
