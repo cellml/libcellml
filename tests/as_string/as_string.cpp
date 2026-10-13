@@ -45,6 +45,12 @@ TEST(AsString, issueReferenceRule)
     EXPECT_EQ("import_child", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_CHILD));
     EXPECT_EQ("import_equivalent_infoset", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_EQUIVALENT_INFOSET));
     EXPECT_EQ("import_units_element", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_ELEMENT));
+    EXPECT_EQ("import_units_name", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME));
+    EXPECT_EQ("import_units_name_value", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME_VALUE));
+    EXPECT_EQ("import_units_name_unique", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE));
+    EXPECT_EQ("import_units_units_reference", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE));
+    EXPECT_EQ("import_units_units_reference_value", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE_VALUE));
+    EXPECT_EQ("import_units_units_reference_value_target", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE_VALUE_TARGET));
     EXPECT_EQ("import_component_element", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_ELEMENT));
     EXPECT_EQ("import_component_name", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME));
     EXPECT_EQ("import_component_name_value", libcellml::Issue::referenceRuleAsString(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME_VALUE));
