@@ -280,11 +280,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm, windows-2022, windows-11-arm]
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm, windows-2025-vs2026, windows-11-arm]
         py: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
         include:
           - name: 'Windows'
-            os: windows-2022
+            os: windows-2025-vs2026
           - name: 'Windows ARM'
             os: windows-11-arm
           - name: 'Linux'
@@ -301,7 +301,7 @@ jobs:
 
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -309,9 +309,14 @@ jobs:
         id: setup
         shell: bash
         run: |
-          mkdir src/bindings/python/libcellml
-          cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
-          mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
+          VERSION="${GITHUB_REF_NAME_TMP#refs/tags/v}"
+          if [[ "$OSTYPE" == "darwin*" ]]; then
+            sed -i '' "s/__VERSION__/${VERSION}/" src/bindings/python/pyproject.toml
+          else
+            sed -i "s/__VERSION__/${VERSION}/" src/bindings/python/pyproject.toml
+          fi
+          grep '^version' src/bindings/python/pyproject.toml
+
           v=${{ matrix.py }}
           echo "Setting tag as: tag=${GITHUB_REF#refs/tags/}"
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
@@ -333,7 +338,7 @@ jobs:
         if: runner.os == 'Windows'
         uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
-          arch: x64
+          arch: ${{ steps.setup.outputs.win_arch }}
 
       - name: Install SWIG (macOS)
         if: runner.os == 'macOS'
@@ -353,7 +358,7 @@ jobs:
             MACOSX_DEPLOYMENT_TARGET=${{ steps.setup.outputs.macos_deployment_target }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
-          CIBW_BEFORE_BUILD_WINDOWS: call "%VSINSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" ${{ steps.setup.outputs.win_arch }} && cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
+          CIBW_BEFORE_BUILD_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
         with:
           output-dir: wheelhouse

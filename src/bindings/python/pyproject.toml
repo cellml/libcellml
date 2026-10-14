@@ -1,10 +1,41 @@
 [build-system]
 requires = [
-    'setuptools',
-    'wheel',
-    'scikit-build>=0.12',
-    'cmake',
-    'ninja',
+    "wheel",
+    "scikit-build-core",
 ]
-build-backend = 'setuptools.build_meta'
+build-backend = "scikit_build_core.build"
 
+[project]
+name = "libCellML"
+version = "__VERSION__"
+license = { text = "Apache-2.0" }
+description = "libCellML a library for the creation, printing, parsing, and manipulation of CellML models."
+authors = [{ name = "libCellML developers", email = "libcellml@googlegroups.com" }]
+urls = { "homepage" = "https://libcellml.org" }
+readme = { file = "README.rst", content-type = "text/x-rst" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.scikit-build]
+cmake.args = ["-DUNIT_TESTS=OFF", "-DCOVERAGE=OFF", "-DMEMCHECK=OFF", "-DLLVM_COVERAGE=OFF", "-DCLANG_TIDY=OFF"]
+cmake.build-type = "Release"
+cmake.source-dir = "../../.."
+cmake.version = ">=3.26.1"
+install.targets = ["install-wheel"]
+ninja.version = ">=1.11"
+
+[[tool.scikit-build.overrides]]
+if.platform-system = "^win32"
+inherit.cmake.args = "append"
+cmake.args = ["-DLibXml2_DIR=C:/Program Files (x86)/libxml2/libxml2-2.9.10/CMake/"]
