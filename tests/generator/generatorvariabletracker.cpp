@@ -722,3 +722,37 @@ TEST(GeneratorVariableTracker, hodgkinHuxleySquidAxonModel1952DaeUntrackedVariab
                                                   daeIssues, daeLevels, daeReferenceRules,
                                                   daeExternalIssues, expectedLevels(daeExternalIssues.size(), libcellml::Issue::Level::ERROR), daeExternalReferenceRules);
 }
+
+TEST(GeneratorVariableTracker, variableInitialisedUsingUntrackedVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/variable_initialised_using_untracked_variable/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generatorVariableTracker = libcellml::GeneratorVariableTracker::create();
+
+    generatorVariableTracker->untrackAllVariables(analyserModel);
+
+    EXPECT_EQ_ISSUES_LEVELS_REFERENCERULES(std::vector<std::string>({"Variable 'a' in component 'main' is computed using an NLA system and cannot therefore be untracked."}),
+                                           expectedLevels(1, libcellml::Issue::Level::ERROR),
+                                           expectedReferenceRules(1, libcellml::Issue::ReferenceRule::GENERATOR_NLA_BASED_VARIABLE_NOT_UNTRACKABLE),
+                                           generatorVariableTracker);
+
+    auto generator = libcellml::Generator::create();
+    auto profile = libcellml::GeneratorProfile::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_untracked_variable/model.h", generator->interfaceCode(analyserModel, profile, generatorVariableTracker));
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_untracked_variable/model.c", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_untracked_variable/model.py", generator->implementationCode(analyserModel, profile, generatorVariableTracker));
+}

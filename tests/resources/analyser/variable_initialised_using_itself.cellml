@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define variables that are, directly or indirectly, initialised using themselves:
+ - 'a' is initialised using itself;
+ - 'b' and 'c' are initialised using each other;
+ - 'd', 'e', and 'f' are initialised using 'e', 'f', and 'd', respectively;
+ - 'y' and 'z' are state variables initialised using each other; and
+ - 'kc' is initialised using 'cc', a computed constant which is computed using 'kc'.
+Also define 's', which is initialised using 'b', i.e. which initialisation depends on a cycle, but which is not part of
+it. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable initial_value="a" name="a" units="dimensionless"/>
+        <variable initial_value="c" name="b" units="dimensionless"/>
+        <variable initial_value="b" name="c" units="dimensionless"/>
+        <variable initial_value="e" name="d" units="dimensionless"/>
+        <variable initial_value="f" name="e" units="dimensionless"/>
+        <variable initial_value="d" name="f" units="dimensionless"/>
+        <variable initial_value="z" name="y" units="dimensionless"/>
+        <variable initial_value="y" name="z" units="dimensionless"/>
+        <variable initial_value="cc" name="kc" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="b" name="s" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                    <ci>c</ci>
+                    <ci>d</ci>
+                    <ci>e</ci>
+                    <ci>f</ci>
+                    <ci>kc</ci>
+                    <ci>s</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>y</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>kc</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

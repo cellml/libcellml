@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- 'a', 'd', and 'k' are all initialised and both 'a*a = x+k' and 'sin(d) = x*k' are NLA equations. This means
+that 'k' is not (necessarily) a constant, but an unknown variable in an NLA system that consists of two NLA equations
+('a*a = x+k' and 'sin(d) = x*k') for three unknown variables ('a', 'd', and 'k'), i.e. an underconstrained NLA system,
+even though each NLA equation has only two unknown variables. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="3" name="k" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="cc" name="b" units="dimensionless"/>
+        <variable initial_value="1" name="d" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <ci>k</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>a</ci>
+                    <ci>a</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <ci>cc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>d</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>x</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

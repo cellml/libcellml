@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define 'b' as the unknown of an NLA system which initial guess is provided by 'cc', a computed constant, as well
+as two other (independent) NLA systems to compute 'a' and 'd'. This means that the initial guess for 'b' can only be set
+in computeComputedConstants(), once 'cc' has been computed. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="3" name="k" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="cc" name="b" units="dimensionless"/>
+        <variable initial_value="1" name="d" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <ci>k</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>a</ci>
+                    <ci>a</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <ci>cc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>d</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

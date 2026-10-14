@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- 'cc = 2*k' looks like it computes a variable-based constant since 'k' is initialised. However, 'k' is computed
+using an NLA system ('k*k = x+3'), so 'cc' is an algebraic variable, which means that it cannot be used to initialise
+'b'. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="k" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="cc" name="b" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>k</ci>
+                    <ci>k</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <times/>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                    <ci>b</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>x</ci>
+                    <cn cellml:units="dimensionless">5</cn>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

@@ -1,0 +1,108 @@
+/* The content of this file was generated using the C profile of libCellML 0.7.1. */
+
+#include "model.h"
+
+#include <math.h>
+#include <stdlib.h>
+
+const char VERSION[] = "0.8.0";
+const char LIBCELLML_VERSION[] = "0.7.1";
+
+const size_t STATE_COUNT = 1;
+const size_t CONSTANT_COUNT = 3;
+const size_t COMPUTED_CONSTANT_COUNT = 3;
+const size_t ALGEBRAIC_VARIABLE_COUNT = 0;
+
+const VariableInfo VOI_INFO = {"t", "dimensionless", "main"};
+
+const VariableInfo STATE_INFO[] = {
+    {"x", "dimensionless", "main"}
+};
+
+const VariableInfo CONSTANT_INFO[] = {
+    {"kkc", "dimensionless", "main"},
+    {"kc", "dimensionless", "main"},
+    {"k", "dimensionless", "main"}
+};
+
+const VariableInfo COMPUTED_CONSTANT_INFO[] = {
+    {"cc2", "dimensionless", "main"},
+    {"cc3", "dimensionless", "main"},
+    {"cc", "dimensionless", "main"}
+};
+
+const VariableInfo ALGEBRAIC_VARIABLE_INFO[] = {
+};
+
+double * createStatesArray()
+{
+    double *res = (double *) malloc(STATE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < STATE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createConstantsArray()
+{
+    double *res = (double *) malloc(CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createComputedConstantsArray()
+{
+    double *res = (double *) malloc(COMPUTED_CONSTANT_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < COMPUTED_CONSTANT_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createAlgebraicVariablesArray()
+{
+    double *res = (double *) malloc(ALGEBRAIC_VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < ALGEBRAIC_VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+void deleteArray(double *array)
+{
+    free(array);
+}
+
+void initialiseArrays(double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+{
+    constants[2] = 3.0;
+}
+
+void computeComputedConstants(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+{
+    computedConstants[2] = 2.0*constants[2];
+    constants[1] = computedConstants[2];
+    computedConstants[0] = 3.0*constants[1];
+    computedConstants[1] = computedConstants[0]+1.0;
+    states[0] = computedConstants[1];
+    constants[0] = constants[1];
+}
+
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+{
+    rates[0] = constants[1]+constants[0];
+}
+
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
+{
+}

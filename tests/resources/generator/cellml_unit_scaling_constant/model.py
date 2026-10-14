@@ -60,7 +60,7 @@ def initialise_arrays(constants, computed_constants, algebraic_variables):
     constants[4] = constants[3]
     constants[6] = 0.001*constants[2]
     constants[5] = constants[6]
-    constants[7] = constants[2]
+    constants[7] = 0.001*constants[2]
     constants[8] = constants[7]
 
 

@@ -38,6 +38,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_OVERCONSTRAINED, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE, int)
+        self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_INITIALISED_USING_ITSELF, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_INITIALISED_USING_VARIABLE_WITH_DIFFERENT_UNITS, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VARIABLE_UNUSED, int)
         self.assertIsInstance(Issue.ReferenceRule.ANALYSER_VOI_INITIALISED, int)

@@ -294,6 +294,64 @@ TEST(Analyser, variableInitialisedUsingAnotherVariable)
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, variableInitialisedUsingNlaBasedAlgebraicVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_nla_based_algebraic_variable.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'b' in component 'main' is initialised using variable 'cc', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
+}
+
+TEST(Analyser, variableInitialisedUsingItself)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_using_itself.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'kc' in component 'main' is initialised using variable 'cc', which depends, directly or indirectly, on variable 'kc'.",
+        "Variable 'f' in component 'main' is initialised using variable 'd', which depends, directly or indirectly, on variable 'f'.",
+        "Variable 'e' in component 'main' is initialised using variable 'f', which depends, directly or indirectly, on variable 'e'.",
+        "Variable 'd' in component 'main' is initialised using variable 'e', which depends, directly or indirectly, on variable 'd'.",
+        "Variable 'c' in component 'main' is initialised using variable 'b', which depends, directly or indirectly, on variable 'c'.",
+        "Variable 'b' in component 'main' is initialised using variable 'c', which depends, directly or indirectly, on variable 'b'.",
+        "Variable 'a' in component 'main' is initialised using itself.",
+        "Variable 'y' in component 'main' is initialised using variable 'z', which depends, directly or indirectly, on variable 'y'.",
+        "Variable 'z' in component 'main' is initialised using variable 'y', which depends, directly or indirectly, on variable 'z'.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ITSELF),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_INITIALISED_USING_ITSELF"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
+}
+
 TEST(Analyser, nonInitialisedState)
 {
     auto parser = libcellml::Parser::create();
@@ -987,6 +1045,33 @@ TEST(Analyser, underconstrainedNlaSystem)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, nlaSystemsSharingInitialisedVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/nla_systems_sharing_initialised_variable.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'k' in component 'main' is underconstrained.",
+        "Variable 'a' in component 'main' is underconstrained.",
+        "Variable 'd' in component 'main' is underconstrained.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
+}
+
 TEST(Analyser, overconstrainedNlaSystem)
 {
     auto parser = libcellml::Parser::create();
@@ -998,6 +1083,35 @@ TEST(Analyser, overconstrainedNlaSystem)
         "Variable 'z' in component 'my_algebraic_system' is overconstrained.",
         "Variable 'y' in component 'my_algebraic_system' is overconstrained.",
         "Variable 'x' in component 'my_algebraic_system' is overconstrained.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->analyserModel()->type());
+}
+
+TEST(Analyser, overconstrainedBridgedNlaSystem)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/overconstrained_bridged_nla_system.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'b' in component 'main' is overconstrained.",
+        "Variable 'a' in component 'main' is overconstrained.",
+        "Variable 'c' in component 'main' is overconstrained.",
+        "Variable 'f' in component 'main' is overconstrained.",
+        "Variable 'e' in component 'main' is overconstrained.",
     };
 
     auto analyser = libcellml::Analyser::create();

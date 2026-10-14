@@ -2314,6 +2314,55 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
     addIssue(issue);
 }
 
+AnalyserInternalVariablePtrs Analyser::AnalyserImpl::initialisationDependencies(const AnalyserInternalVariablePtr &internalVariable)
+{
+    // Return the internal variables on which the initialisation of the given internal variable depends, i.e. the
+    // internal variable used to initialise it, if it is initialised using a variable, or the internal variables used
+    // to compute it, if it is a computed constant.
+
+    AnalyserInternalVariablePtrs res;
+
+    if ((internalVariable->mInitialisingVariable != nullptr)
+        && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
+        res.push_back(Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue())));
+    }
+
+    for (const auto &internalEquation : mInternalEquations) {
+        if ((internalEquation->mType == AnalyserInternalEquation::Type::COMPUTED_CONSTANT)
+            && (internalEquation->mUnknownVariables.front() == internalVariable)) {
+            for (const auto &dependency : internalEquation->mDependencies) {
+                res.push_back(Analyser::AnalyserImpl::internalVariable(dependency));
+            }
+        }
+    }
+
+    return res;
+}
+
+bool Analyser::AnalyserImpl::initialisationDependsOn(const AnalyserInternalVariablePtr &internalVariable,
+                                                     const AnalyserInternalVariablePtr &otherInternalVariable,
+                                                     AnalyserInternalVariablePtrs &checkedInternalVariables)
+{
+    // Determine whether the initialisation of the given internal variable depends, directly or indirectly, on the other
+    // internal variable.
+
+    for (const auto &dependency : initialisationDependencies(internalVariable)) {
+        if (dependency == otherInternalVariable) {
+            return true;
+        }
+
+        if (std::find(checkedInternalVariables.begin(), checkedInternalVariables.end(), dependency) == checkedInternalVariables.end()) {
+            checkedInternalVariables.push_back(dependency);
+
+            if (initialisationDependsOn(dependency, otherInternalVariable, checkedInternalVariables)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 {
     // Reset a few things in case this analyser was to be used to analyse more
@@ -2613,35 +2662,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Make sure that variables that are initialised using another variable are
-    // not initialised using an algebraic variable.
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if ((internalVariable->mInitialisingVariable != nullptr)
-            && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
-            auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
-
-            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE) {
-                auto issue = Issue::IssueImpl::create();
-
-                issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
-                                              + "' in component '" + owningComponent(internalVariable->mVariable)->name()
-                                              + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
-                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
-                issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
-
-                addIssue(issue);
-            }
-        }
-    }
-
-    if (mAnalyser->errorCount() != 0) {
-        mAnalyserModel->mPimpl->mType = AnalyserModel::Type::INVALID;
-
-        return;
-    }
-
     // Make sure that our equations are valid.
 
     AnalyserInternalVariablePtrs addedExternalVariables;
@@ -2674,14 +2694,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
 
         // Make the NLA equations that compute the same variables aware of one
-        // another and assign them an index for the NLA system in which they are
-        // used.
+        // another.
 
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
-            if (internalEquation->mNlaSystemIndex == MAX_SIZE_T) {
-                internalEquation->mNlaSystemIndex = ++nlaSystemIndex;
-            }
-
             for (const auto &otherInternalEquation : mInternalEquations) {
                 if ((otherInternalEquation != internalEquation)
                     && (otherInternalEquation->mType == AnalyserInternalEquation::Type::NLA)) {
@@ -2704,14 +2719,36 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     }
 
                     // Consider otherInternalEquation as an NLA sibling of
-                    // internalEquation, if there are some common unknown
-                    // variables, and make sure that it has the same NLA system
-                    // index as internalEquation.
+                    // internalEquation, if there are some common unknown variables.
 
                     if (!commonUnknownVariables.empty()) {
                         internalEquation->mNlaSiblings.push_back(otherInternalEquation);
+                    }
+                }
+            }
+        }
+    }
 
-                        otherInternalEquation->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
+    // Assign an index to each of our NLA systems, i.e. to each set of NLA equations that are, directly or indirectly,
+    // NLA siblings of one another.
+    // Note: we cannot assign those indices while determining the NLA siblings since two sets of NLA equations may only
+    //       be found to belong to the same NLA system once we come across an NLA equation that bridges them.
+
+    for (const auto &internalEquation : mInternalEquations) {
+        if ((internalEquation->mType == AnalyserInternalEquation::Type::NLA)
+            && (internalEquation->mNlaSystemIndex == MAX_SIZE_T)) {
+            AnalyserInternalEquationPtrs nlaSystemEquations = {internalEquation};
+
+            internalEquation->mNlaSystemIndex = ++nlaSystemIndex;
+
+            for (size_t i = 0; i < nlaSystemEquations.size(); ++i) {
+                for (const auto &nlaSibling : nlaSystemEquations[i]->mNlaSiblings) {
+                    auto nlaSiblingEquation = nlaSibling.lock();
+
+                    if (nlaSiblingEquation->mNlaSystemIndex == MAX_SIZE_T) {
+                        nlaSiblingEquation->mNlaSystemIndex = nlaSystemIndex;
+
+                        nlaSystemEquations.push_back(nlaSiblingEquation);
                     }
                 }
             }
@@ -2769,18 +2806,39 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 }
             }
         } break;
-        case AnalyserInternalEquation::Type::NLA:
-            if (internalEquation->mNlaSiblings.size() + 1 < internalEquation->mUnknownVariables.size()) {
+        case AnalyserInternalEquation::Type::NLA: {
+            // Determine the number of NLA equations and the unknown variables of the NLA system as a whole.
+            // Note: the unknown variables of an NLA equation are not necessarily the same as those of its NLA siblings
+            //       (e.g., x and y for one NLA equation, and x and z for its NLA sibling, i.e. two NLA equations for
+            //       three unknown variables), so checking an NLA equation on its own is not enough.
+
+            size_t nlaEquationCount = 0;
+            AnalyserInternalVariablePtrs nlaUnknownVariables;
+
+            for (const auto &otherInternalEquation : mInternalEquations) {
+                if ((otherInternalEquation->mType == AnalyserInternalEquation::Type::NLA)
+                    && (otherInternalEquation->mNlaSystemIndex == internalEquation->mNlaSystemIndex)) {
+                    ++nlaEquationCount;
+
+                    for (const auto &unknownVariable : otherInternalEquation->mUnknownVariables) {
+                        if (std::find(nlaUnknownVariables.begin(), nlaUnknownVariables.end(), unknownVariable) == nlaUnknownVariables.end()) {
+                            nlaUnknownVariables.push_back(unknownVariable);
+                        }
+                    }
+                }
+            }
+
+            if (nlaEquationCount < nlaUnknownVariables.size()) {
                 // There are fewer NLA equations than unknown variables, so all the unknown variables involved in the
                 // NLA system should be considered as underconstrained.
 
-                for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-                    if (std::find(underconstrainedVariables.begin(), underconstrainedVariables.end(), unknownVariable) == underconstrainedVariables.end()) {
-                        unknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+                for (const auto &nlaUnknownVariable : nlaUnknownVariables) {
+                    if (std::find(underconstrainedVariables.begin(), underconstrainedVariables.end(), nlaUnknownVariable) == underconstrainedVariables.end()) {
+                        nlaUnknownVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
 
-                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
+                        addInvalidVariableIssue(nlaUnknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
 
-                        underconstrainedVariables.push_back(unknownVariable);
+                        underconstrainedVariables.push_back(nlaUnknownVariable);
                     }
                 }
             } else if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
@@ -2797,8 +2855,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     }
                 }
             }
-
-            break;
+        } break;
         default: // Other types we don't care about.
             break;
         }
@@ -2814,6 +2871,60 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else {
             mAnalyserModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
         }
+
+        return;
+    }
+
+    // Make sure that variables that are initialised using another variable are neither initialised using an algebraic
+    // variable nor, directly or indirectly, initialised using themselves.
+    // Note: this can only be done now since a variable-based constant may have been requalified as an algebraic
+    //       variable (see above).
+
+    for (const auto &internalVariable : mInternalVariables) {
+        if ((internalVariable->mInitialisingVariable != nullptr)
+            && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
+            auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
+
+            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE) {
+                // The variable is initialised using an algebraic variable, which is not allowed.
+
+                auto issue = Issue::IssueImpl::create();
+
+                issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
+                                              + "' in component '" + owningComponent(internalVariable->mVariable)->name()
+                                              + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
+                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
+                issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
+
+                addIssue(issue);
+            } else {
+                AnalyserInternalVariablePtrs checkedInternalVariables;
+
+                if (initialisationDependsOn(internalVariable, internalVariable, checkedInternalVariables)) {
+                    // The variable is initialised using itself, directly or indirectly, which is not allowed.
+
+                    auto initialisingVariable = internalVariable->mInitialisingVariable;
+                    auto initialValue = initialisingVariable->initialValue();
+                    auto issue = Issue::IssueImpl::create();
+
+                    issue->mPimpl->setDescription("Variable '" + initialisingVariable->name()
+                                                  + "' in component '" + owningComponent(initialisingVariable)->name()
+                                                  + "' is initialised using "
+                                                  + ((initialValue == initialisingVariable->name()) ?
+                                                         "itself." :
+                                                         "variable '" + initialValue + "', which depends, directly or indirectly, on variable '" + initialisingVariable->name() + "'."));
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ITSELF);
+                    issue->mPimpl->mItem->mPimpl->setVariable(initialisingVariable);
+
+                    addIssue(issue);
+                }
+            }
+        }
+    }
+
+    if (mAnalyser->errorCount() != 0) {
+        mAnalyserModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
     }

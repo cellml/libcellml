@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- All the variables, but 't' and 'x', are initialised and all the equations, but the ODE, are NLA equations, which
+unknown variables are (in that order): {a, b}, {b, c}, {d, e}, {e, f}, {a, f}, {c}, and {c}. They all belong to the same
+NLA system: {a, b} and {b, c} are connected through 'b', {d, e} and {e, f} through 'e', and those two sets of NLA
+equations through {a, f}, which is only come across after them. That NLA system consists of seven NLA equations for six
+unknown variables, i.e. it is overconstrained (and not partly underconstrained). -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="1" name="b" units="dimensionless"/>
+        <variable initial_value="1" name="c" units="dimensionless"/>
+        <variable initial_value="1" name="d" units="dimensionless"/>
+        <variable initial_value="1" name="e" units="dimensionless"/>
+        <variable initial_value="1" name="f" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>b</ci>
+                    <ci>c</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>d</ci>
+                    <ci>e</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>e</ci>
+                    <ci>f</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <ci>f</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <sin/>
+                    <ci>c</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <cos/>
+                    <ci>c</ci>
+                </apply>
+                <ci>x</ci>
+            </apply>
+        </math>
+    </component>
+</model>

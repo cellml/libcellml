@@ -257,6 +257,11 @@ public:
     void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
                                  Issue::ReferenceRule referenceRule);
 
+    AnalyserInternalVariablePtrs initialisationDependencies(const AnalyserInternalVariablePtr &internalVariable);
+    bool initialisationDependsOn(const AnalyserInternalVariablePtr &internalVariable,
+                                 const AnalyserInternalVariablePtr &otherInternalVariable,
+                                 AnalyserInternalVariablePtrs &checkedInternalVariables);
+
     void analyseModel(const ModelPtr &model);
 
     AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const VariablePtr &variable) const;

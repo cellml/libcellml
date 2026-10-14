@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define:
+ - 'k' as a constant;
+ - 'cc' as a computed constant, which depends on 'k';
+ - 'kc' as a constant initialised using 'cc', i.e. a constant that can only be initialised once 'cc' has been computed;
+ - 'kkc' as a constant initialised using 'kc';
+ - 'cc2' as a computed constant, which depends on 'kc';
+ - 'cc3' as a computed constant, which depends on 'cc2'; and
+ - 'x' as a state variable initialised using 'cc3'. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="cc3" name="x" units="dimensionless"/>
+        <variable name="cc3" units="dimensionless"/>
+        <variable name="cc2" units="dimensionless"/>
+        <variable initial_value="kc" name="kkc" units="dimensionless"/>
+        <variable initial_value="cc" name="kc" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="3" name="k" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>kc</ci>
+                    <ci>kkc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc3</ci>
+                <apply>
+                    <plus/>
+                    <ci>cc2</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc2</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">3</cn>
+                    <ci>kc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

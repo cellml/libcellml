@@ -1652,6 +1652,54 @@ TEST(Generator, variableInitialisedUsingAnotherVariable)
     EXPECT_EQ_FILE_CONTENTS("generator/variable_initialised_using_another_variable/model.py", generator->implementationCode(analyserModel, profile));
 }
 
+TEST(Generator, constantInitialisedUsingComputedConstant)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/constant_initialised_using_computed_constant/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/constant_initialised_using_computed_constant/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/constant_initialised_using_computed_constant/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/constant_initialised_using_computed_constant/model.py", generator->implementationCode(analyserModel, profile));
+}
+
+TEST(Generator, nlaInitialGuessUsingComputedConstant)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/nla_initial_guess_using_computed_constant/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->analyserModel();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_initial_guess_using_computed_constant/model.h", generator->interfaceCode(analyserModel));
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_initial_guess_using_computed_constant/model.c", generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    EXPECT_EQ_FILE_CONTENTS("generator/nla_initial_guess_using_computed_constant/model.py", generator->implementationCode(analyserModel, profile));
+}
+
 TEST(Generator, modelOutOfScope)
 {
     libcellml::AnalyserModelPtr analyserModel;

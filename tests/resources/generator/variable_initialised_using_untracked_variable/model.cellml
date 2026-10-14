@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define, with a view to untracking all the variables:
+ - 'x' and 'y' as state variables initialised using 'k', a constant initialised using 'q', another constant;
+ - 'z' as a state variable initialised using 'cc', a computed constant which is computed using 'k';
+ - 'kc' as a constant initialised using 'cc'; and
+ - 'a' as a non-linear algebraic variable which is computed using 'q' and 'k'.
+Then, use 'q', 'k', 'cc', and 'kc' in different methods (i.e. computeRates() and objectiveFunction0()), so that we can
+confirm that the untracked variables used to initialise some other variables get properly declared before being used. -->
+    <component name="main">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="k" name="x" units="dimensionless"/>
+        <variable initial_value="k" name="y" units="dimensionless"/>
+        <variable initial_value="cc" name="z" units="dimensionless"/>
+        <variable initial_value="q" name="k" units="dimensionless"/>
+        <variable initial_value="3" name="q" units="dimensionless"/>
+        <variable name="cc" units="dimensionless"/>
+        <variable initial_value="cc" name="kc" units="dimensionless"/>
+        <variable name="a" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>q</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>y</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>cc</ci>
+                    <ci>kc</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>a</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cc</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <apply>
+                        <sin/>
+                        <ci>a</ci>
+                    </apply>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>q</ci>
+                    <ci>k</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
