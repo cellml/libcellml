@@ -310,6 +310,23 @@ XmlNodePtr XmlNode::parent() const
 
 std::string XmlNode::convertToString() const
 {
+    // Fast path for a text node whose content xmlNodeDump() would output unchanged: printable ASCII, tabs and new
+    // lines, with no characters that it escapes ('<', '>', '&' and carriage returns). This is the common case of the
+    // content of a ci or cn element, and it avoids a buffer allocation and a serialisation per call.
+    if (mPimpl->mXmlNodePtr->type == XML_TEXT_NODE) {
+        const auto *content = reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->content);
+        bool plain = true;
+        for (const char *c = content; *c != '\0'; ++c) {
+            auto u = static_cast<unsigned char>(*c);
+            if (((u < 0x20) && (u != '\t') && (u != '\n')) || (u > 0x7e) || (u == '<') || (u == '>') || (u == '&')) {
+                plain = false;
+                break;
+            }
+        }
+        if (plain) {
+            return content;
+        }
+    }
     xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
@@ -320,9 +337,12 @@ std::string XmlNode::convertToString() const
 
 std::string XmlNode::convertToStrippedString() const
 {
+    // isspace() needs the value of an unsigned char: a char with the top bit set (e.g., a byte of a UTF-8 encoded
+    // non-ASCII character) is negative, which is undefined behaviour (and an assertion in MSVC's debug runtime).
+    auto isSpace = [](unsigned char c) { return isspace(c) != 0; };
     std::string contentString = convertToString();
-    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
-    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
+    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), isSpace));
+    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), isSpace).base(), contentString.end());
     return contentString;
 }
 

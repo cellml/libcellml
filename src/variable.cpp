@@ -19,10 +19,12 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <map>
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/units.h"
 
+#include "commonutils.h"
 #include "utilities.h"
 #include "variable_p.h"
 
@@ -65,6 +67,14 @@ Variable::Variable(const std::string &name)
 
 Variable::~Variable()
 {
+    // An equivalence is held by both of its variables, so this tells every variable left holding an expired
+    // reference to this one.
+    for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
+        auto equivalentVariable = variableWeak.lock();
+        if (equivalentVariable != nullptr) {
+            equivalentVariable->pFunc()->mMayHaveExpiredEquivalentVariables = true;
+        }
+    }
     delete pFunc();
 }
 
@@ -152,6 +162,10 @@ void Variable::removeAllEquivalences()
 
 VariablePtr Variable::equivalentVariable(size_t index) const
 {
+    if (!pFunc()->mMayHaveExpiredEquivalentVariables) {
+        return (index < pFunc()->mEquivalentVariables.size()) ? pFunc()->mEquivalentVariables[index].lock() : nullptr;
+    }
+
     size_t count = 0;
     for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
         auto variable = variableWeak.lock();
@@ -168,6 +182,10 @@ VariablePtr Variable::equivalentVariable(size_t index) const
 
 size_t Variable::equivalentVariableCount() const
 {
+    if (!pFunc()->mMayHaveExpiredEquivalentVariables) {
+        return pFunc()->mEquivalentVariables.size();
+    }
+
     size_t count = 0;
     for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
         auto variable = variableWeak.lock();
@@ -178,6 +196,19 @@ size_t Variable::equivalentVariableCount() const
     return count;
 }
 
+std::vector<VariablePtr> Variable::VariableImpl::liveEquivalentVariables() const
+{
+    std::vector<VariablePtr> res;
+    res.reserve(mEquivalentVariables.size());
+    for (const auto &variableWeak : mEquivalentVariables) {
+        auto equivalentVariable = variableWeak.lock();
+        if (equivalentVariable != nullptr) {
+            res.push_back(equivalentVariable);
+        }
+    }
+    return res;
+}
+
 bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
 {
     return pFunc()->hasEquivalentVariable(equivalentVariable, considerIndirectEquivalences);
@@ -186,6 +217,7 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 void Variable::VariableImpl::cleanExpiredVariables()
 {
     mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+    mMayHaveExpiredEquivalentVariables = false;
 }
 
 void Variable::VariableImpl::unsafeResetEquivalenceIds(const VariablePtr &equivalentVariable)
@@ -210,21 +242,9 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
     return equivalent;
 }
 
-/**
- * @brief Test if the two variables given are equivalent, directly or indirectly.
- *
- * Traverse the variable equivalence network to determine if the two given variables
- * are equivalent.  Returns true if they are equivalent and false otherwise.
- *
- * @param variable1 The first variable to test.
- * @param variable2 The second variable to test.
- * @param testedVariables Vector of previously tested variables.
- *
- * @return True if the two given variables are equivalent, false otherwise.
- */
-bool haveEquivalentVariables(const Variable *variable1,
-                             const Variable *variable2,
-                             std::vector<const Variable *> &testedVariables)
+bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
+                                                     const Variable *variable2,
+                                                     std::unordered_set<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -234,12 +254,12 @@ bool haveEquivalentVariables(const Variable *variable1,
         return false;
     }
 
-    testedVariables.push_back(variable2);
+    testedVariables.insert(variable2);
 
-    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
-        Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
+    for (const auto &equivalentVariable2Ptr : variable2->pFunc()->liveEquivalentVariables()) {
+        Variable *equivalentVariable2 = equivalentVariable2Ptr.get();
 
-        if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
+        if ((testedVariables.count(equivalentVariable2) == 0)
             && haveEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
             return true;
         }
@@ -254,7 +274,7 @@ bool Variable::VariableImpl::hasIndirectEquivalentVariable(const VariablePtr &eq
         return false;
     }
 
-    std::vector<const Variable *> testedVariables;
+    std::unordered_set<const Variable *> testedVariables;
 
     return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
 }
@@ -449,14 +469,39 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     std::string id;
     if ((variable1 != nullptr) && (variable2 != nullptr)) {
         if (deepSearch) {
-            if (variable1->hasEquivalentVariable(variable2, true)) {
-                auto map = createConnectionMap(variable1, variable2);
+            if (variable1->hasEquivalentVariable(variable2, false) || variable1->hasEquivalentVariable(variable2, true)) {
+                // Only a variable of the first component that has stored a non-empty identifier for a variable of the
+                // second component can give an identifier, so only those variables are searched for their first
+                // equivalent variable in the second component. The identifier is the first one found, in the order
+                // of the candidate variables.
+                ComponentPtr component1 = owningComponent(variable1);
+                ComponentPtr component2 = owningComponent(variable2);
+                if ((component1 != nullptr) && (component2 != nullptr)) {
+                    ConnectionMap candidates;
+                    for (size_t i = 0; i < component1->variableCount(); ++i) {
+                        auto v = component1->variable(i);
+                        bool candidate = false;
+                        for (const auto &entry : v->pFunc()->mConnectionIdMap) {
+                            if (!entry.second.empty()) {
+                                auto storedFor = entry.first.lock();
+                                if ((storedFor != nullptr) && (owningComponent(storedFor) == component2)) {
+                                    candidate = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (candidate) {
+                            // Without an equivalent variable in component2 (nullptr), there's no identifier to find.
+                            candidates.emplace(v, firstEquivalentVariableInComponent(v, component2));
+                        }
+                    }
 
-                for (auto &it : map) {
-                    id = it.first->pFunc()->equivalentConnectionId(it.second);
+                    for (auto &it : candidates) {
+                        id = it.first->pFunc()->equivalentConnectionId(it.second);
 
-                    if (!id.empty()) {
-                        return id;
+                        if (!id.empty()) {
+                            return id;
+                        }
                     }
                 }
 
