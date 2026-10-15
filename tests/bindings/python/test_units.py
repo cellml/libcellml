@@ -354,6 +354,15 @@ class UnitsTestCase(unittest.TestCase):
 
         self.assertTrue(u.isDefined())
 
+    def test_units_as_string(self):
+        from libcellml import Units
+        from libcellml.units import Units_prefixAsString, Units_standardUnitAsString
+
+        self.assertEqual("yotta", Units.prefixAsString(Units.Prefix.YOTTA))
+        self.assertEqual("deci", Units_prefixAsString(Units.Prefix.DECI))
+
+        self.assertEqual("ampere", Units.standardUnitAsString(Units.StandardUnit.AMPERE))
+        self.assertEqual("lumen", Units_standardUnitAsString(Units.StandardUnit.LUMEN))
 
 if __name__ == '__main__':
     unittest.main()
