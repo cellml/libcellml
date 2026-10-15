@@ -590,15 +590,16 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         childNode = childNode->next();
     }
 
-    if (!encapsulationNodes.empty()) {
-        loadEncapsulation(model, encapsulationNodes.at(0));
-        if (encapsulationNodes.size() > 1) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Model '" + model->name() + "' has more than one encapsulation element.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
-            addIssue(issue);
-        }
+    for (const auto &encapsulationNode : encapsulationNodes) {
+        loadEncapsulation(model, encapsulationNode);
+    }
+
+    if (mParsing20Version && encapsulationNodes.size() > 1) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Model '" + model->name() + "' has more than one encapsulation element.");
+        issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
+        addIssue(issue);
     }
 
     NamePairList usedConnections;
