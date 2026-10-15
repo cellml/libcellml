@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 LIBCELLML_VERSION = "0.7.1"
 
 STATE_COUNT = 33
@@ -447,8 +447,8 @@ def compute_computed_constants(voi, states, rates, constants, computed_constants
     computed_constants[5] = constants[2]/(constants[20]+constants[2])
     computed_constants[6] = -0.25 if gt_func(constants[1], 0.0) else 0.7*constants[0]/(0.00009+constants[0]) if gt_func(constants[0], 0.0) else 0.0
     computed_constants[7] = constants[34]*(1.0-computed_constants[6])
-    computed_constants[10] = 0.000000001*3.14159265358979*pow(constants[55], 2.0)*constants[54]
-    computed_constants[2] = 0.000000001*2.0*3.14159265358979*constants[56]*(constants[55]-constants[56]/2.0)*constants[54]
+    computed_constants[10] = 0.000000001*3.1415926535897932*pow(constants[55], 2.0)*constants[54]
+    computed_constants[2] = 0.000000001*2.0*3.1415926535897932*constants[56]*(constants[55]-constants[56]/2.0)*constants[54]
     computed_constants[9] = constants[57]*computed_constants[10]
     computed_constants[3] = constants[58]*computed_constants[10]-computed_constants[2]
     computed_constants[8] = constants[59]*computed_constants[10]
