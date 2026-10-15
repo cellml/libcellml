@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.8.0";
+const char VERSION[] = "0.8.1";
 const char LIBCELLML_VERSION[] = "0.7.1";
 
 const size_t STATE_COUNT = 2;
