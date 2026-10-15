@@ -14,13 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifdef _WIN32
-#    define _USE_MATH_DEFINES
-#endif
-
 #include "libcellml/generatorprofile.h"
-
-#include <cmath>
 
 #include "generatorprofile_p.h"
 #include "utilities.h"
@@ -123,8 +117,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mTrueString = "1.0";
         mFalseString = "0.0";
-        mEString = convertToString(exp(1.0));
-        mPiString = convertToString(M_PI);
+        mEString = "2.7182818284590452";
+        mPiString = "3.1415926535897932";
         mInfString = "INFINITY";
         mNanString = "NAN";
 
@@ -225,7 +219,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.8.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.8.1\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -639,8 +633,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mTrueString = "1.0";
         mFalseString = "0.0";
-        mEString = convertToString(exp(1.0));
-        mPiString = convertToString(M_PI);
+        mEString = "2.7182818284590452";
+        mPiString = "3.1415926535897932";
         mInfString = "inf";
         mNanString = "nan";
 
@@ -741,7 +735,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.8.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.8.1\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
