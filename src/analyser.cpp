@@ -1029,8 +1029,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     // We have found the first occurrence of our variable of
                     // integration, but now we must ensure that it (or any of
                     // its equivalent variables) is not initialised.
-
-                    auto isVoiInitialised = false;
+                    // Note: we keep track of our variable of integration even if it is initialised, so that we only
+                    //       check it once (and therefore report any issue only once).
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
@@ -1043,17 +1043,13 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
 
                             addIssue(issue);
-
-                            isVoiInitialised = true;
                         }
                     }
 
-                    if (!isVoiInitialised) {
-                        mAnalyserModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
+                    mAnalyserModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
 
-                        mAnalyserModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
-                                                                       0, nullptr, voi, mAnalyserModel, {});
-                    }
+                    mAnalyserModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
+                                                                   0, nullptr, voi, mAnalyserModel, {});
                 }
             } while (voi == nullptr);
         } else {
