@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- System of algebraic equations, the second of which has a derivative on its RHS, whose solution is needed to
+   compute the rate of a state variable, while the derivative itself is computed by an ODE that comes after it.
+   d(z)/d(t) = y
+   y+w = 3*x
+   y-w*exp(w) = d(x)/d(t)+x
+   d(x)/d(t) = -x-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable initial_value="0" name="y" units="dimensionless"/>
+        <variable initial_value="0" name="w" units="dimensionless"/>
+        <variable initial_value="0" name="z" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>y</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>y</ci>
+                    <ci>w</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">3</cn>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <minus/>
+                    <ci>y</ci>
+                    <apply>
+                        <times/>
+                        <ci>w</ci>
+                        <apply>
+                            <exp/>
+                            <ci>w</ci>
+                        </apply>
+                    </apply>
+                </apply>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

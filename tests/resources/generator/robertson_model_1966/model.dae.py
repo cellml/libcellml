@@ -96,5 +96,4 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables):
-    find_root_0(voi, states, rates, constants, computed_constants, algebraic_variables)
     algebraic_variables[1] = 10000.0*states[0]

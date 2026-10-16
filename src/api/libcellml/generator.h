@@ -25,6 +25,11 @@ namespace libcellml {
  * @brief The Generator class.
  *
  * The Generator class is for representing a CellML Generator.
+ *
+ * Note: for a differential model, the generated computeVariables() method doesn't recompute tracked variables produced by
+ * the generated computeRates() method, although untracked local dependencies may be recomputed. Therefore, computeRates()
+ * must be called first with the same variable of integration, state, constant, and computed constant values, reusing the
+ * rate, algebraic variable, and external variable arrays populated by that call when computeVariables() is called.
  */
 class LIBCELLML_EXPORT Generator: public Logger
 {
