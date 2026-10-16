@@ -1109,7 +1109,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF);
             addIssue(issue);
         } else {
-            if (component1Name > component2Name) {
+            if (!mParsing1XVersion && (component1Name > component2Name)) {
                 std::string tmp = component1Name;
                 component1Name = component2Name;
                 component2Name = tmp;
