@@ -40,6 +40,7 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
+    mTrackedIndexCache.clear();
 }
 
 std::string Generator::GeneratorImpl::analyserVariableIndexString(const AnalyserVariablePtr &analyserVariable)
@@ -47,28 +48,31 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     // Determine the actual index of the analyser variable in the list of analyser variables by accounting for the fact
     // that some analyser variables may be untracked.
 
+    auto cached = mTrackedIndexCache.find(analyserVariable.get());
+
+    if (cached != mTrackedIndexCache.end()) {
+        return convertToString(cached->second);
+    }
+
     auto analyserVariables = libcellml::analyserVariables(analyserVariable);
 
     if (analyserVariables.empty()) {
         return convertToString(analyserVariable->index());
     }
 
-    size_t i = MAX_SIZE_T;
+    // Index every variable of this list: a tracked variable's index is the number of tracked variables before it.
+
     size_t res = MAX_SIZE_T;
 
-    for (;;) {
-        auto analyserVar = analyserVariables[++i];
-
+    for (const auto &analyserVar : analyserVariables) {
         if (isTrackedVariable(analyserVar, true)) {
             ++res;
         }
 
-        if (analyserVariable == analyserVar) {
-            break;
-        }
+        mTrackedIndexCache[analyserVar.get()] = res;
     }
 
-    return convertToString(res);
+    return convertToString(mTrackedIndexCache[analyserVariable.get()]);
 }
 
 bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked)
