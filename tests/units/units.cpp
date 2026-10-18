@@ -3558,3 +3558,16 @@ TEST(Units, oneLitreEqualToOneThousandCentiMetreCubedAllCubed)
 
     EXPECT_TRUE(libcellml::Units::equivalent(oneLitreCubed, oneThousandCentiMetreCubedCubed));
 }
+
+TEST(Units, kilogramDoesNotEqualToGram)
+{
+    auto model = libcellml::Model::create();
+    auto kilogram = libcellml::Units::create("kilogram");
+    auto gram = libcellml::Units::create("gram");
+
+    model->addUnits(kilogram);
+    model->addUnits(gram);
+
+    EXPECT_FALSE(libcellml::Units::equivalent(kilogram, gram));
+    EXPECT_EQ(size_t(1000), libcellml::Units::scalingFactor(kilogram, gram));
+}
