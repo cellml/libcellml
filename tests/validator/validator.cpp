@@ -18,6 +18,9 @@ limitations under the License.
 
 #include <libcellml>
 
+#include <atomic>
+#include <thread>
+
 #include "test_utils.h"
 
 /*
@@ -4005,4 +4008,65 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, validateMathmlConcurrently)
+{
+    // Validate a model that yields some W3C MathML DTD errors from several threads at the same time. Each thread uses
+    // (and, upon exiting, frees) its own parsed MathML DTD, so each thread should get the same issues as the main
+    // thread, which validates the model once all the other threads have exited.
+
+    static const size_t THREAD_COUNT = 8;
+    static const size_t VALIDATION_COUNT = 5;
+
+    auto validate = [](const std::string &modelContents) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(modelContents);
+        auto validator = libcellml::Validator::create();
+
+        validator->validateModel(model);
+
+        std::vector<std::string> issues;
+
+        for (size_t i = 0; i < validator->issueCount(); ++i) {
+            issues.push_back(validator->issue(i)->description());
+        }
+
+        return issues;
+    };
+
+    auto modelContents = fileContents("invalidmathmlelementschildrenorsiblings.cellml");
+    std::vector<std::vector<std::vector<std::string>>> issues(THREAD_COUNT, std::vector<std::vector<std::string>>(VALIDATION_COUNT));
+    std::vector<std::thread> threads;
+    std::atomic<size_t> readyThreadCount(0);
+
+    for (size_t i = 0; i < THREAD_COUNT; ++i) {
+        threads.emplace_back([&, i]() {
+            // Wait for all the threads to be ready, so that they all validate the model at the same time.
+
+            ++readyThreadCount;
+
+            while (readyThreadCount < THREAD_COUNT) {
+                std::this_thread::yield();
+            }
+
+            for (size_t j = 0; j < VALIDATION_COUNT; ++j) {
+                issues[i][j] = validate(modelContents);
+            }
+        });
+    }
+
+    for (auto &thread : threads) {
+        thread.join();
+    }
+
+    auto expectedIssues = validate(modelContents);
+
+    EXPECT_FALSE(expectedIssues.empty());
+
+    for (size_t i = 0; i < THREAD_COUNT; ++i) {
+        for (size_t j = 0; j < VALIDATION_COUNT; ++j) {
+            EXPECT_EQ(expectedIssues, issues[i][j]);
+        }
+    }
 }
