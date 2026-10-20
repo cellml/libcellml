@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.26.0)
 
 if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET 14.0 CACHE STRING "Minimum OS X deployment version.")
@@ -21,7 +21,7 @@ endif()
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
 set(_PROJECT_VERSION 0.7.1)
-set(PROJECT_DEVELOPER_VERSION )
+set(PROJECT_DEVELOPER_VERSION .post)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.

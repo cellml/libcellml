@@ -2083,7 +2083,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'pjs' in component 'yousay' has units of 'testunit13' and an equivalent variable 'pajamas' in component 'wesay' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
+        "Variable 'pjs' in component 'yousay' has units of 'testunit13' and an equivalent variable 'pajamas' in component 'wesay' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^6.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2165,6 +2165,50 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     libcellml::Variable::addEquivalence(v13, v14);
 
     m->fixVariableInterfaces();
+
+    validator->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, unitEquivalenceMultiplierPrefixNestedUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'a' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'c'. The mismatch is: metre^2, multiplication factor of 10^6.",
+    };
+
+    auto m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+    auto b = libcellml::Units::create("b");
+
+    b->addUnit("second");
+    b->addUnit("metre");
+    b->addUnit("mole");
+
+    auto a = libcellml::Units::create("a");
+
+    a->addUnit("b", "kilo", 2.0, 1.0);
+
+    auto c = libcellml::Units::create("c");
+
+    c->addUnit("second", 2.0);
+    c->addUnit("mole", 2.0);
+
+    v1->setUnits(a);
+    v2->setUnits(c);
+
+    m->addUnits(b);
+    m->addUnits(a);
+    m->addUnits(c);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    m->fixVariableInterfaces();
+
+    auto validator = libcellml::Validator::create();
 
     validator->validateModel(m);
 

@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.8.0";
+const char VERSION[] = "0.8.1";
 const char LIBCELLML_VERSION[] = "0.7.1";
 
 const size_t STATE_COUNT = 33;
@@ -462,8 +462,8 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
     computedConstants[5] = constants[2]/(constants[20]+constants[2]);
     computedConstants[6] = (constants[1] > 0.0)?-0.25:(constants[0] > 0.0)?0.7*constants[0]/(0.00009+constants[0]):0.0;
     computedConstants[7] = constants[34]*(1.0-computedConstants[6]);
-    computedConstants[10] = 0.000000001*3.14159265358979*pow(constants[55], 2.0)*constants[54];
-    computedConstants[2] = 0.000000001*2.0*3.14159265358979*constants[56]*(constants[55]-constants[56]/2.0)*constants[54];
+    computedConstants[10] = 0.000000001*3.1415926535897932*pow(constants[55], 2.0)*constants[54];
+    computedConstants[2] = 0.000000001*2.0*3.1415926535897932*constants[56]*(constants[55]-constants[56]/2.0)*constants[54];
     computedConstants[9] = constants[57]*computedConstants[10];
     computedConstants[3] = constants[58]*computedConstants[10]-computedConstants[2];
     computedConstants[8] = constants[59]*computedConstants[10];
