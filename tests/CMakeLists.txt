@@ -126,6 +126,7 @@ endforeach()
 
 set(ALL_LIBRARY_SOURCE_FILES ${SOURCE_FILES} ${API_HEADER_FILES} ${MODULE_HEADER_FILES} ${GENERATED_HEADER_FILES} ${HEADER_FILES})
 add_test(NAME are_debug_utilities_used COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/checkfordebugheaderusage.cmake ${ALL_LIBRARY_SOURCE_FILES})
+add_test(NAME are_issue_reference_rules_consistent COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/checkissuereferencerules.cmake ${CMAKE_SOURCE_DIR}/src/api/libcellml/issue.h ${CMAKE_SOURCE_DIR}/src/issue.cpp)
 
 # Generate tests for header files.
 include(api_headers/tests.cmake)

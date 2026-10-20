@@ -1375,36 +1375,26 @@ bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &fir
 void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
                                                    const std::string &unitsName,
                                                    double &newUnitsMultiplier,
-                                                   double unitsExponent,
-                                                   double unitsMultiplier)
+                                                   double unitsExponent)
 {
     // Update the given units multiplier using the given information.
 
     if (isStandardUnitName(unitsName)) {
-        newUnitsMultiplier += unitsMultiplier + standardMultiplierList.at(unitsName);
+        newUnitsMultiplier += standardMultiplierList.at(unitsName) * unitsExponent;
     } else {
         auto units = model->units(unitsName);
+        std::string reference;
+        std::string prefix;
+        double exponent;
+        double multiplier;
+        std::string id;
 
-        if (units->isBaseUnit()) {
-            newUnitsMultiplier += unitsMultiplier;
-        } else {
-            std::string reference;
-            std::string prefix;
-            double exponent;
-            double multiplier;
-            std::string id;
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
-            for (size_t i = 0; i < units->unitCount(); ++i) {
-                units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            newUnitsMultiplier += (std::log10(multiplier) + convertPrefixToInt(prefix) * exponent) * unitsExponent;
 
-                if (isStandardUnitName(reference)) {
-                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + convertPrefixToInt(prefix)) * exponent * unitsExponent;
-                } else {
-                    updateUnitsMultiplier(model, reference, newUnitsMultiplier,
-                                          exponent * unitsExponent,
-                                          unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
-                }
-            }
+            updateUnitsMultiplier(model, reference, newUnitsMultiplier, exponent * unitsExponent);
         }
     }
 }
@@ -1630,11 +1620,8 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         return 1.0;
     case AnalyserEquationAst::Type::FALSE:
         return 0.0;
-    case AnalyserEquationAst::Type::E: {
-        static const double E = exp(1.0);
-
-        return E;
-    }
+    case AnalyserEquationAst::Type::E:
+        return M_E;
     case AnalyserEquationAst::Type::PI:
         return M_PI;
     case AnalyserEquationAst::Type::INF: {

@@ -15,7 +15,7 @@ To build *libCellML* for the browser, we will need the following tools ready for
 
 - Emscripten
 - Compiler toolchain
-- CMake (at least version 3.14)
+- CMake (at least version 3.26)
 - Git
 
 Building

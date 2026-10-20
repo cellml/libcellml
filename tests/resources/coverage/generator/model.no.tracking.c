@@ -1,12 +1,12 @@
-/* The content of this file was generated using the C profile of libCellML 0.7.1. */
+/* The content of this file was generated using the C profile of libCellML 0.7.2. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.8.0";
-const char LIBCELLML_VERSION[] = "0.7.1";
+const char VERSION[] = "0.8.1";
+const char LIBCELLML_VERSION[] = "0.7.2";
 
 const size_t STATE_COUNT = 1;
 const size_t CONSTANT_COUNT = 0;
@@ -211,8 +211,8 @@ void initialiseArrays(double *states, double *rates, double *constants, double *
     double my_component_eqnCnDoubleWithExponent = 123.456789e99;
     double my_component_eqnTrue = 1.0;
     double my_component_eqnFalse = 0.0;
-    double my_component_eqnExponentiale = 2.71828182845905;
-    double my_component_eqnPi = 3.14159265358979;
+    double my_component_eqnExponentiale = 2.7182818284590452;
+    double my_component_eqnPi = 3.1415926535897932;
     double my_component_eqnInfinity = INFINITY;
     double my_component_eqnNotanumber = NAN;
     double my_component_eqnComputedConstant1 = 1.0;
