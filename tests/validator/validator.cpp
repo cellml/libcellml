@@ -294,6 +294,73 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, variableInitialValuesWithLeadingPlusSign)
+{
+    // CellML 2.0 section 1.3.3.2: a real number string may begin with a '+' sign.
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    model->addComponent(c1);
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c1->addVariable(v3);
+
+    model->setName("model");
+    c1->setName("component");
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+    v1->setInitialValue("+2");
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+    v2->setInitialValue("+1.5");
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+    v3->setInitialValue("+1.5e+3");
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+}
+
+TEST(Validator, variableInitialValuesWithDegenerateRealNumbers)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'component' has an invalid initial value '-.'. Initial values must be a real number string or a variable reference.",
+        "Variable 'v2' in component 'component' has an invalid initial value '-'. Initial values must be a real number string or a variable reference.",
+        "Variable 'v3' in component 'component' has an invalid initial value '.'. Initial values must be a real number string or a variable reference.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    model->addComponent(c1);
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c1->addVariable(v3);
+
+    model->setName("model");
+    c1->setName("component");
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+    v1->setInitialValue("-.");
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+    v2->setInitialValue("-");
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+    v3->setInitialValue(".");
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
 libcellml::ModelPtr createImportUnitsModel()
 {
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -957,6 +1024,342 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+libcellml::ModelPtr createModelWithMath(const std::string &math)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("t");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+
+    return m;
+}
+
+TEST(Validator, mathCnElementsWithLeadingPlusSign)
+{
+    // CellML 2.0 section 1.3.3.2: a real number string may begin with a '+' sign.
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">+2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">+1.5</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">+1.5<sep/>+3</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(0), v->issueCount());
+}
+
+TEST(Validator, mathCnElementsWithDegenerateRealNumbers)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">-.</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">.</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">-.<sep/>3</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">-<sep/>3</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">.<sep/>3</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, mathEmptyCnElements)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\"></cn>\n"
+        "      <cn cellml:units=\"dimensionless\"/>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, mathDegreeElementsWithLeadingPlusSign)
+{
+    // CellML 2.0 section 1.3.3.2: a real number string may begin with a '+' sign.
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <root/>\n"
+        "      <degree>\n"
+        "        <cn cellml:units=\"dimensionless\">+3</cn>\n"
+        "      </degree>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <apply>\n"
+        "      <diff/>\n"
+        "      <bvar>\n"
+        "        <ci>t</ci>\n"
+        "        <degree>\n"
+        "          <cn cellml:units=\"dimensionless\">+2</cn>\n"
+        "        </degree>\n"
+        "      </bvar>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(0), v->issueCount());
+}
+
+TEST(Validator, mathDegreeElementsWithDegenerateRealNumbers)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <apply>\n"
+        "        <root/>\n"
+        "        <degree>\n"
+        "          <cn cellml:units=\"dimensionless\">-.</cn>\n"
+        "        </degree>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <root/>\n"
+        "        <degree>\n"
+        "          <cn cellml:units=\"dimensionless\">-</cn>\n"
+        "        </degree>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <apply>\n"
+        "      <diff/>\n"
+        "      <bvar>\n"
+        "        <ci>t</ci>\n"
+        "        <degree>\n"
+        "          <cn cellml:units=\"dimensionless\">.</cn>\n"
+        "        </degree>\n"
+        "      </bvar>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, mathDegreeElementsWithEmptyCnElements)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <root/>\n"
+        "      <degree>\n"
+        "        <cn cellml:units=\"dimensionless\"></cn>\n"
+        "      </degree>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <apply>\n"
+        "      <diff/>\n"
+        "      <bvar>\n"
+        "        <ci>t</ci>\n"
+        "        <degree>\n"
+        "          <cn cellml:units=\"dimensionless\"/>\n"
+        "        </degree>\n"
+        "      </bvar>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, mathLogbaseElementsWithDegenerateRealNumbers)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <apply>\n"
+        "        <log/>\n"
+        "        <logbase>\n"
+        "          <cn cellml:units=\"dimensionless\">-.</cn>\n"
+        "        </logbase>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <log/>\n"
+        "        <logbase>\n"
+        "          <cn cellml:units=\"dimensionless\">-</cn>\n"
+        "        </logbase>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <log/>\n"
+        "        <logbase>\n"
+        "          <cn cellml:units=\"dimensionless\">.</cn>\n"
+        "        </logbase>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, mathLogbaseElementsWithEmptyCnElements)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <apply>\n"
+        "        <log/>\n"
+        "        <logbase>\n"
+        "          <cn cellml:units=\"dimensionless\"></cn>\n"
+        "        </logbase>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "      <apply>\n"
+        "        <log/>\n"
+        "        <logbase>\n"
+        "          <cn cellml:units=\"dimensionless\"/>\n"
+        "        </logbase>\n"
+        "        <ci>B</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
 
     v->validateModel(m);
 
