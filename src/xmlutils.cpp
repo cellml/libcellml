@@ -63,7 +63,7 @@ XmlNamespaceMap traverseTreeForElementNamespaces(const XmlNodePtr &node)
     XmlNamespaceMap nodeNamespaceMap;
     auto tempNode = node;
     while (tempNode != nullptr) {
-        if (!tempNode->isText() && !tempNode->isComment()) {
+        if (tempNode->isElement()) {
             nodeNamespaceMap.emplace(tempNode->name(), tempNode->namespaceUri());
         }
 

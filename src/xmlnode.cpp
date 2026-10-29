@@ -224,6 +224,9 @@ bool XmlNode::isComment() const
 
 std::string XmlNode::name() const
 {
+    if (mPimpl->mXmlNodePtr->name == nullptr) {
+        return {};
+    }
     return reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name);
 }
 
@@ -313,7 +316,7 @@ std::string XmlNode::convertToString() const
     xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
-    std::string contentString = std::string(reinterpret_cast<const char *>(buffer->content));
+    std::string contentString = std::string(reinterpret_cast<const char *>(xmlBufferContent(buffer)));
     xmlBufferFree(buffer);
     return contentString;
 }

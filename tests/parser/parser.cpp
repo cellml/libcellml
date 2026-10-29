@@ -247,6 +247,38 @@ TEST(Parser, invalidModelElement)
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 
+TEST(Parser, invalidRootNodeWithCdataSection)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\">\n"
+        "  <metadata><![CDATA[Some metadata.]]></metadata>\n"
+        "</svg>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Model element is of invalid type 'svg'. A valid CellML root node should be of type 'model'.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
+TEST(Parser, invalidModelElementWithCdataSection)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <![CDATA[Some data.]]>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Model 'model_name' has an invalid child element ''.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
 TEST(Parser, modelWithInvalidElement)
 {
     const std::string in1 =
