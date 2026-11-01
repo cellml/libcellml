@@ -284,47 +284,50 @@ AnalyserVariablePtr AnalyserModel::externalVariable(size_t index) const
     return mPimpl->mExternalVariables[index];
 }
 
+void AnalyserModel::AnalyserModelImpl::buildAnalyserVariableByGroup()
+{
+    auto add = [this](const AnalyserVariablePtr &analyserVariable) {
+        mAnalyserVariableByGroup.emplace(mEquivalentVariableCache.at(reinterpret_cast<uintptr_t>(analyserVariable->variable().get())), analyserVariable);
+    };
+
+    if (mVoi != nullptr) {
+        add(mVoi);
+    }
+
+    for (const auto &state : mStates) {
+        add(state);
+    }
+
+    for (const auto &constant : mConstants) {
+        add(constant);
+    }
+
+    for (const auto &computedConstant : mComputedConstants) {
+        add(computedConstant);
+    }
+
+    for (const auto &algebraicVariable : mAlgebraicVariables) {
+        add(algebraicVariable);
+    }
+
+    for (const auto &externalVariable : mExternalVariables) {
+        add(externalVariable);
+    }
+}
+
 AnalyserVariablePtr AnalyserModel::analyserVariable(const VariablePtr &variable)
 {
     if (!isValid() || (variable == nullptr)) {
         return {};
     }
 
-    if (mPimpl->mVoi && areEquivalentVariables(variable, mPimpl->mVoi->variable())) {
-        return mPimpl->mVoi;
+    auto group = mPimpl->mEquivalentVariableCache.find(reinterpret_cast<uintptr_t>(variable.get()));
+
+    if (group == mPimpl->mEquivalentVariableCache.end()) {
+        return {};
     }
 
-    for (const auto &state : mPimpl->mStates) {
-        if (areEquivalentVariables(variable, state->variable())) {
-            return state;
-        }
-    }
-
-    for (const auto &constant : mPimpl->mConstants) {
-        if (areEquivalentVariables(variable, constant->variable())) {
-            return constant;
-        }
-    }
-
-    for (const auto &computedConstant : mPimpl->mComputedConstants) {
-        if (areEquivalentVariables(variable, computedConstant->variable())) {
-            return computedConstant;
-        }
-    }
-
-    for (const auto &algebraicVariable : mPimpl->mAlgebraicVariables) {
-        if (areEquivalentVariables(variable, algebraicVariable->variable())) {
-            return algebraicVariable;
-        }
-    }
-
-    for (const auto &externalVariable : mPimpl->mExternalVariables) {
-        if (areEquivalentVariables(variable, externalVariable->variable())) {
-            return externalVariable;
-        }
-    }
-
-    return {};
+    return mPimpl->mAnalyserVariableByGroup.at(group->second);
 }
 
 size_t AnalyserModel::analyserEquationCount() const

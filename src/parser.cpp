@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -98,6 +99,27 @@ public:
      * @param usedConnections A list of connections that have already been used.
      */
     void loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections);
+
+    std::unordered_map<std::string, ComponentPtr> mComponentsByName; /**< The model's components by name, for loading its connections. */
+
+    /**
+     * @brief Add the components of @p entity and its descendants to mComponentsByName.
+     *
+     * A name keeps the first component found in the order Model::component(name, true) searches: an entity's own
+     * components, then the descendants of each in turn.
+     *
+     * @param entity The @c ComponentEntity whose components to add.
+     */
+    void indexComponents(const ComponentEntityPtr &entity);
+
+    /**
+     * @brief The component named @p name in mComponentsByName, or @c nullptr.
+     *
+     * @param name The component's name.
+     *
+     * @return The component, or @c nullptr if there is none.
+     */
+    ComponentPtr findComponentByName(const std::string &name) const;
 
     /**
      * @brief Update the @p model with an encapsulation parsed from @p node.
@@ -602,9 +624,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     NamePairList usedConnections;
+    mComponentsByName.clear();
+    if (!connectionNodes.empty()) {
+        indexComponents(model);
+    }
     for (const auto &connectionNode : connectionNodes) {
         loadConnection(model, connectionNode, usedConnections);
     }
+    mComponentsByName.clear();
 
     // Link units to their names.
     DescriptionList issueList;
@@ -997,6 +1024,23 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     }
 }
 
+void Parser::ParserImpl::indexComponents(const ComponentEntityPtr &entity)
+{
+    for (size_t i = 0; i < entity->componentCount(); ++i) {
+        auto component = entity->component(i);
+        mComponentsByName.emplace(component->name(), component);
+    }
+    for (size_t i = 0; i < entity->componentCount(); ++i) {
+        indexComponents(entity->component(i));
+    }
+}
+
+ComponentPtr Parser::ParserImpl::findComponentByName(const std::string &name) const
+{
+    auto it = mComponentsByName.find(name);
+    return (it != mComponentsByName.end()) ? it->second : nullptr;
+}
+
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections)
 {
     // Define types for variable and component pairs, and their identifiers.
@@ -1288,9 +1332,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
     // Now check the objects exist in the model. TODO Remove as is validation?
-    if (model->containsComponent(componentNamePair.first)) {
-        component1 = model->component(componentNamePair.first);
-    } else {
+    component1 = findComponentByName(componentNamePair.first);
+    if (component1 == nullptr) {
         if (!component1Missing) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
@@ -1299,9 +1342,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             addIssue(issue);
         }
     }
-    if (model->containsComponent(componentNamePair.second)) {
-        component2 = model->component(componentNamePair.second);
-    } else {
+    component2 = findComponentByName(componentNamePair.second);
+    if (component2 == nullptr) {
         if (!component2Missing) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");

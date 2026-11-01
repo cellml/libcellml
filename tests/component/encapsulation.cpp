@@ -369,6 +369,9 @@ TEST(Encapsulation, encapsulatedComponentMethods)
 
     // Contains component
     EXPECT_TRUE(c->containsComponent("comp5"));
+    c->addComponent(c4n);
+    EXPECT_TRUE(c->containsComponent("comp3"));
+    c->removeComponent(c4n);
     // Get component
     EXPECT_EQ(c4, c->component("comp4"));
     const libcellml::ComponentPtr constC4 = c->component("comp4");
