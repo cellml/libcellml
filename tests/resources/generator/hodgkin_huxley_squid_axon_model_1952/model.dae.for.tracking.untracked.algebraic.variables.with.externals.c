@@ -541,9 +541,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot2(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     algebraicVariables[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
@@ -553,22 +550,21 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
     findRoot3(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot14(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    algebraicVariables[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
-    findRoot1(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot4(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    algebraicVariables[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
     findRoot6(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot7(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot8(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
     findRoot9(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
-    findRoot10(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot11(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot12(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    findRoot13(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables);
+    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
 }

@@ -181,7 +181,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))
         self.assertEqual("algebraic", AnalyserEquation_typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
-        self.assertEqual(2, ae.dependencyCount())
+        self.assertEqual(1, ae.dependencyCount())
         self.assertIsNotNone(ae.dependencies())
         self.assertIsNotNone(ae.dependency(0))
         self.assertEqual(18446744073709551615, ae.nlaSystemIndex())
