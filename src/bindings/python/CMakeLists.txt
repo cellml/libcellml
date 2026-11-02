@@ -94,15 +94,12 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     SOURCES ${SWIG_INTERFACE_SRC}
   )
   target_link_libraries(${MODULE_TARGET} PRIVATE cellml)
+  if(Python_Development.SABIModule_FOUND)
+    target_compile_definitions(${MODULE_TARGET} PRIVATE Py_LIMITED_API=0x030a0000)
+  endif()
 
   if(SWIG_VERSION VERSION_GREATER_EQUAL 4.1.0)
     set_target_properties(${MODULE_TARGET} PROPERTIES SWIG_COMPILE_OPTIONS -flatstaticmethod)
-  endif()
-
-  if(FIND_PYTHON_DEVELOPMENT_MODULE)
-    set(_PYTHON_LINK_TARGET Python::Module)
-  else()
-    set(_PYTHON_LINK_TARGET Python::Python)
   endif()
 
   if (APPLE)
