@@ -53,6 +53,27 @@ void structuredErrorCallback(void *userData, XML_ERROR_CALLBACK_ARGUMENT_TYPE er
 }
 
 /**
+ * @brief Initialise libxml2.
+ *
+ * Initialise libxml2 exactly once, no matter how many threads call this function and when. Before libxml2 2.14,
+ * xmlInitParser() checks whether libxml2 is already initialised without any synchronisation, which is a data race
+ * when it gets called from different threads at the same time.
+ *
+ * Note: we rely on the initialisation of a function-local static variable being thread-safe (since C++11) rather than
+ *       on std::call_once(), which may require linking against a thread library (e.g., pthreads with glibc < 2.34).
+ */
+void initialiseLibxml2()
+{
+    static const bool initialised = []() {
+        xmlInitParser();
+
+        return true;
+    }();
+
+    (void)initialised;
+}
+
+/**
  * @brief The XmlDoc::XmlDocImpl struct.
  *
  * This struct is the private implementation struct for the XmlDoc class.  Separating
@@ -81,14 +102,13 @@ XmlDoc::~XmlDoc()
 
 void XmlDoc::parse(const std::string &input)
 {
-    xmlInitParser();
+    initialiseLibxml2();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 }
 
 std::string decompressMathMLDTD()
@@ -104,30 +124,62 @@ std::string decompressMathMLDTD()
     return std::string(mathmlDTD.begin(), mathmlDTD.end());
 }
 
-void XmlDoc::parseMathML(const std::string &input)
+/**
+ * @brief The parsed MathML DTD.
+ *
+ * Parsing the MathML DTD is expensive (it is about 390 KB long), so we parse it only once rather than every time that
+ * we validate some MathML. However, libxml2 builds (and caches) the content model of an element declaration the first
+ * time that it validates an element against it, i.e. validating against a DTD modifies it, so we have one parsed MathML
+ * DTD per thread.
+ *
+ * Note: this is why we never call xmlCleanupParser(). It is a process-wide operation after which no libxml2 call may be
+ *       made (from any thread), i.e. it should only be called right before a process exits, while a cached DTD
+ *       outlives any given call. Since libxml2 2.9.11, cleanup is performed automatically anyway. Also, the DTD is
+ *       detached from its (dictionary-less) document, so it only consists of heap memory, meaning that freeing it
+ *       when a thread exits does not rely on any global state that xmlCleanupParser() might have freed.
+ */
+class MathmlDtd
 {
-    // Decompress the MathML DTD.
-    int sizeMathmlDTDUncompressed = MATHML_DTD_LEN;
+public:
+    MathmlDtd()
+    {
+        auto mathmlDTD = decompressMathMLDTD();
+        xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(mathmlDTD.c_str(), static_cast<int>(mathmlDTD.size()), XML_CHAR_ENCODING_ASCII);
 
-    static std::string mathMLDTD;
-
-    if (mathMLDTD.empty()) {
-        mathMLDTD = decompressMathMLDTD();
+        mDtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
     }
 
-    xmlInitParser();
+    ~MathmlDtd()
+    {
+        xmlFreeDtd(mDtd);
+    }
+
+    MathmlDtd(const MathmlDtd &) = delete;
+    MathmlDtd &operator=(const MathmlDtd &) = delete;
+
+    xmlDtdPtr dtd() const
+    {
+        return mDtd;
+    }
+
+private:
+    xmlDtdPtr mDtd = nullptr;
+};
+
+void XmlDoc::parseMathML(const std::string &input)
+{
+    initialiseLibxml2();
+
+    thread_local MathmlDtd mathmlDtd;
+
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
-    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathMLDTD.c_str()), sizeMathmlDTDUncompressed, XML_CHAR_ENCODING_ASCII);
-    xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
-    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
+    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, mathmlDtd.dtd());
 
-    xmlFreeDtd(dtd);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 }
 
 std::string XmlDoc::prettyPrint() const

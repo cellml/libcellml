@@ -53,7 +53,6 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
     EXPECT_NE(nullptr, doc);
     xmlFreeDoc(doc);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 }
 
 TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
@@ -74,7 +73,6 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
     xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
-    xmlCleanupParser();
 
     EXPECT_EQ(nullptr, doc);
 }

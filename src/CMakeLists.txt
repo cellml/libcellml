@@ -281,8 +281,10 @@ function(append_target_property _TARGET _PROPERTY _VALUE)
 endfunction()
 
 if(LIBCELLML_COVERAGE)
-  append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  # Note: we use atomic profile updates since some of our tests use libCellML from several threads at the same time,
+  #       which would otherwise result in some profile counter updates being lost, and therefore in some flaky coverage.
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -fprofile-update=atomic")
+  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage -fprofile-update=atomic")
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -299,8 +301,9 @@ if(LIBCELLML_COVERAGE)
 endif()
 
 if(LIBCELLML_LLVM_COVERAGE)
-  append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
-  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
+  # Note: we use atomic profile updates (see above).
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping -fprofile-update=atomic")
+  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate -fprofile-update=atomic")
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets
