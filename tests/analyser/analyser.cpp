@@ -134,6 +134,32 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, initialisedVariableOfIntegrationWithSeveralOdes)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/initialised_variable_of_integration_several_odes.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VOI_INITIALISED"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->analyserModel()->type());
+    EXPECT_EQ(nullptr, analyser->analyserModel()->voi());
+}
+
 TEST(Analyser, twoVariablesOfIntegration)
 {
     auto parser = libcellml::Parser::create();
