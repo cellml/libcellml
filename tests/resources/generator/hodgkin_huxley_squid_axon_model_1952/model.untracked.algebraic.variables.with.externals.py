@@ -113,5 +113,4 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic_v
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, external_variable):
-    algebraic_variables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    external_variables[0] = external_variable(voi, states, rates, constants, computed_constants, algebraic_variables, external_variables, 0)
+    pass

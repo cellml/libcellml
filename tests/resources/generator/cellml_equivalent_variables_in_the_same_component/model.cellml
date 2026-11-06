@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- State variable that has two equivalent variables in the same component (x and xo, through another component),
+   one of which is initialised and used in an algebraic equation, while the other is used in the ODE.
+   d(xo)/d(t) = -2*x
+   y = 3*x-->
+    <component name="my_environment">
+        <variable interface="public" name="t" units="dimensionless"/>
+    </component>
+    <component name="my_other_component">
+        <variable interface="public" name="x" units="dimensionless"/>
+    </component>
+    <component name="my_component">
+        <variable interface="public" name="t" units="dimensionless"/>
+        <variable initial_value="1" interface="public" name="x" units="dimensionless"/>
+        <variable interface="public" name="xo" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>xo</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">3</cn>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <connection component_1="my_other_component" component_2="my_component">
+        <map_variables variable_1="x" variable_2="x"/>
+        <map_variables variable_1="x" variable_2="xo"/>
+    </connection>
+    <connection component_1="my_environment" component_2="my_component">
+        <map_variables variable_1="t" variable_2="t"/>
+    </connection>
+</model>

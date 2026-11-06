@@ -674,10 +674,10 @@ TEST(Coverage, generator)
     EXPECT_NE(nullptr, analyserModel->analyserEquation(0)->state(0));
     EXPECT_EQ(nullptr, analyserModel->analyserEquation(0)->state(analyserModel->analyserEquation(0)->stateCount()));
     EXPECT_NE(nullptr, analyserModel->analyserEquation(199));
-    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->analyserEquation(199)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->analyserEquation(199)->dependency(analyserModel->analyserEquation(199)->dependencyCount()));
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(200)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->analyserEquation(200)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->analyserEquation(200)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->analyserEquation(200)->dependency(analyserModel->analyserEquation(200)->dependencyCount()));
     EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblingCount());
     EXPECT_EQ(size_t(1), analyserModel->analyserEquation(199)->nlaSiblings().size());
     EXPECT_NE(nullptr, analyserModel->analyserEquation(199)->nlaSibling(0));
