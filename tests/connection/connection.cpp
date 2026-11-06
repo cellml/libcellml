@@ -1588,3 +1588,11 @@ TEST(Connection, sameNamedVariablesInDifferentComponents)
 
     EXPECT_EQ(size_t(0), p->issueCount());
 }
+
+TEST(Connection, mapComponentsAreOrderDependentInCellML1X)
+{
+    auto p = libcellml::Parser::create(false);
+    auto m = p->parseModel(fileContents("cellml1X/map_components.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+}

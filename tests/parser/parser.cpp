@@ -956,6 +956,7 @@ TEST(Parser, invalidEncapsulations)
         "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
         "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
         "Encapsulation in model 'ringo' specifies an invalid parent component_ref that also does not have any children.",
+        "Encapsulation in model 'ringo' specifies 'bob' as a parent component_ref but it does not have any children.",
         "Model 'ringo' has more than one encapsulation element.",
     };
 
