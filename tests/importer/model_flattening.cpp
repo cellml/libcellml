@@ -1940,3 +1940,58 @@ TEST(ModelFlattening, multiLayeredImportOfNonStandardUnits)
 
     EXPECT_NE(nullptr, flattenModel);
 }
+
+TEST(ModelFlattening, nestedImportOfUnitsWithNonStandardChildren)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"rate\">\n"
+        "    <unit units=\"mM\"/>\n"
+        "    <unit units=\"per_s\"/>\n"
+        "  </units>\n"
+        "  <units name=\"mM\">\n"
+        "    <unit prefix=\"milli\" units=\"mole\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_s\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"compound\">\n"
+        "    <unit units=\"rate\"/>\n"
+        "    <unit units=\"volt\"/>\n"
+        "  </units>\n"
+        "  <component name=\"parent\">\n"
+        "    <variable name=\"p\" units=\"rate\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"q\" units=\"compound\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child\">\n"
+        "    <variable name=\"r\" units=\"rate\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"parent\" component_2=\"child\">\n"
+        "    <map_variables variable_1=\"p\" variable_2=\"r\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/nestedimportofunits.xml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    EXPECT_FALSE(model->hasUnits("rate_1"));
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
