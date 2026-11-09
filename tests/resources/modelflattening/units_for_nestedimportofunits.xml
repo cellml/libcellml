@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="units_model">
+    <units name="per_s">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="mM">
+        <unit prefix="milli" units="mole"/>
+    </units>
+    <units name="rate">
+        <unit units="mM"/>
+        <unit units="per_s"/>
+    </units>
+    <units name="compound">
+        <unit units="rate"/>
+        <unit units="volt"/>
+    </units>
+</model>
