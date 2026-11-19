@@ -9,7 +9,7 @@
 #
 from multiprocessing import Pool, cpu_count
 from os import system, remove, environ, defpath, path, pathsep, X_OK, access, sep
-from sys import exit, stderr, stdout
+from sys import argv, exit, stderr, stdout
 from subprocess import Popen, PIPE
 from xml.dom.minidom import parse, parseString
 
@@ -167,10 +167,10 @@ def run_single_test(exe_name):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    if len(argv) > 2:
         exit_code = 0
-        test_dir = sys.argv[1]
-        single_tests = sys.argv[2:]
+        test_dir = argv[1]
+        single_tests = argv[2:]
         successes = []
         failures = []
 
