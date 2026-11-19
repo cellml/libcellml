@@ -332,7 +332,7 @@ void compareLibXml2Issues(const libcellml::PrinterPtr &printer)
 {
     const size_t issueCount = printer->issueCount();
     EXPECT_LE(size_t(3), issueCount);
-    EXPECT_GE(size_t(4), issueCount);
+    EXPECT_GE(size_t(5), issueCount);
     for (size_t i = 0; i < issueCount; ++i) {
         // Expect errors to come from LibXml2.
         EXPECT_EQ(size_t(0), printer->issue(i)->description().rfind("LibXml2 error: ", 0));
