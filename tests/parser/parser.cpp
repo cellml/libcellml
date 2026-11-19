@@ -57,6 +57,7 @@ TEST(Parser, invalidXMLElements)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
+    printIssues(p);
     EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
 
     for (size_t i = 0; i < p->issueCount(); ++i) {
@@ -1862,12 +1863,12 @@ TEST(Parser, parseResets)
 
     std::string testValueString = r->testValue();
     std::string t =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n          <apply/>\n        </math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
     std::string rt =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n          <apply/>\n        </math>\n";
     EXPECT_EQ(rt, resetValueString);
 }
 
