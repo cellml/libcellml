@@ -310,7 +310,6 @@ XmlNodePtr XmlNode::parent() const
 
 std::string XmlNode::convertToString() const
 {
-    xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     const xmlChar *content = xmlBufferContent(buffer);
