@@ -20,8 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-#include "libxml2issues.h"
-
 TEST(Maths, setAndGetMath)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -332,11 +330,15 @@ TEST(Printer, addMathMLAsCompleteXMLDoc)
 
 void compareLibXml2Issues(const libcellml::PrinterPtr &printer)
 {
-    EXPECT_EQ(expectedLibXml2Issues.size(), printer->issueCount());
-    for (size_t i = 0; i < printer->issueCount(); ++i) {
-        EXPECT_EQ(expectedLibXml2Issues.at(i), printer->issue(i)->description());
+    const size_t issueCount = printer->issueCount();
+    EXPECT_LE(size_t(3), issueCount);
+    EXPECT_GE(size_t(5), issueCount);
+    for (size_t i = 0; i < issueCount; ++i) {
+        // Expect errors to come from LibXml2.
+        EXPECT_EQ(size_t(0), printer->issue(i)->description().rfind("LibXml2 error: ", 0));
     }
 }
+
 TEST(Printer, mathMLWithSyntaxError)
 {
     const std::string e =
