@@ -141,3 +141,18 @@ TEST(ParserTransform, cellmlNsCn)
 
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
+
+TEST(ParserTransform, parseCellMl1XWithMultipleEncapsulationRelationshipGroups)
+{
+    std::vector<std::string> expectedIssues = {
+        "Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.",
+    };
+
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/multiple_encapsulations.cellml"));
+
+    printIssues(parser);
+
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
+    EXPECT_EQ("Example_MassAction", model->name());
+}

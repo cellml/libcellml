@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<model xmlns="http://www.cellml.org/cellml/1.1#" name="Example_MassAction">
+
+        <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="library.cellml">
+                <component component_ref="MassAction" name="R1_MassAction" />
+        </import>
+
+        <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="library.cellml">
+                <component component_ref="MassAction" name="R2_MassAction" />
+        </import>
+
+        <component name="Reaction_1">
+        </component>
+
+        <component name="Reaction_2">
+        </component>
+
+        <group>
+                <relationship_ref relationship="encapsulation" />
+                <component_ref component="Reaction_1">
+                        <component_ref component="R1_MassAction" />
+                </component_ref>
+        </group>
+        <group>
+                <relationship_ref relationship="encapsulation" />
+                <component_ref component="Reaction_2">
+                        <component_ref component="R2_MassAction" />
+                </component_ref>
+        </group>
+</model>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<model xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#" name="map_components">
+  <units name="molar">
+    <unit units="mole"/>
+    <unit units="litre" exponent="-1"/>
+  </units>
+  <units name="micromolar">
+    <unit units="molar" prefix="micro"/>
+  </units>
+  <component name="R">
+    <variable units="micromolar" public_interface="out" name="R" initial_value="0.001"/>
+    <variable units="micromolar" public_interface="out" name="D" initial_value="0.01"/>
+    <variable units="micromolar" public_interface="in" name="DR"/>
+  </component>
+  <component name="DR">
+    <variable units="micromolar" public_interface="in" name="D" initial_value=""/>
+    <variable units="micromolar" public_interface="in" name="R" initial_value=""/>
+    <variable units="micromolar" public_interface="out" name="DR"/>
+  </component>
+  <connection>
+    <map_components component_2="R" component_1="DR"/>
+    <map_variables variable_2="DR" variable_1="DR"/>
+  </connection>
+  <connection>
+    <map_components component_2="DR" component_1="R"/>
+    <map_variables variable_2="R" variable_1="R"/>
+    <map_variables variable_2="D" variable_1="D"/>
+  </connection>
+ </model>
+
