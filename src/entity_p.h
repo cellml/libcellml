@@ -28,6 +28,8 @@ namespace libcellml {
 class Entity::EntityImpl
 {
 public:
+    virtual ~EntityImpl() = default; /** Default virtual destructor, allows visibility to pImpl idiom for debuggers (gdb, lldb). */
+
     std::string mId; /**< String document identifier for this entity. */
 };
 

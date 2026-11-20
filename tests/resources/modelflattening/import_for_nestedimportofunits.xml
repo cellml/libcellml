@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="model_a">
+    <import xlink:href="units_for_nestedimportofunits.xml">
+        <units name="rate" units_ref="rate"/>
+        <units name="compound" units_ref="compound"/>
+    </import>
+    <import xlink:href="import_for_import_for_nestedimportofunits.xml">
+        <component component_ref="b_component" name="child"/>
+    </import>
+    <component name="parent">
+        <variable name="p" units="rate" interface="public_and_private"/>
+        <variable name="q" units="compound" interface="public"/>
+    </component>
+    <connection component_1="parent" component_2="child">
+        <map_variables variable_1="p" variable_2="r"/>
+    </connection>
+    <encapsulation>
+        <component_ref component="parent">
+            <component_ref component="child"/>
+        </component_ref>
+    </encapsulation>
+</model>
