@@ -99,7 +99,11 @@ public:
      * @brief Get the list of @ref AnalyserEquation dependencies.
      *
      * Return the list of @ref AnalyserEquation items which correspond to the
-     * equations on which this @ref AnalyserEquation depends.
+     * equations on which this @ref AnalyserEquation depends, i.e. the
+     * equations that compute the variables and the rates that it uses, and
+     * that must therefore be computed before it. The use of a state is not a
+     * dependency since states are known, but the use of the rate of a state
+     * (e.g., @c dx/dt) is a dependency on the equation that computes that rate.
      *
      * @return The dependencies as a @c std::vector.
      */

@@ -138,6 +138,4 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables, double *externalVariables, ExternalVariable externalVariable)
 {
-    algebraicVariables[0] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    externalVariables[0] = externalVariable(voi, states, rates, constants, computedConstants, algebraicVariables, externalVariables, 0);
 }

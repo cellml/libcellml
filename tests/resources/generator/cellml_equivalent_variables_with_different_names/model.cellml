@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Algebraic variable that is computed in a component (as y_b) but first used in another component (as y_e), where
+   it is needed to compute an NLA equation.
+   g+exp(g) = 2*y_e
+   y_b = 2*x
+   d(x)/d(t) = -x-->
+    <component name="my_nla_eqn">
+        <variable interface="public" name="y_e" units="dimensionless"/>
+        <variable initial_value="0.5" name="g" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>g</ci>
+                    <apply>
+                        <exp/>
+                        <ci>g</ci>
+                    </apply>
+                </apply>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>y_e</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="my_algebraic_eqn_and_ode">
+        <variable name="t" units="dimensionless"/>
+        <variable interface="public" name="y_b" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>y_b</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <connection component_1="my_nla_eqn" component_2="my_algebraic_eqn_and_ode">
+        <map_variables variable_1="y_e" variable_2="y_b"/>
+    </connection>
+</model>

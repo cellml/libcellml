@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Algebraic equation with a derivative on its RHS, which is needed to compute the rate of another state variable,
+   while the derivative itself is computed by an ODE that comes after it
+   d(z)/d(t) = y
+   d(v)/d(t) = w
+   y = 2*d(x)/d(t)+x
+   w = y+1
+   d(x)/d(t) = -x-->
+    <component name="my_component">
+        <variable name="t" units="dimensionless"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <variable initial_value="0" name="z" units="dimensionless"/>
+        <variable name="w" units="dimensionless"/>
+        <variable initial_value="0" name="v" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <ci>y</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>v</ci>
+                </apply>
+                <ci>w</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <apply>
+                            <diff/>
+                            <bvar>
+                                <ci>t</ci>
+                            </bvar>
+                            <ci>x</ci>
+                        </apply>
+                    </apply>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>w</ci>
+                <apply>
+                    <plus/>
+                    <ci>y</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

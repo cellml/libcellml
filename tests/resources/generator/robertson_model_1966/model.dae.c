@@ -144,6 +144,5 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraicVariables)
 {
-    findRoot0(voi, states, rates, constants, computedConstants, algebraicVariables);
     algebraicVariables[1] = 10000.0*states[0];
 }
