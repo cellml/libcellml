@@ -28,15 +28,29 @@ if (EMSCRIPTEN)
 else ()
   test_undefined_symbols_allowed()
 
-  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development.SABIModule Development.Module)
-
-  if (TARGET Python::SABIModule)
+  # When building with scikit-build-core (as we do when using cibuildwheel and
+  # src/bindings/python/pyproject.toml) we can make use of the variables
+  # SKBUILD_SABI_COMPONENT and SKBUILD_SABI_VERSION to build against the stable ABI (Py_LIMITED_API).
+  # Otherwise, we build against the full API of the Python that is found.
+  set(LIBCELLML_PYTHON_LIMITED_API OFF)
+  if(SKBUILD_SABI_COMPONENT)
+    find_package(Python ${PREFERRED_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter ${SKBUILD_SABI_COMPONENT})
     set(_PYTHON_LINK_TARGET Python::SABIModule)
-  elseif (TARGET Python::Module)
-    message(STATUS "Using backup Python::Module target for linking.")
-    set(_PYTHON_LINK_TARGET Python::Module)
+    set(LIBCELLML_PYTHON_LIMITED_API ON)
+
+    # Convert the minimum Python version, e.g. 3.10, to a Py_LIMITED_API value, e.g. 0x030A0000.
+    string(REPLACE "." ";" _SABI_VERSION_PARTS "${SKBUILD_SABI_VERSION}")
+    list(GET _SABI_VERSION_PARTS 0 _SABI_VERSION_MAJOR)
+    list(GET _SABI_VERSION_PARTS 1 _SABI_VERSION_MINOR)
+    math(EXPR LIBCELLML_PY_LIMITED_API_VALUE "(${_SABI_VERSION_MAJOR} << 24) | (${_SABI_VERSION_MINOR} << 16)" OUTPUT_FORMAT HEXADECIMAL)
+    message(STATUS "Building Python bindings against the stable ABI (Py_LIMITED_API=${LIBCELLML_PY_LIMITED_API_VALUE}).")
   else()
-    message(STATUS "Could not find Python::SABIModule or Python::Module target.")
+    find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development.Module)
+    if(TARGET Python::Module)
+      set(_PYTHON_LINK_TARGET Python::Module)
+    else()
+      message(STATUS "Could not find Python::Module target.")
+    endif()
   endif()
 
   find_program(BUILDCACHE_EXE buildcache)
@@ -154,7 +168,7 @@ if(SWIG_EXECUTABLE)
   set(BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Executable required to generate bindings is available.")
 endif()
 
-if(BINDINGS_AVAILABLE AND (Python_Development.SABIModule_FOUND OR Python_Development.Module_FOUND))
+if(BINDINGS_AVAILABLE AND _PYTHON_LINK_TARGET)
   set(PYTHON_BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Requirements for creating Python bindings are available.")
 endif()
 

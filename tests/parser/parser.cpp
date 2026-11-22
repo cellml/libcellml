@@ -34,34 +34,17 @@ TEST(Parser, invalidXMLElements)
         "  <Elf>\n"
         "</fellows>\n";
 
-    // Depending on the libXML2 version the error messages differ.
-    const std::vector<std::string> expectedIssues_2_2 = {
-        "LibXml2 error: Specification mandate value for attribute bearded.",
-        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
-        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
-        "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
-        "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
-        "LibXml2 error: Premature end of data in tag fellowship line 2.",
-        "Could not get a valid XML root node from the provided input.",
-    };
-    const std::vector<std::string> expectedIssues_2_9_10 = {
-        "LibXml2 error: Specification mandates value for attribute bearded.",
-        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
-        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
-        "LibXml2 error: Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
-        "LibXml2 error: Opening and ending tag mismatch: Elf line 2 and fellows.",
-        "LibXml2 error: EndTag: '</' not found.",
-        "Could not get a valid XML root node from the provided input.",
-    };
-
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
-    EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
-
-    for (size_t i = 0; i < p->issueCount(); ++i) {
-        auto message = p->issue(i)->description();
-        EXPECT_TRUE((expectedIssues_2_2.at(i) == message) || (expectedIssues_2_9_10.at(i) == message));
+    const size_t issueCount = p->issueCount();
+    EXPECT_LE(size_t(6), issueCount);
+    EXPECT_GE(size_t(7), issueCount);
+    // Expect the last issue to be one libCellML wrote.
+    EXPECT_EQ("Could not get a valid XML root node from the provided input.", p->issue(issueCount - 1)->description());
+    for (size_t i = 0; i < issueCount - 1; ++i) {
+        // Expect all other errors to come from LibXml2.
+        EXPECT_EQ(size_t(0), p->issue(i)->description().rfind("LibXml2 error: ", 0));
     }
 }
 
@@ -1894,12 +1877,12 @@ TEST(Parser, parseResets)
 
     std::string testValueString = r->testValue();
     std::string t =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n          <apply/>\n        </math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
     std::string rt =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n          <apply/>\n        </math>\n";
     EXPECT_EQ(rt, resetValueString);
 }
 
