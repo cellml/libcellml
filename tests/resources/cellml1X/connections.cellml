@@ -39,7 +39,6 @@
     <map_variables variable_1="t" variable_2="t"/>
   </connection>
 
-
   <connection>
     <map_components component_1="environment" component_2="Vessel"/>
     <map_variables variable_1="t" variable_2="t"/>
