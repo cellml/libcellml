@@ -133,10 +133,9 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    xmlKeepBlanksDefault(0);
     // Remove any XML declarations from the string.
     std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
-    xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
+    xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">", false);
     if (xmlDoc->xmlErrorCount() == 0) {
         auto rootNode = xmlDoc->rootNode();
         auto childNode = rootNode->firstChild();
@@ -580,13 +579,12 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     }
 
     // Generate a pretty-print version of the model using libxml2.
-    // The xmlKeepBlanksDefault is turned off so that the pretty print can adjust
+    // Keep blanks is turned off so that the pretty print can adjust
     // the spacing in the user-supplied MathML.
     // See http://www.xmlsoft.org/html/libxml-tree.html#xmlDocDumpFormatMemoryEnc
     // for details.
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    xmlKeepBlanksDefault(0);
-    xmlDoc->parse(repr);
+    xmlDoc->parse(repr, false);
     return xmlDoc->prettyPrint();
 }
 

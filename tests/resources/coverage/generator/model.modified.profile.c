@@ -1,4 +1,4 @@
-/* The content of this file was generated using a modified C profile of libCellML 0.7.1. */
+/* The content of this file was generated using a modified C profile of libCellML 0.7.2. */
 
 #include "model.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.8.1.post0";
-const char LIBCELLML_VERSION[] = "0.7.1";
+const char LIBCELLML_VERSION[] = "0.7.2";
 
 const size_t STATE_COUNT = 1;
 const size_t CONSTANT_COUNT = 7;

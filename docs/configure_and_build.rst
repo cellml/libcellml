@@ -23,7 +23,7 @@ Configure with CMake
 
 The first step is to use :cmake:`CMake<>` to configure and generate build files for the libCellML library.  
 Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  
-Note that CMake version 3.2 or later is required to configure libCellML.  
+Note that CMake version 3.26 or later is required to configure libCellML.  
 Instructions and information about installing CMake can be found in the :ref:`Setup <setup_cmake>` section.
 
 
