@@ -167,3 +167,19 @@ TEST(ParserTransform, multipleMathInComponentAlternativeFormulation)
 
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
+
+TEST(ParserTransform, variablePublicInterfaceNoneCellml10)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\" public_interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(in);
+
+    EXPECT_EQ("", model->component(0)->variable(0)->interfaceType());
+}
