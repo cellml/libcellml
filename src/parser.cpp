@@ -952,17 +952,13 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             variable->setInterfaceType(attribute->value());
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->value());
-        } else if (mParsing1XVersion && attribute->isType("public_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PRIVATE)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC);
-            }
-        } else if (mParsing1XVersion && attribute->isType("private_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PUBLIC)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PRIVATE);
+        } else if (mParsing1XVersion && (attribute->isType("public_interface") || attribute->isType("private_interface"))) {
+            auto value = attribute->value();
+            if (value == "in" || value == "out") {
+                bool isPublic = attribute->isType("public_interface");
+                auto own = isPublic ? Variable::InterfaceType::PUBLIC : Variable::InterfaceType::PRIVATE;
+                auto other = isPublic ? Variable::InterfaceType::PRIVATE : Variable::InterfaceType::PUBLIC;
+                variable->setInterfaceType(variable->hasInterfaceType(other) ? Variable::InterfaceType::PUBLIC_AND_PRIVATE : own);
             }
         } else {
             auto issue = Issue::IssueImpl::create();
