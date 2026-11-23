@@ -3569,5 +3569,6 @@ TEST(Units, kilogramDoesNotEqualToGram)
     model->addUnits(gram);
 
     EXPECT_FALSE(libcellml::Units::equivalent(kilogram, gram));
-    EXPECT_EQ(size_t(1000), libcellml::Units::scalingFactor(kilogram, gram));
+    EXPECT_DOUBLE_EQ(0.001, libcellml::Units::scalingFactor(kilogram, gram));
+    EXPECT_DOUBLE_EQ(1000.0, libcellml::Units::scalingFactor(gram, kilogram));
 }
