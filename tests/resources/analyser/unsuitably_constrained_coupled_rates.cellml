@@ -1,34 +1,66 @@
-<?xml version="1.0"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" name="coupled">
-  <units name="per_second"><unit units="second" exponent="-1"/></units>
-  <component name="c">
-    <variable name="t" units="second"/>
-    <variable name="x" units="dimensionless" initial_value="1"/>
-    <variable name="y" units="dimensionless" initial_value="2"/>
-    <variable name="z" units="dimensionless"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply><eq/>
-        <apply><diff/><bvar><ci>t</ci></bvar><ci>x</ci></apply>
-        <apply><plus/>
-          <cn cellml:units="per_second">1</cn>
-          <apply><diff/><bvar><ci>t</ci></bvar><ci>y</ci></apply>
-        </apply>
-      </apply>
-      <apply><eq/>
-        <apply><diff/><bvar><ci>t</ci></bvar><ci>y</ci></apply>
-        <apply><minus/>
-          <cn cellml:units="per_second">2</cn>
-          <apply><diff/><bvar><ci>t</ci></bvar><ci>x</ci></apply>
-        </apply>
-      </apply>
-      <apply><eq/>
-        <ci>z</ci>
-        <cn cellml:units="dimensionless">1</cn>
-      </apply>
-      <apply><eq/>
-        <ci>z</ci>
-        <cn cellml:units="dimensionless">3</cn>
-      </apply>
-    </math>
-  </component>
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="per_second">
+        <unit units="second" exponent="-1"/>
+    </units>
+    <component name="my_component">
+        <variable name="t" units="second"/>
+        <variable name="x" units="dimensionless" initial_value="1"/>
+        <variable name="y" units="dimensionless" initial_value="2"/>
+        <variable name="z" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <cn cellml:units="per_second">1</cn>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>y</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>y</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <cn cellml:units="per_second">2</cn>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>z</ci>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>z</ci>
+                <cn cellml:units="dimensionless">3</cn>
+            </apply>
+        </math>
+    </component>
 </model>

@@ -2584,9 +2584,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Make sure that all our states have an equation that computes their rate.
-    // Note: this is not the case when the rates of states are defined in terms of one another. This should change the
-    //       day we rely on a symbolic math library to compute the rates of states that are defined in terms of one
-    //       another.
+    // Note #1: this may not be the case when the rates of states are defined in terms of one another (e.g.,
+    //          dx/dt = 1 + dy/dt and dy/dt = 2 - dx/dt), in which case those states are considered as underconstrained.
+    //          This should change the day we rely on a symbolic math library to compute the rates of states that are
+    //          defined in terms of one another.
+    // Note #2: this check is done even if some errors have already been reported, so that the type of our model
+    //          reflects all of its issues (e.g., a model with both overconstrained variables and states without a rate
+    //          equation is unsuitably constrained, not just overconstrained).
 
     for (const auto &internalVariable : mInternalVariables) {
         if ((internalVariable->mType == AnalyserInternalVariable::Type::STATE)
