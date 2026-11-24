@@ -1295,6 +1295,30 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
     return mProfile->minusString() + code;
 }
 
+std::string Generator::GeneratorImpl::generateNotUnaryCode(const AnalyserEquationAstPtr &ast)
+{
+    // Generate the code for the left branch of the given AST.
+
+    auto astLeftChild = ast->leftChild();
+    auto code = generateCode(astLeftChild);
+
+    // Determine whether parentheses should be added around the left code.
+    // Note: NOT has a higher precedence than all the binary operators, except POWER (as an operator), so parentheses
+    //       are needed around any of them, but not around a unary PLUS/MINUS or another NOT.
+
+    if (isRelationalOperator(astLeftChild)
+        || isLogicalOperator(astLeftChild)
+        || ((isPlusOperator(astLeftChild) || isMinusOperator(astLeftChild))
+            && (astLeftChild->rightChild() != nullptr))
+        || isTimesOperator(astLeftChild)
+        || isDivideOperator(astLeftChild)
+        || isPiecewiseStatement(astLeftChild)) {
+        code = "(" + code + ")";
+    }
+
+    return mProfile->notString() + code;
+}
+
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
                                                                        const AnalyserEquationAstPtr &ast)
 {
@@ -1414,7 +1438,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
-            code = mProfile->notString() + generateCode(ast->leftChild());
+            code = generateNotUnaryCode(ast);
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
         }

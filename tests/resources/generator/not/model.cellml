@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="not">
+  <!-- Some test equations for the not operator:
+   dx/dt = 1
+   x1 = not(t > 5.5)
+   x2 = not(t > 5.5 and t < 2.5)
+   x3 = not(not(t > 5.5))
+   x4 = not(t > 5.5) and t < 2.5
+   x5 = piecewise(1, not(t > 5.5), 0)
+   x6 = not(x0)
+   x7 = not(t + x0)
+   x8 = not(-t)
+   x9 = not(t * x0)
+   x10 = not(t > 5.5 or x0)
+   x11 = not(t / x0)
+   -->
+  <component name="c">
+    <variable name="t" units="dimensionless"/>
+    <variable name="x" units="dimensionless" initial_value="0"/>
+    <variable name="x0" units="dimensionless" initial_value="3"/>
+    <variable name="x1" units="dimensionless"/>
+    <variable name="x2" units="dimensionless"/>
+    <variable name="x3" units="dimensionless"/>
+    <variable name="x4" units="dimensionless"/>
+    <variable name="x5" units="dimensionless"/>
+    <variable name="x6" units="dimensionless"/>
+    <variable name="x7" units="dimensionless"/>
+    <variable name="x8" units="dimensionless"/>
+    <variable name="x9" units="dimensionless"/>
+    <variable name="x10" units="dimensionless"/>
+    <variable name="x11" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>x</ci>
+        </apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x1</ci>
+        <apply>
+          <not/>
+          <apply>
+            <gt/>
+            <ci>t</ci>
+            <cn cellml:units="dimensionless">5.5</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x2</ci>
+        <apply>
+          <not/>
+          <apply>
+            <and/>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="dimensionless">5.5</cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci>t</ci>
+              <cn cellml:units="dimensionless">2.5</cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x3</ci>
+        <apply>
+          <not/>
+          <apply>
+            <not/>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="dimensionless">5.5</cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x4</ci>
+        <apply>
+          <and/>
+          <apply>
+            <not/>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="dimensionless">5.5</cn>
+            </apply>
+          </apply>
+          <apply>
+            <lt/>
+            <ci>t</ci>
+            <cn cellml:units="dimensionless">2.5</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x5</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="dimensionless">1</cn>
+            <apply>
+              <not/>
+              <apply>
+                <gt/>
+                <ci>t</ci>
+                <cn cellml:units="dimensionless">5.5</cn>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="dimensionless">0</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x6</ci>
+        <apply>
+          <not/>
+          <ci>x0</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x7</ci>
+        <apply>
+          <not/>
+          <apply>
+            <plus/>
+            <ci>t</ci>
+            <ci>x0</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x8</ci>
+        <apply>
+          <not/>
+          <apply>
+            <minus/>
+            <ci>t</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x9</ci>
+        <apply>
+          <not/>
+          <apply>
+            <times/>
+            <ci>t</ci>
+            <ci>x0</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x10</ci>
+        <apply>
+          <not/>
+          <apply>
+            <or/>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="dimensionless">5.5</cn>
+            </apply>
+            <ci>x0</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x11</ci>
+        <apply>
+          <not/>
+          <apply>
+            <divide/>
+            <ci>t</ci>
+            <ci>x0</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>
