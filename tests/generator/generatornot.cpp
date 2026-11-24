@@ -48,4 +48,5 @@ TEST(GeneratorNot, operandWithParentheses)
     EXPECT_NE(std::string::npos, implementationCode.find("algebraicVariables[8] = !((voi > 5.5) || constants[0]);\n"));
     EXPECT_NE(std::string::npos, implementationCode.find("algebraicVariables[9] = !(voi/constants[0]);\n"));
     EXPECT_NE(std::string::npos, implementationCode.find("algebraicVariables[10] = !((voi > 5.5)?1.0:0.0);\n"));
+    EXPECT_NE(std::string::npos, implementationCode.find("algebraicVariables[11] = !(voi+constants[0]);\n"));
 }

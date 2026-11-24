@@ -1303,16 +1303,24 @@ std::string Generator::GeneratorImpl::generateNotUnaryCode(const AnalyserEquatio
     auto code = generateCode(astLeftChild);
 
     // Determine whether parentheses should be added around the left code.
-    // Note: NOT has a higher precedence than all the binary operators, except POWER (as an operator), so parentheses
-    //       are needed around any of them, but not around a unary PLUS/MINUS or another NOT.
+    // Note: NOT has a higher precedence than all the binary operators, except POWER (as an operator), and than
+    //       PIECEWISE (as an operator), so parentheses are needed around any of them, but not around a unary
+    //       MINUS or another NOT. A unary PLUS is generated as its operand alone (see generateCode()), so we look
+    //       through it to determine what will actually be generated.
 
-    if (isRelationalOperator(astLeftChild)
-        || isLogicalOperator(astLeftChild)
-        || ((isPlusOperator(astLeftChild) || isMinusOperator(astLeftChild))
-            && (astLeftChild->rightChild() != nullptr))
-        || isTimesOperator(astLeftChild)
-        || isDivideOperator(astLeftChild)
-        || isPiecewiseStatement(astLeftChild)) {
+    auto astOperand = astLeftChild;
+
+    while (isPlusOperator(astOperand) && (astOperand->rightChild() == nullptr)) {
+        astOperand = astOperand->leftChild();
+    }
+
+    if (isRelationalOperator(astOperand)
+        || isLogicalOperator(astOperand)
+        || ((isPlusOperator(astOperand) || isMinusOperator(astOperand))
+            && (astOperand->rightChild() != nullptr))
+        || isTimesOperator(astOperand)
+        || isDivideOperator(astOperand)
+        || isPiecewiseStatement(astOperand)) {
         code = "(" + code + ")";
     }
 
