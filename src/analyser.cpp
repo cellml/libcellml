@@ -2583,11 +2583,32 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    // Make sure that all our states have an equation that computes their rate.
+    // Note: this is not the case when the rates of states are defined in terms of one another. This should change the
+    //       day we rely on a symbolic math library to compute the rates of states that are defined in terms of one
+    //       another.
+
+    if (mAnalyser->errorCount() == 0) {
+        for (const auto &internalVariable : mInternalVariables) {
+            if ((internalVariable->mType == AnalyserInternalVariable::Type::STATE)
+                && std::none_of(mInternalEquations.begin(), mInternalEquations.end(), [&](const auto &ie) {
+                       return std::find(ie->mUnknownVariables.begin(), ie->mUnknownVariables.end(), internalVariable) != ie->mUnknownVariables.end();
+                   })) {
+                internalVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+
+                addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
+            }
+        }
+    }
+
+    // Make sure that our model is valid.
+
     if (mAnalyser->errorCount() != 0) {
         auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
             switch (iv->mType) {
             case AnalyserInternalVariable::Type::UNKNOWN:
             case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
+            case AnalyserInternalVariable::Type::UNDERCONSTRAINED:
                 return true;
             default:
                 return false;

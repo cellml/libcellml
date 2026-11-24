@@ -346,6 +346,22 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, underconstrainedCoupledRates)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/underconstrained_coupled_rates.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_NE(size_t(0), analyser->errorCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
+    EXPECT_EQ(libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED, analyser->error(0)->referenceRule());
+}
+
 TEST(Analyser, overconstrained)
 {
     auto parser = libcellml::Parser::create();
