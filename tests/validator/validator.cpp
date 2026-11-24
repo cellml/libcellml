@@ -4016,6 +4016,7 @@ TEST(Validator, invalidMinMaxRemSiblings)
         "Math has a 'rem' element without exactly two MathML siblings.",
         "Math has a 'rem' element without exactly two MathML siblings.",
         "Math has a 'min' element which is not the first MathML sibling.",
+        "Math has a 'rem' element which is not the first MathML sibling.",
     };
 
     auto parser = libcellml::Parser::create();

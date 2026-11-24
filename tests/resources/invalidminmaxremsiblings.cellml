@@ -13,6 +13,7 @@
     <variable name="y7" units="dimensionless"/>
     <variable name="y8" units="dimensionless"/>
     <variable name="y9" units="dimensionless"/>
+    <variable name="y10" units="dimensionless"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <!-- Valid: unary and n-ary 'min' and 'max', and binary 'rem'. -->
       <apply>
@@ -83,13 +84,22 @@
           <ci>c</ci>
         </apply>
       </apply>
-      <!-- Invalid: 'min' which is not the first MathML sibling. -->
+      <!-- Invalid: 'min' and 'rem' which are not the first MathML sibling. -->
       <apply>
         <eq/>
         <ci>y9</ci>
         <apply>
           <ci>a</ci>
           <min/>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y10</ci>
+        <apply>
+          <ci>a</ci>
+          <rem/>
+          <ci>b</ci>
         </apply>
       </apply>
     </math>
