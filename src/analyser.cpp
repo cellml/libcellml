@@ -2588,16 +2588,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     //       day we rely on a symbolic math library to compute the rates of states that are defined in terms of one
     //       another.
 
-    if (mAnalyser->errorCount() == 0) {
-        for (const auto &internalVariable : mInternalVariables) {
-            if ((internalVariable->mType == AnalyserInternalVariable::Type::STATE)
-                && std::none_of(mInternalEquations.begin(), mInternalEquations.end(), [&](const auto &ie) {
-                       return std::find(ie->mUnknownVariables.begin(), ie->mUnknownVariables.end(), internalVariable) != ie->mUnknownVariables.end();
-                   })) {
-                internalVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+    for (const auto &internalVariable : mInternalVariables) {
+        if ((internalVariable->mType == AnalyserInternalVariable::Type::STATE)
+            && std::none_of(mInternalEquations.begin(), mInternalEquations.end(), [&](const auto &ie) {
+                   return std::find(ie->mUnknownVariables.begin(), ie->mUnknownVariables.end(), internalVariable) != ie->mUnknownVariables.end();
+               })) {
+            internalVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
 
-                addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
-            }
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
         }
     }
 

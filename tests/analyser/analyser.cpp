@@ -421,6 +421,21 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, unsuitablyConstrainedCoupledRates)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/unsuitably_constrained_coupled_rates.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(3), analyser->errorCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
+}
+
 TEST(Analyser, addSameExternalVariableAsVariable)
 {
     auto parser = libcellml::Parser::create();
