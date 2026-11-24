@@ -29,6 +29,7 @@
     <variable name="x9" units="dimensionless"/>
     <variable name="x10" units="dimensionless"/>
     <variable name="x11" units="dimensionless"/>
+    <variable name="x12" units="dimensionless"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
@@ -197,6 +198,26 @@
             <ci>t</ci>
             <ci>x0</ci>
           </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>x12</ci>
+        <apply>
+          <not/>
+          <piecewise>
+            <piece>
+              <cn cellml:units="dimensionless">1</cn>
+              <apply>
+                <gt/>
+                <ci>t</ci>
+                <cn cellml:units="dimensionless">5.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn cellml:units="dimensionless">0</cn>
+            </otherwise>
+          </piecewise>
         </apply>
       </apply>
     </math>
