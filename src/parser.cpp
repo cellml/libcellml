@@ -901,6 +901,24 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     units->addUnit(reference, prefix, exponent, multiplier, id);
 }
 
+/**
+ * @brief Helper function to apply CellML 1.x interface attributes to a variable.
+ *
+ * This function is used to apply the interface attributes of a variable when parsing CellML 1.x models.
+ * It checks the value of the interface attribute and sets the appropriate interface type for the variable based on its own interface type and the other interface type.
+ *
+ * @param variable The variable to which the interface attributes will be applied.
+ * @param value The value of the interface attribute (either "in", "out", "none", or "").
+ * @param own The interface type of the variable itself (either PUBLIC or PRIVATE).
+ * @param other The interface type of the opposite of the variable itself (either PUBLIC or PRIVATE).
+ */
+void applyCellml1XInterface(const VariablePtr &variable, const std::string &value, Variable::InterfaceType own, Variable::InterfaceType other)
+{
+    if (value == "in" || value == "out") {
+        variable->setInterfaceType(variable->hasInterfaceType(other) ? Variable::InterfaceType::PUBLIC_AND_PRIVATE : own);
+    }
+}
+
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
     // A variable should not have any children.
@@ -953,17 +971,9 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->value());
         } else if (mParsing1XVersion && attribute->isType("public_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PRIVATE)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC);
-            }
+            applyCellml1XInterface(variable, attribute->value(), Variable::InterfaceType::PUBLIC, Variable::InterfaceType::PRIVATE);
         } else if (mParsing1XVersion && attribute->isType("private_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PUBLIC)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PRIVATE);
-            }
+            applyCellml1XInterface(variable, attribute->value(), Variable::InterfaceType::PRIVATE, Variable::InterfaceType::PUBLIC);
         } else {
             auto issue = Issue::IssueImpl::create();
             if (mParsing1XVersion) {

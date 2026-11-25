@@ -44,8 +44,9 @@ public:
      * Parses the @p input @c std::string as an XML document.
      *
      * @param input The @c std::string to parse.
+     * @param keepBlanks Whether to keep blank nodes in the XML document.
      */
-    void parse(const std::string &input);
+    void parse(const std::string &input, bool keepBlanks = true);
 
     /**
      * @brief Parse an XML string as MathML.

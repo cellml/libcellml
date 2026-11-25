@@ -9,7 +9,7 @@
 #
 from multiprocessing import Pool, cpu_count
 from os import system, remove, environ, defpath, path, pathsep, X_OK, access, sep
-from sys import exit, stdout
+from sys import argv, exit, stderr, stdout
 from subprocess import Popen, PIPE
 from xml.dom.minidom import parse, parseString
 
@@ -151,28 +151,26 @@ def run_single_test(exe_name):
         print("executable "+exe_name+" NOT FOUND")
         return success
 
-    sys.stdout.write(">> running valgrind memcheck on: '{0}'".format(path.basename(exe_name)))
+    stdout.write(">> running valgrind memcheck on: '{0}'".format(path.basename(exe_name)))
     out = memcheck(exe_name)
     errors = parse_errors(out)
     if len(errors) == 0:
         success = True
-        sys.stdout.write(" - PASS\n")
+        stdout.write(" - PASS\n")
     else:
-        sys.stdout.write(" - FAIL\n")
+        stdout.write(" - FAIL\n")
         for trace in errors:
-            sys.stderr.write(str(trace))
-            sys.stderr.write("---------------------------------------------------\n")
+            stderr.write(str(trace))
+            stderr.write("---------------------------------------------------\n")
 
     return success
 
-################### ENTRY ####################################################
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 2:
+    if len(argv) > 2:
         exit_code = 0
-        test_dir = sys.argv[1]
-        single_tests = sys.argv[2:]
+        test_dir = argv[1]
+        single_tests = argv[2:]
         successes = []
         failures = []
 
@@ -186,17 +184,17 @@ if __name__ == '__main__':
                 failures.append(single_tests[index])
                 exit_code = 2
 
-        sys.stdout.write(">> Summary\n")
+        stdout.write(">> Summary\n")
         tot = len(successes) + len(failures)
         per = 100.0*len(successes) / tot
-        sys.stdout.write("   {0}% tests passed, {1} tests failed out of {2}\n".format(per, len(failures), tot))
-        sys.stdout.write("\n")
+        stdout.write("   {0}% tests passed, {1} tests failed out of {2}\n".format(per, len(failures), tot))
+        stdout.write("\n")
         if len(failures):
-            sys.stdout.write("   The failed tests were:\n")
+            stdout.write("   The failed tests were:\n")
             for f in failures:
-                sys.stdout.write("    - {0}\n".format(f))
+                stdout.write("    - {0}\n".format(f))
 
-            sys.stdout.write("\n")
+            stdout.write("\n")
         exit(exit_code)
     else:
         print("usage: ./valgrindmemcheck.py test_exectable_dir test_executable_1 [test_exectuable_2 ...]")
