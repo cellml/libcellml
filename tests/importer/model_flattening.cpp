@@ -622,10 +622,10 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"a_model\">\n"
         "  <component name=\"membrane\"/>\n"
-        "  <component name=\"sodium_channel_1\"/>\n"
+        "  <component name=\"sodium_channel\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"membrane\">\n"
-        "      <component_ref component=\"sodium_channel_1\"/>\n"
+        "      <component_ref component=\"sodium_channel\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -1939,4 +1939,140 @@ TEST(ModelFlattening, multiLayeredImportOfNonStandardUnits)
     auto flattenModel = importer->flattenModel(model);
 
     EXPECT_NE(nullptr, flattenModel);
+}
+
+TEST(ModelFlattening, nestedImportOfUnitsWithNonStandardChildren)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"rate\">\n"
+        "    <unit units=\"mM\"/>\n"
+        "    <unit units=\"per_s\"/>\n"
+        "  </units>\n"
+        "  <units name=\"mM\">\n"
+        "    <unit prefix=\"milli\" units=\"mole\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_s\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"compound\">\n"
+        "    <unit units=\"rate\"/>\n"
+        "    <unit units=\"volt\"/>\n"
+        "  </units>\n"
+        "  <component name=\"parent\">\n"
+        "    <variable name=\"p\" units=\"rate\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"q\" units=\"compound\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child\">\n"
+        "    <variable name=\"r\" units=\"rate\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"parent\" component_2=\"child\">\n"
+        "    <map_variables variable_1=\"p\" variable_2=\"r\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/nestedimportofunits.xml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    EXPECT_FALSE(model->hasUnits("rate_1"));
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+TEST(ModelFlattening, cnUnitsOfEncapsulatedChildNotInImportedModel)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"my_units\"/>\n"
+        "  <component name=\"my_component\"/>\n"
+        "  <component name=\"local_child\">\n"
+        "    <variable name=\"v\" units=\"second\" interface=\"public\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>v</ci>\n"
+        "        <cn cellml:units=\"my_units\">1</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"my_component\">\n"
+        "      <component_ref component=\"local_child\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/cnunitsnotinimportedmodel.xml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    EXPECT_FALSE(model->hasUnits("my_units_1"));
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+TEST(ModelFlattening, flatteningDoesNotChangeCachedImportModelsWhenUnitsAreRenamed)
+{
+    const std::string eGrandchild =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_c\">\n"
+        "  <units name=\"u\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"c_component\">\n"
+        "    <variable name=\"cv\" units=\"u\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto printer = libcellml::Printer::create();
+
+    auto model = parser->parseModel(fileContents("modelflattening/cachedimportmodel.xml"));
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto grandchildModel = importer->library(resourcePath("modelflattening/") + "import_for_import_for_cachedimportmodel.xml");
+    ASSERT_NE(nullptr, grandchildModel);
+    EXPECT_EQ(eGrandchild, printer->printModel(grandchildModel));
+
+    auto flatModel = importer->flattenModel(model);
+    ASSERT_NE(nullptr, flatModel);
+
+    // The rename happened ...
+    EXPECT_TRUE(flatModel->hasUnits("u_1"));
+    EXPECT_EQ("u_1", flatModel->component("child")->variable("cv")->units()->name());
+
+    // ... but the cached model is untouched.
+    EXPECT_EQ(eGrandchild, printer->printModel(grandchildModel));
 }
