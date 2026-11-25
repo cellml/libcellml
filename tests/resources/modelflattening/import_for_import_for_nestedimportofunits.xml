@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="model_b">
+    <import xlink:href="units_for_nestedimportofunits.xml">
+        <units name="rate" units_ref="rate"/>
+    </import>
+    <component name="b_component">
+        <variable name="r" units="rate" interface="public"/>
+    </component>
+</model>
