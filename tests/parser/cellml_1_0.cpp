@@ -167,3 +167,39 @@ TEST(ParserTransform, multipleMathInComponentAlternativeFormulation)
 
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
+
+TEST(ParserTransform, variableInterfacesNoneCellml10)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"public_none\" units=\"dimensionless\" public_interface=\"none\"/>\n"
+        "    <variable name=\"private_none\" units=\"dimensionless\" private_interface=\"none\"/>\n"
+        "    <variable name=\"both_none\" units=\"dimensionless\" public_interface=\"none\" private_interface=\"none\"/>\n"
+        "    <variable name=\"private_in_none_first\" units=\"dimensionless\" public_interface=\"none\" private_interface=\"in\"/>\n"
+        "    <variable name=\"private_in_none_last\" units=\"dimensionless\" private_interface=\"in\" public_interface=\"none\"/>\n"
+        "    <variable name=\"private_out_none_first\" units=\"dimensionless\" public_interface=\"none\" private_interface=\"out\"/>\n"
+        "    <variable name=\"private_out_none_last\" units=\"dimensionless\" private_interface=\"out\" public_interface=\"none\"/>\n"
+        "    <variable name=\"public_in_none_first\" units=\"dimensionless\" private_interface=\"none\" public_interface=\"in\"/>\n"
+        "    <variable name=\"public_in_none_last\" units=\"dimensionless\" public_interface=\"in\" private_interface=\"none\"/>\n"
+        "    <variable name=\"public_out_none_first\" units=\"dimensionless\" private_interface=\"none\" public_interface=\"out\"/>\n"
+        "    <variable name=\"public_out_none_last\" units=\"dimensionless\" public_interface=\"out\" private_interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(in);
+
+    EXPECT_EQ("", model->component(0)->variable(0)->interfaceType());
+    EXPECT_EQ("", model->component(0)->variable(1)->interfaceType());
+    EXPECT_EQ("", model->component(0)->variable(2)->interfaceType());
+    EXPECT_EQ("private", model->component(0)->variable(3)->interfaceType());
+    EXPECT_EQ("private", model->component(0)->variable(4)->interfaceType());
+    EXPECT_EQ("private", model->component(0)->variable(5)->interfaceType());
+    EXPECT_EQ("private", model->component(0)->variable(6)->interfaceType());
+    EXPECT_EQ("public", model->component(0)->variable(7)->interfaceType());
+    EXPECT_EQ("public", model->component(0)->variable(8)->interfaceType());
+    EXPECT_EQ("public", model->component(0)->variable(9)->interfaceType());
+    EXPECT_EQ("public", model->component(0)->variable(10)->interfaceType());
+}

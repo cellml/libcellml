@@ -20,7 +20,6 @@ limitations under the License.
 #include "libcellml/model.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <cstring>
 #include <map>
@@ -231,6 +230,8 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
         } else {
             return false;
         }
+    } else if (isStandardUnit(units)) {
+        multiplier += standardMultiplierList.at(units->name()) * direction;
     } else if (units->unitCount() > 0) {
         std::string ref;
         std::string pre;
@@ -609,7 +610,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     } else if (units->isImport()) {
         auto importSource = units->importSource();
         auto importedUnits = importSource->model()->units(units->importReference());
-        updateUnitsMap(importedUnits, unitsMap);
+        updateUnitsMap(importedUnits, unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;

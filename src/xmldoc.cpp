@@ -100,13 +100,14 @@ XmlDoc::~XmlDoc()
     delete mPimpl;
 }
 
-void XmlDoc::parse(const std::string &input)
+void XmlDoc::parse(const std::string &input, bool keepBlanks)
 {
     initialiseLibxml2();
+    int options = keepBlanks ? 0 : XML_PARSE_NOBLANKS;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, options);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
 }
