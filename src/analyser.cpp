@@ -2583,60 +2583,63 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    if (mAnalyser->errorCount() != 0) {
-        auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-            switch (iv->mType) {
-            case AnalyserInternalVariable::Type::UNKNOWN:
-            case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
-                return true;
-            default:
-                return false;
-            }
-        });
-        auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-            return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
-        });
+    // Make sure that all our states have an equation that computes their rate.
+    // Note #1: this may not be the case when the rates of states are defined in terms of one another (e.g.,
+    //          dx/dt = 1 + dy/dt and dy/dt = 2 - dx/dt), in which case those states are considered as underconstrained.
+    //          This should change the day we rely on a symbolic math library to compute the rates of states that are
+    //          defined in terms of one another.
+    // Note #2: this check is done even if some errors have already been reported, so that the type of our model
+    //          reflects all of its issues (e.g., a model with both overconstrained variables and states without a rate
+    //          equation is unsuitably constrained, not just overconstrained).
 
-        if (hasUnderconstrainedVariables) {
-            if (hasOverconstrainedVariables) {
-                mAnalyserModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
-            } else {
-                mAnalyserModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
-            }
-        } else {
-            mAnalyserModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+    for (const auto &internalVariable : mInternalVariables) {
+        if ((internalVariable->mType == AnalyserInternalVariable::Type::STATE)
+            && std::none_of(mInternalEquations.begin(), mInternalEquations.end(), [&](const auto &ie) {
+                   return std::find(ie->mUnknownVariables.begin(), ie->mUnknownVariables.end(), internalVariable) != ie->mUnknownVariables.end();
+               })) {
+            internalVariable->mType = AnalyserInternalVariable::Type::UNDERCONSTRAINED;
+
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED);
         }
-
-        return;
     }
+
+    // Keep track of whether our variables are valid.
+    // Note: if they are not, then we still want to check our NLA systems (see below), so that the type of our model
+    //       reflects all of its issues (e.g., a model with both states without a rate equation and an overconstrained
+    //       NLA system is unsuitably constrained, not just underconstrained).
+
+    auto hasInvalidVariables = mAnalyser->errorCount() != 0;
 
     // Make sure that variables that are initialised using another variable are
     // not initialised using an algebraic variable.
+    // Note: this only makes sense if our variables are valid.
 
-    for (const auto &internalVariable : mInternalVariables) {
-        if ((internalVariable->mInitialisingVariable != nullptr)
-            && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
-            auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
+    if (!hasInvalidVariables) {
+        for (const auto &internalVariable : mInternalVariables) {
+            if ((internalVariable->mInitialisingVariable != nullptr)
+                && !isCellMLReal(internalVariable->mInitialisingVariable->initialValue())) {
+                auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(owningComponent(internalVariable->mInitialisingVariable)->variable(internalVariable->mInitialisingVariable->initialValue()));
 
-            if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE) {
-                auto issue = Issue::IssueImpl::create();
+                if (initialisingInternalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC_VARIABLE) {
+                    auto issue = Issue::IssueImpl::create();
 
-                issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
-                                              + "' in component '" + owningComponent(internalVariable->mVariable)->name()
-                                              + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
-                                              + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
-                issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
+                    issue->mPimpl->setDescription("Variable '" + internalVariable->mVariable->name()
+                                                  + "' in component '" + owningComponent(internalVariable->mVariable)->name()
+                                                  + "' is initialised using variable '" + initialisingInternalVariable->mVariable->name()
+                                                  + "', which is an algebraic variable. Only a reference to a constant, a computed constant, a state variable, or a computable non-linear algebraic variable is allowed.");
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_USING_ALGEBRAIC_VARIABLE);
+                    issue->mPimpl->mItem->mPimpl->setVariable(internalVariable->mVariable);
 
-                addIssue(issue);
+                    addIssue(issue);
+                }
             }
         }
-    }
 
-    if (mAnalyser->errorCount() != 0) {
-        mAnalyserModel->mPimpl->mType = AnalyserModel::Type::INVALID;
+        if (mAnalyser->errorCount() != 0) {
+            mAnalyserModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
-        return;
+            return;
+        }
     }
 
     // Make sure that our equations are valid.
@@ -2801,9 +2804,27 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    // Make sure that our model is valid.
+    // Note: we determine the type of our model based on the type of all of our variables, so that it reflects all of
+    //       its issues, be they related to our variables or to our NLA systems.
+
     if (mAnalyser->errorCount() != 0) {
-        if (!underconstrainedVariables.empty()) {
-            if (!overconstrainedVariables.empty()) {
+        auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+            switch (iv->mType) {
+            case AnalyserInternalVariable::Type::UNKNOWN:
+            case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
+            case AnalyserInternalVariable::Type::UNDERCONSTRAINED:
+                return true;
+            default:
+                return false;
+            }
+        });
+        auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+            return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
+        });
+
+        if (hasUnderconstrainedVariables) {
+            if (hasOverconstrainedVariables) {
                 mAnalyserModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
             } else {
                 mAnalyserModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;

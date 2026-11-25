@@ -346,6 +346,32 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
 }
 
+TEST(Analyser, underconstrainedCoupledRates)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/underconstrained_coupled_rates.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'y' in component 'my_component' is underconstrained.",
+        "Variable 'x' in component 'my_component' is underconstrained.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->analyserModel()->type());
+}
+
 TEST(Analyser, overconstrained)
 {
     auto parser = libcellml::Parser::create();
@@ -389,6 +415,86 @@ TEST(Analyser, unsuitablyConstrained)
     const std::vector<std::string> expectedUrls = {
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules,
+                                                                   expectedUrls,
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
+}
+
+TEST(Analyser, unsuitablyConstrainedCoupledRates)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/unsuitably_constrained_coupled_rates.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'z' in component 'my_component' is overconstrained.",
+        "Variable 'y' in component 'my_component' is underconstrained.",
+        "Variable 'x' in component 'my_component' is underconstrained.",
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules,
+                                                                   expectedUrls,
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->analyserModel()->type());
+}
+
+TEST(Analyser, unsuitablyConstrainedCoupledRatesAndNlaSystem)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/unsuitably_constrained_coupled_rates_and_nla_system.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'y' in component 'my_component' is underconstrained.",
+        "Variable 'x' in component 'my_component' is underconstrained.",
+        "Variable 'z' in component 'my_algebraic_system' is overconstrained.",
+        "Variable 'y' in component 'my_algebraic_system' is overconstrained.",
+        "Variable 'x' in component 'my_algebraic_system' is overconstrained.",
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNDERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_OVERCONSTRAINED,
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNDERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_OVERCONSTRAINED",
     };
 
     auto analyser = libcellml::Analyser::create();
