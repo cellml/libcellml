@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="invalid_min_max_rem_siblings">
+  <component name="c">
+    <variable name="a" units="dimensionless"/>
+    <variable name="b" units="dimensionless"/>
+    <variable name="c" units="dimensionless"/>
+    <variable name="y1" units="dimensionless"/>
+    <variable name="y2" units="dimensionless"/>
+    <variable name="y3" units="dimensionless"/>
+    <variable name="y4" units="dimensionless"/>
+    <variable name="y5" units="dimensionless"/>
+    <variable name="y6" units="dimensionless"/>
+    <variable name="y7" units="dimensionless"/>
+    <variable name="y8" units="dimensionless"/>
+    <variable name="y9" units="dimensionless"/>
+    <variable name="y10" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <!-- Valid: unary and n-ary 'min' and 'max', and binary 'rem'. -->
+      <apply>
+        <eq/>
+        <ci>y1</ci>
+        <apply>
+          <min/>
+          <ci>a</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y2</ci>
+        <apply>
+          <max/>
+          <ci>a</ci>
+          <ci>b</ci>
+          <ci>c</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y3</ci>
+        <apply>
+          <rem/>
+          <ci>a</ci>
+          <ci>b</ci>
+        </apply>
+      </apply>
+      <!-- Invalid: 'min', 'max' and 'rem' with no arguments. -->
+      <apply>
+        <eq/>
+        <ci>y4</ci>
+        <apply>
+          <min/>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y5</ci>
+        <apply>
+          <max/>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y6</ci>
+        <apply>
+          <rem/>
+        </apply>
+      </apply>
+      <!-- Invalid: 'rem' with one or three arguments. -->
+      <apply>
+        <eq/>
+        <ci>y7</ci>
+        <apply>
+          <rem/>
+          <ci>a</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y8</ci>
+        <apply>
+          <rem/>
+          <ci>a</ci>
+          <ci>b</ci>
+          <ci>c</ci>
+        </apply>
+      </apply>
+      <!-- Invalid: 'min' and 'rem' which are not the first MathML sibling. -->
+      <apply>
+        <eq/>
+        <ci>y9</ci>
+        <apply>
+          <ci>a</ci>
+          <min/>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y10</ci>
+        <apply>
+          <ci>a</ci>
+          <rem/>
+          <ci>b</ci>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>

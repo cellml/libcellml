@@ -522,6 +522,18 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         analyseNode(mathmlChildNode(node, 0), tempAst, astParent, component, equation);
 
+        // A unary "min" or "max" is equivalent to its argument, so replace it with its argument.
+
+        if ((childCount == 2)
+            && ((tempAst->mPimpl->mType == AnalyserEquationAst::Type::MIN)
+                || (tempAst->mPimpl->mType == AnalyserEquationAst::Type::MAX))) {
+            tempAst = tempAst->mPimpl->mOwnedLeftChild;
+
+            tempAst->mPimpl->mParent = astParent;
+        }
+
+        // Update the AST to be the one we just created.
+
         ast = tempAst;
 
         // Relational and logical operators.
@@ -605,11 +617,19 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("min")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::MIN, astParent);
 
-        mAnalyserModel->mPimpl->mNeedMinFunction = true;
+        // Note: a unary "min" is replaced with its argument (see above), so it doesn't need our "min" function.
+
+        if (mathmlChildCount(node->parent()) > 2) {
+            mAnalyserModel->mPimpl->mNeedMinFunction = true;
+        }
     } else if (node->isMathmlElement("max")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::MAX, astParent);
 
-        mAnalyserModel->mPimpl->mNeedMaxFunction = true;
+        // Note: a unary "max" is replaced with its argument (see above), so it doesn't need our "max" function.
+
+        if (mathmlChildCount(node->parent()) > 2) {
+            mAnalyserModel->mPimpl->mNeedMaxFunction = true;
+        }
     } else if (node->isMathmlElement("rem")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::REM, astParent);
 

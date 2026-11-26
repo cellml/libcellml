@@ -4006,3 +4006,27 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
+
+TEST(Validator, invalidMinMaxRemSiblings)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'min' element without at least one MathML sibling.",
+        "Math has a 'max' element without at least one MathML sibling.",
+        "Math has a 'rem' element without exactly two MathML siblings.",
+        "Math has a 'rem' element without exactly two MathML siblings.",
+        "Math has a 'rem' element without exactly two MathML siblings.",
+        "Math has a 'min' element which is not the first MathML sibling.",
+        "Math has a 'rem' element which is not the first MathML sibling.",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("invalidminmaxremsiblings.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
