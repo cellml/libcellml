@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -98,6 +99,27 @@ public:
      * @param usedConnections A list of connections that have already been used.
      */
     void loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections);
+
+    std::unordered_map<std::string, ComponentPtr> mComponentsByName; /**< The model's components by name, for loading its connections. */
+
+    /**
+     * @brief Add the components of @p entity and its descendants to mComponentsByName.
+     *
+     * A name keeps the first component found in the order Model::component(name, true) searches: an entity's own
+     * components, then the descendants of each in turn.
+     *
+     * @param entity The @c ComponentEntity whose components to add.
+     */
+    void indexComponents(const ComponentEntityPtr &entity);
+
+    /**
+     * @brief The component named @p name in mComponentsByName, or @c nullptr.
+     *
+     * @param name The component's name.
+     *
+     * @return The component, or @c nullptr if there is none.
+     */
+    ComponentPtr findComponentByName(const std::string &name) const;
 
     /**
      * @brief Update the @p model with an encapsulation parsed from @p node.
@@ -602,9 +624,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     NamePairList usedConnections;
+    mComponentsByName.clear();
+    if (!connectionNodes.empty()) {
+        indexComponents(model);
+    }
     for (const auto &connectionNode : connectionNodes) {
         loadConnection(model, connectionNode, usedConnections);
     }
+    mComponentsByName.clear();
 
     // Link units to their names.
     DescriptionList issueList;
@@ -901,6 +928,24 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     units->addUnit(reference, prefix, exponent, multiplier, id);
 }
 
+/**
+ * @brief Helper function to apply CellML 1.x interface attributes to a variable.
+ *
+ * This function is used to apply the interface attributes of a variable when parsing CellML 1.x models.
+ * It checks the value of the interface attribute and sets the appropriate interface type for the variable based on its own interface type and the other interface type.
+ *
+ * @param variable The variable to which the interface attributes will be applied.
+ * @param value The value of the interface attribute (either "in", "out", "none", or "").
+ * @param own The interface type of the variable itself (either PUBLIC or PRIVATE).
+ * @param other The interface type of the opposite of the variable itself (either PUBLIC or PRIVATE).
+ */
+void applyCellml1XInterface(const VariablePtr &variable, const std::string &value, Variable::InterfaceType own, Variable::InterfaceType other)
+{
+    if (value == "in" || value == "out") {
+        variable->setInterfaceType(variable->hasInterfaceType(other) ? Variable::InterfaceType::PUBLIC_AND_PRIVATE : own);
+    }
+}
+
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
     // A variable should not have any children.
@@ -953,17 +998,9 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->value());
         } else if (mParsing1XVersion && attribute->isType("public_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PRIVATE)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC);
-            }
+            applyCellml1XInterface(variable, attribute->value(), Variable::InterfaceType::PUBLIC, Variable::InterfaceType::PRIVATE);
         } else if (mParsing1XVersion && attribute->isType("private_interface")) {
-            if (variable->hasInterfaceType(Variable::InterfaceType::PUBLIC)) {
-                variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
-            } else {
-                variable->setInterfaceType(Variable::InterfaceType::PRIVATE);
-            }
+            applyCellml1XInterface(variable, attribute->value(), Variable::InterfaceType::PRIVATE, Variable::InterfaceType::PUBLIC);
         } else {
             auto issue = Issue::IssueImpl::create();
             if (mParsing1XVersion) {
@@ -995,6 +1032,23 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
         addIssue(issue);
     }
+}
+
+void Parser::ParserImpl::indexComponents(const ComponentEntityPtr &entity)
+{
+    for (size_t i = 0; i < entity->componentCount(); ++i) {
+        auto component = entity->component(i);
+        mComponentsByName.emplace(component->name(), component);
+    }
+    for (size_t i = 0; i < entity->componentCount(); ++i) {
+        indexComponents(entity->component(i));
+    }
+}
+
+ComponentPtr Parser::ParserImpl::findComponentByName(const std::string &name) const
+{
+    auto it = mComponentsByName.find(name);
+    return (it != mComponentsByName.end()) ? it->second : nullptr;
 }
 
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections)
@@ -1109,7 +1163,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF);
             addIssue(issue);
         } else {
-            if (component1Name > component2Name) {
+            if (!mParsing1XVersion && (component1Name > component2Name)) {
                 std::string tmp = component1Name;
                 component1Name = component2Name;
                 component2Name = tmp;
@@ -1288,9 +1342,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
     // Now check the objects exist in the model. TODO Remove as is validation?
-    if (model->containsComponent(componentNamePair.first)) {
-        component1 = model->component(componentNamePair.first);
-    } else {
+    component1 = findComponentByName(componentNamePair.first);
+    if (component1 == nullptr) {
         if (!component1Missing) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
@@ -1299,9 +1352,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             addIssue(issue);
         }
     }
-    if (model->containsComponent(componentNamePair.second)) {
-        component2 = model->component(componentNamePair.second);
-    } else {
+    component2 = findComponentByName(componentNamePair.second);
+    if (component2 == nullptr) {
         if (!component2Missing) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
