@@ -230,6 +230,8 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
         } else {
             return false;
         }
+    } else if (isStandardUnit(units)) {
+        multiplier += standardMultiplierList.at(units->name()) * direction;
     } else if (units->unitCount() > 0) {
         std::string ref;
         std::string pre;
