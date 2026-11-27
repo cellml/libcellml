@@ -94,8 +94,8 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     SOURCES ${SWIG_INTERFACE_SRC}
   )
   target_link_libraries(${MODULE_TARGET} PRIVATE cellml)
-  if(Python_Development.SABIModule_FOUND)
-    target_compile_definitions(${MODULE_TARGET} PRIVATE Py_LIMITED_API=0x030a0000)
+  if(LIBCELLML_PYTHON_LIMITED_API)
+    target_compile_definitions(${MODULE_TARGET} PRIVATE Py_LIMITED_API=${LIBCELLML_PY_LIMITED_API_VALUE})
   endif()
 
   if(SWIG_VERSION VERSION_GREATER_EQUAL 4.1.0)
