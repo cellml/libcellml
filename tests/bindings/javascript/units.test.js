@@ -288,4 +288,8 @@ describe("Units tests", () => {
 
         expect(libcellml.Units.equivalent(u1, u2)).toBe(false)
     })
+    test('Checking Units as string.', () => {
+        expect(libcellml.Units.standardUnitAsString(libcellml.Units.StandardUnit.FARAD)).toBe("farad")
+        expect(libcellml.Units.prefixAsString(libcellml.Units.Prefix.MICRO)).toBe("micro")
+    })
 })

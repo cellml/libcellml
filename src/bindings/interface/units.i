@@ -113,6 +113,12 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::unitAttributeMultiplier
 "Get the multiplier from the unit attribute.";
 
+%feature("docstring") libcellml::Units::prefixAsString
+"Get the string version of a :class:`Prefix`.";
+
+%feature("docstring") libcellml::Units::standardUnitAsString
+"Get the string version of a :class:`StandardUnit`.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {

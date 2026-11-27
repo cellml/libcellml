@@ -159,6 +159,18 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(Issue.ReferenceRule.XML_UNEXPECTED_NAMESPACE, int)
         self.assertIsInstance(Issue.ReferenceRule.XML_ATTRIBUTE_HAS_NAMESPACE, int)
 
+    def test_issue_as_string(self):
+        from libcellml import Issue
+        from libcellml.issue import Issue_levelAsString, Issue_referenceRuleAsString
+
+        self.assertEqual("message", Issue.levelAsString(Issue.Level.MESSAGE))
+        self.assertEqual("warning", Issue_levelAsString(Issue.Level.WARNING))
+
+        self.assertEqual("unit_attribute_exponent_value", Issue.referenceRuleAsString(Issue.ReferenceRule.UNIT_ATTRIBUTE_EXPONENT_VALUE))
+        self.assertEqual("xml_unexpected_element", Issue_referenceRuleAsString(Issue.ReferenceRule.XML_UNEXPECTED_ELEMENT))
+        self.assertEqual("generator_null_model", Issue_referenceRuleAsString(Issue.ReferenceRule.GENERATOR_NULL_MODEL))
+        self.assertEqual("xml", Issue_referenceRuleAsString(Issue.ReferenceRule.XML))
+
     def test_coverage(self):
         from libcellml import Issue
         from libcellml import Parser

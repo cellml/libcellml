@@ -60,6 +60,7 @@ EMSCRIPTEN_BINDINGS(libcellml_variable) {
         .class_function("removeEquivalence", &libcellml::Variable::removeEquivalence)
         .class_function("setEquivalenceConnectionId", &libcellml::Variable::setEquivalenceConnectionId)
         .class_function("setEquivalenceMappingId", &libcellml::Variable::setEquivalenceMappingId)
+        .class_function("interfaceTypeAsString", &libcellml::Variable::interfaceTypeAsString)
     ;
 
     EM_ASM(

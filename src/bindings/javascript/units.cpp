@@ -123,6 +123,8 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .class_function("scalingFactor", &libcellml::Units::scalingFactor)
         .class_function("compatible", &libcellml::Units::compatible)
         .class_function("equivalent", &libcellml::Units::equivalent)
+        .class_function("prefixAsString", &libcellml::Units::prefixAsString)
+        .class_function("standardUnitAsString", &libcellml::Units::standardUnitAsString)
     ;
 
 

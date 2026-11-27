@@ -74,6 +74,21 @@ AnyCellmlElementPtr Issue::item() const
 }
 
 /**
+ * @brief Map Level to their string versions.
+ *
+ * An internal map used to convert a Issue::Level into its string version.
+ */
+static const std::map<Issue::Level, std::string> levelToString = {
+    {Issue::Level::ERROR, "error"},
+    {Issue::Level::MESSAGE, "message"},
+    {Issue::Level::WARNING, "warning"}};
+
+std::string Issue::levelAsString(Level level)
+{
+    return levelToString.at(level);
+}
+
+/**
  * @brief Map ReferenceRules to their section titles.
  *
  * An internal map used to convert a Issue::ReferenceRule into its heading string.
@@ -251,6 +266,13 @@ static constexpr RuleInformation ruleToInformation[] = {
     // Placeholder for further references:
     {Issue::ReferenceRule::UNSPECIFIED, "", "", "", ""},
 };
+
+std::string Issue::referenceRuleAsString(ReferenceRule rule)
+{
+    std::string data = ruleToInformation.at(rule)[0];
+    std::transform(data.begin(), data.end(), data.begin(), [](unsigned char c) { return std::tolower(c); });
+    return data;
+}
 
 static const RuleInformation &ruleInformation(Issue::ReferenceRule rule)
 {

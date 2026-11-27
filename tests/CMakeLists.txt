@@ -29,6 +29,7 @@ mark_as_advanced(gtest_force_shared_crt)
 # header files <test_name>_HDRS.
 include(analyser/tests.cmake)
 include(annotator/tests.cmake)
+include(as_string/tests.cmake)
 include(clone/tests.cmake)
 include(component/tests.cmake)
 include(connection/tests.cmake)
