@@ -122,6 +122,7 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
 
     std::string generateOperatorCode(const std::string &op, const AnalyserEquationAstPtr &ast);
     std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast);
+    std::string generateNotUnaryCode(const AnalyserEquationAstPtr &ast);
     std::string generateOneParameterFunctionCode(const std::string &function, const AnalyserEquationAstPtr &ast);
     std::string generateTwoParameterFunctionCode(const std::string &function, const AnalyserEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition, const std::string &value) const;
