@@ -1620,11 +1620,8 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         return 1.0;
     case AnalyserEquationAst::Type::FALSE:
         return 0.0;
-    case AnalyserEquationAst::Type::E: {
-        static const double E = exp(1.0);
-
-        return E;
-    }
+    case AnalyserEquationAst::Type::E:
+        return M_E;
     case AnalyserEquationAst::Type::PI:
         return M_PI;
     case AnalyserEquationAst::Type::INF: {
@@ -2925,6 +2922,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         aie2aetMappings.emplace(internalEquation, type);
     }
 
+    // Retrieve the equations used to compute each variable, in equation order.
+
+    std::unordered_map<AnalyserInternalVariable *, std::vector<AnalyserInternalEquationPtr>> equationsOfVariable;
+
+    for (const auto &internalEquation : mInternalEquations) {
+        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            equationsOfVariable[unknownVariable.get()].push_back(internalEquation);
+        }
+    }
+
     // Make our internal variables available through our API.
 
     std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> aiv2avMappings;
@@ -2973,9 +2980,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         AnalyserEquationPtrs equations;
         auto isNlaEquation = false;
+        auto computing = equationsOfVariable.find(internalVariable.get());
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
+        if (computing != equationsOfVariable.end()) {
+            for (const auto &internalEquation : computing->second) {
                 equations.push_back(aie2aeMappings[internalEquation]);
 
                 if ((aie2aetMappings.find(internalEquation) != aie2aetMappings.end())
@@ -3167,6 +3175,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         analyserEquation->mPimpl->mIsStateRateBased = isStateRateBased(analyserEquation, checkedEquations);
     }
+
+    mAnalyserModel->mPimpl->buildAnalyserVariableByGroup();
 }
 
 AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable) const
