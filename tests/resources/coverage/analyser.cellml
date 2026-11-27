@@ -40,7 +40,7 @@
                     <bvar>
                         <ci>v</ci>
                         <degree>
-                            <cn cellml:units="dimensionless" type="e-notation">1</cn>
+                            <cn cellml:units="dimensionless">1</cn>
                         </degree>
                     </bvar>
                     <ci>z</ci>

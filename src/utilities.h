@@ -294,10 +294,10 @@ bool isCellMLInteger(const std::string &candidate);
 /**
  * @brief Test if the @p candidate @c std::string is in the form of a CellML basic real.
  *
- * The candidate string must consist of european numeric characters.  It may optionally
- * have a basic Latin hyphen character '-' to indicate sign.  It may also optionally
- * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
- * string must represent a number in base 10.
+ * The candidate string must consist of one or more european numeric characters.  It may
+ * optionally begin with a basic Latin hyphen character '-' or plus sign character '+' to
+ * indicate sign.  It may also optionally use the basic Latin fullstop character '.' to
+ * indicate a decimal point.  The candidate string must represent a number in base 10.
  *
  * @param candidate The string to test and determine whether or not it is a CellML basic real.
  * @return @c true if the @p candidate is a CellML basic real and @c false otherwise.
@@ -307,12 +307,12 @@ bool isCellMLBasicReal(const std::string &candidate);
 /**
  * @brief Test if the @p candidate @c std::string is in the form of a CellML real.
  *
- * The candidate string must consist of european numeric characters.  It may optionally
- * have a basic Latin hyphen character '-' to indicate sign.  It may also optianally
- * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
- * string must represent a number in base 10.  The basic Latin 'e' or 'E' character
- * may be used to indicate the exponent.  The exponent must be described as a
- * CellML integer.
+ * The candidate string must consist of one or more european numeric characters.  It may
+ * optionally begin with a basic Latin hyphen character '-' or plus sign character '+' to
+ * indicate sign.  It may also optionally use the basic Latin fullstop character '.' to
+ * indicate a decimal point.  The candidate string must represent a number in base 10.
+ * The basic Latin 'e' or 'E' character may be used to indicate the exponent.  The
+ * exponent must be described as a CellML integer.
  *
  * @param candidate The string to test and determine whether or not it is a CellML real.
  * @return @c true if the @p candidate is a CellML real and @c false otherwise.

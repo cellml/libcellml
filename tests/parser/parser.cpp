@@ -697,6 +697,66 @@ TEST(Parser, modelWithInvalidUnits)
     EXPECT_EQ(e, a);
 }
 
+TEST(Parser, unitAttributesWithLeadingPlusSign)
+{
+    // CellML 2.0 section 1.3.3.2: a real number string may begin with a '+' sign.
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <units name=\"millivolt_squared\">\n"
+        "    <unit exponent=\"+2\" prefix=\"milli\" units=\"volt\"/>\n"
+        "  </units>\n"
+        "  <units name=\"scaled_volt\">\n"
+        "    <unit multiplier=\"+1.5\" units=\"volt\"/>\n"
+        "  </units>\n"
+        "  <units name=\"scaled_e_notation_volt\">\n"
+        "    <unit exponent=\"+1.0e+1\" multiplier=\"+2.5E-3\" units=\"volt\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(in);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    EXPECT_EQ(2.0, model->units("millivolt_squared")->unitAttributeExponent(0));
+    EXPECT_EQ(1.5, model->units("scaled_volt")->unitAttributeMultiplier(0));
+    EXPECT_EQ(10.0, model->units("scaled_e_notation_volt")->unitAttributeExponent(0));
+    EXPECT_EQ(2.5e-3, model->units("scaled_e_notation_volt")->unitAttributeMultiplier(0));
+}
+
+TEST(Parser, unitAttributesWithDegenerateRealNumbers)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <units name=\"degenerate_exponents\">\n"
+        "    <unit exponent=\"-.\" units=\"volt\"/>\n"
+        "    <unit exponent=\"-\" units=\"ampere\"/>\n"
+        "    <unit exponent=\".\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"degenerate_multipliers\">\n"
+        "    <unit multiplier=\"-.\" units=\"volt\"/>\n"
+        "    <unit multiplier=\"-\" units=\"ampere\"/>\n"
+        "    <unit multiplier=\".\" units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedIssues = {
+        "Unit referencing 'volt' in units 'degenerate_exponents' has an exponent with the value '-.' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'ampere' in units 'degenerate_exponents' has an exponent with the value '-' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'second' in units 'degenerate_exponents' has an exponent with the value '.' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'volt' in units 'degenerate_multipliers' has a multiplier with the value '-.' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'ampere' in units 'degenerate_multipliers' has a multiplier with the value '-' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'second' in units 'degenerate_multipliers' has a multiplier with the value '.' that is not a representation of a CellML real valued number.",
+    };
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(in);
+
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
+}
+
 TEST(Parser, emptyEncapsulation)
 {
     const std::string in =
@@ -2119,7 +2179,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
         "    <unit units=\"kelvin\"/>\n"
-        "    <unit exponent=\"4.87e+16\" units=\"oranges\"/>\n"
+        "    <unit exponent=\"4.87e+16\" multiplier=\"9.87\" units=\"oranges\"/>\n"
         "    <unit units=\"apples\"/>\n"
         "    <unit units=\"bananas\"/>\n"
         "    <unit units=\"mangoes\"/>\n"

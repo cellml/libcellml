@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="leading_plus_sign">
+  <!-- Some test equations with numbers that begin with a '+' sign:
+   x(0) = +2
+   k = +1.5
+   dx/dt = 1
+   y1 = t + +2
+   y2 = t - +2
+   y3 = -(+2)
+   y4 = t + +1.5e+3
+   y5 = k + t
+   -->
+  <component name="c">
+    <variable name="t" units="dimensionless"/>
+    <variable name="x" units="dimensionless" initial_value="+2"/>
+    <variable name="k" units="dimensionless" initial_value="+1.5"/>
+    <variable name="y1" units="dimensionless"/>
+    <variable name="y2" units="dimensionless"/>
+    <variable name="y3" units="dimensionless"/>
+    <variable name="y4" units="dimensionless"/>
+    <variable name="y5" units="dimensionless"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>x</ci>
+        </apply>
+        <cn cellml:units="dimensionless">1</cn>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y1</ci>
+        <apply>
+          <plus/>
+          <ci>t</ci>
+          <cn cellml:units="dimensionless">+2</cn>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y2</ci>
+        <apply>
+          <minus/>
+          <ci>t</ci>
+          <cn cellml:units="dimensionless">+2</cn>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y3</ci>
+        <apply>
+          <minus/>
+          <cn cellml:units="dimensionless">+2</cn>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y4</ci>
+        <apply>
+          <plus/>
+          <ci>t</ci>
+          <cn cellml:units="dimensionless" type="e-notation">+1.5<sep/>+3</cn>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>y5</ci>
+        <apply>
+          <plus/>
+          <ci>k</ci>
+          <ci>t</ci>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>
