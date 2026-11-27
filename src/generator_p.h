@@ -16,6 +16,8 @@ limitations under the License.
 
 #pragma once
 
+#include <unordered_map>
+
 #include "libcellml/generator.h"
 
 #include "libcellml/generatorprofile.h"
@@ -41,6 +43,8 @@ struct Generator::GeneratorImpl: public Logger::LoggerImpl
     GeneratorProfilePtr mDefaultProfile = GeneratorProfile::create();
     GeneratorProfilePtr mProfile;
     GeneratorVariableTrackerPtr mVariableTracker;
+
+    std::unordered_map<const AnalyserVariable *, size_t> mTrackedIndexCache;
 
     void reset();
 
