@@ -914,17 +914,23 @@ std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &
 
 std::string generateDoubleCode(const std::string &value)
 {
-    if (value.find('.') != std::string::npos) {
-        return value;
+    // A real number may begin with a '+' sign (CellML 2.0 section 1.3.3.2),
+    // but we don't need it in the generated code. In C, it would even turn
+    // "voi + +2.0" into "voi++2.0", which doesn't compile.
+
+    auto number = (value.rfind('+', 0) == 0) ? value.substr(1) : value;
+
+    if (number.find('.') != std::string::npos) {
+        return number;
     }
 
-    auto ePos = value.find_first_of("eE");
+    auto ePos = number.find_first_of("eE");
 
     if (ePos == std::string::npos) {
-        return value + ".0";
+        return number + ".0";
     }
 
-    return value.substr(0, ePos) + ".0" + value.substr(ePos);
+    return number.substr(0, ePos) + ".0" + number.substr(ePos);
 }
 
 std::string Generator::GeneratorImpl::generateDoubleOrVariableNameCode(const VariablePtr &variable)

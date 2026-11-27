@@ -1280,6 +1280,32 @@ TEST(Validator, mathDegreeElementsWithEmptyCnElements)
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
+TEST(Validator, mathLogbaseElementsWithLeadingPlusSign)
+{
+    // CellML 2.0 section 1.3.3.2: a real number string may begin with a '+' sign.
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <log/>\n"
+        "      <logbase>\n"
+        "        <cn cellml:units=\"dimensionless\">+2</cn>\n"
+        "      </logbase>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelWithMath(math);
+
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(0), v->issueCount());
+}
+
 TEST(Validator, mathLogbaseElementsWithDegenerateRealNumbers)
 {
     const std::string math =

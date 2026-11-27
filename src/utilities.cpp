@@ -221,15 +221,17 @@ bool isCellMLBasicReal(const std::string &candidate)
     if (!candidate.empty()) {
         std::vector<size_t> decimalOccurrences = findOccurrences(candidate, ".");
         if (decimalOccurrences.size() < 2) {
-            bool beginsMinus = *candidate.begin() == '-';
+            bool beginsWithSign = (*candidate.begin() == '-') || (*candidate.begin() == '+');
             std::string numbersOnlyCandidate = candidate;
             if (decimalOccurrences.size() == 1) {
                 numbersOnlyCandidate.erase(decimalOccurrences.at(0), 1);
             }
-            if (beginsMinus) {
+            if (beginsWithSign) {
                 numbersOnlyCandidate.erase(0, 1);
             }
-            return std::all_of(numbersOnlyCandidate.begin(), numbersOnlyCandidate.end(), isEuropeanNumericCharacter);
+            // What is left must be one or more digits, so that strings such
+            // as "-", "." and "-." are not mistaken for a number.
+            return isNonNegativeCellMLInteger(numbersOnlyCandidate);
         }
     }
     return false;

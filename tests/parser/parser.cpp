@@ -2179,7 +2179,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
         "    <unit units=\"kelvin\"/>\n"
-        "    <unit exponent=\"4.87e+16\" units=\"oranges\"/>\n"
+        "    <unit exponent=\"4.87e+16\" multiplier=\"9.87\" units=\"oranges\"/>\n"
         "    <unit units=\"apples\"/>\n"
         "    <unit units=\"bananas\"/>\n"
         "    <unit units=\"mangoes\"/>\n"
