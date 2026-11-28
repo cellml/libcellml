@@ -1228,7 +1228,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 
         if (isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
-            || isMinusOperator(astLeftChild)
+            || isMinusOperator(astRightChild)
             || isTimesOperator(astRightChild)
             || isDivideOperator(astRightChild)
             || isPowerOperator(astRightChild)

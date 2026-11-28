@@ -232,8 +232,8 @@ void computeComputedConstants(double voi, double *states, double *rates, double 
     computedConstants[105] = (constants[1]/constants[0])^^(constants[2] >= constants[3]);
     computedConstants[106] = (constants[1] <= constants[0])^^(constants[2]+constants[3]);
     computedConstants[107] = (constants[1] <= constants[0])^^constants[2];
-    computedConstants[108] = (constants[1] <= constants[0])^^constants[2]-constants[3];
-    computedConstants[109] = (constants[1] <= constants[0])^^-constants[2];
+    computedConstants[108] = (constants[1] <= constants[0])^^(constants[2]-constants[3]);
+    computedConstants[109] = (constants[1] <= constants[0])^^(-constants[2]);
     computedConstants[110] = (constants[1] <= constants[0])^^(constants[2]*constants[3]);
     computedConstants[111] = (constants[1] <= constants[0])^^(constants[2]/constants[3]);
     computedConstants[112] = (constants[1] <= constants[0])^^(constants[2]^^constants[3]);

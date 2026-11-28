@@ -1777,3 +1777,22 @@ TEST(Generator, checkGeneratorReleasesAnalyserModel)
     EXPECT_EQ_FILE_CONTENTS("generator/algebraic_eqn_computed_var_on_rhs/model.h", generator->interfaceCode(analyserModel));
     EXPECT_EQ(2, analyserModel.use_count());
 }
+
+TEST(Generator, powerOperatorParenthesisesCompoundExponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto profile = libcellml::GeneratorProfile::create();
+
+    profile->setPowerString("^^");
+    profile->setHasPowerOperator(true);
+
+    auto code = libcellml::Generator::create()->implementationCode(analyser->analyserModel(), profile);
+
+    EXPECT_NE(std::string::npos, code.find("^^(constants[2]-constants[3])"));
+    EXPECT_EQ(std::string::npos, code.find("^^constants[2]-constants[3]"));
+}
