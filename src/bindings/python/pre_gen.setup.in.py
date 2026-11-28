@@ -8,7 +8,6 @@ Development Status :: 5 - Production/Stable
 Intended Audience :: Developers
 Intended Audience :: Education
 Intended Audience :: Science/Research
-License :: OSI Approved :: Apache Software License
 Programming Language :: Python
 Operating System :: Microsoft :: Windows
 Operating System :: Unix
