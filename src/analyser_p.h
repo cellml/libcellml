@@ -223,8 +223,7 @@ public:
     void updateUnitsMultiplier(const ModelPtr &model,
                                const std::string &unitsName,
                                double &newUnitsMultiplier,
-                               double unitsExponent = 1.0,
-                               double unitsMultiplier = 0.0);
+                               double unitsExponent = 1.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double powerValue(const AnalyserEquationAstPtr &ast, PowerData &powerData);
     std::string expression(const AnalyserEquationAstPtr &ast,

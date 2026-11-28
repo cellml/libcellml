@@ -17,7 +17,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include <algorithm>
-#include <cassert>
 #include <map>
 #include <vector>
 

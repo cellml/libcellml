@@ -40,6 +40,7 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
+    mTrackedIndexCache.clear();
 }
 
 std::string Generator::GeneratorImpl::analyserVariableIndexString(const AnalyserVariablePtr &analyserVariable)
@@ -47,28 +48,31 @@ std::string Generator::GeneratorImpl::analyserVariableIndexString(const Analyser
     // Determine the actual index of the analyser variable in the list of analyser variables by accounting for the fact
     // that some analyser variables may be untracked.
 
+    auto cached = mTrackedIndexCache.find(analyserVariable.get());
+
+    if (cached != mTrackedIndexCache.end()) {
+        return convertToString(cached->second);
+    }
+
     auto analyserVariables = libcellml::analyserVariables(analyserVariable);
 
     if (analyserVariables.empty()) {
         return convertToString(analyserVariable->index());
     }
 
-    size_t i = MAX_SIZE_T;
+    // Index every variable of this list: a tracked variable's index is the number of tracked variables before it.
+
     size_t res = MAX_SIZE_T;
 
-    for (;;) {
-        auto analyserVar = analyserVariables[++i];
-
+    for (const auto &analyserVar : analyserVariables) {
         if (isTrackedVariable(analyserVar, true)) {
             ++res;
         }
 
-        if (analyserVariable == analyserVar) {
-            break;
-        }
+        mTrackedIndexCache[analyserVar.get()] = res;
     }
 
-    return convertToString(res);
+    return convertToString(mTrackedIndexCache[analyserVariable.get()]);
 }
 
 bool Generator::GeneratorImpl::isTrackedEquation(const AnalyserEquationPtr &analyserEquation, bool tracked)
@@ -1286,11 +1290,45 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
         || isLogicalOperator(astLeftChild)
         || isPlusOperator(astLeftChild)
         || isMinusOperator(astLeftChild)
-        || isPiecewiseStatement(astLeftChild)) {
+        || isNegativeNumber(astLeftChild)
+        || isPiecewiseStatement(astLeftChild)
+        || (code.rfind(mProfile->minusString(), 0) == 0)) {
         code = "(" + code + ")";
     }
 
     return mProfile->minusString() + code;
+}
+
+std::string Generator::GeneratorImpl::generateNotUnaryCode(const AnalyserEquationAstPtr &ast)
+{
+    // Generate the code for the left branch of the given AST.
+
+    auto astLeftChild = ast->leftChild();
+    auto code = generateCode(astLeftChild);
+
+    // Determine whether parentheses should be added around the left code.
+    // Note: NOT has a higher precedence than all the binary operators, except POWER (as an operator), and than
+    //       PIECEWISE (as an operator), so parentheses are needed around any of them, but not around a unary
+    //       MINUS or another NOT. A unary PLUS is generated as its operand alone (see generateCode()), so we look
+    //       through it to determine what will actually be generated.
+
+    auto astOperand = astLeftChild;
+
+    while (isPlusOperator(astOperand) && (astOperand->rightChild() == nullptr)) {
+        astOperand = astOperand->leftChild();
+    }
+
+    if (isRelationalOperator(astOperand)
+        || isLogicalOperator(astOperand)
+        || ((isPlusOperator(astOperand) || isMinusOperator(astOperand))
+            && (astOperand->rightChild() != nullptr))
+        || isTimesOperator(astOperand)
+        || isDivideOperator(astOperand)
+        || isPiecewiseStatement(astOperand)) {
+        code = "(" + code + ")";
+    }
+
+    return mProfile->notString() + code;
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
@@ -1412,7 +1450,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
-            code = mProfile->notString() + generateCode(ast->leftChild());
+            code = generateNotUnaryCode(ast);
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
         }

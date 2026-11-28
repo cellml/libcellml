@@ -53,20 +53,6 @@ set(TEST_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/test_exportdefinitions
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
 
-if(NOT DEFINED LIBXML2_VERSION_STRING)
-  set(LIBXML2_VERSION_STRING "2.9.10")
-elseif(LIBXML2_VERSION_STRING VERSION_GREATER_EQUAL "2.9.13")
-  set(LIBXML2_VERSION_STRING "2.9.13")
-elseif(LIBXML2_VERSION_STRING VERSION_GREATER_EQUAL "2.9.11")
-  set(LIBXML2_VERSION_STRING "2.9.11")
-endif()
-
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/libxml2issues.${LIBXML2_VERSION_STRING}.h
-  ${CMAKE_CURRENT_BINARY_DIR}/libxml2issues.h
-  COPYONLY
-)
-
 add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
 target_link_libraries(test_utils PUBLIC cellml gtest)
 target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
@@ -126,6 +112,7 @@ endforeach()
 
 set(ALL_LIBRARY_SOURCE_FILES ${SOURCE_FILES} ${API_HEADER_FILES} ${MODULE_HEADER_FILES} ${GENERATED_HEADER_FILES} ${HEADER_FILES})
 add_test(NAME are_debug_utilities_used COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/checkfordebugheaderusage.cmake ${ALL_LIBRARY_SOURCE_FILES})
+add_test(NAME are_issue_reference_rules_consistent COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/checkissuereferencerules.cmake ${CMAKE_SOURCE_DIR}/src/api/libcellml/issue.h ${CMAKE_SOURCE_DIR}/src/issue.cpp)
 
 # Generate tests for header files.
 include(api_headers/tests.cmake)
